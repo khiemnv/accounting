@@ -1,0 +1,387 @@
+<?xml version="1.0" standalone="yes"?>
+<DataSet1>
+  <vReceipts>
+    <content>content 1</content>
+    <price>12000</price>
+    <year>2016</year>
+    <qtr>4</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 1</content>
+    <price>10000</price>
+    <year>2016</year>
+    <qtr>1</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 2</content>
+    <price>20000</price>
+    <year>2016</year>
+    <qtr>1</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 1</content>
+    <price>11000</price>
+    <year>2016</year>
+    <qtr>1</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 2</content>
+    <price>21000</price>
+    <year>2016</year>
+    <qtr>1</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 1</content>
+    <price>10000</price>
+    <year>2016</year>
+    <qtr>1</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 2</content>
+    <price>20000</price>
+    <year>2016</year>
+    <qtr>1</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 1</content>
+    <price>11000</price>
+    <year>2016</year>
+    <qtr>1</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 2</content>
+    <price>21000</price>
+    <year>2016</year>
+    <qtr>1</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 3</content>
+    <price>10000</price>
+    <year>2016</year>
+    <qtr>1</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 3</content>
+    <price>20000</price>
+    <year>2016</year>
+    <qtr>1</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 3</content>
+    <price>11000</price>
+    <year>2016</year>
+    <qtr>1</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 3</content>
+    <price>21000</price>
+    <year>2016</year>
+    <qtr>1</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 3</content>
+    <price>10000</price>
+    <year>2016</year>
+    <qtr>1</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 3</content>
+    <price>20000</price>
+    <year>2016</year>
+    <qtr>1</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 3</content>
+    <price>11000</price>
+    <year>2016</year>
+    <qtr>1</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 3</content>
+    <price>21000</price>
+    <year>2016</year>
+    <qtr>1</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 1</content>
+    <price>10000</price>
+    <year>2016</year>
+    <qtr>2</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 2</content>
+    <price>20000</price>
+    <year>2016</year>
+    <qtr>2</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 1</content>
+    <price>11000</price>
+    <year>2016</year>
+    <qtr>2</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 2</content>
+    <price>21000</price>
+    <year>2016</year>
+    <qtr>2</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 1</content>
+    <price>10000</price>
+    <year>2016</year>
+    <qtr>2</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 2</content>
+    <price>20000</price>
+    <year>2016</year>
+    <qtr>2</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 1</content>
+    <price>11000</price>
+    <year>2016</year>
+    <qtr>2</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 2</content>
+    <price>21000</price>
+    <year>2016</year>
+    <qtr>2</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 3</content>
+    <price>10000</price>
+    <year>2016</year>
+    <qtr>4</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 3</content>
+    <price>20000</price>
+    <year>2016</year>
+    <qtr>4</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 3</content>
+    <price>11000</price>
+    <year>2016</year>
+    <qtr>4</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 3</content>
+    <price>21000</price>
+    <year>2016</year>
+    <qtr>4</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 3</content>
+    <price>10000</price>
+    <year>2016</year>
+    <qtr>4</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 3</content>
+    <price>20000</price>
+    <year>2016</year>
+    <qtr>4</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 3</content>
+    <price>11000</price>
+    <year>2016</year>
+    <qtr>4</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 3</content>
+    <price>21000</price>
+    <year>2016</year>
+    <qtr>4</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 2</content>
+    <price>20000</price>
+    <year>2016</year>
+    <qtr>1</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 1</content>
+    <price>11000</price>
+    <year>2016</year>
+    <qtr>1</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 2</content>
+    <price>21000</price>
+    <year>2016</year>
+    <qtr>1</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 1</content>
+    <price>10000</price>
+    <year>2016</year>
+    <qtr>1</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 2</content>
+    <price>20000</price>
+    <year>2016</year>
+    <qtr>1</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 1</content>
+    <price>11000</price>
+    <year>2016</year>
+    <qtr>1</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 2</content>
+    <price>21000</price>
+    <year>2016</year>
+    <qtr>1</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 3</content>
+    <price>10000</price>
+    <year>2016</year>
+    <qtr>1</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 3</content>
+    <price>20000</price>
+    <year>2016</year>
+    <qtr>1</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 3</content>
+    <price>11000</price>
+    <year>2016</year>
+    <qtr>1</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 3</content>
+    <price>21000</price>
+    <year>2016</year>
+    <qtr>1</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 3</content>
+    <price>10000</price>
+    <year>2016</year>
+    <qtr>1</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 3</content>
+    <price>20000</price>
+    <year>2016</year>
+    <qtr>1</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 3</content>
+    <price>11000</price>
+    <year>2016</year>
+    <qtr>1</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 3</content>
+    <price>21000</price>
+    <year>2016</year>
+    <qtr>1</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 1</content>
+    <price>10000</price>
+    <year>2016</year>
+    <qtr>2</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 2</content>
+    <price>20000</price>
+    <year>2016</year>
+    <qtr>2</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 1</content>
+    <price>11000</price>
+    <year>2016</year>
+    <qtr>2</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 2</content>
+    <price>21000</price>
+    <year>2016</year>
+    <qtr>2</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 1</content>
+    <price>10000</price>
+    <year>2016</year>
+    <qtr>2</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 2</content>
+    <price>20000</price>
+    <year>2016</year>
+    <qtr>2</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 1</content>
+    <price>11000</price>
+    <year>2016</year>
+    <qtr>2</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 2</content>
+    <price>21000</price>
+    <year>2016</year>
+    <qtr>2</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 3</content>
+    <price>10000</price>
+    <year>2016</year>
+    <qtr>4</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 3</content>
+    <price>20000</price>
+    <year>2016</year>
+    <qtr>4</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 3</content>
+    <price>11000</price>
+    <year>2016</year>
+    <qtr>4</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 3</content>
+    <price>21000</price>
+    <year>2016</year>
+    <qtr>4</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 3</content>
+    <price>10000</price>
+    <year>2016</year>
+    <qtr>4</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 3</content>
+    <price>20000</price>
+    <year>2016</year>
+    <qtr>4</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 3</content>
+    <price>11000</price>
+    <year>2016</year>
+    <qtr>4</qtr>
+  </vReceipts>
+  <vReceipts>
+    <content>content 3</content>
+    <price>21000</price>
+    <year>2016</year>
+    <qtr>4</qtr>
+  </vReceipts>
+</DataSet1>

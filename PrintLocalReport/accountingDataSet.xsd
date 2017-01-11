@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="accountingDataSet" targetNamespace="http://tempuri.org/accountingDataSet.xsd" xmlns:mstns="http://tempuri.org/accountingDataSet.xsd" xmlns="http://tempuri.org/accountingDataSet.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections>
+          <Connection AppSettingsObjectName="Settings" AppSettingsPropertyName="accountingConnectionString" ConnectionStringObject="" IsAppSettingsProperty="true" Modifier="Assembly" Name="accountingConnectionString (Settings)" ParameterPrefix="@" PropertyReference="ApplicationSettings.PrintLocalReport.Properties.Settings.GlobalReference.Default.accountingConnectionString" Provider="System.Data.SqlClient" />
+        </Connections>
+        <Tables>
+          <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="vReceiptsTableAdapter" GeneratorDataComponentClassName="vReceiptsTableAdapter" Name="vReceipts" UserDataComponentName="vReceiptsTableAdapter">
+            <MainSource>
+              <DbSource ConnectionRef="accountingConnectionString (Settings)" DbObjectName="accounting.dbo.vReceipts" DbObjectType="View" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetData" UserSourceName="Fill">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="false">
+                    <CommandText>SELECT content, price, year, qtr FROM dbo.vReceipts</CommandText>
+                    <Parameters />
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+            </MainSource>
+            <Mappings>
+              <Mapping SourceColumn="content" DataSetColumn="content" />
+              <Mapping SourceColumn="price" DataSetColumn="price" />
+              <Mapping SourceColumn="year" DataSetColumn="year" />
+              <Mapping SourceColumn="qtr" DataSetColumn="qtr" />
+            </Mappings>
+            <Sources />
+          </TableAdapter>
+        </Tables>
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="accountingDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="True" msprop:Generator_DataSetName="accountingDataSet" msprop:Generator_UserDSName="accountingDataSet">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="vReceipts" msprop:Generator_TableClassName="vReceiptsDataTable" msprop:Generator_TableVarName="tablevReceipts" msprop:Generator_TablePropName="vReceipts" msprop:Generator_RowDeletingName="vReceiptsRowDeleting" msprop:Generator_RowChangingName="vReceiptsRowChanging" msprop:Generator_RowEvHandlerName="vReceiptsRowChangeEventHandler" msprop:Generator_RowDeletedName="vReceiptsRowDeleted" msprop:Generator_UserTableName="vReceipts" msprop:Generator_RowChangedName="vReceiptsRowChanged" msprop:Generator_RowEvArgName="vReceiptsRowChangeEvent" msprop:Generator_RowClassName="vReceiptsRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="content" msprop:Generator_ColumnVarNameInTable="columncontent" msprop:Generator_ColumnPropNameInRow="content" msprop:Generator_ColumnPropNameInTable="contentColumn" msprop:Generator_UserColumnName="content" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="2147483647" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="price" msprop:Generator_ColumnVarNameInTable="columnprice" msprop:Generator_ColumnPropNameInRow="price" msprop:Generator_ColumnPropNameInTable="priceColumn" msprop:Generator_UserColumnName="price" type="xs:int" minOccurs="0" />
+              <xs:element name="year" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnyear" msprop:Generator_ColumnPropNameInRow="year" msprop:Generator_ColumnPropNameInTable="yearColumn" msprop:Generator_UserColumnName="year" type="xs:int" minOccurs="0" />
+              <xs:element name="qtr" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnqtr" msprop:Generator_ColumnPropNameInRow="qtr" msprop:Generator_ColumnPropNameInTable="qtrColumn" msprop:Generator_UserColumnName="qtr" type="xs:int" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
