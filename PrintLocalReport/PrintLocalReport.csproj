@@ -80,14 +80,12 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="Report.rdlc" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Data.xml" />
     <Content Include="receiptsData.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Report1.rdlc" />
+    <EmbeddedResource Include="receipts.rdlc" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

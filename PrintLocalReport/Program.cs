@@ -15,13 +15,14 @@ public class Demo : IDisposable
     private int m_currentPageIndex;
     private IList<Stream> m_streams;
 
-
     string rc_name = "DataSet1";
     string view_name = "vReceipts";
-    string rdlc_path = @"..\..\Report1.rdlc";
+    //string rdlc_path = @"..\..\receipts.rdlc";
+    string rdlc_path = @"..\..\receipts.rdlc";
     string xml_path = @"..\..\receiptsData.xml";
     string ds_name = "DataSet1";
 
+#if false
     private DataTable LoadSalesData()
     {
         // Create a new DataSet and read sales data file 
@@ -42,7 +43,7 @@ public class Demo : IDisposable
         dataSet.ReadXml(xml_path);
         return dataSet.Tables[0];
     }
-
+#endif
     private DataTable loadOtherData() {
         //DataSet dataSet = new DataSet(@"..\..\vReceipts.xsd");
 
@@ -61,7 +62,7 @@ public class Demo : IDisposable
         ds.DataSetName = ds_name;
         myCommand.Fill(ds);
         ds.Tables[0].TableName = view_name;
-        ds.WriteXml(xml_path);
+        //ds.WriteXml(xml_path);
 
         //DataSet ds2 = new DataSet();
         //ds2.ReadXml(xml_path);
