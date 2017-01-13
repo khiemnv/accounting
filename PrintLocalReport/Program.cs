@@ -17,7 +17,7 @@ public class Demo : IDisposable
     private IList<Stream> m_streams;
 
     string rc_name = "DataSet1";
-    string view_name = "vReceipts";
+    string view_name = "v_receipts";
     //string rdlc_path = @"..\..\receipts.rdlc";
     string rdlc_path = @"..\..\receipts.rdlc";
     string xml_path = @"..\..\receiptsData.xml";
@@ -197,7 +197,7 @@ public class Demo : IDisposable
         public lReceiptsReport()
         {
             m_rcName = "DataSet1";
-            m_viewName = "vReceipts";
+            m_viewName = "v_receipts";
             m_rdlcPath = @"..\..\receipts.rdlc";
             m_dsName = "DataSet1";
             m_pdfPath = @"..\..\report.pdf";
@@ -402,6 +402,7 @@ public class Demo : IDisposable
             conn.Open();
             demo.init(conn);
             demo.Run();
+            demo.Dispose();
         }
     }
 }
