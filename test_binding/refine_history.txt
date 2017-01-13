@@ -1,0 +1,28 @@
+lExternalPaymentPanel
+lExterPaymentPanel
+
+lExternalPaymentDataPanel
+lExternalPaymentSearchPanel
+
++ crt table salary
+ 7 salary_col
++ load data
+	m_salaryPanel
+	lSalaryPanel
++ class
+	lSalaryDataPanel
+	lSalarySearchPanel
+
+# refine
+1. view
+	+ sum		  	| 
+	+ hide id col 	|OK
+	+ column name	|OK
+	+ search ctrl	|OK
+	
+tableinfo
+	internal_payment
+	lInternalPaymentTblInfo
+2. clean
+	+ receipt tbl
+	
