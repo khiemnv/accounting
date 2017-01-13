@@ -2,107 +2,6 @@
 <Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2008/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
   <Body>
     <ReportItems>
-      <Textbox Name="Textbox17">
-        <CanGrow>true</CanGrow>
-        <KeepTogether>true</KeepTogether>
-        <Paragraphs>
-          <Paragraph>
-            <TextRuns>
-              <TextRun>
-                <Value>Thống kê chi Nội Chúng</Value>
-                <Style>
-                  <FontSize>16pt</FontSize>
-                  <FontWeight>Bold</FontWeight>
-                  <Color>Blue</Color>
-                </Style>
-              </TextRun>
-            </TextRuns>
-            <Style>
-              <TextAlign>Center</TextAlign>
-            </Style>
-          </Paragraph>
-        </Paragraphs>
-        <rd:DefaultName>Textbox17</rd:DefaultName>
-        <Left>0.2175in</Left>
-        <Height>0.54167in</Height>
-        <Width>3.85417in</Width>
-        <Style>
-          <Border>
-            <Style>None</Style>
-          </Border>
-          <VerticalAlign>Middle</VerticalAlign>
-          <PaddingLeft>2pt</PaddingLeft>
-          <PaddingRight>2pt</PaddingRight>
-          <PaddingTop>2pt</PaddingTop>
-          <PaddingBottom>2pt</PaddingBottom>
-        </Style>
-      </Textbox>
-      <Textbox Name="Textbox36">
-        <CanGrow>true</CanGrow>
-        <KeepTogether>true</KeepTogether>
-        <Paragraphs>
-          <Paragraph>
-            <TextRuns>
-              <TextRun>
-                <Value>Chi tiết (theo quý) đơn vị 1,000 VND</Value>
-                <Style>
-                  <FontSize>12pt</FontSize>
-                  <FontWeight>Bold</FontWeight>
-                  <Color>Blue</Color>
-                </Style>
-              </TextRun>
-            </TextRuns>
-            <Style />
-          </Paragraph>
-        </Paragraphs>
-        <rd:DefaultName>Textbox36</rd:DefaultName>
-        <Top>1.86681in</Top>
-        <Height>0.25in</Height>
-        <Width>3in</Width>
-        <ZIndex>1</ZIndex>
-        <Style>
-          <Border>
-            <Style>None</Style>
-          </Border>
-          <PaddingLeft>2pt</PaddingLeft>
-          <PaddingRight>2pt</PaddingRight>
-          <PaddingTop>2pt</PaddingTop>
-          <PaddingBottom>2pt</PaddingBottom>
-        </Style>
-      </Textbox>
-      <Textbox Name="Textbox37">
-        <CanGrow>true</CanGrow>
-        <KeepTogether>true</KeepTogether>
-        <Paragraphs>
-          <Paragraph>
-            <TextRuns>
-              <TextRun>
-                <Value>Tổng quát (theo năm) đơn vị 1,000 VND</Value>
-                <Style>
-                  <FontSize>12pt</FontSize>
-                  <FontWeight>Bold</FontWeight>
-                  <Color>Blue</Color>
-                </Style>
-              </TextRun>
-            </TextRuns>
-            <Style />
-          </Paragraph>
-        </Paragraphs>
-        <rd:DefaultName>Textbox36</rd:DefaultName>
-        <Top>0.72792in</Top>
-        <Height>0.25in</Height>
-        <Width>3.20833in</Width>
-        <ZIndex>2</ZIndex>
-        <Style>
-          <Border>
-            <Style>None</Style>
-          </Border>
-          <PaddingLeft>2pt</PaddingLeft>
-          <PaddingRight>2pt</PaddingRight>
-          <PaddingTop>2pt</PaddingTop>
-          <PaddingBottom>2pt</PaddingBottom>
-        </Style>
-      </Textbox>
       <Tablix Name="Tablix1">
         <TablixCorner>
           <TablixCornerRows>
@@ -152,14 +51,14 @@
               <TablixCells>
                 <TablixCell>
                   <CellContents>
-                    <Textbox Name="actually_spent">
+                    <Textbox Name="spent">
                       <CanGrow>true</CanGrow>
                       <KeepTogether>true</KeepTogether>
                       <Paragraphs>
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=Sum(Fields!actually_spent.Value)</Value>
+                              <Value>=Sum(Fields!spent.Value)</Value>
                               <Style>
                                 <Format>#0,0;(#0,0)</Format>
                               </Style>
@@ -168,12 +67,13 @@
                           <Style />
                         </Paragraph>
                       </Paragraphs>
-                      <rd:DefaultName>actually_spent</rd:DefaultName>
+                      <rd:DefaultName>spent</rd:DefaultName>
                       <Style>
                         <Border>
                           <Color>LightGrey</Color>
                           <Style>Solid</Style>
                         </Border>
+                        <BackgroundColor>#9eb6e4</BackgroundColor>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -189,14 +89,14 @@
               <TablixCells>
                 <TablixCell>
                   <CellContents>
-                    <Textbox Name="Textbox6">
+                    <Textbox Name="Textbox18">
                       <CanGrow>true</CanGrow>
                       <KeepTogether>true</KeepTogether>
                       <Paragraphs>
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=Sum(Fields!actually_spent.Value)</Value>
+                              <Value>=Sum(Fields!spent.Value)</Value>
                               <Style>
                                 <Format>#0,0;(#0,0)</Format>
                               </Style>
@@ -205,7 +105,7 @@
                           <Style />
                         </Paragraph>
                       </Paragraphs>
-                      <rd:DefaultName>Textbox6</rd:DefaultName>
+                      <rd:DefaultName>Textbox18</rd:DefaultName>
                       <Style>
                         <Border>
                           <Color>LightGrey</Color>
@@ -326,7 +226,7 @@
               <TablixHeader>
                 <Size>1in</Size>
                 <CellContents>
-                  <Textbox Name="Textbox5">
+                  <Textbox Name="Textbox17">
                     <CanGrow>true</CanGrow>
                     <KeepTogether>true</KeepTogether>
                     <Paragraphs>
@@ -340,7 +240,7 @@
                         <Style />
                       </Paragraph>
                     </Paragraphs>
-                    <rd:DefaultName>Textbox5</rd:DefaultName>
+                    <rd:DefaultName>Textbox17</rd:DefaultName>
                     <Style>
                       <Border>
                         <Color>LightGrey</Color>
@@ -360,10 +260,9 @@
           </TablixMembers>
         </TablixRowHierarchy>
         <DataSetName>DataSet1</DataSetName>
-        <Top>1.04736in</Top>
+        <Top>0.93056in</Top>
         <Height>0.75in</Height>
         <Width>2in</Width>
-        <ZIndex>3</ZIndex>
         <Style>
           <Border>
             <Style>None</Style>
@@ -376,7 +275,7 @@
             <TablixCornerRow>
               <TablixCornerCell>
                 <CellContents>
-                  <Textbox Name="Textbox9">
+                  <Textbox Name="Textbox8">
                     <CanGrow>true</CanGrow>
                     <KeepTogether>true</KeepTogether>
                     <Paragraphs>
@@ -390,7 +289,7 @@
                         <Style />
                       </Paragraph>
                     </Paragraphs>
-                    <rd:DefaultName>Textbox4</rd:DefaultName>
+                    <rd:DefaultName>Textbox8</rd:DefaultName>
                     <Style>
                       <Border>
                         <Color>LightGrey</Color>
@@ -408,7 +307,7 @@
             <TablixCornerRow>
               <TablixCornerCell>
                 <CellContents>
-                  <Textbox Name="Textbox13">
+                  <Textbox Name="Textbox9">
                     <CanGrow>true</CanGrow>
                     <KeepTogether>true</KeepTogether>
                     <Paragraphs>
@@ -422,7 +321,7 @@
                         <Style />
                       </Paragraph>
                     </Paragraphs>
-                    <rd:DefaultName>Textbox13</rd:DefaultName>
+                    <rd:DefaultName>Textbox9</rd:DefaultName>
                     <Style>
                       <Border>
                         <Color>LightGrey</Color>
@@ -451,14 +350,14 @@
               <TablixCells>
                 <TablixCell>
                   <CellContents>
-                    <Textbox Name="actually_spent2">
+                    <Textbox Name="spent1">
                       <CanGrow>true</CanGrow>
                       <KeepTogether>true</KeepTogether>
                       <Paragraphs>
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=Sum(Fields!actually_spent.Value)</Value>
+                              <Value>=Sum(Fields!spent.Value)</Value>
                               <Style>
                                 <Format>#0,0;(#0,0)</Format>
                               </Style>
@@ -467,7 +366,7 @@
                           <Style />
                         </Paragraph>
                       </Paragraphs>
-                      <rd:DefaultName>actually_spent</rd:DefaultName>
+                      <rd:DefaultName>spent1</rd:DefaultName>
                       <Style>
                         <Border>
                           <Color>LightGrey</Color>
@@ -488,14 +387,14 @@
               <TablixCells>
                 <TablixCell>
                   <CellContents>
-                    <Textbox Name="Textbox8">
+                    <Textbox Name="Textbox20">
                       <CanGrow>true</CanGrow>
                       <KeepTogether>true</KeepTogether>
                       <Paragraphs>
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=Sum(Fields!actually_spent.Value)</Value>
+                              <Value>=Sum(Fields!spent.Value)</Value>
                               <Style>
                                 <Format>#0,0;(#0,0)</Format>
                               </Style>
@@ -504,7 +403,7 @@
                           <Style />
                         </Paragraph>
                       </Paragraphs>
-                      <rd:DefaultName>Textbox6</rd:DefaultName>
+                      <rd:DefaultName>Textbox20</rd:DefaultName>
                       <Style>
                         <Border>
                           <Color>LightGrey</Color>
@@ -526,7 +425,7 @@
         <TablixColumnHierarchy>
           <TablixMembers>
             <TablixMember>
-              <Group Name="year2">
+              <Group Name="year1">
                 <GroupExpressions>
                   <GroupExpression>=Fields!year.Value</GroupExpression>
                 </GroupExpressions>
@@ -539,7 +438,7 @@
               <TablixHeader>
                 <Size>0.25in</Size>
                 <CellContents>
-                  <Textbox Name="year2">
+                  <Textbox Name="year1">
                     <CanGrow>true</CanGrow>
                     <KeepTogether>true</KeepTogether>
                     <Paragraphs>
@@ -557,7 +456,7 @@
                         <Style />
                       </Paragraph>
                     </Paragraphs>
-                    <rd:DefaultName>year</rd:DefaultName>
+                    <rd:DefaultName>year1</rd:DefaultName>
                     <Style>
                       <Border>
                         <Color>LightGrey</Color>
@@ -611,7 +510,7 @@
                             <Color>LightGrey</Color>
                             <Style>Solid</Style>
                           </Border>
-                          <BackgroundColor>#9eb6e4</BackgroundColor>
+                          <BackgroundColor>#c6daf8</BackgroundColor>
                           <PaddingLeft>2pt</PaddingLeft>
                           <PaddingRight>2pt</PaddingRight>
                           <PaddingTop>2pt</PaddingTop>
@@ -628,7 +527,7 @@
         <TablixRowHierarchy>
           <TablixMembers>
             <TablixMember>
-              <Group Name="group_name2">
+              <Group Name="group_name1">
                 <GroupExpressions>
                   <GroupExpression>=Fields!group_name.Value</GroupExpression>
                 </GroupExpressions>
@@ -641,7 +540,7 @@
               <TablixHeader>
                 <Size>1in</Size>
                 <CellContents>
-                  <Textbox Name="group_name2">
+                  <Textbox Name="group_name1">
                     <CanGrow>true</CanGrow>
                     <KeepTogether>true</KeepTogether>
                     <Paragraphs>
@@ -655,13 +554,13 @@
                         <Style />
                       </Paragraph>
                     </Paragraphs>
-                    <rd:DefaultName>group_name</rd:DefaultName>
+                    <rd:DefaultName>group_name1</rd:DefaultName>
                     <Style>
                       <Border>
                         <Color>LightGrey</Color>
                         <Style>Solid</Style>
                       </Border>
-                      <BackgroundColor>#9eb6e4</BackgroundColor>
+                      <BackgroundColor>#7292cc</BackgroundColor>
                       <PaddingLeft>2pt</PaddingLeft>
                       <PaddingRight>2pt</PaddingRight>
                       <PaddingTop>2pt</PaddingTop>
@@ -675,7 +574,7 @@
               <TablixHeader>
                 <Size>1in</Size>
                 <CellContents>
-                  <Textbox Name="Textbox7">
+                  <Textbox Name="Textbox19">
                     <CanGrow>true</CanGrow>
                     <KeepTogether>true</KeepTogether>
                     <Paragraphs>
@@ -689,7 +588,7 @@
                         <Style />
                       </Paragraph>
                     </Paragraphs>
-                    <rd:DefaultName>Textbox5</rd:DefaultName>
+                    <rd:DefaultName>Textbox19</rd:DefaultName>
                     <Style>
                       <Border>
                         <Color>LightGrey</Color>
@@ -714,16 +613,16 @@
             <FilterExpression>=Fields!year.Value</FilterExpression>
             <Operator>Equal</Operator>
             <FilterValues>
-              <FilterValue>=Parameters!details.Value(0)</FilterValue>
+              <FilterValue>=Parameters!detail1.Value</FilterValue>
             </FilterValues>
           </Filter>
         </Filters>
-        <Top>2.18625in</Top>
+        <Top>2.19445in</Top>
         <Height>1in</Height>
         <Width>2in</Width>
-        <ZIndex>4</ZIndex>
+        <ZIndex>1</ZIndex>
         <Visibility>
-          <Hidden>=Parameters!details.Value(0) = 0</Hidden>
+          <Hidden>=Parameters!detail1.Value = 0</Hidden>
         </Visibility>
         <Style>
           <Border>
@@ -737,7 +636,7 @@
             <TablixCornerRow>
               <TablixCornerCell>
                 <CellContents>
-                  <Textbox Name="Textbox12">
+                  <Textbox Name="Textbox10">
                     <CanGrow>true</CanGrow>
                     <KeepTogether>true</KeepTogether>
                     <Paragraphs>
@@ -751,7 +650,7 @@
                         <Style />
                       </Paragraph>
                     </Paragraphs>
-                    <rd:DefaultName>Textbox4</rd:DefaultName>
+                    <rd:DefaultName>Textbox8</rd:DefaultName>
                     <Style>
                       <Border>
                         <Color>LightGrey</Color>
@@ -769,7 +668,7 @@
             <TablixCornerRow>
               <TablixCornerCell>
                 <CellContents>
-                  <Textbox Name="Textbox14">
+                  <Textbox Name="Textbox11">
                     <CanGrow>true</CanGrow>
                     <KeepTogether>true</KeepTogether>
                     <Paragraphs>
@@ -783,7 +682,7 @@
                         <Style />
                       </Paragraph>
                     </Paragraphs>
-                    <rd:DefaultName>Textbox13</rd:DefaultName>
+                    <rd:DefaultName>Textbox9</rd:DefaultName>
                     <Style>
                       <Border>
                         <Color>LightGrey</Color>
@@ -812,14 +711,14 @@
               <TablixCells>
                 <TablixCell>
                   <CellContents>
-                    <Textbox Name="actually_spent3">
+                    <Textbox Name="spent2">
                       <CanGrow>true</CanGrow>
                       <KeepTogether>true</KeepTogether>
                       <Paragraphs>
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=Sum(Fields!actually_spent.Value)</Value>
+                              <Value>=Sum(Fields!spent.Value)</Value>
                               <Style>
                                 <Format>#0,0;(#0,0)</Format>
                               </Style>
@@ -828,7 +727,7 @@
                           <Style />
                         </Paragraph>
                       </Paragraphs>
-                      <rd:DefaultName>actually_spent</rd:DefaultName>
+                      <rd:DefaultName>spent1</rd:DefaultName>
                       <Style>
                         <Border>
                           <Color>LightGrey</Color>
@@ -849,14 +748,14 @@
               <TablixCells>
                 <TablixCell>
                   <CellContents>
-                    <Textbox Name="Textbox11">
+                    <Textbox Name="Textbox22">
                       <CanGrow>true</CanGrow>
                       <KeepTogether>true</KeepTogether>
                       <Paragraphs>
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=Sum(Fields!actually_spent.Value)</Value>
+                              <Value>=Sum(Fields!spent.Value)</Value>
                               <Style>
                                 <Format>#0,0;(#0,0)</Format>
                               </Style>
@@ -865,7 +764,7 @@
                           <Style />
                         </Paragraph>
                       </Paragraphs>
-                      <rd:DefaultName>Textbox6</rd:DefaultName>
+                      <rd:DefaultName>Textbox22</rd:DefaultName>
                       <Style>
                         <Border>
                           <Color>LightGrey</Color>
@@ -887,7 +786,7 @@
         <TablixColumnHierarchy>
           <TablixMembers>
             <TablixMember>
-              <Group Name="year3">
+              <Group Name="year2">
                 <GroupExpressions>
                   <GroupExpression>=Fields!year.Value</GroupExpression>
                 </GroupExpressions>
@@ -900,7 +799,7 @@
               <TablixHeader>
                 <Size>0.25in</Size>
                 <CellContents>
-                  <Textbox Name="year3">
+                  <Textbox Name="year2">
                     <CanGrow>true</CanGrow>
                     <KeepTogether>true</KeepTogether>
                     <Paragraphs>
@@ -918,7 +817,7 @@
                         <Style />
                       </Paragraph>
                     </Paragraphs>
-                    <rd:DefaultName>year</rd:DefaultName>
+                    <rd:DefaultName>year1</rd:DefaultName>
                     <Style>
                       <Border>
                         <Color>LightGrey</Color>
@@ -972,7 +871,7 @@
                             <Color>LightGrey</Color>
                             <Style>Solid</Style>
                           </Border>
-                          <BackgroundColor>#9eb6e4</BackgroundColor>
+                          <BackgroundColor>#c6daf8</BackgroundColor>
                           <PaddingLeft>2pt</PaddingLeft>
                           <PaddingRight>2pt</PaddingRight>
                           <PaddingTop>2pt</PaddingTop>
@@ -989,7 +888,7 @@
         <TablixRowHierarchy>
           <TablixMembers>
             <TablixMember>
-              <Group Name="group_name3">
+              <Group Name="group_name2">
                 <GroupExpressions>
                   <GroupExpression>=Fields!group_name.Value</GroupExpression>
                 </GroupExpressions>
@@ -1002,7 +901,7 @@
               <TablixHeader>
                 <Size>1in</Size>
                 <CellContents>
-                  <Textbox Name="group_name3">
+                  <Textbox Name="group_name2">
                     <CanGrow>true</CanGrow>
                     <KeepTogether>true</KeepTogether>
                     <Paragraphs>
@@ -1016,7 +915,7 @@
                         <Style />
                       </Paragraph>
                     </Paragraphs>
-                    <rd:DefaultName>group_name</rd:DefaultName>
+                    <rd:DefaultName>group_name1</rd:DefaultName>
                     <Style>
                       <Border>
                         <Color>LightGrey</Color>
@@ -1036,7 +935,7 @@
               <TablixHeader>
                 <Size>1in</Size>
                 <CellContents>
-                  <Textbox Name="Textbox10">
+                  <Textbox Name="Textbox21">
                     <CanGrow>true</CanGrow>
                     <KeepTogether>true</KeepTogether>
                     <Paragraphs>
@@ -1050,7 +949,7 @@
                         <Style />
                       </Paragraph>
                     </Paragraphs>
-                    <rd:DefaultName>Textbox5</rd:DefaultName>
+                    <rd:DefaultName>Textbox21</rd:DefaultName>
                     <Style>
                       <Border>
                         <Color>LightGrey</Color>
@@ -1075,16 +974,16 @@
             <FilterExpression>=Fields!year.Value</FilterExpression>
             <Operator>Equal</Operator>
             <FilterValues>
-              <FilterValue>=Parameters!details.Value(1)</FilterValue>
+              <FilterValue>=Parameters!detail2.Value</FilterValue>
             </FilterValues>
           </Filter>
         </Filters>
-        <Top>3.2557in</Top>
+        <Top>3.26389in</Top>
         <Height>1in</Height>
         <Width>2in</Width>
-        <ZIndex>5</ZIndex>
+        <ZIndex>2</ZIndex>
         <Visibility>
-          <Hidden>=Parameters!details.Value(1) = 0</Hidden>
+          <Hidden>=Parameters!detail2.Value = 0</Hidden>
         </Visibility>
         <Style>
           <Border>
@@ -1092,13 +991,115 @@
           </Border>
         </Style>
       </Tablix>
+      <Textbox Name="Textbox23">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Thống kê chi Ngoại Chúng</Value>
+                <Style>
+                  <FontSize>16pt</FontSize>
+                  <FontWeight>Bold</FontWeight>
+                  <Color>Blue</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style>
+              <TextAlign>Center</TextAlign>
+            </Style>
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox17</rd:DefaultName>
+        <Left>1.21417in</Left>
+        <Height>0.54167in</Height>
+        <Width>3.85417in</Width>
+        <ZIndex>3</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <VerticalAlign>Middle</VerticalAlign>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox37">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Tổng quát (theo năm) đơn vị 1,000 VND</Value>
+                <Style>
+                  <FontSize>12pt</FontSize>
+                  <FontWeight>Bold</FontWeight>
+                  <Color>Blue</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox36</rd:DefaultName>
+        <Top>0.61111in</Top>
+        <Height>0.25in</Height>
+        <Width>3.20833in</Width>
+        <ZIndex>4</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox36">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Chi tiết (theo quý) đơn vị 1,000 VND</Value>
+                <Style>
+                  <FontSize>12pt</FontSize>
+                  <FontWeight>Bold</FontWeight>
+                  <Color>Blue</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox36</rd:DefaultName>
+        <Top>1.875in</Top>
+        <Height>0.25in</Height>
+        <Width>3in</Width>
+        <ZIndex>5</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
       <Tablix Name="Tablix4">
         <TablixCorner>
           <TablixCornerRows>
             <TablixCornerRow>
               <TablixCornerCell>
                 <CellContents>
-                  <Textbox Name="Textbox18">
+                  <Textbox Name="Textbox12">
                     <CanGrow>true</CanGrow>
                     <KeepTogether>true</KeepTogether>
                     <Paragraphs>
@@ -1112,7 +1113,7 @@
                         <Style />
                       </Paragraph>
                     </Paragraphs>
-                    <rd:DefaultName>Textbox4</rd:DefaultName>
+                    <rd:DefaultName>Textbox8</rd:DefaultName>
                     <Style>
                       <Border>
                         <Color>LightGrey</Color>
@@ -1130,7 +1131,7 @@
             <TablixCornerRow>
               <TablixCornerCell>
                 <CellContents>
-                  <Textbox Name="Textbox19">
+                  <Textbox Name="Textbox13">
                     <CanGrow>true</CanGrow>
                     <KeepTogether>true</KeepTogether>
                     <Paragraphs>
@@ -1144,7 +1145,7 @@
                         <Style />
                       </Paragraph>
                     </Paragraphs>
-                    <rd:DefaultName>Textbox13</rd:DefaultName>
+                    <rd:DefaultName>Textbox9</rd:DefaultName>
                     <Style>
                       <Border>
                         <Color>LightGrey</Color>
@@ -1173,14 +1174,14 @@
               <TablixCells>
                 <TablixCell>
                   <CellContents>
-                    <Textbox Name="actually_spent4">
+                    <Textbox Name="spent3">
                       <CanGrow>true</CanGrow>
                       <KeepTogether>true</KeepTogether>
                       <Paragraphs>
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=Sum(Fields!actually_spent.Value)</Value>
+                              <Value>=Sum(Fields!spent.Value)</Value>
                               <Style>
                                 <Format>#0,0;(#0,0)</Format>
                               </Style>
@@ -1189,7 +1190,7 @@
                           <Style />
                         </Paragraph>
                       </Paragraphs>
-                      <rd:DefaultName>actually_spent</rd:DefaultName>
+                      <rd:DefaultName>spent1</rd:DefaultName>
                       <Style>
                         <Border>
                           <Color>LightGrey</Color>
@@ -1210,14 +1211,14 @@
               <TablixCells>
                 <TablixCell>
                   <CellContents>
-                    <Textbox Name="Textbox16">
+                    <Textbox Name="Textbox28">
                       <CanGrow>true</CanGrow>
                       <KeepTogether>true</KeepTogether>
                       <Paragraphs>
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=Sum(Fields!actually_spent.Value)</Value>
+                              <Value>=Sum(Fields!spent.Value)</Value>
                               <Style>
                                 <Format>#0,0;(#0,0)</Format>
                               </Style>
@@ -1226,7 +1227,7 @@
                           <Style />
                         </Paragraph>
                       </Paragraphs>
-                      <rd:DefaultName>Textbox6</rd:DefaultName>
+                      <rd:DefaultName>Textbox22</rd:DefaultName>
                       <Style>
                         <Border>
                           <Color>LightGrey</Color>
@@ -1248,7 +1249,7 @@
         <TablixColumnHierarchy>
           <TablixMembers>
             <TablixMember>
-              <Group Name="year4">
+              <Group Name="year3">
                 <GroupExpressions>
                   <GroupExpression>=Fields!year.Value</GroupExpression>
                 </GroupExpressions>
@@ -1261,7 +1262,7 @@
               <TablixHeader>
                 <Size>0.25in</Size>
                 <CellContents>
-                  <Textbox Name="year4">
+                  <Textbox Name="year3">
                     <CanGrow>true</CanGrow>
                     <KeepTogether>true</KeepTogether>
                     <Paragraphs>
@@ -1279,7 +1280,7 @@
                         <Style />
                       </Paragraph>
                     </Paragraphs>
-                    <rd:DefaultName>year</rd:DefaultName>
+                    <rd:DefaultName>year1</rd:DefaultName>
                     <Style>
                       <Border>
                         <Color>LightGrey</Color>
@@ -1333,7 +1334,7 @@
                             <Color>LightGrey</Color>
                             <Style>Solid</Style>
                           </Border>
-                          <BackgroundColor>#9eb6e4</BackgroundColor>
+                          <BackgroundColor>#c6daf8</BackgroundColor>
                           <PaddingLeft>2pt</PaddingLeft>
                           <PaddingRight>2pt</PaddingRight>
                           <PaddingTop>2pt</PaddingTop>
@@ -1350,7 +1351,7 @@
         <TablixRowHierarchy>
           <TablixMembers>
             <TablixMember>
-              <Group Name="group_name4">
+              <Group Name="group_name3">
                 <GroupExpressions>
                   <GroupExpression>=Fields!group_name.Value</GroupExpression>
                 </GroupExpressions>
@@ -1363,7 +1364,7 @@
               <TablixHeader>
                 <Size>1in</Size>
                 <CellContents>
-                  <Textbox Name="group_name4">
+                  <Textbox Name="group_name3">
                     <CanGrow>true</CanGrow>
                     <KeepTogether>true</KeepTogether>
                     <Paragraphs>
@@ -1377,7 +1378,7 @@
                         <Style />
                       </Paragraph>
                     </Paragraphs>
-                    <rd:DefaultName>group_name</rd:DefaultName>
+                    <rd:DefaultName>group_name1</rd:DefaultName>
                     <Style>
                       <Border>
                         <Color>LightGrey</Color>
@@ -1397,7 +1398,7 @@
               <TablixHeader>
                 <Size>1in</Size>
                 <CellContents>
-                  <Textbox Name="Textbox15">
+                  <Textbox Name="Textbox24">
                     <CanGrow>true</CanGrow>
                     <KeepTogether>true</KeepTogether>
                     <Paragraphs>
@@ -1411,7 +1412,7 @@
                         <Style />
                       </Paragraph>
                     </Paragraphs>
-                    <rd:DefaultName>Textbox5</rd:DefaultName>
+                    <rd:DefaultName>Textbox21</rd:DefaultName>
                     <Style>
                       <Border>
                         <Color>LightGrey</Color>
@@ -1436,16 +1437,16 @@
             <FilterExpression>=Fields!year.Value</FilterExpression>
             <Operator>Equal</Operator>
             <FilterValues>
-              <FilterValue>=Parameters!details.Value(2)</FilterValue>
+              <FilterValue>=Parameters!detail3.Value</FilterValue>
             </FilterValues>
           </Filter>
         </Filters>
-        <Top>4.32514in</Top>
+        <Top>4.33333in</Top>
         <Height>1in</Height>
         <Width>2in</Width>
         <ZIndex>6</ZIndex>
         <Visibility>
-          <Hidden>=Parameters!details.Value(2) = 0</Hidden>
+          <Hidden>=Parameters!detail3.Value = 0</Hidden>
         </Visibility>
         <Style>
           <Border>
@@ -1459,7 +1460,7 @@
             <TablixCornerRow>
               <TablixCornerCell>
                 <CellContents>
-                  <Textbox Name="Textbox22">
+                  <Textbox Name="Textbox14">
                     <CanGrow>true</CanGrow>
                     <KeepTogether>true</KeepTogether>
                     <Paragraphs>
@@ -1473,7 +1474,7 @@
                         <Style />
                       </Paragraph>
                     </Paragraphs>
-                    <rd:DefaultName>Textbox4</rd:DefaultName>
+                    <rd:DefaultName>Textbox8</rd:DefaultName>
                     <Style>
                       <Border>
                         <Color>LightGrey</Color>
@@ -1491,7 +1492,7 @@
             <TablixCornerRow>
               <TablixCornerCell>
                 <CellContents>
-                  <Textbox Name="Textbox23">
+                  <Textbox Name="Textbox15">
                     <CanGrow>true</CanGrow>
                     <KeepTogether>true</KeepTogether>
                     <Paragraphs>
@@ -1505,7 +1506,7 @@
                         <Style />
                       </Paragraph>
                     </Paragraphs>
-                    <rd:DefaultName>Textbox13</rd:DefaultName>
+                    <rd:DefaultName>Textbox9</rd:DefaultName>
                     <Style>
                       <Border>
                         <Color>LightGrey</Color>
@@ -1534,14 +1535,14 @@
               <TablixCells>
                 <TablixCell>
                   <CellContents>
-                    <Textbox Name="actually_spent5">
+                    <Textbox Name="spent4">
                       <CanGrow>true</CanGrow>
                       <KeepTogether>true</KeepTogether>
                       <Paragraphs>
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=Sum(Fields!actually_spent.Value)</Value>
+                              <Value>=Sum(Fields!spent.Value)</Value>
                               <Style>
                                 <Format>#0,0;(#0,0)</Format>
                               </Style>
@@ -1550,7 +1551,7 @@
                           <Style />
                         </Paragraph>
                       </Paragraphs>
-                      <rd:DefaultName>actually_spent</rd:DefaultName>
+                      <rd:DefaultName>spent1</rd:DefaultName>
                       <Style>
                         <Border>
                           <Color>LightGrey</Color>
@@ -1571,23 +1572,21 @@
               <TablixCells>
                 <TablixCell>
                   <CellContents>
-                    <Textbox Name="Textbox21">
+                    <Textbox Name="Textbox27">
                       <CanGrow>true</CanGrow>
                       <KeepTogether>true</KeepTogether>
                       <Paragraphs>
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=Sum(Fields!actually_spent.Value)</Value>
-                              <Style>
-                                <Format>#0,0;(#0,0)</Format>
-                              </Style>
+                              <Value>=Sum(Fields!spent.Value)</Value>
+                              <Style />
                             </TextRun>
                           </TextRuns>
                           <Style />
                         </Paragraph>
                       </Paragraphs>
-                      <rd:DefaultName>Textbox6</rd:DefaultName>
+                      <rd:DefaultName>Textbox22</rd:DefaultName>
                       <Style>
                         <Border>
                           <Color>LightGrey</Color>
@@ -1609,7 +1608,7 @@
         <TablixColumnHierarchy>
           <TablixMembers>
             <TablixMember>
-              <Group Name="year5">
+              <Group Name="year4">
                 <GroupExpressions>
                   <GroupExpression>=Fields!year.Value</GroupExpression>
                 </GroupExpressions>
@@ -1622,7 +1621,7 @@
               <TablixHeader>
                 <Size>0.25in</Size>
                 <CellContents>
-                  <Textbox Name="year5">
+                  <Textbox Name="year4">
                     <CanGrow>true</CanGrow>
                     <KeepTogether>true</KeepTogether>
                     <Paragraphs>
@@ -1640,7 +1639,7 @@
                         <Style />
                       </Paragraph>
                     </Paragraphs>
-                    <rd:DefaultName>year</rd:DefaultName>
+                    <rd:DefaultName>year1</rd:DefaultName>
                     <Style>
                       <Border>
                         <Color>LightGrey</Color>
@@ -1694,7 +1693,7 @@
                             <Color>LightGrey</Color>
                             <Style>Solid</Style>
                           </Border>
-                          <BackgroundColor>#9eb6e4</BackgroundColor>
+                          <BackgroundColor>#c6daf8</BackgroundColor>
                           <PaddingLeft>2pt</PaddingLeft>
                           <PaddingRight>2pt</PaddingRight>
                           <PaddingTop>2pt</PaddingTop>
@@ -1711,7 +1710,7 @@
         <TablixRowHierarchy>
           <TablixMembers>
             <TablixMember>
-              <Group Name="group_name5">
+              <Group Name="group_name4">
                 <GroupExpressions>
                   <GroupExpression>=Fields!group_name.Value</GroupExpression>
                 </GroupExpressions>
@@ -1724,7 +1723,7 @@
               <TablixHeader>
                 <Size>1in</Size>
                 <CellContents>
-                  <Textbox Name="group_name5">
+                  <Textbox Name="group_name4">
                     <CanGrow>true</CanGrow>
                     <KeepTogether>true</KeepTogether>
                     <Paragraphs>
@@ -1738,7 +1737,7 @@
                         <Style />
                       </Paragraph>
                     </Paragraphs>
-                    <rd:DefaultName>group_name</rd:DefaultName>
+                    <rd:DefaultName>group_name1</rd:DefaultName>
                     <Style>
                       <Border>
                         <Color>LightGrey</Color>
@@ -1758,7 +1757,7 @@
               <TablixHeader>
                 <Size>1in</Size>
                 <CellContents>
-                  <Textbox Name="Textbox20">
+                  <Textbox Name="Textbox26">
                     <CanGrow>true</CanGrow>
                     <KeepTogether>true</KeepTogether>
                     <Paragraphs>
@@ -1772,7 +1771,7 @@
                         <Style />
                       </Paragraph>
                     </Paragraphs>
-                    <rd:DefaultName>Textbox5</rd:DefaultName>
+                    <rd:DefaultName>Textbox21</rd:DefaultName>
                     <Style>
                       <Border>
                         <Color>LightGrey</Color>
@@ -1797,16 +1796,16 @@
             <FilterExpression>=Fields!year.Value</FilterExpression>
             <Operator>Equal</Operator>
             <FilterValues>
-              <FilterValue>=Parameters!details.Value(3)</FilterValue>
+              <FilterValue>=Parameters!detail4.Value</FilterValue>
             </FilterValues>
           </Filter>
         </Filters>
-        <Top>5.39459in</Top>
+        <Top>5.40278in</Top>
         <Height>1in</Height>
         <Width>2in</Width>
         <ZIndex>7</ZIndex>
         <Visibility>
-          <Hidden>=Parameters!details.Value(3) = 0</Hidden>
+          <Hidden>=Parameters!detail4.Value = 0</Hidden>
         </Visibility>
         <Style>
           <Border>
@@ -1820,7 +1819,7 @@
             <TablixCornerRow>
               <TablixCornerCell>
                 <CellContents>
-                  <Textbox Name="Textbox26">
+                  <Textbox Name="Textbox16">
                     <CanGrow>true</CanGrow>
                     <KeepTogether>true</KeepTogether>
                     <Paragraphs>
@@ -1834,7 +1833,7 @@
                         <Style />
                       </Paragraph>
                     </Paragraphs>
-                    <rd:DefaultName>Textbox4</rd:DefaultName>
+                    <rd:DefaultName>Textbox8</rd:DefaultName>
                     <Style>
                       <Border>
                         <Color>LightGrey</Color>
@@ -1852,7 +1851,7 @@
             <TablixCornerRow>
               <TablixCornerCell>
                 <CellContents>
-                  <Textbox Name="Textbox27">
+                  <Textbox Name="Textbox25">
                     <CanGrow>true</CanGrow>
                     <KeepTogether>true</KeepTogether>
                     <Paragraphs>
@@ -1866,7 +1865,7 @@
                         <Style />
                       </Paragraph>
                     </Paragraphs>
-                    <rd:DefaultName>Textbox13</rd:DefaultName>
+                    <rd:DefaultName>Textbox9</rd:DefaultName>
                     <Style>
                       <Border>
                         <Color>LightGrey</Color>
@@ -1895,14 +1894,14 @@
               <TablixCells>
                 <TablixCell>
                   <CellContents>
-                    <Textbox Name="actually_spent6">
+                    <Textbox Name="spent5">
                       <CanGrow>true</CanGrow>
                       <KeepTogether>true</KeepTogether>
                       <Paragraphs>
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=Sum(Fields!actually_spent.Value)</Value>
+                              <Value>=Sum(Fields!spent.Value)</Value>
                               <Style>
                                 <Format>#0,0;(#0,0)</Format>
                               </Style>
@@ -1911,7 +1910,7 @@
                           <Style />
                         </Paragraph>
                       </Paragraphs>
-                      <rd:DefaultName>actually_spent</rd:DefaultName>
+                      <rd:DefaultName>spent1</rd:DefaultName>
                       <Style>
                         <Border>
                           <Color>LightGrey</Color>
@@ -1932,23 +1931,21 @@
               <TablixCells>
                 <TablixCell>
                   <CellContents>
-                    <Textbox Name="Textbox25">
+                    <Textbox Name="Textbox30">
                       <CanGrow>true</CanGrow>
                       <KeepTogether>true</KeepTogether>
                       <Paragraphs>
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=Sum(Fields!actually_spent.Value)</Value>
-                              <Style>
-                                <Format>#0,0;(#0,0)</Format>
-                              </Style>
+                              <Value>=Sum(Fields!spent.Value)</Value>
+                              <Style />
                             </TextRun>
                           </TextRuns>
                           <Style />
                         </Paragraph>
                       </Paragraphs>
-                      <rd:DefaultName>Textbox6</rd:DefaultName>
+                      <rd:DefaultName>Textbox22</rd:DefaultName>
                       <Style>
                         <Border>
                           <Color>LightGrey</Color>
@@ -1970,7 +1967,7 @@
         <TablixColumnHierarchy>
           <TablixMembers>
             <TablixMember>
-              <Group Name="year6">
+              <Group Name="year5">
                 <GroupExpressions>
                   <GroupExpression>=Fields!year.Value</GroupExpression>
                 </GroupExpressions>
@@ -1983,7 +1980,7 @@
               <TablixHeader>
                 <Size>0.25in</Size>
                 <CellContents>
-                  <Textbox Name="year6">
+                  <Textbox Name="year5">
                     <CanGrow>true</CanGrow>
                     <KeepTogether>true</KeepTogether>
                     <Paragraphs>
@@ -2001,7 +1998,7 @@
                         <Style />
                       </Paragraph>
                     </Paragraphs>
-                    <rd:DefaultName>year</rd:DefaultName>
+                    <rd:DefaultName>year1</rd:DefaultName>
                     <Style>
                       <Border>
                         <Color>LightGrey</Color>
@@ -2055,7 +2052,7 @@
                             <Color>LightGrey</Color>
                             <Style>Solid</Style>
                           </Border>
-                          <BackgroundColor>#9eb6e4</BackgroundColor>
+                          <BackgroundColor>#c6daf8</BackgroundColor>
                           <PaddingLeft>2pt</PaddingLeft>
                           <PaddingRight>2pt</PaddingRight>
                           <PaddingTop>2pt</PaddingTop>
@@ -2072,7 +2069,7 @@
         <TablixRowHierarchy>
           <TablixMembers>
             <TablixMember>
-              <Group Name="group_name6">
+              <Group Name="group_name5">
                 <GroupExpressions>
                   <GroupExpression>=Fields!group_name.Value</GroupExpression>
                 </GroupExpressions>
@@ -2085,7 +2082,7 @@
               <TablixHeader>
                 <Size>1in</Size>
                 <CellContents>
-                  <Textbox Name="group_name6">
+                  <Textbox Name="group_name5">
                     <CanGrow>true</CanGrow>
                     <KeepTogether>true</KeepTogether>
                     <Paragraphs>
@@ -2099,7 +2096,7 @@
                         <Style />
                       </Paragraph>
                     </Paragraphs>
-                    <rd:DefaultName>group_name</rd:DefaultName>
+                    <rd:DefaultName>group_name1</rd:DefaultName>
                     <Style>
                       <Border>
                         <Color>LightGrey</Color>
@@ -2119,7 +2116,7 @@
               <TablixHeader>
                 <Size>1in</Size>
                 <CellContents>
-                  <Textbox Name="Textbox24">
+                  <Textbox Name="Textbox29">
                     <CanGrow>true</CanGrow>
                     <KeepTogether>true</KeepTogether>
                     <Paragraphs>
@@ -2133,7 +2130,7 @@
                         <Style />
                       </Paragraph>
                     </Paragraphs>
-                    <rd:DefaultName>Textbox5</rd:DefaultName>
+                    <rd:DefaultName>Textbox21</rd:DefaultName>
                     <Style>
                       <Border>
                         <Color>LightGrey</Color>
@@ -2158,16 +2155,16 @@
             <FilterExpression>=Fields!year.Value</FilterExpression>
             <Operator>Equal</Operator>
             <FilterValues>
-              <FilterValue>=Parameters!details.Value(4)</FilterValue>
+              <FilterValue>=Parameters!detail5.Value</FilterValue>
             </FilterValues>
           </Filter>
         </Filters>
-        <Top>6.46403in</Top>
+        <Top>6.47222in</Top>
         <Height>1in</Height>
         <Width>2in</Width>
         <ZIndex>8</ZIndex>
         <Visibility>
-          <Hidden>=Parameters!details.Value(4) = 0</Hidden>
+          <Hidden>=Parameters!detail5.Value = 0</Hidden>
         </Visibility>
         <Style>
           <Border>
@@ -2176,10 +2173,10 @@
         </Style>
       </Tablix>
     </ReportItems>
-    <Height>7.46403in</Height>
+    <Height>7.47222in</Height>
     <Style />
   </Body>
-  <Width>8.97917in</Width>
+  <Width>6.5in</Width>
   <Page>
     <LeftMargin>1in</LeftMargin>
     <RightMargin>1in</RightMargin>
@@ -2194,7 +2191,7 @@
         <DataProvider>System.Data.DataSet</DataProvider>
         <ConnectString>/* Local Connection */</ConnectString>
       </ConnectionProperties>
-      <rd:DataSourceID>be57c744-13d9-4dce-93ae-e4e847b5ce45</rd:DataSourceID>
+      <rd:DataSourceID>d5c2371f-7e3f-4bff-9218-6f8747322c21</rd:DataSourceID>
     </DataSource>
   </DataSources>
   <DataSets>
@@ -2204,6 +2201,14 @@
         <CommandText>/* Local Query */</CommandText>
       </Query>
       <Fields>
+        <Field Name="group_name">
+          <DataField>group_name</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="spent">
+          <DataField>spent</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
         <Field Name="year">
           <DataField>year</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
@@ -2212,40 +2217,44 @@
           <DataField>qtr</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
-        <Field Name="group_name">
-          <DataField>group_name</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="advance_payment">
-          <DataField>advance_payment</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
-        </Field>
-        <Field Name="reimbursement">
-          <DataField>reimbursement</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
-        </Field>
-        <Field Name="actually_spent">
-          <DataField>actually_spent</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
-        </Field>
       </Fields>
       <rd:DataSetInfo>
         <rd:DataSetName>accountingDataSet</rd:DataSetName>
         <rd:SchemaPath>E:\tmp\github\accounting\PrintLocalReport\accountingDataSet.xsd</rd:SchemaPath>
-        <rd:TableName>v_internal_payment</rd:TableName>
+        <rd:TableName>v_external_payment</rd:TableName>
         <rd:TableAdapterFillMethod>Fill</rd:TableAdapterFillMethod>
         <rd:TableAdapterGetDataMethod>GetData</rd:TableAdapterGetDataMethod>
-        <rd:TableAdapterName>v_internal_paymentTableAdapter</rd:TableAdapterName>
+        <rd:TableAdapterName>v_external_paymentTableAdapter</rd:TableAdapterName>
       </rd:DataSetInfo>
     </DataSet>
   </DataSets>
   <ReportParameters>
-    <ReportParameter Name="details">
+    <ReportParameter Name="detail1">
       <DataType>Integer</DataType>
+      <Nullable>true</Nullable>
       <Prompt>ReportParameter1</Prompt>
-      <MultiValue>true</MultiValue>
+    </ReportParameter>
+    <ReportParameter Name="detail2">
+      <DataType>Integer</DataType>
+      <Nullable>true</Nullable>
+      <Prompt>ReportParameter1</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="detail3">
+      <DataType>Integer</DataType>
+      <Nullable>true</Nullable>
+      <Prompt>ReportParameter1</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="detail4">
+      <DataType>Integer</DataType>
+      <Nullable>true</Nullable>
+      <Prompt>ReportParameter1</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="detail5">
+      <DataType>Integer</DataType>
+      <Nullable>true</Nullable>
+      <Prompt>ReportParameter1</Prompt>
     </ReportParameter>
   </ReportParameters>
   <rd:ReportUnitType>Inch</rd:ReportUnitType>
-  <rd:ReportID>6e6151b5-9f0f-4c54-ac1e-385423392d6b</rd:ReportID>
+  <rd:ReportID>071e3ee8-8961-48a4-a3ac-646b5834a9e1</rd:ReportID>
 </Report>

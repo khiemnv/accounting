@@ -34,7 +34,7 @@ public class Demo : IDisposable
         public string m_pdfPath;    //print to pdf file
         public string m_dsName;     //data set name
 
-        private SqlConnection m_cnn;
+        protected SqlConnection m_cnn;
         private DataSet m_ds = new DataSet();
         public void init(SqlConnection cnn)
         {
@@ -124,51 +124,40 @@ public class Demo : IDisposable
             }
         }
 
-        private ReportParameter[] getReportParam()
+        public virtual List<ReportParameter> getReportParam()
         {
-
-            // Create a report parameter for the sales order number
+            List<ReportParameter> rpParams = new List<ReportParameter>();
             ReportParameter rpParam = new ReportParameter();
-            //detail 1: 0x01
-            //detail 2: 0x02
-            //detail 3: 0x04
-            string qry = "select DISTINCT[year] from v_external_payment";
-            SqlCommand command = new SqlCommand(qry, m_cnn);
+            rpParams.Add(rpParam);
+            rpParam.Name = "details";
 
+            string qry = string.Format("select DISTINCT[year] from {0} order by [year] desc", m_viewName);
+            SqlCommand command = new SqlCommand(qry, m_cnn);
             SqlDataReader reader = command.ExecuteReader();
 
             // Call Read before accessing data.
             int curYear = DateTime.Now.Year;
-            int DetailFlags = 0;
+            int i = 0;
             while (reader.Read())
             {
                 string val = reader[0].ToString();
-                switch (curYear - int.Parse(val))
-                {
-                    case 0:
-                    case 1:
-                        DetailFlags |= 1;
-                        break;
-                    case 2:
-                    case 3:
-                        DetailFlags |= 2;
-                        break;
-                    case 4:
-                        DetailFlags |= 4;
-                        break;
-                }
+                i++;
+                rpParam.Values.Add(val);
+                Debug.WriteLine(string.Format("details({0}) {1}", i, val));
+                if (i == 5) break;
             }
             // Call Close when done reading.
             reader.Close();
-
-            Debug.WriteLine(string.Format("DetailFlags {0}", DetailFlags));
-            rpParam.Name = "DetailFlags";
-            string value = DetailFlags.ToString();
-            rpParam.Values.Add(value);
+            while (i < 5)
+            {
+                i++;
+                rpParam.Values.Add("0");
+            }
 
             // Set the report parameters for the report
-            return new ReportParameter[] { rpParam };
+            return rpParams;
         }
+
         public void Run()
         {
             LocalReport report = new LocalReport();
@@ -176,14 +165,14 @@ public class Demo : IDisposable
             DataTable dt = loadData();
             report.DataSources.Add(new ReportDataSource(m_rcName, dt));
 
-            //add rp params
-            ReportParameter[] rpParams = getReportParam();
+            //add report params
+            List<ReportParameter> rpParams = getReportParam();
             report.SetParameters(rpParams);
 
             report.Refresh();
 #if true
             byte[] bytes = report.Render("PDF");
-            FileStream fs = new FileStream(m_pdfPath, FileMode.OpenOrCreate);
+            FileStream fs = new FileStream(m_pdfPath, FileMode.Create);
             fs.Seek(0, SeekOrigin.Begin);
             fs.Write(bytes, 0, bytes.Length);
             fs.Close();
@@ -213,6 +202,10 @@ public class Demo : IDisposable
             m_dsName = "DataSet1";
             m_pdfPath = @"..\..\report.pdf";
         }
+        public override List<ReportParameter> getReportParam()
+        {
+            return new List<ReportParameter>();
+        }
     }
     class lInternalPaymentReport : lBaseReport
     {
@@ -231,6 +224,17 @@ public class Demo : IDisposable
         {
             m_rcName = "DataSet1";
             m_viewName = "v_external_payment";
+            m_rdlcPath = @"..\..\external_payment.rdlc";
+            m_dsName = "DataSet1";
+            m_pdfPath = @"..\..\report.pdf";
+        }
+    }
+    class lSalaryReport : lBaseReport
+    {
+        public lSalaryReport()
+        {
+            m_rcName = "DataSet1";
+            m_viewName = "v_salary";
             m_rdlcPath = @"..\..\Report1.rdlc";
             m_dsName = "DataSet1";
             m_pdfPath = @"..\..\report.pdf";
@@ -391,7 +395,7 @@ public class Demo : IDisposable
 
     public static void Main(string[] args)
     {
-        using (lExternalPaymentReport demo = new lExternalPaymentReport())
+        using (lBaseReport demo = new lReceiptsReport())
         {
             string cnnStr = "Data Source=localhost\\SQLEXPRESS;Initial Catalog=accounting;Integrated Security=True;Pooling=False";
             SqlConnection conn = new SqlConnection(cnnStr);

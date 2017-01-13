@@ -66,6 +66,25 @@
             </Mappings>
             <Sources />
           </TableAdapter>
+          <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="v_salaryTableAdapter" GeneratorDataComponentClassName="v_salaryTableAdapter" Name="v_salary" UserDataComponentName="v_salaryTableAdapter">
+            <MainSource>
+              <DbSource ConnectionRef="accountingConnectionString (Settings)" DbObjectName="accounting.dbo.v_salary" DbObjectType="View" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetData" UserSourceName="Fill">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="false">
+                    <CommandText>SELECT group_name, salary, year, qtr FROM dbo.v_salary</CommandText>
+                    <Parameters />
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+            </MainSource>
+            <Mappings>
+              <Mapping SourceColumn="group_name" DataSetColumn="group_name" />
+              <Mapping SourceColumn="salary" DataSetColumn="salary" />
+              <Mapping SourceColumn="year" DataSetColumn="year" />
+              <Mapping SourceColumn="qtr" DataSetColumn="qtr" />
+            </Mappings>
+            <Sources />
+          </TableAdapter>
         </Tables>
         <Sources />
       </DataSource>
@@ -74,7 +93,7 @@
   <xs:element name="accountingDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="True" msprop:Generator_DataSetName="accountingDataSet" msprop:Generator_UserDSName="accountingDataSet">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element name="vReceipts" msprop:Generator_TableClassName="vReceiptsDataTable" msprop:Generator_TableVarName="tablevReceipts" msprop:Generator_TablePropName="vReceipts" msprop:Generator_RowDeletingName="vReceiptsRowDeleting" msprop:Generator_RowChangingName="vReceiptsRowChanging" msprop:Generator_RowEvHandlerName="vReceiptsRowChangeEventHandler" msprop:Generator_RowDeletedName="vReceiptsRowDeleted" msprop:Generator_UserTableName="vReceipts" msprop:Generator_RowChangedName="vReceiptsRowChanged" msprop:Generator_RowEvArgName="vReceiptsRowChangeEvent" msprop:Generator_RowClassName="vReceiptsRow">
+        <xs:element name="vReceipts" msprop:Generator_TableClassName="vReceiptsDataTable" msprop:Generator_TableVarName="tablevReceipts" msprop:Generator_RowChangedName="vReceiptsRowChanged" msprop:Generator_TablePropName="vReceipts" msprop:Generator_RowDeletingName="vReceiptsRowDeleting" msprop:Generator_RowChangingName="vReceiptsRowChanging" msprop:Generator_RowEvHandlerName="vReceiptsRowChangeEventHandler" msprop:Generator_RowDeletedName="vReceiptsRowDeleted" msprop:Generator_RowClassName="vReceiptsRow" msprop:Generator_UserTableName="vReceipts" msprop:Generator_RowEvArgName="vReceiptsRowChangeEvent">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="content" msprop:Generator_ColumnVarNameInTable="columncontent" msprop:Generator_ColumnPropNameInRow="content" msprop:Generator_ColumnPropNameInTable="contentColumn" msprop:Generator_UserColumnName="content" minOccurs="0">
@@ -90,7 +109,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="v_internal_payment" msprop:Generator_TableClassName="v_internal_paymentDataTable" msprop:Generator_TableVarName="tablev_internal_payment" msprop:Generator_RowChangedName="v_internal_paymentRowChanged" msprop:Generator_TablePropName="v_internal_payment" msprop:Generator_RowDeletingName="v_internal_paymentRowDeleting" msprop:Generator_RowChangingName="v_internal_paymentRowChanging" msprop:Generator_RowEvHandlerName="v_internal_paymentRowChangeEventHandler" msprop:Generator_RowDeletedName="v_internal_paymentRowDeleted" msprop:Generator_RowClassName="v_internal_paymentRow" msprop:Generator_UserTableName="v_internal_payment" msprop:Generator_RowEvArgName="v_internal_paymentRowChangeEvent">
+        <xs:element name="v_internal_payment" msprop:Generator_TableClassName="v_internal_paymentDataTable" msprop:Generator_TableVarName="tablev_internal_payment" msprop:Generator_TablePropName="v_internal_payment" msprop:Generator_RowDeletingName="v_internal_paymentRowDeleting" msprop:Generator_RowChangingName="v_internal_paymentRowChanging" msprop:Generator_RowEvHandlerName="v_internal_paymentRowChangeEventHandler" msprop:Generator_RowDeletedName="v_internal_paymentRowDeleted" msprop:Generator_UserTableName="v_internal_payment" msprop:Generator_RowChangedName="v_internal_paymentRowChanged" msprop:Generator_RowEvArgName="v_internal_paymentRowChangeEvent" msprop:Generator_RowClassName="v_internal_paymentRow">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="year" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnyear" msprop:Generator_ColumnPropNameInRow="year" msprop:Generator_ColumnPropNameInTable="yearColumn" msprop:Generator_UserColumnName="year" type="xs:int" minOccurs="0" />
@@ -108,7 +127,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="v_external_payment" msprop:Generator_TableClassName="v_external_paymentDataTable" msprop:Generator_TableVarName="tablev_external_payment" msprop:Generator_TablePropName="v_external_payment" msprop:Generator_RowDeletingName="v_external_paymentRowDeleting" msprop:Generator_RowChangingName="v_external_paymentRowChanging" msprop:Generator_RowEvHandlerName="v_external_paymentRowChangeEventHandler" msprop:Generator_RowDeletedName="v_external_paymentRowDeleted" msprop:Generator_UserTableName="v_external_payment" msprop:Generator_RowChangedName="v_external_paymentRowChanged" msprop:Generator_RowEvArgName="v_external_paymentRowChangeEvent" msprop:Generator_RowClassName="v_external_paymentRow">
+        <xs:element name="v_external_payment" msprop:Generator_TableClassName="v_external_paymentDataTable" msprop:Generator_TableVarName="tablev_external_payment" msprop:Generator_RowChangedName="v_external_paymentRowChanged" msprop:Generator_TablePropName="v_external_payment" msprop:Generator_RowDeletingName="v_external_paymentRowDeleting" msprop:Generator_RowChangingName="v_external_paymentRowChanging" msprop:Generator_RowEvHandlerName="v_external_paymentRowChangeEventHandler" msprop:Generator_RowDeletedName="v_external_paymentRowDeleted" msprop:Generator_RowClassName="v_external_paymentRow" msprop:Generator_UserTableName="v_external_payment" msprop:Generator_RowEvArgName="v_external_paymentRowChangeEvent">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="group_name" msprop:Generator_ColumnVarNameInTable="columngroup_name" msprop:Generator_ColumnPropNameInRow="group_name" msprop:Generator_ColumnPropNameInTable="group_nameColumn" msprop:Generator_UserColumnName="group_name" minOccurs="0">
@@ -119,6 +138,22 @@
                 </xs:simpleType>
               </xs:element>
               <xs:element name="spent" msprop:Generator_ColumnVarNameInTable="columnspent" msprop:Generator_ColumnPropNameInRow="spent" msprop:Generator_ColumnPropNameInTable="spentColumn" msprop:Generator_UserColumnName="spent" type="xs:int" minOccurs="0" />
+              <xs:element name="year" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnyear" msprop:Generator_ColumnPropNameInRow="year" msprop:Generator_ColumnPropNameInTable="yearColumn" msprop:Generator_UserColumnName="year" type="xs:int" minOccurs="0" />
+              <xs:element name="qtr" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnqtr" msprop:Generator_ColumnPropNameInRow="qtr" msprop:Generator_ColumnPropNameInTable="qtrColumn" msprop:Generator_UserColumnName="qtr" type="xs:int" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="v_salary" msprop:Generator_TableClassName="v_salaryDataTable" msprop:Generator_TableVarName="tablev_salary" msprop:Generator_TablePropName="v_salary" msprop:Generator_RowDeletingName="v_salaryRowDeleting" msprop:Generator_RowChangingName="v_salaryRowChanging" msprop:Generator_RowEvHandlerName="v_salaryRowChangeEventHandler" msprop:Generator_RowDeletedName="v_salaryRowDeleted" msprop:Generator_UserTableName="v_salary" msprop:Generator_RowChangedName="v_salaryRowChanged" msprop:Generator_RowEvArgName="v_salaryRowChangeEvent" msprop:Generator_RowClassName="v_salaryRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="group_name" msprop:Generator_ColumnVarNameInTable="columngroup_name" msprop:Generator_ColumnPropNameInRow="group_name" msprop:Generator_ColumnPropNameInTable="group_nameColumn" msprop:Generator_UserColumnName="group_name" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="31" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="salary" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnsalary" msprop:Generator_ColumnPropNameInRow="salary" msprop:Generator_ColumnPropNameInTable="salaryColumn" msprop:Generator_UserColumnName="salary" type="xs:int" minOccurs="0" />
               <xs:element name="year" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnyear" msprop:Generator_ColumnPropNameInRow="year" msprop:Generator_ColumnPropNameInTable="yearColumn" msprop:Generator_UserColumnName="year" type="xs:int" minOccurs="0" />
               <xs:element name="qtr" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnqtr" msprop:Generator_ColumnPropNameInRow="qtr" msprop:Generator_ColumnPropNameInTable="qtrColumn" msprop:Generator_UserColumnName="qtr" type="xs:int" minOccurs="0" />
             </xs:sequence>
