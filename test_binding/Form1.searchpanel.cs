@@ -1,12 +1,7 @@
 ﻿//#define DEBUG_DRAWING
 
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Data.SQLite;
-using System.Data.SqlClient;
 using System.Collections.Generic;
 using System;
 
