@@ -86,6 +86,8 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="receipts.rdlc" />
+    <EmbeddedResource Include="internal_payment.rdlc" />
+    <EmbeddedResource Include="ex_pay_draft.rdlc" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

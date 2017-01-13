@@ -26,6 +26,46 @@
             </Mappings>
             <Sources />
           </TableAdapter>
+          <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="v_internal_paymentTableAdapter" GeneratorDataComponentClassName="v_internal_paymentTableAdapter" Name="v_internal_payment" UserDataComponentName="v_internal_paymentTableAdapter">
+            <MainSource>
+              <DbSource ConnectionRef="accountingConnectionString (Settings)" DbObjectName="accounting.dbo.v_internal_payment" DbObjectType="View" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetData" UserSourceName="Fill">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="false">
+                    <CommandText>SELECT year, qtr, group_name, advance_payment, reimbursement, actually_spent FROM dbo.v_internal_payment</CommandText>
+                    <Parameters />
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+            </MainSource>
+            <Mappings>
+              <Mapping SourceColumn="year" DataSetColumn="year" />
+              <Mapping SourceColumn="qtr" DataSetColumn="qtr" />
+              <Mapping SourceColumn="group_name" DataSetColumn="group_name" />
+              <Mapping SourceColumn="advance_payment" DataSetColumn="advance_payment" />
+              <Mapping SourceColumn="reimbursement" DataSetColumn="reimbursement" />
+              <Mapping SourceColumn="actually_spent" DataSetColumn="actually_spent" />
+            </Mappings>
+            <Sources />
+          </TableAdapter>
+          <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="v_external_paymentTableAdapter" GeneratorDataComponentClassName="v_external_paymentTableAdapter" Name="v_external_payment" UserDataComponentName="v_external_paymentTableAdapter">
+            <MainSource>
+              <DbSource ConnectionRef="accountingConnectionString (Settings)" DbObjectName="accounting.dbo.v_external_payment" DbObjectType="View" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetData" UserSourceName="Fill">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="false">
+                    <CommandText>SELECT group_name, spent, year, qtr FROM dbo.v_external_payment</CommandText>
+                    <Parameters />
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+            </MainSource>
+            <Mappings>
+              <Mapping SourceColumn="group_name" DataSetColumn="group_name" />
+              <Mapping SourceColumn="spent" DataSetColumn="spent" />
+              <Mapping SourceColumn="year" DataSetColumn="year" />
+              <Mapping SourceColumn="qtr" DataSetColumn="qtr" />
+            </Mappings>
+            <Sources />
+          </TableAdapter>
         </Tables>
         <Sources />
       </DataSource>
@@ -45,6 +85,40 @@
                 </xs:simpleType>
               </xs:element>
               <xs:element name="price" msprop:Generator_ColumnVarNameInTable="columnprice" msprop:Generator_ColumnPropNameInRow="price" msprop:Generator_ColumnPropNameInTable="priceColumn" msprop:Generator_UserColumnName="price" type="xs:int" minOccurs="0" />
+              <xs:element name="year" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnyear" msprop:Generator_ColumnPropNameInRow="year" msprop:Generator_ColumnPropNameInTable="yearColumn" msprop:Generator_UserColumnName="year" type="xs:int" minOccurs="0" />
+              <xs:element name="qtr" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnqtr" msprop:Generator_ColumnPropNameInRow="qtr" msprop:Generator_ColumnPropNameInTable="qtrColumn" msprop:Generator_UserColumnName="qtr" type="xs:int" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="v_internal_payment" msprop:Generator_TableClassName="v_internal_paymentDataTable" msprop:Generator_TableVarName="tablev_internal_payment" msprop:Generator_RowChangedName="v_internal_paymentRowChanged" msprop:Generator_TablePropName="v_internal_payment" msprop:Generator_RowDeletingName="v_internal_paymentRowDeleting" msprop:Generator_RowChangingName="v_internal_paymentRowChanging" msprop:Generator_RowEvHandlerName="v_internal_paymentRowChangeEventHandler" msprop:Generator_RowDeletedName="v_internal_paymentRowDeleted" msprop:Generator_RowClassName="v_internal_paymentRow" msprop:Generator_UserTableName="v_internal_payment" msprop:Generator_RowEvArgName="v_internal_paymentRowChangeEvent">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="year" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnyear" msprop:Generator_ColumnPropNameInRow="year" msprop:Generator_ColumnPropNameInTable="yearColumn" msprop:Generator_UserColumnName="year" type="xs:int" minOccurs="0" />
+              <xs:element name="qtr" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnqtr" msprop:Generator_ColumnPropNameInRow="qtr" msprop:Generator_ColumnPropNameInTable="qtrColumn" msprop:Generator_UserColumnName="qtr" type="xs:int" minOccurs="0" />
+              <xs:element name="group_name" msprop:Generator_ColumnVarNameInTable="columngroup_name" msprop:Generator_ColumnPropNameInRow="group_name" msprop:Generator_ColumnPropNameInTable="group_nameColumn" msprop:Generator_UserColumnName="group_name" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="31" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="advance_payment" msprop:Generator_ColumnVarNameInTable="columnadvance_payment" msprop:Generator_ColumnPropNameInRow="advance_payment" msprop:Generator_ColumnPropNameInTable="advance_paymentColumn" msprop:Generator_UserColumnName="advance_payment" type="xs:int" minOccurs="0" />
+              <xs:element name="reimbursement" msprop:Generator_ColumnVarNameInTable="columnreimbursement" msprop:Generator_ColumnPropNameInRow="reimbursement" msprop:Generator_ColumnPropNameInTable="reimbursementColumn" msprop:Generator_UserColumnName="reimbursement" type="xs:int" minOccurs="0" />
+              <xs:element name="actually_spent" msprop:Generator_ColumnVarNameInTable="columnactually_spent" msprop:Generator_ColumnPropNameInRow="actually_spent" msprop:Generator_ColumnPropNameInTable="actually_spentColumn" msprop:Generator_UserColumnName="actually_spent" type="xs:int" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="v_external_payment" msprop:Generator_TableClassName="v_external_paymentDataTable" msprop:Generator_TableVarName="tablev_external_payment" msprop:Generator_TablePropName="v_external_payment" msprop:Generator_RowDeletingName="v_external_paymentRowDeleting" msprop:Generator_RowChangingName="v_external_paymentRowChanging" msprop:Generator_RowEvHandlerName="v_external_paymentRowChangeEventHandler" msprop:Generator_RowDeletedName="v_external_paymentRowDeleted" msprop:Generator_UserTableName="v_external_payment" msprop:Generator_RowChangedName="v_external_paymentRowChanged" msprop:Generator_RowEvArgName="v_external_paymentRowChangeEvent" msprop:Generator_RowClassName="v_external_paymentRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="group_name" msprop:Generator_ColumnVarNameInTable="columngroup_name" msprop:Generator_ColumnPropNameInRow="group_name" msprop:Generator_ColumnPropNameInTable="group_nameColumn" msprop:Generator_UserColumnName="group_name" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="31" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="spent" msprop:Generator_ColumnVarNameInTable="columnspent" msprop:Generator_ColumnPropNameInRow="spent" msprop:Generator_ColumnPropNameInTable="spentColumn" msprop:Generator_UserColumnName="spent" type="xs:int" minOccurs="0" />
               <xs:element name="year" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnyear" msprop:Generator_ColumnPropNameInRow="year" msprop:Generator_ColumnPropNameInTable="yearColumn" msprop:Generator_UserColumnName="year" type="xs:int" minOccurs="0" />
               <xs:element name="qtr" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnqtr" msprop:Generator_ColumnPropNameInRow="qtr" msprop:Generator_ColumnPropNameInTable="qtrColumn" msprop:Generator_UserColumnName="qtr" type="xs:int" minOccurs="0" />
             </xs:sequence>

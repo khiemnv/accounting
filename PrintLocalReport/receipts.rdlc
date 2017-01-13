@@ -677,42 +677,6 @@
             <TablixCornerRow>
               <TablixCornerCell>
                 <CellContents>
-                  <Textbox Name="Textbox20">
-                    <CanGrow>true</CanGrow>
-                    <KeepTogether>true</KeepTogether>
-                    <Paragraphs>
-                      <Paragraph>
-                        <TextRuns>
-                          <TextRun>
-                            <Value />
-                            <Style />
-                          </TextRun>
-                        </TextRuns>
-                        <Style />
-                      </Paragraph>
-                    </Paragraphs>
-                    <rd:DefaultName>Textbox20</rd:DefaultName>
-                    <Visibility>
-                      <Hidden>true</Hidden>
-                    </Visibility>
-                    <Style>
-                      <Border>
-                        <Color>LightGrey</Color>
-                        <Style>Solid</Style>
-                      </Border>
-                      <BackgroundColor>RoyalBlue</BackgroundColor>
-                      <PaddingLeft>2pt</PaddingLeft>
-                      <PaddingRight>2pt</PaddingRight>
-                      <PaddingTop>2pt</PaddingTop>
-                      <PaddingBottom>2pt</PaddingBottom>
-                    </Style>
-                  </Textbox>
-                </CellContents>
-              </TablixCornerCell>
-            </TablixCornerRow>
-            <TablixCornerRow>
-              <TablixCornerCell>
-                <CellContents>
                   <Textbox Name="Textbox29">
                     <CanGrow>true</CanGrow>
                     <KeepTogether>true</KeepTogether>
@@ -918,14 +882,58 @@
               </SortExpressions>
               <TablixMembers>
                 <TablixMember>
+                  <Group Name="qtr1">
+                    <GroupExpressions>
+                      <GroupExpression>=Fields!qtr.Value</GroupExpression>
+                    </GroupExpressions>
+                  </Group>
+                  <SortExpressions>
+                    <SortExpression>
+                      <Value>=Fields!qtr.Value</Value>
+                    </SortExpression>
+                  </SortExpressions>
                   <TablixHeader>
                     <Size>0.25in</Size>
                     <CellContents>
-                      <Textbox Name="year1">
+                      <Textbox Name="qtr1">
                         <CanGrow>true</CanGrow>
-                        <UserSort>
-                          <SortExpression>=Fields!year.Value</SortExpression>
-                        </UserSort>
+                        <KeepTogether>true</KeepTogether>
+                        <Paragraphs>
+                          <Paragraph>
+                            <TextRuns>
+                              <TextRun>
+                                <Value>=Fields!qtr.Value</Value>
+                                <Style />
+                              </TextRun>
+                            </TextRuns>
+                            <Style />
+                          </Paragraph>
+                        </Paragraphs>
+                        <rd:DefaultName>qtr1</rd:DefaultName>
+                        <Style>
+                          <Border>
+                            <Color>LightGrey</Color>
+                            <Style>Solid</Style>
+                          </Border>
+                          <BackgroundColor>LightSteelBlue</BackgroundColor>
+                          <PaddingLeft>2pt</PaddingLeft>
+                          <PaddingRight>2pt</PaddingRight>
+                          <PaddingTop>2pt</PaddingTop>
+                          <PaddingBottom>2pt</PaddingBottom>
+                        </Style>
+                      </Textbox>
+                    </CellContents>
+                  </TablixHeader>
+                  <Visibility>
+                    <Hidden>true</Hidden>
+                  </Visibility>
+                </TablixMember>
+                <TablixMember>
+                  <TablixHeader>
+                    <Size>0.25in</Size>
+                    <CellContents>
+                      <Textbox Name="Textbox33">
+                        <CanGrow>true</CanGrow>
                         <KeepTogether>true</KeepTogether>
                         <Paragraphs>
                           <Paragraph>
@@ -942,10 +950,7 @@
                             <Style />
                           </Paragraph>
                         </Paragraphs>
-                        <rd:DefaultName>year1</rd:DefaultName>
-                        <Visibility>
-                          <Hidden>true</Hidden>
-                        </Visibility>
+                        <rd:DefaultName>Textbox33</rd:DefaultName>
                         <Style>
                           <Border>
                             <Color>LightGrey</Color>
@@ -960,93 +965,6 @@
                       </Textbox>
                     </CellContents>
                   </TablixHeader>
-                  <TablixMembers>
-                    <TablixMember>
-                      <Group Name="qtr1">
-                        <GroupExpressions>
-                          <GroupExpression>=Fields!qtr.Value</GroupExpression>
-                        </GroupExpressions>
-                      </Group>
-                      <SortExpressions>
-                        <SortExpression>
-                          <Value>=Fields!qtr.Value</Value>
-                        </SortExpression>
-                      </SortExpressions>
-                      <TablixHeader>
-                        <Size>0.25in</Size>
-                        <CellContents>
-                          <Textbox Name="qtr1">
-                            <CanGrow>true</CanGrow>
-                            <KeepTogether>true</KeepTogether>
-                            <Paragraphs>
-                              <Paragraph>
-                                <TextRuns>
-                                  <TextRun>
-                                    <Value>=Fields!qtr.Value</Value>
-                                    <Style />
-                                  </TextRun>
-                                </TextRuns>
-                                <Style />
-                              </Paragraph>
-                            </Paragraphs>
-                            <rd:DefaultName>qtr1</rd:DefaultName>
-                            <Style>
-                              <Border>
-                                <Color>LightGrey</Color>
-                                <Style>Solid</Style>
-                              </Border>
-                              <BackgroundColor>LightSteelBlue</BackgroundColor>
-                              <PaddingLeft>2pt</PaddingLeft>
-                              <PaddingRight>2pt</PaddingRight>
-                              <PaddingTop>2pt</PaddingTop>
-                              <PaddingBottom>2pt</PaddingBottom>
-                            </Style>
-                          </Textbox>
-                        </CellContents>
-                      </TablixHeader>
-                      <Visibility>
-                        <Hidden>true</Hidden>
-                      </Visibility>
-                    </TablixMember>
-                    <TablixMember>
-                      <TablixHeader>
-                        <Size>0.25in</Size>
-                        <CellContents>
-                          <Textbox Name="Textbox33">
-                            <CanGrow>true</CanGrow>
-                            <KeepTogether>true</KeepTogether>
-                            <Paragraphs>
-                              <Paragraph>
-                                <TextRuns>
-                                  <TextRun>
-                                    <Value>Năm </Value>
-                                    <Style />
-                                  </TextRun>
-                                  <TextRun>
-                                    <Value>=Fields!year.Value</Value>
-                                    <Style />
-                                  </TextRun>
-                                </TextRuns>
-                                <Style />
-                              </Paragraph>
-                            </Paragraphs>
-                            <rd:DefaultName>Textbox33</rd:DefaultName>
-                            <Style>
-                              <Border>
-                                <Color>LightGrey</Color>
-                                <Style>Solid</Style>
-                              </Border>
-                              <BackgroundColor>LightSteelBlue</BackgroundColor>
-                              <PaddingLeft>2pt</PaddingLeft>
-                              <PaddingRight>2pt</PaddingRight>
-                              <PaddingTop>2pt</PaddingTop>
-                              <PaddingBottom>2pt</PaddingBottom>
-                            </Style>
-                          </Textbox>
-                        </CellContents>
-                      </TablixHeader>
-                    </TablixMember>
-                  </TablixMembers>
                 </TablixMember>
               </TablixMembers>
             </TablixMember>
@@ -1136,9 +1054,9 @@
           </TablixMembers>
         </TablixRowHierarchy>
         <DataSetName>DataSet1</DataSetName>
-        <Top>0.75in</Top>
+        <Top>1.00694in</Top>
         <Left>0.25in</Left>
-        <Height>1in</Height>
+        <Height>0.75in</Height>
         <Width>2.80208in</Width>
         <ZIndex>1</ZIndex>
         <Style>
@@ -1147,41 +1065,6 @@
           </Border>
         </Style>
       </Tablix>
-      <Textbox Name="Textbox26">
-        <CanGrow>true</CanGrow>
-        <KeepTogether>true</KeepTogether>
-        <Paragraphs>
-          <Paragraph>
-            <TextRuns>
-              <TextRun>
-                <Value>Thống Kê Chi</Value>
-                <Style>
-                  <FontSize>16pt</FontSize>
-                  <Color>MidnightBlue</Color>
-                </Style>
-              </TextRun>
-            </TextRuns>
-            <Style>
-              <TextAlign>Left</TextAlign>
-            </Style>
-          </Paragraph>
-        </Paragraphs>
-        <rd:DefaultName>Textbox26</rd:DefaultName>
-        <Left>0.25in</Left>
-        <Height>0.39583in</Height>
-        <Width>5.875in</Width>
-        <ZIndex>2</ZIndex>
-        <Style>
-          <Border>
-            <Style>None</Style>
-          </Border>
-          <VerticalAlign>Middle</VerticalAlign>
-          <PaddingLeft>2pt</PaddingLeft>
-          <PaddingRight>2pt</PaddingRight>
-          <PaddingTop>2pt</PaddingTop>
-          <PaddingBottom>2pt</PaddingBottom>
-        </Style>
-      </Textbox>
       <Textbox Name="Textbox36">
         <CanGrow>true</CanGrow>
         <KeepTogether>true</KeepTogether>
@@ -1205,7 +1088,7 @@
         <Left>0.25in</Left>
         <Height>0.25in</Height>
         <Width>3in</Width>
-        <ZIndex>3</ZIndex>
+        <ZIndex>2</ZIndex>
         <Style>
           <Border>
             <Style>None</Style>
@@ -1239,7 +1122,7 @@
         <Left>0.25in</Left>
         <Height>0.25in</Height>
         <Width>3.20833in</Width>
-        <ZIndex>4</ZIndex>
+        <ZIndex>3</ZIndex>
         <Style>
           <Border>
             <Style>None</Style>
@@ -1270,11 +1153,11 @@
           </Paragraph>
         </Paragraphs>
         <rd:DefaultName>Textbox39</rd:DefaultName>
-        <Top>3.48958in</Top>
-        <Left>4.33333in</Left>
-        <Height>0.25in</Height>
-        <Width>1.79167in</Width>
-        <ZIndex>5</ZIndex>
+        <Top>3.77083in</Top>
+        <Left>4.61458in</Left>
+        <Height>0.23958in</Height>
+        <Width>1.88542in</Width>
+        <ZIndex>4</ZIndex>
         <Style>
           <Border>
             <Style>None</Style>
@@ -1285,8 +1168,43 @@
           <PaddingBottom>2pt</PaddingBottom>
         </Style>
       </Textbox>
+      <Textbox Name="Textbox26">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Thống Kê Chi</Value>
+                <Style>
+                  <FontSize>16pt</FontSize>
+                  <Color>MidnightBlue</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style>
+              <TextAlign>Left</TextAlign>
+            </Style>
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox26</rd:DefaultName>
+        <Left>0.25in</Left>
+        <Height>0.39583in</Height>
+        <Width>5.875in</Width>
+        <ZIndex>5</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <VerticalAlign>Middle</VerticalAlign>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
     </ReportItems>
-    <Height>3.73958in</Height>
+    <Height>4.01041in</Height>
     <Style />
   </Body>
   <Width>6.5in</Width>
