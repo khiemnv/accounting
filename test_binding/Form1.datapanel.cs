@@ -98,7 +98,7 @@ namespace test_binding
                 m_sumTxt.Width = 100;
 
                 m_dataGridView.Anchor = AnchorStyles.Top & AnchorStyles.Left;
-                m_dataGridView.AutoSize = true;
+                //m_dataGridView.AutoSize = true;
                 m_dataGridView.Dock = DockStyle.Fill;
             }
 #if false

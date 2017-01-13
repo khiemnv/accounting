@@ -67,6 +67,7 @@ namespace test_binding
             public lDataContent m_data;
             public lDataPanel m_dataPanel;
             public lSearchPanel m_searchPanel;
+            public lBaseReport m_report;
 
             public TableLayoutPanel m_panel;
             public Button m_printBtn;
@@ -86,7 +87,10 @@ namespace test_binding
 
             private void printBtn_Click(object sender, EventArgs e)
             {
-                throw new NotImplementedException();
+                if (m_report != null) {
+                    m_report.Run();
+                    m_report.Dispose();
+                }
             }
 
             public virtual void initCtrls()
@@ -106,7 +110,11 @@ namespace test_binding
 #if use_sqlite
             public virtual void initCnn(SQLiteConnection cnn) { }
 #else
-            public virtual void initCnn(SqlConnection cnn) { }
+            public virtual void initCnn(SqlConnection cnn)
+            {
+                m_data.init(cnn);
+                m_report.init(cnn);
+            }
 #endif
         }
 
@@ -119,14 +127,7 @@ namespace test_binding
                 m_data = new lDataContent(m_tblInfo);
                 m_dataPanel = new lInterPaymentDataPanel(m_data);
                 m_searchPanel = new lInterPaymentSearchPanel(m_dataPanel);
-            }
-#if use_sqlite
-            public override void initCnn(SQLiteConnection cnn)
-#else
-            public override void initCnn(SqlConnection cnn)
-#endif
-            {
-                m_data.init(cnn);
+                m_report = new lInternalPaymentReport();
             }
         }
 
@@ -138,14 +139,7 @@ namespace test_binding
                 m_data = new lDataContent(m_tblInfo);
                 m_dataPanel = new lReceiptsDataPanel(m_data);
                 m_searchPanel = new lReceiptsSearchPanel(m_dataPanel);
-            }
-#if use_sqlite
-            public override void initCnn(SQLiteConnection cnn)
-#else
-            public override void initCnn(SqlConnection cnn)
-#endif
-            {
-                m_data.init(cnn);
+                m_report = new lReceiptsReport();
             }
         }
 
@@ -158,15 +152,7 @@ namespace test_binding
                 m_data = new lDataContent(m_tblInfo);
                 m_dataPanel = new lExternalPaymentDataPanel(m_data);
                 m_searchPanel = new lExternalPaymentSearchPanel(m_dataPanel);
-            }
-
-#if use_sqlite
-            public override void initCnn(SQLiteConnection cnn)
-#else
-            public override void initCnn(SqlConnection cnn)
-#endif
-            {
-                m_data.init(cnn);
+                m_report = new lExternalPaymentReport();
             }
         }
 
@@ -179,14 +165,7 @@ namespace test_binding
                 m_data = new lDataContent(m_tblInfo);
                 m_dataPanel = new lSalaryDataPanel(m_data);
                 m_searchPanel = new lSalarySearchPanel(m_dataPanel);
-            }
-#if use_sqlite
-            public override void initCnn(SQLiteConnection cnn)
-#else
-            public override void initCnn(SqlConnection cnn)
-#endif
-            {
-                m_data.init(cnn);
+                m_report = new lSalaryReport();
             }
         }
 
