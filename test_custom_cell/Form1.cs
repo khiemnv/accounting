@@ -57,38 +57,19 @@ namespace CBV_KeToan
 
             //dGV_receipt.CellClick += new DataGridViewCellEventHandler(dGV_receipt_CellClick);
             dGV_receipt.CellMouseClick += new DataGridViewCellMouseEventHandler(dGV_receipt_CellMouseClick);
-            dGV_receipt.CellMouseDoubleClick += new DataGridViewCellMouseEventHandler(dGV_receipt_CellMouseDoubleClick);
             dGV_receipt.CellBeginEdit += new DataGridViewCellCancelEventHandler(dGV_receipt_CellBeginEdit);
             dGV_receipt.CellEndEdit += new DataGridViewCellEventHandler(dGV_receipt_CellEndEdit);
 
             btn_apply.Click += new EventHandler(btn_apply_Click);
         }
 
-        private void dGV_receipt_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            Debug.WriteLine("dGV_receipt_CellMouseDoubleClick");
-            if (e.ColumnIndex == 1)
-            {
-                m_isMouseClick = true;
-                m_mouseClickPoint.X = e.RowIndex;
-                m_mouseClickPoint.Y = e.ColumnIndex;
-                showDtpForEdit(e.ColumnIndex, e.RowIndex);
-            }
-        }
-
-        private bool m_isMouseClick = false;
-        private Point m_mouseClickPoint = new Point(0, 0);
-        private bool m_isBeginEdit = false;
-        private Point m_beginEditPoint = new Point(0,0);
+        private bool m_showDTP = false;
         private void dGV_receipt_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             Debug.WriteLine("dGV_receipt_CellMouseClick");
             if (e.ColumnIndex == 1)
             {
-                m_isMouseClick = true;
-                m_mouseClickPoint.X = e.RowIndex;
-                m_mouseClickPoint.Y = e.ColumnIndex;
-                showDtpForEdit(e.ColumnIndex, e.RowIndex);
+                m_showDTP = true;
             }
         }
 
@@ -337,10 +318,7 @@ namespace CBV_KeToan
             }
         }
         //myDtp dtp = new DateTimePicker();
-        myDtp dtp = null;
-
-        public bool m_dtpIsShow { get; private set; }
-
+        myDtp_new dtp = null;
         //private void dGV_receipt_CellClick(object sender, DataGridViewCellEventArgs e)
         //{
         //    Debug.WriteLine(string.Format("dGV_receipt_CellClick {0} {1}", e.ColumnIndex, e.RowIndex));
@@ -370,81 +348,61 @@ namespace CBV_KeToan
             Debug.WriteLine("dGV_receipt_CellBeginEdit begin");
             Debug.WriteLine(string.Format("col row: {0} {1}", e.ColumnIndex, e.RowIndex));
             if (e.ColumnIndex == 1)
+            //if (!m_isEditing)
             {
-                m_isBeginEdit = true;
-                m_beginEditPoint.X = e.RowIndex;
-                m_beginEditPoint.Y = e.ColumnIndex;
-                showDtpForEdit(e.ColumnIndex, e.RowIndex);
-            }
-        }
-
-        private void showDtpForEdit(int columnIndex, int rowIndex)
-        {
-            Debug.WriteLine("showDtpForEdit");
-            if (m_isBeginEdit && m_isMouseClick && (m_mouseClickPoint == m_beginEditPoint))
-            {
-                m_dtpIsShow = true;
-                m_isMouseClick = false;
-                m_isBeginEdit = false;
-
-                //dGV_receipt.Controls.Remove(dtp);
-                dtp = new myDtp(columnIndex, rowIndex);
-                dGV_receipt.Controls.Add(dtp);
-                dtp.dataSet = dataSet;
-                dtp.dataGridView = dGV_receipt;
-                dtp.Format = DateTimePickerFormat.Short;
-                string v = dGV_receipt.CurrentCell.Value.ToString();
-                if (v != "")
                 {
-                    dtp.Value = (DateTime)dGV_receipt.CurrentCell.Value;
-                }
-                else
-                {
-                    Debug.WriteLine("dGV_receipt.Rows.Count " + dGV_receipt.Rows.Count);
-                    //dGV_receipt.Rows.Add();
-                    //dGV_receipt.RowCount++;
-                    //if ((dGV_receipt.Rows.Count - 1) == e.RowIndex)
-                    //{
-                    //    DataRow row = dataSet.Tables[0].NewRow();
-                    //    dataSet.Tables[0].Rows.Add(row);
-                    //}
-                    //dGV_receipt.DataSource = dataSet.Tables[0].DefaultView;
-                }
-                Rectangle Rectangle = dGV_receipt.GetCellDisplayRectangle(columnIndex, rowIndex, true);
+                    //dGV_receipt.Controls.Remove(dtp);
+                    dtp = new myDtp_new(e.ColumnIndex, e.RowIndex);
+                    dGV_receipt.Controls.Add(dtp);
+                    dtp.dataSet = dataSet;
+                    dtp.dataGridView = dGV_receipt;
+                    dtp.Format = DateTimePickerFormat.Short;
+                    string v = dGV_receipt.CurrentCell.Value.ToString();
+                    if (v != "")
+                    {
+                        dtp.Value = (DateTime)dGV_receipt.CurrentCell.Value;
+                    }
+                    else
+                    {
+                        Debug.WriteLine("dGV_receipt.Rows.Count " + dGV_receipt.Rows.Count);
+                        //dGV_receipt.Rows.Add();
+                        //dGV_receipt.RowCount++;
+                        //if ((dGV_receipt.Rows.Count - 1) == e.RowIndex)
+                        //{
+                        //    DataRow row = dataSet.Tables[0].NewRow();
+                        //    dataSet.Tables[0].Rows.Add(row);
+                        //}
+                        //dGV_receipt.DataSource = dataSet.Tables[0].DefaultView;
+                    }
+                    Rectangle Rectangle = dGV_receipt.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, true);
 
-                dtp.Size = new Size(Rectangle.Width, Rectangle.Height);
-                dtp.Location = new Point(Rectangle.X, Rectangle.Y);
+                    dtp.Size = new Size(Rectangle.Width, Rectangle.Height);
+                    dtp.Location = new Point(Rectangle.X, Rectangle.Y);
 
-                dtp.Show();
-                ActiveControl = dtp;
-                //m_isEditing = true;
+                    dtp.Show();
+                    ActiveControl = dtp;
+                    //m_isEditing = true;
+                }
             }
         }
 
         private void dGV_receipt_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             Debug.WriteLine("dGV_receipt_CellEndEdit {0} {1}", e.ColumnIndex, e.RowIndex);
-            if(e.ColumnIndex == 1) {
-                hideDtp(e.ColumnIndex, e.RowIndex);
-                m_isBeginEdit = false;
-            }
-        }
-
-        private void hideDtp(int columnIndex, int rowIndex)
-        {
-            Debug.WriteLine("hideDtp");
-            if (m_dtpIsShow)
-            {
-                dtp.Hide();
-                if (dtp.valueChanged)
+            if(e.ColumnIndex == 1) { 
+                //if (m_isEditing)
                 {
-                    dGV_receipt.CurrentCell.Value = dtp.Value.ToString("yyyy-MM-dd");
+                    dtp.Hide();
+                    if (dtp.valueChanged) { 
+                        dGV_receipt.CurrentCell.Value = dtp.Value.ToString("yyyy-MM-dd");
+                    }
+                    dGV_receipt.Controls.Remove(dtp);
+                    //m_isEditing = false;
+                    Debug.WriteLine("dGV_receipt.Rows.Count " + dGV_receipt.Rows.Count);
+                    //dGV_receipt.Rows.Add();
+                    //dGV_receipt.RowCount++;
+                    
                 }
-                dGV_receipt.Controls.Remove(dtp);
-                //m_isEditing = false;
-                Debug.WriteLine("dGV_receipt.Rows.Count " + dGV_receipt.Rows.Count);
-                //dGV_receipt.Rows.Add();
-                //dGV_receipt.RowCount++;
             }
         }
 
