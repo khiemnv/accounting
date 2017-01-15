@@ -1,4 +1,7 @@
-﻿using System;
+﻿#define showDtpOnClick
+//#define use_newDtp
+
+using System;
 using System.Windows.Forms;
 using System.Data.SQLite;
 using System.Data;
@@ -56,110 +59,53 @@ namespace CBV_KeToan
 
 
             //dGV_receipt.CellClick += new DataGridViewCellEventHandler(dGV_receipt_CellClick);
-            dGV_receipt.CellMouseClick += new DataGridViewCellMouseEventHandler(dGV_receipt_CellMouseClick);
-            dGV_receipt.CellMouseDoubleClick += new DataGridViewCellMouseEventHandler(dGV_receipt_CellMouseDoubleClick);
-            dGV_receipt.CellBeginEdit += new DataGridViewCellCancelEventHandler(dGV_receipt_CellBeginEdit);
-            dGV_receipt.CellEnter += new DataGridViewCellEventHandler(dGV_receipt_CellEnter);
-            dGV_receipt.CellEndEdit += new DataGridViewCellEventHandler(dGV_receipt_CellEndEdit);
+            dGV_receipt.CellMouseDoubleClick += dGV_receipt_CellMouseDoubleClick;
+            dGV_receipt.CellBeginEdit += dGV_receipt_CellBeginEdit;
+            dGV_receipt.CellEnter += dGV_receipt_CellEnter;
+            dGV_receipt.CellEndEdit += dGV_receipt_CellEndEdit;
+
+            dGV_receipt.EditingControlShowing += DGV_receipt_EditingControlShowing;
+
+#if showDtpOnClick
+            dGV_receipt.CellClick += DGV_receipt_CellClick;
+            dGV_receipt.CurrentCellChanged += DGV_receipt_CurrentCellChanged;
+#endif
 
             btn_apply.Click += new EventHandler(btn_apply_Click);
         }
 
-        class myHistory {
-            int m_cursor = 0;
-            int m_count = 0;
-            int m_rowindex = 0;
-            int m_colindex = 0;
-            static int m_data_size = 8;
-            public enum myCellEvent
+#if showDtpOnClick
+        private void DGV_receipt_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            m_history.addEvent(myHistory.myCellEvent.click, e.RowIndex, e.ColumnIndex);
+            if (e.ColumnIndex == 1)
             {
-                enter,
-                click,
-                edit,
-                doubleClick
-            }
-            myCellEvent[] m_data = new myCellEvent[m_data_size];
-            public myHistory()
-            {
-
-            }
-            public void addEvent(myCellEvent e, int rowindex, int colindex)
-            {
-                Debug.WriteLine("addEvent e {0} row {1} col {2}", e, rowindex, colindex);
-                do
-                {
-                    if (rowindex != m_rowindex) { clear(); break; }
-                    if (colindex != m_colindex) { clear(); break; }
-                    if (e == m_data[m_cursor]) return;
-                } while (false);
-
-                m_rowindex = rowindex;
-                m_colindex = colindex;
-
-                if (m_count == 0)
-                {
-                    m_count = 1;
-                    m_cursor = 0;
-                    m_data[0] = e;
-                }
-                else
-                {
-                    m_count++;
-                    m_cursor = (m_cursor + 1) % m_data_size;
-                    m_data[m_cursor] = e;
-                }
-
-                printData();
-            }
-            private void printData()
-            {
-                Debug.WriteLine("history data {0}", m_count);
-                int n = Math.Min(m_data_size, m_count);
-                for (int i = 0; i < n; i++)
-                {
-                    int index = (i + m_cursor + m_data_size - n + 1) % m_data_size;
-                    Debug.WriteLine("  {0} {1}", i, m_data[index]);
-                }
-            }
-            public void clear()
-            {
-                m_count = 0;
-            }
-            private myCellEvent[] m_ptn = new myCellEvent[] {
-                    myCellEvent.enter,
-                    myCellEvent.click,
-                    myCellEvent.doubleClick,
-                    myCellEvent.edit,
-            };
-            public bool checkPartern()
-            {
-                Debug.WriteLine("checkPartern");
-                do
-                {
-                    int n = m_ptn.Length;
-                    if (m_count < n) break;
-                    int i = 0;
-                    int sum = 0;
-                    for (; i<n;i++ )
-                    {
-                        int index = (i + m_cursor + m_data_size - n + 1) % m_data_size;
-                        if (m_data[index] != m_ptn[i]) break;
-                    }
-                    if (i < n) break;
-                    return true;
-                } while (false);
-                return false;
+                showDtp(e.ColumnIndex, e.RowIndex);
             }
         }
+
+        int m_preCellCol = 0;
+        int m_preCellRow= 0;
+        private void DGV_receipt_CurrentCellChanged(object sender, EventArgs e)
+        {
+            m_history.addEvent(myHistory.myCellEvent.cellChanged);
+            //if (m_preCellCol == 1)
+            //{
+            //    hideDtp();
+            //}
+            if (dGV_receipt.CurrentCell != null) {
+                m_preCellCol = dGV_receipt.CurrentCell.ColumnIndex;
+                m_preCellRow = dGV_receipt.CurrentCell.RowIndex;
+            }
+        }
+#endif
+
 
         private myHistory m_history = new myHistory();
         private void dGV_receipt_CellEnter(object sender, DataGridViewCellEventArgs e)
         {
-            Debug.WriteLine("dGV_receipt_CellEnter");
             m_history.addEvent(myHistory.myCellEvent.enter, e.RowIndex, e.ColumnIndex);
-            Debug.WriteLine(string.Format(" m_history check {0}", m_history.checkPartern()));
         }
-
   
         private void btn_apply_Click(object sender, EventArgs e)
         {
@@ -197,7 +143,7 @@ namespace CBV_KeToan
             //dGV_receipt.DataSource = dataSet.Tables[0].DefaultView;
             dGV_receipt.DataSource = m_bindingSource;
 
-            dGV_receipt.Columns[1].CellTemplate = new CalendarCell();
+            //dGV_receipt.Columns[1].CellTemplate = new CalendarCell();
         }
 
         private void btn_addNew_Click(object sender, EventArgs e)
@@ -213,7 +159,6 @@ namespace CBV_KeToan
             public DataSet dataSet;
             public DataGridView dataGridView;
             public bool valueChanged = false;
-            int rowIndex;
 
             int m_icol;
             int m_irow;
@@ -224,6 +169,11 @@ namespace CBV_KeToan
                 m_irow = irow;
                 Format = DateTimePickerFormat.Short;
             }
+            //protected override void OnCloseUp(EventArgs e)
+            //{
+            //    dataGridView.Controls.Remove(this);
+            //    base.OnCloseUp(e);
+            //}
             protected override void OnValueChanged(EventArgs eventargs)
             {
                 Debug.WriteLine("OnValueChanged enter");
@@ -231,11 +181,13 @@ namespace CBV_KeToan
                 // have changed.
                 Debug.WriteLine("+ dataSet.Tables[0].Rows.Count " + dataSet.Tables[0].Rows.Count);
                 valueChanged = true;
-                this.dataGridView.NotifyCurrentCellDirty(true);
+
+                //dataGridView.CurrentCell.Value = Value.ToString("yyyy-MM-dd");
+                //Debug.WriteLine("+ dataGridView.Rows.Count " + dataGridView.Rows.Count);
+                //DataTable tb = dataSet.Tables[0];
+                //Debug.WriteLine("+ dataSet.Tables[0].Rows.Count " + dataSet.Tables[0].Rows.Count);
                 base.OnValueChanged(eventargs);
-                Debug.WriteLine("+ dataGridView.Rows.Count " + dataGridView.Rows.Count);
-                DataTable tb = dataSet.Tables[0];
-                Debug.WriteLine("+ dataSet.Tables[0].Rows.Count " + dataSet.Tables[0].Rows.Count);
+                dataGridView.NotifyCurrentCellDirty(true);
             }
         }
         class myDtp_new:DateTimePicker, IDataGridViewEditingControl
@@ -376,28 +328,21 @@ namespace CBV_KeToan
 
             protected override void OnValueChanged(EventArgs eventargs)
             {
+                Debug.WriteLine("OnValueChanged dataGridView.Rows.Count " + dataGridView.Rows.Count);
                 // Notify the DataGridView that the contents of the cell
                 // have changed.
                 valueChanged = true;
                 this.EditingControlDataGridView.NotifyCurrentCellDirty(true);
                 base.OnValueChanged(eventargs);
-                Debug.WriteLine("OnValueChanged 227 dataGridView.Rows.Count " + dataGridView.Rows.Count);
-                //DataTable tb = dataSet.Tables[0];
-                //DataRow row = null;
-                //if ((tb.Rows.Count) == m_irow)
-                //{
-                //    row = dataSet.Tables[0].NewRow();
-                //    dataSet.Tables[0].Rows.Add(row);
-                //}else { 
-                //    row = tb.Rows[m_irow];
-                //}
-                //row.ItemArray[m_icol] = Value.ToString("yyyy-MM-dd");
-                //row.AcceptChanges();
-                //dataSet.Tables[0].Rows[m_irow].[m_icol].Value = Value.ToString("yyyy-MM-dd");
             }
+
         }
         //myDtp dtp = new DateTimePicker();
+#if use_newDtp
         myDtp_new dtp = null;
+#else
+        myDtp dtp = null;
+#endif
         //private void dGV_receipt_CellClick(object sender, DataGridViewCellEventArgs e)
         //{
         //    Debug.WriteLine(string.Format("dGV_receipt_CellClick {0} {1}", e.ColumnIndex, e.RowIndex));
@@ -424,11 +369,8 @@ namespace CBV_KeToan
         //private bool m_isEditing = false;
         private void dGV_receipt_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
         {
-            Debug.WriteLine("dGV_receipt_CellBeginEdit begin");
-            Debug.WriteLine(string.Format("col row: {0} {1}", e.ColumnIndex, e.RowIndex));
-            m_history.addEvent(myHistory.myCellEvent.edit, e.RowIndex, e.ColumnIndex);
-            Debug.WriteLine(string.Format(" m_history check {0}", m_history.checkPartern()));
-#if true
+            m_history.addEvent(myHistory.myCellEvent.beginEdit, e.RowIndex, e.ColumnIndex);
+#if false
             if (e.ColumnIndex == 1) { 
                 if (m_history.checkPartern()) { showDtp(e.ColumnIndex, e.RowIndex);}
             }
@@ -437,30 +379,76 @@ namespace CBV_KeToan
 
         private void dGV_receipt_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            Debug.WriteLine("dGV_receipt_CellEndEdit {0} {1}", e.ColumnIndex, e.RowIndex);
-            if (e.ColumnIndex == 1) hideDtp();
+            m_history.addEvent(myHistory.myCellEvent.endEdit, e.RowIndex, e.ColumnIndex);
+            if (e.ColumnIndex == 1)
+            {
+                hideDtp();
+            }
         }
-      //private bool m_showDTP = false;
+        //private bool m_showDTP = false;
+        //DateTimePicker m_dtp;
         private void dGV_receipt_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            Debug.WriteLine("dGV_receipt_CellMouseClick");
             m_history.addEvent(myHistory.myCellEvent.click, e.RowIndex, e.ColumnIndex);
-            Debug.WriteLine(string.Format(" m_history check {0}", m_history.checkPartern()));
+//#if showDtpOnClick
+//            if (e.ColumnIndex == 1)
+//            {
+//                showDtp(e.ColumnIndex, e.RowIndex);
+//            }
+//#endif
 #if false
             if (e.ColumnIndex == 1) { 
-                if (m_history.checkPartern())
+                //if (m_history.checkPartern())
                 {
-                    m_history.clear();
+                    //m_history.clear();
+
+                    if (dtp != null)
+                    {
+                        Debug.WriteLine("hideDtp");
+                        dtp.Hide();
+                        dGV_receipt.Controls.Remove(dtp);
+                        dtp = null;
+                    }
                     showDtp(e.ColumnIndex, e.RowIndex);
                 }
                 //else { hideDtp(); }
+            }
+#endif
+#if false
+            if (e.ColumnIndex == 1)
+            {
+                //Initialized a new DateTimePicker Control  
+                m_dtp = new DateTimePicker();
+
+                //Adding DateTimePicker control into DataGridView   
+                dGV_receipt.Controls.Add(m_dtp);
+
+                // Setting the format (i.e. 2014-10-10)  
+                m_dtp.Format = DateTimePickerFormat.Short;
+
+                // It returns the retangular area that represents the Display area for a cell  
+                Rectangle oRectangle = dGV_receipt.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, true);
+
+                //Setting area for DateTimePicker Control  
+                m_dtp.Size = new Size(oRectangle.Width, oRectangle.Height);
+
+                // Setting Location  
+                m_dtp.Location = new Point(oRectangle.X, oRectangle.Y);
+
+                // An event attached to dateTimePicker Control which is fired when DateTimeControl is closed  
+                m_dtp.CloseUp += new EventHandler(dtp_CloseUp);
+
+                // An event attached to dateTimePicker Control which is fired when any date is selected  
+                m_dtp.TextChanged += new EventHandler(dtp_OnTextChange);
+
+                // Now make it visible  
+                m_dtp.Visible = true;
             }
 #endif
         }
 
         private void dGV_receipt_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            Debug.WriteLine("dGV_receipt_CellMouseDoubleClick");
             m_history.addEvent(myHistory.myCellEvent.doubleClick, e.RowIndex, e.ColumnIndex);
 
 #if false
@@ -477,13 +465,17 @@ namespace CBV_KeToan
         {
             Debug.WriteLine("showDtp");
             //dGV_receipt.Controls.Remove(dtp);
+#if use_newDtp
             dtp = new myDtp_new(col, row);
+#else
+            dtp = new myDtp(col, row);
+#endif
             dGV_receipt.Controls.Add(dtp);
             dtp.dataSet = dataSet;
             dtp.dataGridView = dGV_receipt;
             dtp.Format = DateTimePickerFormat.Short;
             string v = dGV_receipt.CurrentCell.Value.ToString();
-            Debug.WriteLine("  dGV_receipt.CurrentCell.Value " + v);
+            Debug.WriteLine(string.Format("+ dGV_receipt.CurrentCell.Value '{0}'", v));
             if (v != "")
             {
                 DateTime result;
@@ -493,15 +485,15 @@ namespace CBV_KeToan
             }
             else
             {
-                Debug.WriteLine("dGV_receipt.Rows.Count " + dGV_receipt.Rows.Count);
+                Debug.WriteLine(string.Format("+ dGV_receipt.Rows.Count '{0}'", dGV_receipt.Rows.Count));
             }
             Rectangle Rectangle = dGV_receipt.GetCellDisplayRectangle(col, row, true);
-
             dtp.Size = new Size(Rectangle.Width, Rectangle.Height);
             dtp.Location = new Point(Rectangle.X, Rectangle.Y);
 
             dtp.Show();
             ActiveControl = dtp;
+            dGV_receipt.BeginEdit(true);
             //m_isEditing = true;
         }
         private void hideDtp()
@@ -515,7 +507,7 @@ namespace CBV_KeToan
                     dGV_receipt.CurrentCell.Value = dtp.Value.ToString("yyyy-MM-dd");
                 }
                 dGV_receipt.Controls.Remove(dtp);
-                Debug.WriteLine("dGV_receipt.Rows.Count " + dGV_receipt.Rows.Count);
+                Debug.WriteLine("+ dGV_receipt.Rows.Count " + dGV_receipt.Rows.Count);
                 dtp = null;
             }
         }
@@ -523,17 +515,14 @@ namespace CBV_KeToan
         {
             Debug.WriteLine(string.Format("dtp_OnTextChange {0}", dtp.Value.ToString("yyyy-MM-dd")));
             dGV_receipt.CurrentCell.Value = dtp.Value.ToString("yyyy-MM-dd");
+            dGV_receipt.NotifyCurrentCellDirty(true);
             //dtp.Visible = false;
         }
+
         void dtp_CloseUp(object sender, EventArgs e)
         {
             Debug.WriteLine("dtp_CloseUp");
-            //if (m_isEditing)
-            //{
-            //    dtp.Hide();
-            //    dGV_receipt.Controls.Remove(dtp);
-            //    m_isEditing = false;
-            //}
+            dtp.Visible = false;
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -549,6 +538,30 @@ namespace CBV_KeToan
 
             return base.ProcessCmdKey(ref msg, keyData);
 
+        }
+
+        private void DGV_receipt_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
+        {
+            m_history.addEvent(myHistory.myCellEvent.editShowing);
+            if (dtp != null) { 
+                e.Control.Hide();
+                //e.Control.Enabled = false;
+            }
+            //tb.KeyPress += new KeyPressEventHandler(dataGridViewTextBox_KeyPress);
+
+            //e.Control.KeyPress += new KeyPressEventHandler(dataGridViewTextBox_KeyPress);
+            //hideDtp();
+        }
+
+
+        private void dataGridViewTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            Debug.WriteLine("dataGridViewTextBox_KeyPress {0}", e.KeyChar);
+            ////when i press enter,bellow code never run?
+            //if (e.KeyChar == (char)Keys.Enter)
+            //{
+            //    MessageBox.Show("You press Enter");
+            //}
         }
 
     }
