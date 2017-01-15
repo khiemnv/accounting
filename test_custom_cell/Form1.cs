@@ -64,7 +64,7 @@ namespace CBV_KeToan
 
             btn_apply.Click += new EventHandler(btn_apply_Click);
         }
-        
+
         class myHistory {
             int m_cursor = 0;
             int m_count = 0;
@@ -128,24 +128,24 @@ namespace CBV_KeToan
             private myCellEvent[] m_ptn = new myCellEvent[] {
                     myCellEvent.enter,
                     myCellEvent.click,
+                    myCellEvent.doubleClick,
                     myCellEvent.edit,
-                    myCellEvent.click,
-                    myCellEvent.doubleClick
             };
             public bool checkPartern()
             {
                 Debug.WriteLine("checkPartern");
                 do
                 {
-                    if (m_count < 5) break;
+                    int n = m_ptn.Length;
+                    if (m_count < n) break;
                     int i = 0;
                     int sum = 0;
-                    for (; i<5;i++ )
+                    for (; i<n;i++ )
                     {
-                        int index = (i + m_cursor + m_data_size - 4) % m_data_size;
-                        if (m_data[index] == m_ptn[i]) sum++;
+                        int index = (i + m_cursor + m_data_size - n + 1) % m_data_size;
+                        if (m_data[index] != m_ptn[i]) break;
                     }
-                    if (i < 5) break;
+                    if (i < n) break;
                     return true;
                 } while (false);
                 return false;
@@ -196,6 +196,8 @@ namespace CBV_KeToan
             m_bindingSource.DataSource = dataSet.Tables[0];
             //dGV_receipt.DataSource = dataSet.Tables[0].DefaultView;
             dGV_receipt.DataSource = m_bindingSource;
+
+            dGV_receipt.Columns[1].CellTemplate = new CalendarCell();
         }
 
         private void btn_addNew_Click(object sender, EventArgs e)
@@ -426,8 +428,10 @@ namespace CBV_KeToan
             Debug.WriteLine(string.Format("col row: {0} {1}", e.ColumnIndex, e.RowIndex));
             m_history.addEvent(myHistory.myCellEvent.edit, e.RowIndex, e.ColumnIndex);
             Debug.WriteLine(string.Format(" m_history check {0}", m_history.checkPartern()));
-#if false
-            if (e.ColumnIndex == 1) {showDtp(e.ColumnIndex, e.RowIndex);}
+#if true
+            if (e.ColumnIndex == 1) { 
+                if (m_history.checkPartern()) { showDtp(e.ColumnIndex, e.RowIndex);}
+            }
 #endif
         }
 
@@ -459,7 +463,7 @@ namespace CBV_KeToan
             Debug.WriteLine("dGV_receipt_CellMouseDoubleClick");
             m_history.addEvent(myHistory.myCellEvent.doubleClick, e.RowIndex, e.ColumnIndex);
 
-#if true
+#if false
             //bool res =  m_history.checkPartern();
             bool res = true;
             if (e.ColumnIndex == 1 && res)
@@ -479,9 +483,13 @@ namespace CBV_KeToan
             dtp.dataGridView = dGV_receipt;
             dtp.Format = DateTimePickerFormat.Short;
             string v = dGV_receipt.CurrentCell.Value.ToString();
+            Debug.WriteLine("  dGV_receipt.CurrentCell.Value " + v);
             if (v != "")
             {
-                dtp.Value = (DateTime)dGV_receipt.CurrentCell.Value;
+                DateTime result;
+                if (DateTime.TryParse(v, out result)) {
+                    dtp.Value = result;
+                }
             }
             else
             {
