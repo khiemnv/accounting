@@ -82,6 +82,10 @@ namespace CBV_KeToan
             {
                 showDtp(e.ColumnIndex, e.RowIndex);
             }
+            if (e.ColumnIndex == 3)
+            {
+                showCombo(e.ColumnIndex, e.RowIndex);
+            }
         }
 
         int m_preCellCol = 0;
@@ -152,6 +156,33 @@ namespace CBV_KeToan
                 + "VALUES('2016-12-30', 'name 1', 'content 1', 200, 'note 1');";
             SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
             command.ExecuteNonQuery();
+        }
+
+        class myBaseControl
+        {
+        }
+        class myComboBox:ComboBox
+        {
+            public bool valueChanged;
+            public DataGridView m_DGV;
+
+            public myComboBox(DataGridView dgv)
+            {
+                m_DGV = dgv;
+                this.Items.AddRange(new object[] {"Item 1",
+                        "Item 2",
+                        "Item 3",
+                        "Item 4",
+                        "Item 5"});
+            }
+            protected override void OnSelectedValueChanged(EventArgs eventargs)
+            {
+                Debug.WriteLine("OnSelectedValueChanged enter");
+                valueChanged = true;
+
+                base.OnSelectedValueChanged(eventargs);
+                m_DGV.NotifyCurrentCellDirty(true);
+            }
         }
 
         class myDtp:DateTimePicker
@@ -384,6 +415,10 @@ namespace CBV_KeToan
             {
                 hideDtp();
             }
+            if (e.ColumnIndex == 3)
+            {
+                hideCombo();
+            }
         }
         //private bool m_showDTP = false;
         //DateTimePicker m_dtp;
@@ -461,6 +496,48 @@ namespace CBV_KeToan
 #endif
         }
 
+        private myDtp shareDtp = null;
+        private myDtp getNewDtp(int col, int row)
+        {
+            if (shareDtp == null)
+            {
+                shareDtp = new myDtp(col, row);
+            }
+            return shareDtp;
+        }
+
+        myComboBox m_combo;
+        private void showCombo(int col, int row)
+        {
+            Debug.WriteLine("showCombo");
+            m_combo = new myComboBox(dGV_receipt);
+            dGV_receipt.Controls.Add(m_combo);
+            Rectangle Rectangle = dGV_receipt.GetCellDisplayRectangle(col, row, true);
+            m_combo.Size = Rectangle.Size;
+            m_combo.Location = Rectangle.Location;
+
+            m_combo.SelectedText = dGV_receipt.CurrentCell.Value.ToString();
+
+            m_combo.Visible = true;
+            ActiveControl = m_combo;
+            dGV_receipt.BeginEdit(true);
+            //m_isEditing = true;
+        }
+        private void hideCombo()
+        {
+            if (m_combo != null)
+            {
+                Debug.WriteLine("hideCombo");
+                m_combo.Visible = false;
+                if (m_combo.valueChanged)
+                {
+                    dGV_receipt.CurrentCell.Value = m_combo.SelectedItem.ToString();
+                }
+                dGV_receipt.Controls.Remove(m_combo);
+                m_combo = null;
+            }
+        }
+
         private void showDtp(int col, int row)
         {
             Debug.WriteLine("showDtp");
@@ -468,7 +545,7 @@ namespace CBV_KeToan
 #if use_newDtp
             dtp = new myDtp_new(col, row);
 #else
-            dtp = new myDtp(col, row);
+            dtp = getNewDtp(col, row);
 #endif
             dGV_receipt.Controls.Add(dtp);
             dtp.dataSet = dataSet;
@@ -476,22 +553,19 @@ namespace CBV_KeToan
             dtp.Format = DateTimePickerFormat.Short;
             string v = dGV_receipt.CurrentCell.Value.ToString();
             Debug.WriteLine(string.Format("+ dGV_receipt.CurrentCell.Value '{0}'", v));
-            if (v != "")
+            if (dGV_receipt.CurrentCell.Value.GetType() == typeof(DateTime))
             {
-                DateTime result;
-                if (DateTime.TryParse(v, out result)) {
-                    dtp.Value = result;
-                }
+                dtp.Value = (DateTime)dGV_receipt.CurrentCell.Value;
             }
             else
             {
                 Debug.WriteLine(string.Format("+ dGV_receipt.Rows.Count '{0}'", dGV_receipt.Rows.Count));
             }
             Rectangle Rectangle = dGV_receipt.GetCellDisplayRectangle(col, row, true);
-            dtp.Size = new Size(Rectangle.Width, Rectangle.Height);
-            dtp.Location = new Point(Rectangle.X, Rectangle.Y);
+            dtp.Size = Rectangle.Size;
+            dtp.Location = Rectangle.Location;
 
-            dtp.Show();
+            dtp.Visible = true;
             ActiveControl = dtp;
             dGV_receipt.BeginEdit(true);
             //m_isEditing = true;
@@ -501,7 +575,7 @@ namespace CBV_KeToan
             if (dtp != null)
             {
                 Debug.WriteLine("hideDtp");
-                dtp.Hide();
+                dtp.Visible = false;
                 if (dtp.valueChanged)
                 {
                     dGV_receipt.CurrentCell.Value = dtp.Value.ToString("yyyy-MM-dd");
@@ -515,7 +589,7 @@ namespace CBV_KeToan
         {
             Debug.WriteLine(string.Format("dtp_OnTextChange {0}", dtp.Value.ToString("yyyy-MM-dd")));
             dGV_receipt.CurrentCell.Value = dtp.Value.ToString("yyyy-MM-dd");
-            dGV_receipt.NotifyCurrentCellDirty(true);
+            //dGV_receipt.NotifyCurrentCellDirty(true);
             //dtp.Visible = false;
         }
 
