@@ -1,11 +1,6 @@
 ﻿//#define DEBUG_DRAWING
 
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Data.SQLite;
-using System.Data.SqlClient;
 using System.Collections.Generic;
 using System;
 using System.Drawing;
@@ -35,7 +30,7 @@ namespace test_binding
             public Label m_sumLabel = new Label();
             public TextBox m_sumTxt = new TextBox();
 
-            public DataGridView m_dataGridView = new DataGridView();
+            public DataGridView m_dataGridView;
 
             lDataContent m_dataContent;
             public lTableInfo m_tblInfo {get { return m_dataContent.m_tblInfo; } }
@@ -45,6 +40,7 @@ namespace test_binding
                 m_dataContent = dataContent;
                 // Bind the DataGridView to the BindingSource
                 // and load the data from the database.
+                m_dataGridView = new myDataGridView(m_tblInfo);
                 m_dataGridView.DataSource = m_dataContent.m_bindingSource;
 
                 m_reloadBtn.Text = "Reload";
@@ -54,6 +50,11 @@ namespace test_binding
                 m_submitBtn.Click += new System.EventHandler(submitButton_Click);
 
                 m_sumLabel.Text = "Sum";
+            }
+
+            private void DGV_CellClick(object sender, DataGridViewCellEventArgs e)
+            {
+                throw new NotImplementedException();
             }
 
             public void search(List<string> exprs, List<lEntity> arr)
