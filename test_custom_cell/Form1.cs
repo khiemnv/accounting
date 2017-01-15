@@ -78,14 +78,15 @@ namespace CBV_KeToan
         private void DGV_receipt_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             m_history.addEvent(myHistory.myCellEvent.click, e.RowIndex, e.ColumnIndex);
-            if (e.ColumnIndex == 1)
-            {
-                showDtp(e.ColumnIndex, e.RowIndex);
-            }
-            if (e.ColumnIndex == 3)
-            {
-                showCombo(e.ColumnIndex, e.RowIndex);
-            }
+            showCustomCtrl(e.ColumnIndex, e.RowIndex);
+            //if (e.ColumnIndex == 1)
+            //{
+            //    showDtp(e.ColumnIndex, e.RowIndex);
+            //}
+            //if (e.ColumnIndex == 3)
+            //{
+            //    showCombo(e.ColumnIndex, e.RowIndex);
+            //}
         }
 
         int m_preCellCol = 0;
@@ -158,10 +159,16 @@ namespace CBV_KeToan
             command.ExecuteNonQuery();
         }
 
-        class myBaseControl
+        interface myCustomCtrl
         {
+            void show(Rectangle rec);
+            void hide();
+            bool isChanged();
+            string getValue();
+            void setValue(string text);
+            Control getControl();
         }
-        class myComboBox:ComboBox
+        class myComboBox:ComboBox, myCustomCtrl
         {
             public bool valueChanged;
             public DataGridView m_DGV;
@@ -183,8 +190,90 @@ namespace CBV_KeToan
                 base.OnSelectedValueChanged(eventargs);
                 m_DGV.NotifyCurrentCellDirty(true);
             }
-        }
+            public void show(Rectangle rec)
+            {
+                Location = rec.Location;
+                Size = rec.Size;
+                Visible = true;
+            }
+            public void hide()
+            {
+                Visible = false;
+            }
 
+            public bool isChanged()
+            {
+                return valueChanged;
+            }
+
+            public string getValue()
+            {
+                return SelectedItem.ToString();
+            }
+
+            public void setValue(string text)
+            {
+                SelectedText = text;
+            }
+
+            public Control getControl()
+            {
+                return this;
+            }
+        }
+        class myDateTimePicker : DateTimePicker, myCustomCtrl
+        {
+            public DataGridView m_DGV;
+            public bool valueChanged = false;
+
+            public myDateTimePicker(DataGridView dgv)
+            {
+                m_DGV = dgv;
+                Format = DateTimePickerFormat.Short;
+            }
+
+            public Control getControl()
+            {
+                return this;
+            }
+
+            public string getValue()
+            {
+                return Value.ToString();
+            }
+
+            public void hide()
+            {
+                Visible = false;
+            }
+
+            public bool isChanged()
+            {
+                return valueChanged;
+            }
+
+            public void setValue(string text)
+            {
+                DateTime dt;
+                if (DateTime.TryParse(text, out dt)) { 
+                    Value = dt;
+                }
+            }
+
+            public void show(Rectangle rec)
+            {
+                Location = rec.Location;
+                Size = rec.Size;
+                Visible = true;
+            }
+
+            protected override void OnValueChanged(EventArgs eventargs)
+            {
+                valueChanged = true;
+                base.OnValueChanged(eventargs);
+                m_DGV.NotifyCurrentCellDirty(true);
+            }
+        }
         class myDtp:DateTimePicker
         {
             public DataSet dataSet;
@@ -411,14 +500,15 @@ namespace CBV_KeToan
         private void dGV_receipt_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             m_history.addEvent(myHistory.myCellEvent.endEdit, e.RowIndex, e.ColumnIndex);
-            if (e.ColumnIndex == 1)
-            {
-                hideDtp();
-            }
-            if (e.ColumnIndex == 3)
-            {
-                hideCombo();
-            }
+            hideCustomCtrl();
+            //if (e.ColumnIndex == 1)
+            //{
+            //    hideDtp();
+            //}
+            //if (e.ColumnIndex == 3)
+            //{
+            //    hideCombo();
+            //}
         }
         //private bool m_showDTP = false;
         //DateTimePicker m_dtp;
@@ -507,6 +597,38 @@ namespace CBV_KeToan
         }
 
         myComboBox m_combo;
+        myCustomCtrl m_customCtrl;
+        private void showCustomCtrl(int col, int row)
+        {
+            if (col == 3) { 
+                m_customCtrl = new myComboBox(dGV_receipt);
+            } else if (col == 1)
+            {
+                m_customCtrl = new myDateTimePicker(dGV_receipt);
+            }
+            if (m_customCtrl != null) {
+                dGV_receipt.Controls.Add(m_customCtrl.getControl());
+                m_customCtrl.setValue(dGV_receipt.CurrentCell.Value.ToString());
+                Rectangle rec = dGV_receipt.GetCellDisplayRectangle(col, row, true);
+                m_customCtrl.show(rec);
+
+                ActiveControl = m_customCtrl.getControl();
+                dGV_receipt.BeginEdit(true);
+            }
+        }
+        private void hideCustomCtrl()
+        {
+            if (m_customCtrl != null)
+            {
+                m_customCtrl.hide();
+                if (m_customCtrl.isChanged())
+                {
+                    dGV_receipt.CurrentCell.Value = m_customCtrl.getValue();
+                }
+                dGV_receipt.Controls.Remove(m_customCtrl.getControl());
+                m_customCtrl = null;
+            }
+        }
         private void showCombo(int col, int row)
         {
             Debug.WriteLine("showCombo");
