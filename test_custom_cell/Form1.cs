@@ -71,7 +71,27 @@ namespace CBV_KeToan
             dGV_receipt.CurrentCellChanged += DGV_receipt_CurrentCellChanged;
 #endif
 
+            dGV_receipt.Scroll += DGV_receipt_Scroll;
+
             btn_apply.Click += new EventHandler(btn_apply_Click);
+        }
+
+        private void DGV_receipt_Scroll(object sender, ScrollEventArgs e)
+        {
+            int offSetValue = dGV_receipt.HorizontalScrollingOffset;
+            int dx = dGV_receipt.HorizontalScrollingOffset;
+            int dy = dGV_receipt.VerticalScrollingOffset;
+
+            try
+            {
+                dGV_receipt.HorizontalScrollingOffset = offSetValue;
+                if (m_customCtrl != null) {
+                    m_customCtrl.reLocation();
+                }
+            }
+            catch { }
+
+            dGV_receipt.Invalidate();
         }
 
 #if showDtpOnClick
@@ -159,119 +179,92 @@ namespace CBV_KeToan
             command.ExecuteNonQuery();
         }
 
-        interface myCustomCtrl
+        class myCustomCtrl
         {
-            void show(Rectangle rec);
-            void hide();
-            bool isChanged();
-            string getValue();
-            void setValue(string text);
-            Control getControl();
-        }
-        class myComboBox:ComboBox, myCustomCtrl
-        {
-            public bool valueChanged;
             public DataGridView m_DGV;
+            public Control m_ctrl;
+            public bool m_bChanged = false;
+            public int m_iRow;
+            public int m_iCol;
 
-            public myComboBox(DataGridView dgv)
+            public myCustomCtrl(DataGridView dgv, Control ctrl)
             {
                 m_DGV = dgv;
-                this.Items.AddRange(new object[] {"Item 1",
+                m_ctrl = ctrl;
+            }
+
+            public virtual void show(Rectangle rec)
+            {
+                m_ctrl.Location = rec.Location;
+                m_ctrl.Size = rec.Size;
+                m_ctrl.Visible = true;
+                
+            }
+            public virtual void hide() { m_ctrl.Visible = false; }
+            public virtual bool isChanged() { return m_bChanged; }
+            public virtual string getValue() { return ""; }
+            public virtual void setValue(string text) { }
+            public virtual Control getControl() { return m_ctrl; }
+            public virtual void ctrl_ValueChanged(object sender, EventArgs e)
+            {
+                m_bChanged = true;
+                m_DGV.NotifyCurrentCellDirty(true);
+            }
+
+            internal void reLocation()
+            {
+                Rectangle rec = m_DGV.GetCellDisplayRectangle(m_iCol, m_iRow, true);
+                m_ctrl.Size = rec.Size;
+                m_ctrl.Location = rec.Location;
+            }
+        }
+        class myComboBox: myCustomCtrl
+        {
+            private ComboBox m_combo;
+
+            public myComboBox(DataGridView dgv)
+                :base(dgv, new ComboBox())
+            {
+                m_combo = (ComboBox)getControl();
+                m_combo.Items.AddRange(new object[] {"Item 1",
                         "Item 2",
                         "Item 3",
                         "Item 4",
                         "Item 5"});
+                m_combo.SelectedValueChanged += ctrl_ValueChanged;
             }
-            protected override void OnSelectedValueChanged(EventArgs eventargs)
+            
+            public override string getValue()
             {
-                Debug.WriteLine("OnSelectedValueChanged enter");
-                valueChanged = true;
-
-                base.OnSelectedValueChanged(eventargs);
-                m_DGV.NotifyCurrentCellDirty(true);
-            }
-            public void show(Rectangle rec)
-            {
-                Location = rec.Location;
-                Size = rec.Size;
-                Visible = true;
-            }
-            public void hide()
-            {
-                Visible = false;
+                return m_combo.SelectedItem.ToString();
             }
 
-            public bool isChanged()
+            public override void setValue(string text)
             {
-                return valueChanged;
-            }
-
-            public string getValue()
-            {
-                return SelectedItem.ToString();
-            }
-
-            public void setValue(string text)
-            {
-                SelectedText = text;
-            }
-
-            public Control getControl()
-            {
-                return this;
+                m_combo.SelectedText = text;
             }
         }
-        class myDateTimePicker : DateTimePicker, myCustomCtrl
+        class myDateTimePicker: myCustomCtrl
         {
-            public DataGridView m_DGV;
-            public bool valueChanged = false;
+            public DateTimePicker m_dtp;
 
             public myDateTimePicker(DataGridView dgv)
+                :base(dgv, new DateTimePicker())
             {
-                m_DGV = dgv;
-                Format = DateTimePickerFormat.Short;
+                m_dtp = (DateTimePicker)getControl();
+                m_dtp.Format = DateTimePickerFormat.Short;
+                m_dtp.ValueChanged += ctrl_ValueChanged;
             }
-
-            public Control getControl()
+            public override string getValue()
             {
-                return this;
+                return m_dtp.Value.ToString();
             }
-
-            public string getValue()
-            {
-                return Value.ToString();
-            }
-
-            public void hide()
-            {
-                Visible = false;
-            }
-
-            public bool isChanged()
-            {
-                return valueChanged;
-            }
-
-            public void setValue(string text)
+            public override void setValue(string text)
             {
                 DateTime dt;
-                if (DateTime.TryParse(text, out dt)) { 
-                    Value = dt;
+                if (DateTime.TryParse(text, out dt)) {
+                    m_dtp.Value = dt;
                 }
-            }
-
-            public void show(Rectangle rec)
-            {
-                Location = rec.Location;
-                Size = rec.Size;
-                Visible = true;
-            }
-
-            protected override void OnValueChanged(EventArgs eventargs)
-            {
-                valueChanged = true;
-                base.OnValueChanged(eventargs);
-                m_DGV.NotifyCurrentCellDirty(true);
             }
         }
         class myDtp:DateTimePicker
@@ -596,7 +589,7 @@ namespace CBV_KeToan
             return shareDtp;
         }
 
-        myComboBox m_combo;
+        //myComboBox m_combo;
         myCustomCtrl m_customCtrl;
         private void showCustomCtrl(int col, int row)
         {
@@ -607,6 +600,8 @@ namespace CBV_KeToan
                 m_customCtrl = new myDateTimePicker(dGV_receipt);
             }
             if (m_customCtrl != null) {
+                m_customCtrl.m_iRow = row;
+                m_customCtrl.m_iCol = col;
                 dGV_receipt.Controls.Add(m_customCtrl.getControl());
                 m_customCtrl.setValue(dGV_receipt.CurrentCell.Value.ToString());
                 Rectangle rec = dGV_receipt.GetCellDisplayRectangle(col, row, true);
@@ -629,6 +624,7 @@ namespace CBV_KeToan
                 m_customCtrl = null;
             }
         }
+#if false
         private void showCombo(int col, int row)
         {
             Debug.WriteLine("showCombo");
@@ -651,7 +647,7 @@ namespace CBV_KeToan
             {
                 Debug.WriteLine("hideCombo");
                 m_combo.Visible = false;
-                if (m_combo.valueChanged)
+                if (m_combo.m_bChanged)
                 {
                     dGV_receipt.CurrentCell.Value = m_combo.SelectedItem.ToString();
                 }
@@ -707,6 +703,7 @@ namespace CBV_KeToan
                 dtp = null;
             }
         }
+#endif
         private void dtp_OnTextChange(object sender, EventArgs e)
         {
             Debug.WriteLine(string.Format("dtp_OnTextChange {0}", dtp.Value.ToString("yyyy-MM-dd")));
