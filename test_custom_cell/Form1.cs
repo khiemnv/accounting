@@ -78,20 +78,16 @@ namespace CBV_KeToan
 
         private void DGV_receipt_Scroll(object sender, ScrollEventArgs e)
         {
-            int offSetValue = dGV_receipt.HorizontalScrollingOffset;
-            int dx = dGV_receipt.HorizontalScrollingOffset;
-            int dy = dGV_receipt.VerticalScrollingOffset;
+            //int offSetValue = dGV_receipt.HorizontalScrollingOffset;
+            //int dx = dGV_receipt.HorizontalScrollingOffset;
+            //int dy = dGV_receipt.VerticalScrollingOffset;
 
-            try
-            {
-                dGV_receipt.HorizontalScrollingOffset = offSetValue;
+                //dGV_receipt.HorizontalScrollingOffset = offSetValue;
                 if (m_customCtrl != null) {
                     m_customCtrl.reLocation();
                 }
-            }
-            catch { }
-
-            dGV_receipt.Invalidate();
+            //base.OnScroll(e);
+            //dGV_receipt.Invalidate();
         }
 
 #if showDtpOnClick
@@ -152,6 +148,7 @@ namespace CBV_KeToan
 
         SQLiteDataAdapter m_dataAdapter;
         public BindingSource m_bindingSource = new BindingSource();
+      
         private void btn_Search_Click(object sender, EventArgs e)
         {
             //get input keys
@@ -169,6 +166,7 @@ namespace CBV_KeToan
             dGV_receipt.DataSource = m_bindingSource;
 
             //dGV_receipt.Columns[1].CellTemplate = new CalendarCell();
+            dGV_receipt.Columns[1].DefaultCellStyle.Format = "yyyy-MM-dd";
         }
 
         private void btn_addNew_Click(object sender, EventArgs e)
@@ -222,21 +220,26 @@ namespace CBV_KeToan
         {
             private ComboBox m_combo;
 
-            public myComboBox(DataGridView dgv)
+            public myComboBox(DataGridView dgv,  DataTable tbl)
                 :base(dgv, new ComboBox())
             {
                 m_combo = (ComboBox)getControl();
-                m_combo.Items.AddRange(new object[] {"Item 1",
-                        "Item 2",
-                        "Item 3",
-                        "Item 4",
-                        "Item 5"});
+                m_combo.DataSource = tbl;
+                m_combo.DisplayMember = "content";
+                //m_combo.Items.AddRange(new object[] {"Item 1",
+                //        "Item 2",
+                //        "Item 3",
+                //        "Item 4",
+                //        "Item 5"});
                 m_combo.SelectedValueChanged += ctrl_ValueChanged;
             }
             
             public override string getValue()
             {
-                return m_combo.SelectedItem.ToString();
+                //string text;
+                //text = ((DataRow)m_combo.SelectedValue.Row).ItemArray[0].ToString();
+                //text = m_combo.SelectedItem.ToString();
+                return m_combo.Text;
             }
 
             public override void setValue(string text)
@@ -252,12 +255,13 @@ namespace CBV_KeToan
                 :base(dgv, new DateTimePicker())
             {
                 m_dtp = (DateTimePicker)getControl();
-                m_dtp.Format = DateTimePickerFormat.Short;
+                m_dtp.Format = DateTimePickerFormat.Custom;
+                m_dtp.CustomFormat = "yyyy-MM-dd";
                 m_dtp.ValueChanged += ctrl_ValueChanged;
             }
             public override string getValue()
             {
-                return m_dtp.Value.ToString();
+                return m_dtp.Value.ToShortDateString();
             }
             public override void setValue(string text)
             {
@@ -593,8 +597,13 @@ namespace CBV_KeToan
         myCustomCtrl m_customCtrl;
         private void showCustomCtrl(int col, int row)
         {
-            if (col == 3) { 
-                m_customCtrl = new myComboBox(dGV_receipt);
+            if (col == 3) {
+                BindingSource bs = new BindingSource();
+                DataTable tbl = new DataTable();
+                string sql = "select content from receipts_content;";
+                SQLiteDataAdapter da = new SQLiteDataAdapter(sql, m_dbConnection);
+                da.Fill(tbl);
+                m_customCtrl = new myComboBox(dGV_receipt, tbl);
             } else if (col == 1)
             {
                 m_customCtrl = new myDateTimePicker(dGV_receipt);
