@@ -23,13 +23,15 @@ namespace test_binding
         private TabPage tabPage2;   //internal payment
         private TabPage tabPage3;   //external payment
         private TabPage tabPage4;   //salary
-
+        
         public Form1()
         {
             InitializeComponent();
-
-            //m_contentProvider = lSqlContentProvider.getInstance();
+#if use_sqlite
             m_contentProvider = lSQLiteContentProvider.getInstance();
+#else
+            m_contentProvider = lSqlContentProvider.getInstance();
+#endif
 
             //tab control
             this.tabControl1 = new TabControl();

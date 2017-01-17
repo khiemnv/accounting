@@ -247,6 +247,7 @@ namespace test_binding
             public lDataContent createDataContent(lTableInfo tblInfo)
             {
                 lSqlDataContent data = new lSqlDataContent(tblInfo);
+                data.m_cp = this;
                 data.init(m_cnn);
                 return data;
             }
@@ -292,6 +293,7 @@ namespace test_binding
             public lDataContent createDataContent(lTableInfo tblInfo)
             {
                 lSQLiteDataContent data = new lSQLiteDataContent(tblInfo);
+                data.m_cp = this;
                 data.init(m_cnn);
                 return data;
             }
@@ -306,6 +308,7 @@ namespace test_binding
         /// </summary>
         class lDataContent
         {
+            public lContentProvider m_cp;
             public lTableInfo m_tblInfo;
             public BindingSource m_bindingSource = new BindingSource();
             protected lDataContent(lTableInfo tblInfo)

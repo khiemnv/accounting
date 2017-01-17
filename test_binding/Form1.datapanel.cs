@@ -40,7 +40,7 @@ namespace test_binding
                 m_dataContent = dataContent;
                 // Bind the DataGridView to the BindingSource
                 // and load the data from the database.
-                m_dataGridView = new myDataGridView(m_tblInfo);
+                m_dataGridView = new myDataGridView(m_tblInfo, m_dataContent.m_cp);
                 m_dataGridView.DataSource = m_dataContent.m_bindingSource;
 
                 m_reloadBtn.Text = "Reload";
