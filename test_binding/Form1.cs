@@ -115,6 +115,8 @@ namespace test_binding
                 : base()
             {
                 m_tblInfo = new lInternalPaymentTblInfo();
+                m_tblInfo.initLookupData(cp);
+
                 m_data = cp.createDataContent(m_tblInfo);
                 m_dataPanel = new lInterPaymentDataPanel(m_data);
                 m_searchPanel = new lInterPaymentSearchPanel(m_dataPanel);
@@ -127,6 +129,8 @@ namespace test_binding
             public lReceiptsPanel(lContentProvider cp) : base()
             {
                 m_tblInfo = new lReceiptsTblInfo();
+                m_tblInfo.initLookupData(cp);
+
                 m_data = cp.createDataContent(m_tblInfo);
                 m_dataPanel = new lReceiptsDataPanel(m_data);
                 m_searchPanel = new lReceiptsSearchPanel(m_dataPanel);
@@ -140,6 +144,8 @@ namespace test_binding
                 : base()
             {
                 m_tblInfo = new lExternalPaymentTblInfo();
+                m_tblInfo.initLookupData(cp);
+
                 m_data = cp.createDataContent(m_tblInfo);
                 m_dataPanel = new lExternalPaymentDataPanel(m_data);
                 m_searchPanel = new lExternalPaymentSearchPanel(m_dataPanel);
@@ -153,6 +159,8 @@ namespace test_binding
                 : base()
             {
                 m_tblInfo = new lSalaryTblInfo();
+                m_tblInfo.initLookupData(cp);
+
                 m_data = cp.createDataContent(m_tblInfo);
                 m_dataPanel = new lSalaryDataPanel(m_data);
                 m_searchPanel = new lSalarySearchPanel(m_dataPanel);

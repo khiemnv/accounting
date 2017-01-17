@@ -31,9 +31,19 @@ namespace test_binding
                 };
                 public string m_field;
                 public string m_alias;
+                public string m_lookupTbl;
+                public DataTable m_lookupData;
                 public lColType m_type;
+                public lColInfo(string field, string alias, lColType type, string lookupTbl)
+                {
+                    m_lookupTbl = lookupTbl;
+                    m_field = field;
+                    m_alias = alias;
+                    m_type = type;
+                }
                 public lColInfo(string field, string alias, lColType type)
                 {
+                    m_lookupTbl = null;
                     m_field = field;
                     m_alias = alias;
                     m_type = type;
@@ -43,6 +53,17 @@ namespace test_binding
             public string m_tblName;
             public string m_tblAlias;
             public string m_crtQry;
+            public virtual void initLookupData(lContentProvider cp)
+            {
+                foreach(lColInfo colInfo in m_cols)
+                {
+                    if (colInfo.m_lookupTbl != null)
+                    {
+                        string qry = string.Format("select * from {0}", colInfo.m_lookupTbl);
+                        colInfo.m_lookupData = cp.getData(qry);
+                    }
+                }
+            }
 #else
     public struct lColInfo
     {
@@ -94,7 +115,7 @@ namespace test_binding
                    new lColInfo( "date","Ngày Tháng", lColInfo.lColType.dateTime),
                    new lColInfo( "receipt_number","Mã Phiếu Thu", lColInfo.lColType.text),
                    new lColInfo( "name","Họ tên", lColInfo.lColType.text),
-                   new lColInfo( "content","Nội dung", lColInfo.lColType.text),
+                   new lColInfo( "content","Nội dung", lColInfo.lColType.text, "receipts_content"),
                    new lColInfo( "price","Số tiền", lColInfo.lColType.num),
                    new lColInfo( "note","Ghi chú", lColInfo.lColType.text),
                 };
@@ -134,7 +155,7 @@ namespace test_binding
                    new lColInfo( "payment_number","Mã Phiếu Chi", lColInfo.lColType.text),
                    new lColInfo( "name","Họ Tên", lColInfo.lColType.text),
                    new lColInfo( "content","Nội dung", lColInfo.lColType.text),
-                   new lColInfo( "group_name","Thuộc ban", lColInfo.lColType.text),
+                   new lColInfo( "group_name","Thuộc ban", lColInfo.lColType.text, "group_name"),
                    new lColInfo( "advance_payment","Tạm ứng", lColInfo.lColType.num),
                    new lColInfo( "reimbursement","Hoàn ứng", lColInfo.lColType.num),
                    new lColInfo( "actually_spent","Thực chi", lColInfo.lColType.num),

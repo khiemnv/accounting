@@ -58,7 +58,7 @@ namespace test_binding
             {
                 m_combo = (ComboBox)getControl();
                 m_combo.DataSource = tbl;
-                m_combo.DisplayMember = tbl.Columns[0].ColumnName;
+                m_combo.DisplayMember = tbl.Columns[1].ColumnName;
                 m_combo.SelectedValueChanged += ctrl_ValueChanged;
             }
 
@@ -134,17 +134,15 @@ namespace test_binding
                     m_customCtrl.reLocation();
                 }
             }
-            private void showCustomCtrl(int col, int row)
+            public virtual void showCustomCtrl(int col, int row)
             {
                 Debug.WriteLine("showDtp");
                 if (m_tblInfo.m_cols[col].m_type == lTableInfo.lColInfo.lColType.dateTime) { 
                     m_customCtrl = new myDateTimePicker(this);
                 }
-                else if (m_tblInfo.m_cols[col].m_field == "group_name")
+                else if (m_tblInfo.m_cols[col].m_lookupData != null)
                 {
-                    string sql = "select name from group_name;";
-                    DataTable tbl = m_cp.getData(sql);
-                    m_customCtrl = new myComboBox(this, tbl);
+                    m_customCtrl = new myComboBox(this, m_tblInfo.m_cols[col].m_lookupData);
                 }
                 if (m_customCtrl != null)
                 {
@@ -159,7 +157,7 @@ namespace test_binding
                     this.BeginEdit(true);
                 }
             }
-            private void hideCustomCtrl()
+            public virtual void hideCustomCtrl()
             {
                 if (m_customCtrl != null)
                 {
