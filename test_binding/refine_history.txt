@@ -15,14 +15,21 @@ lExternalPaymentSearchPanel
 
 # refine
 1. view
-	+ sum		  	| 
-	+ hide id col 	|OK
-	+ column name	|OK
-	+ search ctrl	|OK
+	+ sum
+	+ hide id col
+	+ column name
+	+ search ctrl
 	
 tableinfo
 	internal_payment
 	lInternalPaymentTblInfo
-2. clean
+2. clean code
 	+ receipt tbl
-	
+3. custom cell
+	+ DTP
+  + combobox
+  + auto add new row
+  + on scroll
+  + auto fill datetime to new row (set cell template)
+  + datetime short format (ToShortDateString)
+  + comboBox with dataTable

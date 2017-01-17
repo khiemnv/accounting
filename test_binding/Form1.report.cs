@@ -28,26 +28,21 @@ namespace test_binding
             public string m_pdfPath;    //print to pdf file
             public string m_dsName;     //data set name
 
-            protected SqlConnection m_cnn;
-            private DataSet m_ds = new DataSet();
-            public void init(SqlConnection cnn)
+            protected lContentProvider m_cp;
+
+            public lBaseReport(lContentProvider cp)
             {
-                m_cnn = cnn;
+                m_cp = cp;
             }
             private DataTable loadData()
             {
                 string qry = string.Format("SELECT * FROM {0}", m_viewName);
-                SqlDataAdapter cmd = new SqlDataAdapter(qry, m_cnn);
-
-                // Create and fill a DataSet.
-                m_ds.Clear();
-                m_ds.DataSetName = m_dsName;
-                cmd.Fill(m_ds);
-                m_ds.Tables[0].TableName = m_viewName;
+                DataTable dt = m_cp.getData(qry);
+                dt.TableName = m_viewName;
 #if crt_xml
-            m_ds.WriteXml(m_xmlPath);
+                dt.WriteXml(m_xmlPath);
 #endif
-                return m_ds.Tables[0];
+                return dt;
             }
 
             private List<Stream> m_streams;
@@ -127,25 +122,15 @@ namespace test_binding
                 rpParam.Name = "details";
 
                 string qry = string.Format("select DISTINCT[year] from {0} order by [year] desc", m_viewName);
-                SqlCommand command = new SqlCommand(qry, m_cnn);
-                SqlDataReader reader = command.ExecuteReader();
-
-                // Call Read before accessing data.
-                int curYear = DateTime.Now.Year;
-                int i = 0;
-                while (reader.Read())
+                DataTable dt = m_cp.getData(qry);
+                for (int i = 0; i< 5;i++)
                 {
-                    string val = reader[0].ToString();
-                    i++;
-                    rpParam.Values.Add(val);
+                    string val = "0";
+                    if (i < dt.Rows.Count)
+                    {
+                        val = dt.Rows[i][0].ToString();
+                    }
                     Debug.WriteLine(string.Format("details({0}) {1}", i, val));
-                    if (i == 5) break;
-                }
-                // Call Close when done reading.
-                reader.Close();
-                while (i < 5)
-                {
-                    i++;
                     rpParam.Values.Add("0");
                 }
 
@@ -172,8 +157,8 @@ namespace test_binding
                 fs.Write(bytes, 0, bytes.Length);
                 fs.Close();
 #else
-            Export(report);
-            Print();
+                Export(report);
+                Print();
 #endif
             }
             public void Dispose()
@@ -189,7 +174,7 @@ namespace test_binding
 
         class lReceiptsReport : lBaseReport
         {
-            public lReceiptsReport()
+            public lReceiptsReport(lContentProvider cp):base(cp)
             {
                 m_rcName = "DataSet1";
                 m_viewName = "v_receipts";
@@ -204,7 +189,7 @@ namespace test_binding
         }
         class lInternalPaymentReport : lBaseReport
         {
-            public lInternalPaymentReport()
+            public lInternalPaymentReport(lContentProvider cp):base(cp)
             {
                 m_rcName = "DataSet1";
                 m_viewName = "v_internal_payment";
@@ -215,7 +200,7 @@ namespace test_binding
         }
         class lExternalPaymentReport : lBaseReport
         {
-            public lExternalPaymentReport()
+            public lExternalPaymentReport(lContentProvider cp) :base(cp)
             {
                 m_rcName = "DataSet1";
                 m_viewName = "v_external_payment";
@@ -226,7 +211,7 @@ namespace test_binding
         }
         class lSalaryReport : lBaseReport
         {
-            public lSalaryReport()
+            public lSalaryReport(lContentProvider cp):base(cp)
             {
                 m_rcName = "DataSet1";
                 m_viewName = "v_salary";

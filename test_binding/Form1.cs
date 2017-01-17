@@ -17,12 +17,7 @@ namespace test_binding
 
     public partial class Form1 : Form
     {
-#if use_sqlite
-        SQLiteConnection m_dbConnection;
-#else
-        SqlConnection m_dbConnection;
-#endif
-
+        private lContentProvider m_contentProvider;
         private TabControl tabControl1;
         private TabPage tabPage1;   //receipts
         private TabPage tabPage2;   //internal payment
@@ -32,6 +27,9 @@ namespace test_binding
         public Form1()
         {
             InitializeComponent();
+
+            //m_contentProvider = lSqlContentProvider.getInstance();
+            m_contentProvider = lSQLiteContentProvider.getInstance();
 
             //tab control
             this.tabControl1 = new TabControl();
@@ -107,65 +105,56 @@ namespace test_binding
                 m_panel.Controls.Add(m_dataPanel.m_dataGridView, 0, 2);
                 m_panel.SetColumnSpan(m_dataPanel.m_dataGridView, 2);
             }
-#if use_sqlite
-            public virtual void initCnn(SQLiteConnection cnn) { }
-#else
-            public virtual void initCnn(SqlConnection cnn)
-            {
-                m_data.init(cnn);
-                m_report.init(cnn);
-            }
-#endif
         }
 
         class lInterPaymentPanel : lBasePanel
         {
-            public lInterPaymentPanel()
+            public lInterPaymentPanel(lContentProvider cp)
                 : base()
             {
                 m_tblInfo = new lInternalPaymentTblInfo();
-                m_data = new lDataContent(m_tblInfo);
+                m_data = cp.createDataContent(m_tblInfo);
                 m_dataPanel = new lInterPaymentDataPanel(m_data);
                 m_searchPanel = new lInterPaymentSearchPanel(m_dataPanel);
-                m_report = new lInternalPaymentReport();
+                m_report = new lInternalPaymentReport(cp);
             }
         }
 
         class lReceiptsPanel : lBasePanel
         {
-            public lReceiptsPanel() : base()
+            public lReceiptsPanel(lContentProvider cp) : base()
             {
                 m_tblInfo = new lReceiptsTblInfo();
-                m_data = new lDataContent(m_tblInfo);
+                m_data = cp.createDataContent(m_tblInfo);
                 m_dataPanel = new lReceiptsDataPanel(m_data);
                 m_searchPanel = new lReceiptsSearchPanel(m_dataPanel);
-                m_report = new lReceiptsReport();
+                m_report = new lReceiptsReport(cp);
             }
         }
 
         class lExternalPaymentPanel : lBasePanel
         {
-            public lExternalPaymentPanel()
+            public lExternalPaymentPanel(lContentProvider cp)
                 : base()
             {
                 m_tblInfo = new lExternalPaymentTblInfo();
-                m_data = new lDataContent(m_tblInfo);
+                m_data = cp.createDataContent(m_tblInfo);
                 m_dataPanel = new lExternalPaymentDataPanel(m_data);
                 m_searchPanel = new lExternalPaymentSearchPanel(m_dataPanel);
-                m_report = new lExternalPaymentReport();
+                m_report = new lExternalPaymentReport(cp);
             }
         }
 
         class lSalaryPanel : lBasePanel
         {
-            public lSalaryPanel()
+            public lSalaryPanel(lContentProvider cp)
                 : base()
             {
                 m_tblInfo = new lSalaryTblInfo();
-                m_data = new lDataContent(m_tblInfo);
+                m_data = cp.createDataContent(m_tblInfo);
                 m_dataPanel = new lSalaryDataPanel(m_data);
                 m_searchPanel = new lSalarySearchPanel(m_dataPanel);
-                m_report = new lSalaryReport();
+                m_report = new lSalaryReport(cp);
             }
         }
 
@@ -177,7 +166,7 @@ namespace test_binding
         {
             TabPage newTabPage = new TabPage();
 
-            m_interPaymentPanel = new lInterPaymentPanel();
+            m_interPaymentPanel = new lInterPaymentPanel(m_contentProvider);
             m_interPaymentPanel.initCtrls();
             newTabPage.Controls.Add(m_interPaymentPanel.m_panel);
             newTabPage.Text = m_interPaymentPanel.m_tblInfo.m_tblAlias;
@@ -189,7 +178,7 @@ namespace test_binding
         {
             TabPage newTabPage = new TabPage();
 
-            m_receiptsPanel = new lReceiptsPanel();
+            m_receiptsPanel = new lReceiptsPanel(m_contentProvider);
             m_receiptsPanel.initCtrls();
             newTabPage.Controls.Add(m_receiptsPanel.m_panel);
             newTabPage.Text = m_receiptsPanel.m_tblInfo.m_tblAlias;
@@ -201,7 +190,7 @@ namespace test_binding
         {
             TabPage newTabPage = new TabPage();
 
-            m_externalPaymentPanel = new lExternalPaymentPanel();
+            m_externalPaymentPanel = new lExternalPaymentPanel(m_contentProvider);
             m_externalPaymentPanel.initCtrls();
             newTabPage.Controls.Add(m_externalPaymentPanel.m_panel);
             newTabPage.Text = m_externalPaymentPanel.m_tblInfo.m_tblAlias;
@@ -213,7 +202,7 @@ namespace test_binding
         {
             TabPage newTabPage = new TabPage();
 
-            m_salaryPanel = new lSalaryPanel();
+            m_salaryPanel = new lSalaryPanel(m_contentProvider);
             m_salaryPanel.initCtrls();
             newTabPage.Controls.Add(m_salaryPanel.m_panel);
             newTabPage.Text = m_salaryPanel.m_tblInfo.m_tblAlias;
@@ -222,66 +211,10 @@ namespace test_binding
 
         private void Form1_Load(object sender, System.EventArgs e)
         {
-#if use_sqlite
-            //create db
-            string dbPath = "test.db";
-            if (!System.IO.File.Exists(dbPath))
-            {
-                SQLiteConnection.CreateFile(dbPath);
-            }
-
-            m_dbConnection = new SQLiteConnection(string.Format("Data Source={0};Version=3;", dbPath));
-#else
-            string[] lines = System.IO.File.ReadAllLines(@"..\..\config.txt");
-            //string cnnStr = "Data Source=DESKTOP-GOEF1DS\\SQLEXPRESS;Initial Catalog=accounting;Integrated Security=true";
-            string cnnStr = lines[0];
-            m_dbConnection = new SqlConnection(cnnStr);
-#endif
-            m_dbConnection.Open();
-
-#if crt_tbl
-            List<string> crtTblQry = new List<string>();
-            crtTblQry.Add(m_receiptsPanel.m_tblInfo.m_crtQry);
-            crtTblQry.Add(m_interPaymentPanel.m_tblInfo.m_crtQry);
-            crtTblQry.Add(m_externalPaymentPanel.m_tblInfo.m_crtQry);
-            crtTblQry.Add(m_salaryPanel.m_tblInfo.m_crtQry);
-
-            foreach (string sql in crtTblQry)
-            {
-#if use_sqlite
-                SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
-#else
-                SqlCommand command = new SqlCommand(sql, m_dbConnection);
-#endif
-                command.ExecuteNonQuery();
-            }
-#endif
-
-            //load payment panel data
-            m_interPaymentPanel.initCnn(m_dbConnection);
-#if pre_load
-            m_interPaymentPanel.m_data.GetData();
-#endif
-
-            m_receiptsPanel.initCnn(m_dbConnection);
-#if pre_load
-            m_receiptsPanel.m_data.GetData();
-#endif
-
-            m_externalPaymentPanel.initCnn(m_dbConnection);
-#if pre_load
-            m_externalPaymentPanel.m_data.GetData();
-#endif
-
-            m_salaryPanel.initCnn(m_dbConnection);
-#if pre_load
-            m_salaryPanel.m_data.GetData();
-#endif
         }
 
         private void Form1_Resize(object sender, EventArgs e)
         {
-
         }
     }
 }
