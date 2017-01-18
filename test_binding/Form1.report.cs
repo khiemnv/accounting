@@ -27,17 +27,17 @@ namespace test_binding
 #endif
             public string m_pdfPath;    //print to pdf file
             public string m_dsName;     //data set name
-
-            protected lContentProvider m_cp;
-
-            public lBaseReport(lContentProvider cp)
+            lDataSync m_data;
+            public lBaseReport()
             {
-                m_cp = cp;
             }
             private DataTable loadData()
             {
-                string qry = string.Format("SELECT * FROM {0}", m_viewName);
-                DataTable dt = m_cp.getData(qry);
+                //string qry = string.Format("SELECT * FROM {0}", m_viewName);
+                //DataTable dt = m_cp.getData(qry);
+                m_data = s_contentProvider.CreateDataSync(m_viewName);
+                m_data.LoadData();
+                DataTable dt = m_data.m_dataSource;
                 dt.TableName = m_viewName;
 #if crt_xml
                 dt.WriteXml(m_xmlPath);
@@ -122,7 +122,7 @@ namespace test_binding
                 rpParam.Name = "details";
 
                 string qry = string.Format("select DISTINCT[year] from {0} order by [year] desc", m_viewName);
-                DataTable dt = m_cp.getData(qry);
+                DataTable dt = s_contentProvider.GetData(qry);
                 for (int i = 0; i< 5;i++)
                 {
                     string val = "0";
@@ -174,7 +174,7 @@ namespace test_binding
 
         class lReceiptsReport : lBaseReport
         {
-            public lReceiptsReport(lContentProvider cp):base(cp)
+            public lReceiptsReport():base()
             {
                 m_rcName = "DataSet1";
                 m_viewName = "v_receipts";
@@ -189,33 +189,33 @@ namespace test_binding
         }
         class lInternalPaymentReport : lBaseReport
         {
-            public lInternalPaymentReport(lContentProvider cp):base(cp)
+            public lInternalPaymentReport():base()
             {
                 m_rcName = "DataSet1";
                 m_viewName = "v_internal_payment";
-                m_rdlcPath = @"..\..\internal_payment.rdlc";
+                m_rdlcPath = @"..\..\rpt_interpayment.rdlc";
                 m_dsName = "DataSet1";
                 m_pdfPath = @"..\..\report.pdf";
             }
         }
         class lExternalPaymentReport : lBaseReport
         {
-            public lExternalPaymentReport(lContentProvider cp) :base(cp)
+            public lExternalPaymentReport() :base()
             {
                 m_rcName = "DataSet1";
                 m_viewName = "v_external_payment";
-                m_rdlcPath = @"..\..\external_payment.rdlc";
+                m_rdlcPath = @"..\..\rpt_exterpayment.rdlc";
                 m_dsName = "DataSet1";
                 m_pdfPath = @"..\..\report.pdf";
             }
         }
         class lSalaryReport : lBaseReport
         {
-            public lSalaryReport(lContentProvider cp):base(cp)
+            public lSalaryReport():base()
             {
                 m_rcName = "DataSet1";
                 m_viewName = "v_salary";
-                m_rdlcPath = @"..\..\Report1.rdlc";
+                m_rdlcPath = @"..\..\rpt_salary.rdlc";
                 m_dsName = "DataSet1";
                 m_pdfPath = @"..\..\report.pdf";
             }

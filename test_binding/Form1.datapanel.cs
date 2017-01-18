@@ -33,15 +33,14 @@ namespace test_binding
             public DataGridView m_dataGridView;
 
             lDataContent m_dataContent;
-            public lTableInfo m_tblInfo {get { return m_dataContent.m_tblInfo; } }
+            public lTableInfo m_tblInfo;
 
-            public lDataPanel(lDataContent dataContent)
+            public lDataPanel(lTableInfo tblInfo)
             {
-                m_dataContent = dataContent;
+                m_tblInfo = tblInfo;
                 // Bind the DataGridView to the BindingSource
                 // and load the data from the database.
-                m_dataGridView = new myDataGridView(m_tblInfo, m_dataContent.m_cp);
-                m_dataGridView.DataSource = m_dataContent.m_bindingSource;
+                m_dataGridView = new myDataGridView(m_tblInfo);
 
                 m_reloadBtn.Text = "Reload";
                 m_submitBtn.Text = "Save";
@@ -139,6 +138,12 @@ namespace test_binding
                 Int64 sum = getSum();
                 m_sumTxt.Text = sum.ToString();
             }
+            public virtual void LoadData()
+            {
+                m_tblInfo.LoadData();
+                m_dataContent = s_contentProvider.CreateDataContent(m_tblInfo.m_tblName);
+                m_dataGridView.DataSource = m_dataContent.m_bindingSource;
+            }
         }
 
         class lInterPaymentDataPanel : lDataPanel
@@ -150,8 +155,8 @@ namespace test_binding
             private Int64 reimbursement_sum;
             private Int64 actually_spent_sum;
 
-            public lInterPaymentDataPanel(lDataContent dataContent)
-                    : base(dataContent)
+            public lInterPaymentDataPanel()
+                    : base(new lInternalPaymentTblInfo())
             {
             }
 
@@ -175,8 +180,8 @@ namespace test_binding
             const int price_col = 5;
             private Int64 price_sum;
 
-            public lReceiptsDataPanel(lDataContent dataContent)
-                    : base(dataContent)
+            public lReceiptsDataPanel()
+                    : base(new lReceiptsTblInfo())
             {
             }
 
@@ -196,8 +201,8 @@ namespace test_binding
             const int spent_col = 6;
             private Int64 spent_sum;
 
-            public lExternalPaymentDataPanel(lDataContent dataContent)
-                    : base(dataContent)
+            public lExternalPaymentDataPanel()
+                    : base(new lExternalPaymentTblInfo())
             {
             }
 
@@ -217,8 +222,8 @@ namespace test_binding
             const int salary_col = 7;
             private Int64 spent_sum;
 
-            public lSalaryDataPanel(lDataContent dataContent)
-                    : base(dataContent)
+            public lSalaryDataPanel()
+                    : base(new lSalaryTblInfo())
             {
 #if false
                 //update data grid view hdr

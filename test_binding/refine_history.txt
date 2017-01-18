@@ -33,3 +33,8 @@ tableinfo
   + auto fill datetime to new row (set cell template)
   + datetime short format (ToShortDateString)
   + comboBox with dataTable
+  
+4. redesign
+  + content provider
+  + load data
+  + search ctrl text - auto complete

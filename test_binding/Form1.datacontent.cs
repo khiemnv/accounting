@@ -32,7 +32,7 @@ namespace test_binding
                 public string m_field;
                 public string m_alias;
                 public string m_lookupTbl;
-                public DataTable m_lookupData;
+                public lDataSync m_lookupData;
                 public lColType m_type;
                 public lColInfo(string field, string alias, lColType type, string lookupTbl)
                 {
@@ -53,14 +53,14 @@ namespace test_binding
             public string m_tblName;
             public string m_tblAlias;
             public string m_crtQry;
-            public virtual void initLookupData(lContentProvider cp)
+            public virtual void LoadData()
             {
-                foreach(lColInfo colInfo in m_cols)
+                foreach (lColInfo colInfo in m_cols)
                 {
                     if (colInfo.m_lookupTbl != null)
                     {
-                        string qry = string.Format("select * from {0}", colInfo.m_lookupTbl);
-                        colInfo.m_lookupData = cp.getData(qry);
+                        colInfo.m_lookupData = s_contentProvider.CreateDataSync(colInfo.m_lookupTbl);
+                        colInfo.m_lookupData.LoadData();
                     }
                 }
             }
@@ -185,7 +185,7 @@ namespace test_binding
                    new lColInfo( "payment_number","Mã Phiếu Chi", lColInfo.lColType.text),
                    new lColInfo( "name","Họ Tên", lColInfo.lColType.text),
                    new lColInfo( "content","Nội dung", lColInfo.lColType.text),
-                   new lColInfo( "group_name","Thuộc ban", lColInfo.lColType.text),
+                   new lColInfo( "group_name","Thuộc ban", lColInfo.lColType.text, "group_name"),
                    new lColInfo( "spent","Số tiền", lColInfo.lColType.num),
                    new lColInfo( "note","Ghi Chú", lColInfo.lColType.text),
                 };
@@ -214,7 +214,7 @@ namespace test_binding
                    new lColInfo( "date","Ngày Tháng", lColInfo.lColType.dateTime),
                    new lColInfo( "payment_number","Mã Phiếu Chi", lColInfo.lColType.text),
                    new lColInfo( "name","Họ Tên", lColInfo.lColType.text),
-                   new lColInfo( "group_name","Thuộc ban", lColInfo.lColType.text),
+                   new lColInfo( "group_name","Thuộc ban", lColInfo.lColType.text, "group_name"),
                    new lColInfo( "content","Nội dung", lColInfo.lColType.text),
                    new lColInfo( "salary","Số tiền", lColInfo.lColType.num),
                    new lColInfo( "note","Ghi Chú", lColInfo.lColType.text),
@@ -224,22 +224,24 @@ namespace test_binding
 
         interface lContentProvider
         {
-            DataTable getData(string qry);
-            object getCnn();
-            lDataContent createDataContent(lTableInfo tblInfo);
+            lDataContent CreateDataContent(string tblName);
+            lDataSync CreateDataSync(string tblName);
+            DataTable GetData(string qry);
         }
         class lSqlContentProvider : lContentProvider
         {
             static lSqlContentProvider m_instance;
             public static lContentProvider getInstance()
             {
-                if (m_instance == null) {
+                if (m_instance == null)
+                {
                     m_instance = new lSqlContentProvider();
                 }
                 return m_instance;
             }
 
-            lSqlContentProvider() {
+            lSqlContentProvider()
+            {
                 string[] lines = System.IO.File.ReadAllLines(@"..\..\config.txt");
                 //string cnnStr = "Data Source=DESKTOP-GOEF1DS\\SQLEXPRESS;Initial Catalog=accounting;Integrated Security=true";
                 string cnnStr = lines[0];
@@ -249,28 +251,28 @@ namespace test_binding
 
             private SqlConnection m_cnn;
 
-            public DataTable getData(string qry)
+            public lDataContent CreateDataContent(string tblName)
             {
-                SqlDataAdapter sda = new SqlDataAdapter();
-                sda.SelectCommand = new SqlCommand(qry, m_cnn);
+                lSqlDataContent data = new lSqlDataContent(tblName, m_cnn);
+                return data;
+            }
 
+            public lDataSync CreateDataSync(string tblName)
+            {
+                lDataContent dataContent = CreateDataContent(tblName);
+                lDataSync dataSync = new lDataSync(dataContent);
+                return dataSync;
+            }
+
+            public DataTable GetData(string qry)
+            {
+                SqlDataAdapter dataAdapter = new SqlDataAdapter();
+                dataAdapter.SelectCommand = new SqlCommand(qry, m_cnn);
                 // Populate a new data table and bind it to the BindingSource.
                 DataTable table = new DataTable();
                 table.Locale = System.Globalization.CultureInfo.InvariantCulture;
-                sda.Fill(table);
+                dataAdapter.Fill(table);
                 return table;
-            }
-            public object getCnn()
-            {
-                return m_cnn;
-            }
-
-            public lDataContent createDataContent(lTableInfo tblInfo)
-            {
-                lSqlDataContent data = new lSqlDataContent(tblInfo);
-                data.m_cp = this;
-                data.init(m_cnn);
-                return data;
             }
         }
         class lSQLiteContentProvider : lContentProvider
@@ -282,7 +284,8 @@ namespace test_binding
                 return m_instance;
             }
 
-            lSQLiteContentProvider() {
+            lSQLiteContentProvider()
+            {
                 string dbPath = "test.db";
                 if (!System.IO.File.Exists(dbPath))
                 {
@@ -294,29 +297,22 @@ namespace test_binding
 
             private SQLiteConnection m_cnn;
 
-            public DataTable getData(string qry)
+            public lDataContent CreateDataContent(string tblName)
             {
-                SQLiteDataAdapter sda = new SQLiteDataAdapter();
-                sda.SelectCommand = new SQLiteCommand(qry, m_cnn);
-
-                // Populate a new data table and bind it to the BindingSource.
-                DataTable table = new DataTable();
-                table.Locale = System.Globalization.CultureInfo.InvariantCulture;
-                sda.Fill(table);
-                return table;
+                lSQLiteDataContent dataContent = new lSQLiteDataContent(tblName, m_cnn);
+                return dataContent;
             }
 
-            public object getCnn()
+            public lDataSync CreateDataSync(string tblName)
             {
-                return m_cnn;
+                lSQLiteDataContent dataContent = new lSQLiteDataContent(tblName, m_cnn);
+                lDataSync dataSync = new lDataSync(dataContent);
+                return dataSync;
             }
 
-            public lDataContent createDataContent(lTableInfo tblInfo)
+            public DataTable GetData(string qry)
             {
-                lSQLiteDataContent data = new lSQLiteDataContent(tblInfo);
-                data.m_cp = this;
-                data.init(m_cnn);
-                return data;
+                throw new NotImplementedException();
             }
         }
 
@@ -329,14 +325,12 @@ namespace test_binding
         /// </summary>
         class lDataContent
         {
-            public lContentProvider m_cp;
-            public lTableInfo m_tblInfo;
-            public BindingSource m_bindingSource = new BindingSource();
-            protected lDataContent(lTableInfo tblInfo)
+            public BindingSource m_bindingSource;
+            protected string m_table;
+            protected lDataContent()
             {
-                m_tblInfo = tblInfo;
+                m_bindingSource = new BindingSource();
             }
-            public string m_table { get { return m_tblInfo.m_tblName; } }
             public virtual void Search(List<string> exprs, List<lEntity> arr) { }
             public virtual void Reload() { }
             public virtual void Submit() { }
@@ -344,21 +338,17 @@ namespace test_binding
         class lSQLiteDataContent : lDataContent
         {
             private SQLiteConnection m_cnn;
-            private SQLiteDataAdapter m_dataAdapter = new SQLiteDataAdapter();
+            private SQLiteDataAdapter m_dataAdapter;
 
-            public lSQLiteDataContent(lTableInfo tblInfo) : base(tblInfo)
+            public lSQLiteDataContent(string tblName, SQLiteConnection cnn)
+                : base()
             {
-            }
-
-            public void init(SQLiteConnection cnn)
-            {
+                m_table = tblName;
                 m_cnn = cnn;
-                //create table
-                SQLiteCommand command = new SQLiteCommand(m_tblInfo.m_crtQry, m_cnn);
-                command.ExecuteNonQuery();
-
-                m_dataAdapter.SelectCommand = new SQLiteCommand(string.Format("select * from {0}", m_table), cnn);
+                m_dataAdapter = new SQLiteDataAdapter();
+                m_dataAdapter.SelectCommand = new SQLiteCommand(string.Format("select * form {0}", tblName), cnn);
             }
+
             public override void Search(List<string> exprs, List<lEntity> arr)
             {
                 string sql = string.Format("select * from {0} ", m_table);
@@ -409,17 +399,18 @@ namespace test_binding
                 m_bindingSource.DataSource = table;
             }
         }
-        class lSqlDataContent:lDataContent
+        class lSqlDataContent : lDataContent
         {
             private SqlConnection m_cnn;
-            private SqlDataAdapter m_dataAdapter = new SqlDataAdapter();
-            
-            public lSqlDataContent(lTableInfo tblInfo):base(tblInfo) {
-            }
-            public void init(SqlConnection cnn)
+            private SqlDataAdapter m_dataAdapter;
+
+            public lSqlDataContent(string tblName, SqlConnection cnn)
+                : base()
             {
+                m_table = tblName;
                 m_cnn = cnn;
-                m_dataAdapter.SelectCommand = new SqlCommand(string.Format("select * from {0}", m_table), cnn);
+                m_dataAdapter = new SqlDataAdapter();
+                m_dataAdapter.SelectCommand = new SqlCommand(string.Format("select * from {0}", tblName), cnn);
             }
             public override void Search(List<string> exprs, List<lEntity> arr)
             {
@@ -449,7 +440,8 @@ namespace test_binding
                 using (SqlCommandBuilder builder = new SqlCommandBuilder(m_dataAdapter))
                 {
                     DataTable dt = (DataTable)m_bindingSource.DataSource;
-                    if (dt != null) {
+                    if (dt != null)
+                    {
                         m_dataAdapter.UpdateCommand = builder.GetUpdateCommand();
                         m_dataAdapter.Update(dt);
                     }
@@ -462,12 +454,37 @@ namespace test_binding
             }
             private void GetData(SqlCommand selectCommand)
             {
-                    m_dataAdapter.SelectCommand = selectCommand;
-                    // Populate a new data table and bind it to the BindingSource.
-                    DataTable table = new DataTable();
-                    table.Locale = System.Globalization.CultureInfo.InvariantCulture;
-                    m_dataAdapter.Fill(table);
-                    m_bindingSource.DataSource = table;
+                m_dataAdapter.SelectCommand = selectCommand;
+                // Populate a new data table and bind it to the BindingSource.
+                DataTable table = new DataTable();
+                table.Locale = System.Globalization.CultureInfo.InvariantCulture;
+                m_dataAdapter.Fill(table);
+                m_bindingSource.DataSource = table;
+            }
+        }
+
+        class lDataSync
+        {
+            private lDataContent m_data;
+            public lDataSync(lDataContent data)
+            {
+                m_data = data;
+            }
+            public void LoadData()
+            {
+                m_data.Reload();
+            }
+            public DataTable m_dataSource
+            {
+                get { return (DataTable)m_data.m_bindingSource.DataSource; }
+            }
+            public void Add(string newValue)
+            {
+                //single col tables
+                DataRow newRow = m_dataSource.NewRow();
+                newRow[1] = newValue;
+                m_dataSource.Rows.Add(newRow);
+                m_data.Submit();
             }
         }
     }

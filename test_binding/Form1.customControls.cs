@@ -105,12 +105,10 @@ namespace test_binding
         {
             lTableInfo m_tblInfo;
             myCustomCtrl m_customCtrl;
-            lContentProvider m_cp;
 
-            public myDataGridView(lTableInfo tblInfo, lContentProvider cp)
+            public myDataGridView(lTableInfo tblInfo)
             {
                 m_tblInfo = tblInfo;
-                m_cp = cp;
             }
 
             protected override void OnCellEndEdit(DataGridViewCellEventArgs e)
@@ -142,7 +140,7 @@ namespace test_binding
                 }
                 else if (m_tblInfo.m_cols[col].m_lookupData != null)
                 {
-                    m_customCtrl = new myComboBox(this, m_tblInfo.m_cols[col].m_lookupData);
+                    m_customCtrl = new myComboBox(this, m_tblInfo.m_cols[col].m_lookupData.m_dataSource);
                 }
                 if (m_customCtrl != null)
                 {

@@ -15,9 +15,11 @@ using System.Data.SqlClient;
 namespace test_binding
 {
 
+
     public partial class Form1 : Form
     {
-        private lContentProvider m_contentProvider;
+        static lContentProvider s_contentProvider;
+
         private TabControl tabControl1;
         private TabPage tabPage1;   //receipts
         private TabPage tabPage2;   //internal payment
@@ -30,7 +32,7 @@ namespace test_binding
 #if use_sqlite
             m_contentProvider = lSQLiteContentProvider.getInstance();
 #else
-            m_contentProvider = lSqlContentProvider.getInstance();
+            s_contentProvider = lSqlContentProvider.getInstance();
 #endif
 
             //tab control
@@ -63,8 +65,8 @@ namespace test_binding
 
         class lBasePanel
         {
-            public lTableInfo m_tblInfo;
-            public lDataContent m_data;
+            public lTableInfo m_tblInfo { get { return m_dataPanel.m_tblInfo; } }
+            //public lDataContent m_data;
             public lDataPanel m_dataPanel;
             public lSearchPanel m_searchPanel;
             public lBaseReport m_report;
@@ -107,64 +109,53 @@ namespace test_binding
                 m_panel.Controls.Add(m_dataPanel.m_dataGridView, 0, 2);
                 m_panel.SetColumnSpan(m_dataPanel.m_dataGridView, 2);
             }
+
+            public virtual void LoadData()
+            {
+                m_dataPanel.LoadData();
+            }
         }
 
         class lInterPaymentPanel : lBasePanel
         {
-            public lInterPaymentPanel(lContentProvider cp)
+            public lInterPaymentPanel()
                 : base()
             {
-                m_tblInfo = new lInternalPaymentTblInfo();
-                m_tblInfo.initLookupData(cp);
-
-                m_data = cp.createDataContent(m_tblInfo);
-                m_dataPanel = new lInterPaymentDataPanel(m_data);
+                m_dataPanel = new lInterPaymentDataPanel();
                 m_searchPanel = new lInterPaymentSearchPanel(m_dataPanel);
-                m_report = new lInternalPaymentReport(cp);
+                m_report = new lInternalPaymentReport();
             }
         }
 
         class lReceiptsPanel : lBasePanel
         {
-            public lReceiptsPanel(lContentProvider cp) : base()
+            public lReceiptsPanel() : base()
             {
-                m_tblInfo = new lReceiptsTblInfo();
-                m_tblInfo.initLookupData(cp);
-
-                m_data = cp.createDataContent(m_tblInfo);
-                m_dataPanel = new lReceiptsDataPanel(m_data);
+                m_dataPanel = new lReceiptsDataPanel();
                 m_searchPanel = new lReceiptsSearchPanel(m_dataPanel);
-                m_report = new lReceiptsReport(cp);
+                m_report = new lReceiptsReport();
             }
         }
 
         class lExternalPaymentPanel : lBasePanel
         {
-            public lExternalPaymentPanel(lContentProvider cp)
+            public lExternalPaymentPanel()
                 : base()
             {
-                m_tblInfo = new lExternalPaymentTblInfo();
-                m_tblInfo.initLookupData(cp);
-
-                m_data = cp.createDataContent(m_tblInfo);
-                m_dataPanel = new lExternalPaymentDataPanel(m_data);
+                m_dataPanel = new lExternalPaymentDataPanel();
                 m_searchPanel = new lExternalPaymentSearchPanel(m_dataPanel);
-                m_report = new lExternalPaymentReport(cp);
+                m_report = new lExternalPaymentReport();
             }
         }
 
         class lSalaryPanel : lBasePanel
         {
-            public lSalaryPanel(lContentProvider cp)
+            public lSalaryPanel()
                 : base()
             {
-                m_tblInfo = new lSalaryTblInfo();
-                m_tblInfo.initLookupData(cp);
-
-                m_data = cp.createDataContent(m_tblInfo);
-                m_dataPanel = new lSalaryDataPanel(m_data);
+                m_dataPanel = new lSalaryDataPanel();
                 m_searchPanel = new lSalarySearchPanel(m_dataPanel);
-                m_report = new lSalaryReport(cp);
+                m_report = new lSalaryReport();
             }
         }
 
@@ -176,7 +167,7 @@ namespace test_binding
         {
             TabPage newTabPage = new TabPage();
 
-            m_interPaymentPanel = new lInterPaymentPanel(m_contentProvider);
+            m_interPaymentPanel = new lInterPaymentPanel();
             m_interPaymentPanel.initCtrls();
             newTabPage.Controls.Add(m_interPaymentPanel.m_panel);
             newTabPage.Text = m_interPaymentPanel.m_tblInfo.m_tblAlias;
@@ -188,7 +179,7 @@ namespace test_binding
         {
             TabPage newTabPage = new TabPage();
 
-            m_receiptsPanel = new lReceiptsPanel(m_contentProvider);
+            m_receiptsPanel = new lReceiptsPanel();
             m_receiptsPanel.initCtrls();
             newTabPage.Controls.Add(m_receiptsPanel.m_panel);
             newTabPage.Text = m_receiptsPanel.m_tblInfo.m_tblAlias;
@@ -200,7 +191,7 @@ namespace test_binding
         {
             TabPage newTabPage = new TabPage();
 
-            m_externalPaymentPanel = new lExternalPaymentPanel(m_contentProvider);
+            m_externalPaymentPanel = new lExternalPaymentPanel();
             m_externalPaymentPanel.initCtrls();
             newTabPage.Controls.Add(m_externalPaymentPanel.m_panel);
             newTabPage.Text = m_externalPaymentPanel.m_tblInfo.m_tblAlias;
@@ -212,7 +203,7 @@ namespace test_binding
         {
             TabPage newTabPage = new TabPage();
 
-            m_salaryPanel = new lSalaryPanel(m_contentProvider);
+            m_salaryPanel = new lSalaryPanel();
             m_salaryPanel.initCtrls();
             newTabPage.Controls.Add(m_salaryPanel.m_panel);
             newTabPage.Text = m_salaryPanel.m_tblInfo.m_tblAlias;
@@ -221,6 +212,10 @@ namespace test_binding
 
         private void Form1_Load(object sender, System.EventArgs e)
         {
+            m_externalPaymentPanel.LoadData();
+            m_interPaymentPanel.LoadData();
+            m_receiptsPanel.LoadData();
+            m_salaryPanel.LoadData();
         }
 
         private void Form1_Resize(object sender, EventArgs e)

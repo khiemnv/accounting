@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System;
+using System.Data;
 
 namespace test_binding
 {
@@ -29,6 +30,7 @@ namespace test_binding
                 dateTime,
                 num,
             };
+            public lTableInfo.lColInfo m_colInfo;
             public string m_fieldName;
             public string m_alias;
             public ctrlType m_type;
@@ -68,6 +70,10 @@ namespace test_binding
                 //    foreach (lEntity param in exprParams) arr.Add(param);
                 //}
             }
+
+            public virtual void LoadData()
+            {
+            }
         };
         class lSearchCtrlText : lSearchCtrl
         {
@@ -98,6 +104,22 @@ namespace test_binding
                         exprs.Add(string.Format("({0}=@{0})", m_fieldName));
                         arr.Add(new lEntity(string.Format("@{0}", m_fieldName), m_text.Text));
                     }
+                }
+            }
+            public override void LoadData()
+            {
+                if (m_colInfo.m_lookupData != null)
+                {
+                    m_text.AutoCompleteMode = AutoCompleteMode.Append;
+                    m_text.AutoCompleteSource = AutoCompleteSource.CustomSource;
+
+                    AutoCompleteStringCollection col = new AutoCompleteStringCollection();
+                    DataTable tbl = m_colInfo.m_lookupData.m_dataSource;
+                    foreach (DataRow row in tbl.Rows)
+                    {
+                        col.Add(row[1].ToString());
+                    }
+                    m_text.AutoCompleteCustomSource = col;
                 }
             }
         }
@@ -199,6 +221,7 @@ namespace test_binding
                     case lTableInfo.lColInfo.lColType.text:
                         lSearchCtrlText textCtrl = new lSearchCtrlText(col.m_field, col.m_alias, lSearchCtrl.ctrlType.text, pos, size);
                         if (bMath) textCtrl.m_mode = lSearchCtrlText.SearchMode.match;
+                        textCtrl.m_colInfo = col;
                         return textCtrl;
                     case lTableInfo.lColInfo.lColType.dateTime:
                         lSearchCtrlDate dateCtrl = new lSearchCtrlDate(col.m_field, col.m_alias, lSearchCtrl.ctrlType.dateTime, pos, size);
@@ -222,6 +245,13 @@ namespace test_binding
                     searchCtrl.updateSearchParams(exprs, arr);
                 }
                 m_dataPanel.search(exprs, arr);
+            }
+            public virtual void LoadData()
+            {
+                foreach(lSearchCtrl ctrl in m_searchCtrls)
+                {
+                    ctrl.LoadData();
+                }
             }
         }
         class lInterPaymentSearchPanel : lSearchPanel
