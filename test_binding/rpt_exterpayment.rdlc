@@ -567,6 +567,7 @@
                       <PaddingBottom>2pt</PaddingBottom>
                     </Style>
                   </Textbox>
+                  <rd:Selected>true</rd:Selected>
                 </CellContents>
               </TablixHeader>
             </TablixMember>
@@ -613,7 +614,7 @@
             <FilterExpression>=Fields!year.Value</FilterExpression>
             <Operator>Equal</Operator>
             <FilterValues>
-              <FilterValue>=Parameters!detail1.Value</FilterValue>
+              <FilterValue>=Parameters!details.Value(0)</FilterValue>
             </FilterValues>
           </Filter>
         </Filters>
@@ -622,7 +623,7 @@
         <Width>2in</Width>
         <ZIndex>1</ZIndex>
         <Visibility>
-          <Hidden>=Parameters!detail1.Value = 0</Hidden>
+          <Hidden>=Parameters!details.Value(0) = 0</Hidden>
         </Visibility>
         <Style>
           <Border>
@@ -974,7 +975,7 @@
             <FilterExpression>=Fields!year.Value</FilterExpression>
             <Operator>Equal</Operator>
             <FilterValues>
-              <FilterValue>=Parameters!detail2.Value</FilterValue>
+              <FilterValue>=Parameters!details.Value(1)</FilterValue>
             </FilterValues>
           </Filter>
         </Filters>
@@ -983,7 +984,7 @@
         <Width>2in</Width>
         <ZIndex>2</ZIndex>
         <Visibility>
-          <Hidden>=Parameters!detail2.Value = 0</Hidden>
+          <Hidden>=Parameters!details.Value(1) = 0</Hidden>
         </Visibility>
         <Style>
           <Border>
@@ -1437,7 +1438,7 @@
             <FilterExpression>=Fields!year.Value</FilterExpression>
             <Operator>Equal</Operator>
             <FilterValues>
-              <FilterValue>=Parameters!detail3.Value</FilterValue>
+              <FilterValue>=Parameters!details.Value(2)</FilterValue>
             </FilterValues>
           </Filter>
         </Filters>
@@ -1446,7 +1447,7 @@
         <Width>2in</Width>
         <ZIndex>6</ZIndex>
         <Visibility>
-          <Hidden>=Parameters!detail3.Value = 0</Hidden>
+          <Hidden>=Parameters!details.Value(2) = 0</Hidden>
         </Visibility>
         <Style>
           <Border>
@@ -1796,7 +1797,7 @@
             <FilterExpression>=Fields!year.Value</FilterExpression>
             <Operator>Equal</Operator>
             <FilterValues>
-              <FilterValue>=Parameters!detail4.Value</FilterValue>
+              <FilterValue>=Parameters!details.Value(3)</FilterValue>
             </FilterValues>
           </Filter>
         </Filters>
@@ -1805,7 +1806,7 @@
         <Width>2in</Width>
         <ZIndex>7</ZIndex>
         <Visibility>
-          <Hidden>=Parameters!detail4.Value = 0</Hidden>
+          <Hidden>=Parameters!details.Value(3) = 0</Hidden>
         </Visibility>
         <Style>
           <Border>
@@ -2155,7 +2156,7 @@
             <FilterExpression>=Fields!year.Value</FilterExpression>
             <Operator>Equal</Operator>
             <FilterValues>
-              <FilterValue>=Parameters!detail5.Value</FilterValue>
+              <FilterValue>=Parameters!details.Value(4)</FilterValue>
             </FilterValues>
           </Filter>
         </Filters>
@@ -2164,7 +2165,7 @@
         <Width>2in</Width>
         <ZIndex>8</ZIndex>
         <Visibility>
-          <Hidden>=Parameters!detail5.Value = 0</Hidden>
+          <Hidden>=Parameters!details.Value(4) = 0</Hidden>
         </Visibility>
         <Style>
           <Border>
@@ -2229,30 +2230,10 @@
     </DataSet>
   </DataSets>
   <ReportParameters>
-    <ReportParameter Name="detail1">
+    <ReportParameter Name="details">
       <DataType>Integer</DataType>
-      <Nullable>true</Nullable>
       <Prompt>ReportParameter1</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="detail2">
-      <DataType>Integer</DataType>
-      <Nullable>true</Nullable>
-      <Prompt>ReportParameter1</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="detail3">
-      <DataType>Integer</DataType>
-      <Nullable>true</Nullable>
-      <Prompt>ReportParameter1</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="detail4">
-      <DataType>Integer</DataType>
-      <Nullable>true</Nullable>
-      <Prompt>ReportParameter1</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="detail5">
-      <DataType>Integer</DataType>
-      <Nullable>true</Nullable>
-      <Prompt>ReportParameter1</Prompt>
+      <MultiValue>true</MultiValue>
     </ReportParameter>
   </ReportParameters>
   <rd:ReportUnitType>Inch</rd:ReportUnitType>

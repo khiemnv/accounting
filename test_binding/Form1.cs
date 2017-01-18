@@ -113,6 +113,7 @@ namespace test_binding
             public virtual void LoadData()
             {
                 m_dataPanel.LoadData();
+                m_searchPanel.LoadData();
             }
         }
 

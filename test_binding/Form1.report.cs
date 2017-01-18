@@ -131,7 +131,7 @@ namespace test_binding
                         val = dt.Rows[i][0].ToString();
                     }
                     Debug.WriteLine(string.Format("details({0}) {1}", i, val));
-                    rpParam.Values.Add("0");
+                    rpParam.Values.Add(val);
                 }
 
                 // Set the report parameters for the report
@@ -178,7 +178,7 @@ namespace test_binding
             {
                 m_rcName = "DataSet1";
                 m_viewName = "v_receipts";
-                m_rdlcPath = @"..\..\receipts.rdlc";
+                m_rdlcPath = @"..\..\rpt_receipts.rdlc";
                 m_dsName = "DataSet1";
                 m_pdfPath = @"..\..\report.pdf";
             }

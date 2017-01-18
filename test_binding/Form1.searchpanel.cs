@@ -108,9 +108,9 @@ namespace test_binding
             }
             public override void LoadData()
             {
-                if (m_colInfo.m_lookupData != null)
+                if (m_colInfo!= null && m_colInfo.m_lookupData != null)
                 {
-                    m_text.AutoCompleteMode = AutoCompleteMode.Append;
+                    m_text.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
                     m_text.AutoCompleteSource = AutoCompleteSource.CustomSource;
 
                     AutoCompleteStringCollection col = new AutoCompleteStringCollection();
