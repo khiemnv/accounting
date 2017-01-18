@@ -36,8 +36,8 @@ namespace CBV_KeToan
             this.dGV_receipt = new System.Windows.Forms.DataGridView();
             this.btn_apply = new System.Windows.Forms.Button();
             this.btn_addNew = new System.Windows.Forms.Button();
-            this.lV_receipt = new System.Windows.Forms.ListView();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.btn_Search = new System.Windows.Forms.Button();
             this.tB_receipt = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -46,8 +46,8 @@ namespace CBV_KeToan
             this.dTP_startDate = new System.Windows.Forms.DateTimePicker();
             this.label1 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.content = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
+            this.content_cmb = new System.Windows.Forms.ComboBox();
+            this.content_txt = new System.Windows.Forms.TextBox();
             this.Receipts.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dGV_receipt)).BeginInit();
@@ -66,10 +66,10 @@ namespace CBV_KeToan
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.content_txt);
             this.tabPage1.Controls.Add(this.dGV_receipt);
             this.tabPage1.Controls.Add(this.btn_apply);
             this.tabPage1.Controls.Add(this.btn_addNew);
-            this.tabPage1.Controls.Add(this.lV_receipt);
             this.tabPage1.Controls.Add(this.groupBox1);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
@@ -106,18 +106,10 @@ namespace CBV_KeToan
             this.btn_addNew.UseVisualStyleBackColor = true;
             this.btn_addNew.Click += new System.EventHandler(this.btn_addNew_Click);
             // 
-            // lV_receipt
-            // 
-            this.lV_receipt.Location = new System.Drawing.Point(272, 6);
-            this.lV_receipt.Name = "lV_receipt";
-            this.lV_receipt.Size = new System.Drawing.Size(269, 141);
-            this.lV_receipt.TabIndex = 1;
-            this.lV_receipt.UseCompatibleStateImageBehavior = false;
-            // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.content_cmb);
             this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Controls.Add(this.content);
             this.groupBox1.Controls.Add(this.btn_Search);
             this.groupBox1.Controls.Add(this.tB_receipt);
             this.groupBox1.Controls.Add(this.label2);
@@ -131,6 +123,15 @@ namespace CBV_KeToan
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Search";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(18, 72);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(48, 13);
+            this.label3.TabIndex = 8;
+            this.label3.Text = "noi dung";
             // 
             // btn_Search
             // 
@@ -200,21 +201,20 @@ namespace CBV_KeToan
             this.tabPage2.Text = "tabPage2";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
-            // content
+            // content_cmb
             // 
-            this.content.Location = new System.Drawing.Point(82, 70);
-            this.content.Name = "content";
-            this.content.Size = new System.Drawing.Size(144, 20);
-            this.content.TabIndex = 7;
+            this.content_cmb.FormattingEnabled = true;
+            this.content_cmb.Location = new System.Drawing.Point(81, 73);
+            this.content_cmb.Name = "content_cmb";
+            this.content_cmb.Size = new System.Drawing.Size(146, 21);
+            this.content_cmb.TabIndex = 9;
             // 
-            // label3
+            // content_txt
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(18, 72);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(48, 13);
-            this.label3.TabIndex = 8;
-            this.label3.Text = "noi dung";
+            this.content_txt.Location = new System.Drawing.Point(283, 80);
+            this.content_txt.Name = "content_txt";
+            this.content_txt.Size = new System.Drawing.Size(136, 20);
+            this.content_txt.TabIndex = 5;
             // 
             // Form1
             // 
@@ -226,6 +226,7 @@ namespace CBV_KeToan
             this.Text = "CBV_KeToan";
             this.Receipts.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dGV_receipt)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
@@ -240,7 +241,6 @@ namespace CBV_KeToan
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.Button btn_apply;
         private System.Windows.Forms.Button btn_addNew;
-        private System.Windows.Forms.ListView lV_receipt;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button btn_Search;
         private System.Windows.Forms.TextBox tB_receipt;
@@ -252,7 +252,8 @@ namespace CBV_KeToan
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.DataGridView dGV_receipt;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox content;
+        private ComboBox content_cmb;
+        private TextBox content_txt;
     }
 }
 

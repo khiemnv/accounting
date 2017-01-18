@@ -54,8 +54,8 @@ namespace CBV_KeToan
             //dtp.TextChanged += new EventHandler(dtp_OnTextChange);
             //dtp.Visible = false;
 
-            content.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
-            content.AutoCompleteSource = AutoCompleteSource.HistoryList;
+            //content.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            //content.AutoCompleteSource = AutoCompleteSource.HistoryList;
 
 
             //dGV_receipt.CellClick += new DataGridViewCellEventHandler(dGV_receipt_CellClick);
@@ -74,6 +74,47 @@ namespace CBV_KeToan
             dGV_receipt.Scroll += DGV_receipt_Scroll;
 
             btn_apply.Click += new EventHandler(btn_apply_Click);
+
+            content_cmb.DataSource = getReceiptContent();
+            content_cmb.DisplayMember = "content";
+
+            //content_txt.TextChanged += Content_txt_TextChanged;
+            Content_txt_TextChanged(null, null);
+        }
+
+        private void Content_txt_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                Debug.WriteLine("Content_txt_TextChanged");
+                content_txt.AutoCompleteMode = AutoCompleteMode.Suggest;
+                content_txt.AutoCompleteSource = AutoCompleteSource.CustomSource;
+                AutoCompleteStringCollection col = new AutoCompleteStringCollection();
+                string sql = "select * from receipts_content";
+                SQLiteCommand cmd = new SQLiteCommand(sql, m_dbConnection);
+                SQLiteDataReader sdr = null;
+                sdr = cmd.ExecuteReader();
+                while (sdr.Read())
+                {
+                    col.Add(sdr["content"].ToString());
+                }
+                sdr.Close();
+
+                content_txt.AutoCompleteCustomSource = col;
+            }
+            catch
+            {
+            }
+
+        }
+
+        private DataTable getReceiptContent()
+        {
+            DataTable tbl = new DataTable();
+            string sql = "select content from receipts_content;";
+            SQLiteDataAdapter da = new SQLiteDataAdapter(sql, m_dbConnection);
+            da.Fill(tbl);
+            return tbl;
         }
 
         private void DGV_receipt_Scroll(object sender, ScrollEventArgs e)
@@ -261,7 +302,7 @@ namespace CBV_KeToan
             }
             public override string getValue()
             {
-                return m_dtp.Value.ToShortDateString();
+                return m_dtp.Value.ToString("yyyy-MM-dd");
             }
             public override void setValue(string text)
             {
@@ -598,7 +639,6 @@ namespace CBV_KeToan
         private void showCustomCtrl(int col, int row)
         {
             if (col == 3) {
-                BindingSource bs = new BindingSource();
                 DataTable tbl = new DataTable();
                 string sql = "select content from receipts_content;";
                 SQLiteDataAdapter da = new SQLiteDataAdapter(sql, m_dbConnection);
