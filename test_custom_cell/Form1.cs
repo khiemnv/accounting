@@ -285,6 +285,7 @@ namespace CBV_KeToan
 
             public override void setValue(string text)
             {
+                Debug.WriteLine("setValue:" + text);
                 m_combo.SelectedText = text;
             }
         }

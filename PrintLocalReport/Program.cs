@@ -395,7 +395,7 @@ public class Demo : IDisposable
 
     public static void Main(string[] args)
     {
-        using (lBaseReport demo = new lReceiptsReport())
+        using (lBaseReport demo = new lInternalPaymentReport())
         {
             string cnnStr = "Data Source=localhost\\SQLEXPRESS;Initial Catalog=accounting;Integrated Security=True;Pooling=False";
             SqlConnection conn = new SqlConnection(cnnStr);
