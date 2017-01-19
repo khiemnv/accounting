@@ -192,9 +192,15 @@ namespace test_binding
                 for (int i = 1; i < m_dataGridView.ColumnCount; i++)
                 {
                     m_dataGridView.Columns[i].HeaderText = tblInfo.m_cols[i].m_alias;
-                    if (tblInfo.m_cols[i].m_type == lTableInfo.lColInfo.lColType.currency)
+
+                    switch (tblInfo.m_cols[i].m_type)
                     {
-                        m_dataGridView.Columns[i].DefaultCellStyle.Format = "#0,0";
+                        case lTableInfo.lColInfo.lColType.currency:
+                            m_dataGridView.Columns[i].DefaultCellStyle.Format = "#0,0";
+                            break;
+                        case lTableInfo.lColInfo.lColType.dateTime:
+                            m_dataGridView.Columns[i].DefaultCellStyle.Format = "yyyy-MM-dd";
+                            break;
                     }
                     m_dataGridView.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                     m_dataGridView.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;

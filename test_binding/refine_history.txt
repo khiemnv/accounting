@@ -48,4 +48,4 @@ tableinfo
 7. refine table - unicode
   + fix combox set, get value
   + format sumtxt, cell type currency
-  
+8. format date time
