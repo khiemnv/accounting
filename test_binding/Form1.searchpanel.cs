@@ -29,6 +29,7 @@ namespace test_binding
                 text,
                 dateTime,
                 num,
+                currency
             };
             public lTableInfo.lColInfo m_colInfo;
             public string m_fieldName;
@@ -77,7 +78,7 @@ namespace test_binding
         };
         class lSearchCtrlText : lSearchCtrl
         {
-            private TextBox m_text = new TextBox();
+            protected TextBox m_text = new TextBox();
             public enum SearchMode
             {
                 like,
@@ -110,7 +111,7 @@ namespace test_binding
             {
                 if (m_colInfo!= null && m_colInfo.m_lookupData != null)
                 {
-                    m_text.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+                    m_text.AutoCompleteMode = AutoCompleteMode.Suggest;
                     m_text.AutoCompleteSource = AutoCompleteSource.CustomSource;
 
                     AutoCompleteStringCollection col = new AutoCompleteStringCollection();
@@ -174,6 +175,14 @@ namespace test_binding
                 m_mode = SearchMode.match;
             }
         }
+        class lSearchCtrlCurrency : lSearchCtrlText
+        {
+            public lSearchCtrlCurrency(string fieldName, string alias, ctrlType type, Point pos, Size size)
+                : base(fieldName, alias, type, pos, size)
+            {
+                m_mode = SearchMode.match;
+            }
+        }
 
         /// <summary>
         /// search panel
@@ -229,6 +238,9 @@ namespace test_binding
                     case lTableInfo.lColInfo.lColType.num:
                         lSearchCtrlNum numCtrl = new lSearchCtrlNum(col.m_field, col.m_alias, lSearchCtrl.ctrlType.num, pos, size);
                         return numCtrl;
+                    case lTableInfo.lColInfo.lColType.currency:
+                        lSearchCtrlCurrency currencyCtrl = new lSearchCtrlCurrency(col.m_field, col.m_alias, lSearchCtrl.ctrlType.currency, pos, size);
+                        return currencyCtrl;
                 }
                 return null;
             }

@@ -1,9 +1,11 @@
 ﻿//#define DEBUG_DRAWING
+#define use_custom_dgv
 
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System;
 using System.Drawing;
+using System.Diagnostics;
 
 namespace test_binding
 {
@@ -38,9 +40,6 @@ namespace test_binding
             public lDataPanel(lTableInfo tblInfo)
             {
                 m_tblInfo = tblInfo;
-                // Bind the DataGridView to the BindingSource
-                // and load the data from the database.
-                m_dataGridView = new myDataGridView(m_tblInfo);
 
                 m_reloadBtn.Text = "Reload";
                 m_submitBtn.Text = "Save";
@@ -49,13 +48,76 @@ namespace test_binding
                 m_submitBtn.Click += new System.EventHandler(submitButton_Click);
 
                 m_sumLabel.Text = "Sum";
-            }
 
-            private void DGV_CellClick(object sender, DataGridViewCellEventArgs e)
+#if use_custom_dgv
+                m_dataGridView = new myDataGridView(m_tblInfo);
+#else
+                m_dataGridView = new DataGridView();
+                m_dataGridView.CellClick += M_dataGridView_CellClick;
+                m_dataGridView.CellEndEdit += M_dataGridView_CellEndEdit;
+                m_dataGridView.Scroll += M_dataGridView_Scroll;
+#endif
+            }
+#if !use_custom_dgv
+            private myCustomCtrl m_customCtrl;
+            private void M_dataGridView_CellEndEdit(object sender, DataGridViewCellEventArgs e)
             {
-                throw new NotImplementedException();
+                Debug.WriteLine("OnCellEndEdit");
+                hideCustomCtrl();
             }
+            private void M_dataGridView_Scroll(object sender, ScrollEventArgs e)
+            {
+                if (m_customCtrl != null)
+                {
+                    m_customCtrl.reLocation();
+                }
+            }
+            private void M_dataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
+            {
+                Debug.WriteLine("OnCellClick");
+                showCustomCtrl(e.ColumnIndex, e.RowIndex);
+            }
+            private void showCustomCtrl(int col, int row)
+            {
+                Debug.WriteLine("showDtp");
+                if (m_tblInfo.m_cols[col].m_type == lTableInfo.lColInfo.lColType.dateTime)
+                {
+                    m_customCtrl = new myDateTimePicker(m_dataGridView);
+                }
+                else if (m_tblInfo.m_cols[col].m_lookupData != null)
+                {
+                    m_customCtrl = new myComboBox(m_dataGridView, m_tblInfo.m_cols[col].m_lookupData.m_dataSource);
+                }
+                if (m_customCtrl != null)
+                {
+                    m_customCtrl.m_iRow = row;
+                    m_customCtrl.m_iCol = col;
+                    m_dataGridView.Controls.Add(m_customCtrl.getControl());
+                    m_customCtrl.setValue(m_dataGridView.CurrentCell.Value.ToString());
+                    Rectangle rec = m_dataGridView.GetCellDisplayRectangle(col, row, true);
+                    m_customCtrl.show(rec);
 
+                    //ActiveControl = m_dtp;
+                    m_dataGridView.BeginEdit(true);
+                }
+            }
+            private void hideCustomCtrl()
+            {
+                if (m_customCtrl != null)
+                {
+                    Debug.WriteLine("hideDtp");
+                    m_customCtrl.hide();
+
+                    if (m_customCtrl.isChanged())
+                    {
+                        m_dataGridView.CurrentCell.Value = m_customCtrl.getValue();
+                    }
+
+                    m_dataGridView.Controls.Remove(m_customCtrl.getControl());
+                    m_customCtrl = null;
+                }
+            }
+#endif
             public void search(List<string> exprs, List<lEntity> arr)
             {
                 //m_dataContent.GetData(qry);
@@ -130,13 +192,17 @@ namespace test_binding
                 for (int i = 1; i < m_dataGridView.ColumnCount; i++)
                 {
                     m_dataGridView.Columns[i].HeaderText = tblInfo.m_cols[i].m_alias;
+                    if (tblInfo.m_cols[i].m_type == lTableInfo.lColInfo.lColType.currency)
+                    {
+                        m_dataGridView.Columns[i].DefaultCellStyle.Format = "#0,0";
+                    }
                     m_dataGridView.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                     m_dataGridView.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                     m_dataGridView.Columns[i].FillWeight = 1;
                 }
 
                 Int64 sum = getSum();
-                m_sumTxt.Text = sum.ToString();
+                m_sumTxt.Text = sum.ToString("#0,0");
             }
             public virtual void LoadData()
             {

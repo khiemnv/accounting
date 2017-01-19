@@ -37,6 +37,7 @@ namespace test_binding
             public virtual Control getControl() { return m_ctrl; }
             public virtual void ctrl_ValueChanged(object sender, EventArgs e)
             {
+                Debug.WriteLine("ctrl_ValueChanged");
                 m_bChanged = true;
                 m_DGV.NotifyCurrentCellDirty(true);
             }
@@ -64,15 +65,14 @@ namespace test_binding
 
             public override string getValue()
             {
-                //string text;
-                //text = ((DataRow)m_combo.SelectedValue.Row).ItemArray[0].ToString();
-                //text = m_combo.SelectedItem.ToString();
+                Debug.WriteLine("getValue: " + m_combo.Text);
                 return m_combo.Text;
             }
 
             public override void setValue(string text)
             {
-                m_combo.SelectedText = text;
+                Debug.WriteLine("setValue: " + text);
+                m_combo.Text = text;
             }
         }
         class myDateTimePicker : myCustomCtrl
@@ -113,14 +113,14 @@ namespace test_binding
 
             protected override void OnCellEndEdit(DataGridViewCellEventArgs e)
             {
-                Debug.WriteLine("OnCellEndEdit");
                 base.OnCellEndEdit(e);
+                Debug.WriteLine("OnCellEndEdit");
                 hideCustomCtrl();
             }
             protected override void OnCellClick(DataGridViewCellEventArgs e)
             {
-                Debug.WriteLine("OnCellClick");
                 base.OnCellClick(e);
+                Debug.WriteLine("OnCellClick");
                 showCustomCtrl(e.ColumnIndex, e.RowIndex);
             }
 
@@ -132,6 +132,48 @@ namespace test_binding
                     m_customCtrl.reLocation();
                 }
             }
+
+            lDataSync m_data;
+            protected override void OnEditingControlShowing(DataGridViewEditingControlShowingEventArgs e)
+            {
+                base.OnEditingControlShowing(e);
+                Debug.WriteLine("OnEditingControlShowing");
+                do
+                {
+                    if (m_customCtrl != null) break;
+
+                    m_data = m_tblInfo.m_cols[CurrentCell.ColumnIndex].m_lookupData;
+                    if (m_data == null) break;
+
+                    AutoCompleteStringCollection col = new AutoCompleteStringCollection();
+                    DataTable tbl = m_data.m_dataSource;
+                    foreach (DataRow row in tbl.Rows)
+                    {
+                        col.Add(row[1].ToString());
+                    }
+                    DataGridViewTextBoxEditingControl edt = (DataGridViewTextBoxEditingControl)e.Control;
+                    edt.AutoCompleteMode = AutoCompleteMode.Suggest;
+                    edt.AutoCompleteSource = AutoCompleteSource.CustomSource;
+                    edt.AutoCompleteCustomSource = col;
+
+                    edt.Validated += Edt_Validated;
+                } while (false);
+            }
+
+            private void Edt_Validated(object sender, EventArgs e)
+            {
+                TextBox edt = (TextBox)sender;
+                Debug.WriteLine("Edt_Validated:" + edt.Text);
+                string selectedValue = edt.Text;
+                if (selectedValue != "" && !edt.AutoCompleteCustomSource.Contains(selectedValue))
+                {
+                    edt.AutoCompleteCustomSource.Add(selectedValue);
+                    m_data.Add(selectedValue);
+                }
+                m_data = null;
+                edt.Validated -= Edt_Validated;
+            }
+
             public virtual void showCustomCtrl(int col, int row)
             {
                 Debug.WriteLine("showDtp");

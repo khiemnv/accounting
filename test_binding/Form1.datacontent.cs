@@ -27,7 +27,8 @@ namespace test_binding
                 {
                     text,
                     dateTime,
-                    num
+                    num,
+                    currency
                 };
                 public string m_field;
                 public string m_alias;
@@ -107,7 +108,7 @@ namespace test_binding
                 + "receipt_number char(31),"
                 + "name char(31),"
                 + "content text,"
-                + "price INTEGER,"
+                + "amount INTEGER,"
                 + "note text"
                 + ")";
                 m_cols = new lColInfo[] {
@@ -116,7 +117,7 @@ namespace test_binding
                    new lColInfo( "receipt_number","Mã Phiếu Thu", lColInfo.lColType.text),
                    new lColInfo( "name","Họ tên", lColInfo.lColType.text),
                    new lColInfo( "content","Nội dung", lColInfo.lColType.text, "receipts_content"),
-                   new lColInfo( "price","Số tiền", lColInfo.lColType.num),
+                   new lColInfo( "amount","Số tiền", lColInfo.lColType.currency),
                    new lColInfo( "note","Ghi chú", lColInfo.lColType.text),
                 };
             }
@@ -156,9 +157,9 @@ namespace test_binding
                    new lColInfo( "name","Họ Tên", lColInfo.lColType.text),
                    new lColInfo( "content","Nội dung", lColInfo.lColType.text),
                    new lColInfo( "group_name","Thuộc ban", lColInfo.lColType.text, "group_name"),
-                   new lColInfo( "advance_payment","Tạm ứng", lColInfo.lColType.num),
-                   new lColInfo( "reimbursement","Hoàn ứng", lColInfo.lColType.num),
-                   new lColInfo( "actually_spent","Thực chi", lColInfo.lColType.num),
+                   new lColInfo( "advance_payment","Tạm ứng", lColInfo.lColType.currency),
+                   new lColInfo( "reimbursement","Hoàn ứng", lColInfo.lColType.currency),
+                   new lColInfo( "actually_spent","Thực chi", lColInfo.lColType.currency),
                    new lColInfo( "note","Ghi Chú", lColInfo.lColType.text),
                 };
             }
@@ -186,7 +187,7 @@ namespace test_binding
                    new lColInfo( "name","Họ Tên", lColInfo.lColType.text),
                    new lColInfo( "content","Nội dung", lColInfo.lColType.text),
                    new lColInfo( "group_name","Thuộc ban", lColInfo.lColType.text, "group_name"),
-                   new lColInfo( "spent","Số tiền", lColInfo.lColType.num),
+                   new lColInfo( "spent","Số tiền", lColInfo.lColType.currency),
                    new lColInfo( "note","Ghi Chú", lColInfo.lColType.text),
                 };
             }
@@ -216,7 +217,7 @@ namespace test_binding
                    new lColInfo( "name","Họ Tên", lColInfo.lColType.text),
                    new lColInfo( "group_name","Thuộc ban", lColInfo.lColType.text, "group_name"),
                    new lColInfo( "content","Nội dung", lColInfo.lColType.text),
-                   new lColInfo( "salary","Số tiền", lColInfo.lColType.num),
+                   new lColInfo( "salary","Số tiền", lColInfo.lColType.currency),
                    new lColInfo( "note","Ghi Chú", lColInfo.lColType.text),
                 };
             }
