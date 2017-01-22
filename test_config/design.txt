@@ -1,0 +1,18 @@
+config
+  cnnString
+  panel[]
+    dataPanel
+      tableInfo
+        name
+        alias
+        cols[]
+          name
+          alias
+          type
+          lookupTbl
+    searchPanel
+      searchCtrls[]
+        name
+        pos
+        size
+        searchMatch

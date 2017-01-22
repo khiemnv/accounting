@@ -38,6 +38,13 @@ namespace test_binding
             public Point m_pos;
             public Size m_size;
 
+            public enum SearchMode
+            {
+                like,
+                match
+            };
+            public SearchMode m_mode = SearchMode.like;
+
             public FlowLayoutPanel m_panel = new FlowLayoutPanel();
             public CheckBox m_label = new CheckBox();
 
@@ -79,12 +86,6 @@ namespace test_binding
         class lSearchCtrlText : lSearchCtrl
         {
             protected TextBox m_text = new TextBox();
-            public enum SearchMode
-            {
-                like,
-                match
-            };
-            public SearchMode m_mode = SearchMode.like;
             public lSearchCtrlText(string fieldName, string alias, ctrlType type, Point pos, Size size)
                 : base(fieldName, alias, type, pos, size)
             {

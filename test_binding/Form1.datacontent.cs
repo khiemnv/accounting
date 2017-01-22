@@ -35,19 +35,20 @@ namespace test_binding
                 public string m_lookupTbl;
                 public lDataSync m_lookupData;
                 public lColType m_type;
-                public lColInfo(string field, string alias, lColType type, string lookupTbl)
+                private void init(string field, string alias, lColType type, string lookupTbl)
                 {
                     m_lookupTbl = lookupTbl;
                     m_field = field;
                     m_alias = alias;
                     m_type = type;
                 }
+                public lColInfo(string field, string alias, lColType type, string lookupTbl)
+                {
+                    init(field, alias, type, lookupTbl);
+                }
                 public lColInfo(string field, string alias, lColType type)
                 {
-                    m_lookupTbl = null;
-                    m_field = field;
-                    m_alias = alias;
-                    m_type = type;
+                    init(field, alias, type, null);
                 }
             };
             public lColInfo[] m_cols;
