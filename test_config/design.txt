@@ -1,6 +1,6 @@
 config
   cnnString
-  panel[]
+  panels[]
     dataPanel
       tableInfo
         name
@@ -10,9 +10,15 @@ config
           alias
           type
           lookupTbl
+        countOn
     searchPanel
       searchCtrls[]
         name
         pos
         size
         searchMatch
+    report
+      viewName
+      rcName
+      rdlcPath
+      dsName

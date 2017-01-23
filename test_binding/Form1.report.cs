@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Drawing.Printing;
 using System.IO;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Windows.Forms;
 
@@ -16,17 +17,21 @@ namespace test_binding
 
     public partial class Form1 : Form
     {
-
+        [DataContract(Name ="Report")]
         class lBaseReport : IDisposable
         {
+            [DataMember(Name = "rcName")]
             public string m_rcName;     //data set
+            [DataMember(Name = "viewName")]
             public string m_viewName;   //data view
+            [DataMember(Name = "rdlcPath")]
             public string m_rdlcPath;   //report template
+            [DataMember(Name = "m_dsName")]
+            public string m_dsName;     //data set name
 #if crt_xml
         public string m_xmlPath;    //xml path
 #endif
             public string m_pdfPath;    //print to pdf file
-            public string m_dsName;     //data set name
             lDataSync m_data;
             public lBaseReport()
             {
@@ -172,6 +177,8 @@ namespace test_binding
             }
         }
 
+#if true
+        [DataContract(Name = "ReceiptsReport")]
         class lReceiptsReport : lBaseReport
         {
             public lReceiptsReport():base()
@@ -187,6 +194,7 @@ namespace test_binding
                 return new List<ReportParameter>();
             }
         }
+        [DataContract(Name = "InternalPaymentReport")]
         class lInternalPaymentReport : lBaseReport
         {
             public lInternalPaymentReport():base()
@@ -198,6 +206,7 @@ namespace test_binding
                 m_pdfPath = @"..\..\report.pdf";
             }
         }
+        [DataContract(Name = "ExternalPaymentReport")]
         class lExternalPaymentReport : lBaseReport
         {
             public lExternalPaymentReport() :base()
@@ -209,6 +218,7 @@ namespace test_binding
                 m_pdfPath = @"..\..\report.pdf";
             }
         }
+        [DataContract(Name = "SalaryReport")]
         class lSalaryReport : lBaseReport
         {
             public lSalaryReport():base()
@@ -220,5 +230,6 @@ namespace test_binding
                 m_pdfPath = @"..\..\report.pdf";
             }
         }
+#endif
     }
 }

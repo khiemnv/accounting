@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SQLite;
 using System.Data.SqlClient;
+using System.Runtime.Serialization;
 
 namespace test_binding
 {
@@ -25,7 +26,11 @@ namespace test_binding
         private TabPage tabPage2;   //internal payment
         private TabPage tabPage3;   //external payment
         private TabPage tabPage4;   //salary
-        
+
+
+        lConfigMng m_config;
+        List<lBasePanel> m_panels;
+
         public Form1()
         {
             InitializeComponent();
@@ -34,6 +39,9 @@ namespace test_binding
 #else
             s_contentProvider = lSqlContentProvider.getInstance();
 #endif
+
+            m_config = new lConfigMng();
+            m_config.LoadConfig(out m_panels);
 
             //tab control
             this.tabControl1 = new TabControl();
@@ -61,14 +69,26 @@ namespace test_binding
 
             this.Load += new System.EventHandler(Form1_Load);
             this.Text = "CBV Kế Toán";
+
+            //m_panels = new List<lBasePanel> {
+            //    m_receiptsPanel,
+            //    m_interPaymentPanel,
+            //    m_externalPaymentPanel,
+            //    m_salaryPanel
+            //};
+            //m_config.UpdateConfig(m_panels);
         }
 
+        [DataContract(Name ="Panel")]
         class lBasePanel
         {
             public lTableInfo m_tblInfo { get { return m_dataPanel.m_tblInfo; } }
             //public lDataContent m_data;
+            [DataMember(Name ="dataPanel")]
             public lDataPanel m_dataPanel;
+            [DataMember(Name = "searchPanel")]
             public lSearchPanel m_searchPanel;
+            [DataMember(Name = "report")]
             public lBaseReport m_report;
 
             public TableLayoutPanel m_panel;
@@ -117,6 +137,7 @@ namespace test_binding
             }
         }
 
+        [DataContract(Name ="InternalPaymentPanel")]
         class lInterPaymentPanel : lBasePanel
         {
             public lInterPaymentPanel()
@@ -128,6 +149,7 @@ namespace test_binding
             }
         }
 
+        [DataContract(Name = "ReceiptsPanel")]
         class lReceiptsPanel : lBasePanel
         {
             public lReceiptsPanel() : base()
@@ -138,6 +160,7 @@ namespace test_binding
             }
         }
 
+        [DataContract(Name = "ExternalPaymentPanel")]
         class lExternalPaymentPanel : lBasePanel
         {
             public lExternalPaymentPanel()
@@ -149,6 +172,7 @@ namespace test_binding
             }
         }
 
+        [DataContract(Name = "SalaryPanel")]
         class lSalaryPanel : lBasePanel
         {
             public lSalaryPanel()

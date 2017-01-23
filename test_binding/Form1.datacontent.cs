@@ -6,7 +6,9 @@ using System.Collections.Generic;
 using System.Data;
 using System;
 using System.Data.SQLite;
-
+using System.Xml;
+using System.Xml.Serialization;
+using System.Runtime.Serialization;
 namespace test_binding
 {
     public partial class Form1 : Form
@@ -17,24 +19,36 @@ namespace test_binding
         /// + fileds type
         /// + alias
         /// </summary>
+        [DataContract(Name ="TableInfo")]
         class lTableInfo
         {
             //#define col_class
 #if col_class
+            [DataContract(Name = "ColInfo")]
             public class lColInfo
             {
+                [DataContract(Name = "ColType")]
                 public enum lColType
                 {
+                    [EnumMember]
                     text,
+                    [EnumMember]
                     dateTime,
+                    [EnumMember]
                     num,
+                    [EnumMember]
                     currency
                 };
+                [DataMember(Name = "field", EmitDefaultValue = false)]
                 public string m_field;
+                [DataMember(Name = "alias", EmitDefaultValue = false)]
                 public string m_alias;
+                [DataMember(Name = "lookupTbl", EmitDefaultValue = false)]
                 public string m_lookupTbl;
-                public lDataSync m_lookupData;
+                [DataMember(Name = "type", EmitDefaultValue = false)]
                 public lColType m_type;
+
+                public lDataSync m_lookupData;
                 private void init(string field, string alias, lColType type, string lookupTbl)
                 {
                     m_lookupTbl = lookupTbl;
@@ -51,10 +65,16 @@ namespace test_binding
                     init(field, alias, type, null);
                 }
             };
+
+            [DataMember(Name = "cols", EmitDefaultValue = false)]
             public lColInfo[] m_cols;
+            [DataMember(Name = "name", EmitDefaultValue = false)]
             public string m_tblName;
+            [DataMember(Name = "alias", EmitDefaultValue = false)]
             public string m_tblAlias;
+            [DataMember(Name = "crtSql", EmitDefaultValue = false)]
             public string m_crtQry;
+
             public virtual void LoadData()
             {
                 foreach (lColInfo colInfo in m_cols)
@@ -96,6 +116,7 @@ namespace test_binding
             }
         }
 
+        [DataContract(Name = "ReceiptsTblInfo")]
         class lReceiptsTblInfo : lTableInfo
         {
 #if col_class
@@ -133,6 +154,7 @@ namespace test_binding
 #endif
 
         };
+        [DataContract(Name = "InternalPaymentTblInfo")]
         class lInternalPaymentTblInfo : lTableInfo
         {
             public lInternalPaymentTblInfo()
@@ -165,6 +187,7 @@ namespace test_binding
                 };
             }
         };
+        [DataContract(Name = "ExternalPaymentTblInfo")]
         class lExternalPaymentTblInfo : lTableInfo
         {
             public lExternalPaymentTblInfo()
@@ -193,6 +216,7 @@ namespace test_binding
                 };
             }
         };
+        [DataContract(Name = "SalaryTblInfo")]
         class lSalaryTblInfo : lTableInfo
         {
             public lSalaryTblInfo()

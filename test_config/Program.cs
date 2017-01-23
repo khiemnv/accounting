@@ -12,19 +12,26 @@ using System.Data.SqlClient;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Xml;
+using System.Xml.Serialization;
+using System.Reflection;
 
 namespace test_config
 {
-    class Program
+    public class Program
     {
         [DataContract]
         public class lColInfo_config
         {
+            [DataContract(Name = "ColType")]
             public enum lColType
             {
+                [EnumMember]
                 text,
+                [EnumMember]
                 dateTime,
+                [EnumMember]
                 num,
+                [EnumMember]
                 currency
             };
             [DataMember(Name = "name", EmitDefaultValue = false)]
@@ -33,15 +40,21 @@ namespace test_config
             public string m_alias;
             [DataMember(Name = "lookupTbl", EmitDefaultValue = false)]
             public string m_lookupTbl;
+            //[DataMember(Name = "type", EmitDefaultValue = false)]
+            //public int m_type;
             [DataMember(Name = "type", EmitDefaultValue = false)]
-            public int m_type;
+            public lColType m_type;
+            //{
+            //    get { return (lColType)m_type; }
+            //    set { e_type = value; m_type = (int)e_type; }
+            //}
         };
 
         [DataContract]
-        class lColInfo:lColInfo_config { }
+        public class lColInfo :lColInfo_config { }
 
         [DataContract]
-        class lTableInfo_config
+        public class lTableInfo_config
         {
             [DataMember(Name = "cols", EmitDefaultValue = false)]
             public lColInfo[] m_cols;
@@ -51,10 +64,10 @@ namespace test_config
             public string m_tblAlias;
         }
 
-        class lTableInfo:lTableInfo_config { }
+        public class lTableInfo :lTableInfo_config { }
 
         [DataContract]
-        class lSearchCtrl_config
+        public class lSearchCtrl_config
         {
             [DataMember(Name = "name", EmitDefaultValue = false)]
             public string m_fieldName;
@@ -67,7 +80,7 @@ namespace test_config
         };
 
         [DataContract]
-        class lSearchCtrl:lSearchCtrl_config { }
+        public class lSearchCtrl :lSearchCtrl_config { }
 
         [CollectionDataContract(Name = "Custom{0}List", ItemName = "CustomItem")]
         public class CustomList<T> : List<T>
@@ -88,7 +101,7 @@ namespace test_config
         }
 
         [DataContract]
-        class myPoint
+        public class myPoint
         {
             [DataMember(Name = "X", EmitDefaultValue = false)]
             public int X;
@@ -103,7 +116,7 @@ namespace test_config
         }
 
         [DataContract]
-        class mySize
+        public class mySize
         {
             [DataMember(Name = "width", EmitDefaultValue = false)]
             public int width;
@@ -117,7 +130,7 @@ namespace test_config
         }
 
         [DataContract]
-        class lSearchPanel_config
+        public class lSearchPanel_config
         {
             [DataMember(Name = "tableName", EmitDefaultValue = false)]
             public string m_tableName;
@@ -125,10 +138,10 @@ namespace test_config
             public lSearchCtrl_config[] m_searchCtrls;
         }
 
-        [DataContract]
+        //[DataContract]
         class lSearchPanel : lSearchPanel_config { }
 
-        [DataContract]
+        //[DataContract]
         class lReceiptsSearchPanel : lSearchPanel
         {
             public lReceiptsSearchPanel()
@@ -140,15 +153,128 @@ namespace test_config
             }
         }
 
+        static void test_list()
+        {
+                List<lColInfo> cols = new List<lColInfo>();
+                cols.Add(new lColInfo { m_field = "field", m_alias = "alias" });
+                cols.Add(new lColInfo { m_field = "field2", m_alias = "alias2" });
+                DataContractSerializer sz = new DataContractSerializer(typeof(List<lColInfo>));
+                sz.WriteObject(Console.OpenStandardOutput(), cols);
+        }
+
+        [DataContract]
+        class testStruct_w_List
+        {
+            [DataMember]
+            public List<lColInfo> cols = new List<lColInfo>();
+        }
+        static void test_struct_w_list() {
+            testStruct_w_List tcls = new testStruct_w_List();
+            tcls.cols.Add(new lColInfo { m_field = "field", m_alias = "alias" });
+            tcls.cols.Add(new lColInfo { m_field = "field2", m_alias = "alias2" });
+            DataContractSerializer sz = new DataContractSerializer(typeof(testStruct_w_List));
+            sz.WriteObject(Console.OpenStandardOutput(), tcls);
+        }
+
+        [DataContract(Name ="colInfo")]
+        class colInfo:lColInfo_config
+        {
+
+        }
+        static void test_w_knowtype() {
+            colInfo col = new colInfo {m_alias = "alias", m_field = "field" };
+
+            DataContractSerializer sz = new DataContractSerializer(typeof(lColInfo_config), new Type[] { typeof(colInfo) });
+            sz.WriteObject(Console.OpenStandardOutput(), col);
+
+            sz = new DataContractSerializer(typeof(colInfo));
+            sz.WriteObject(Console.OpenStandardOutput(), col);
+            //sz = new DataContractSerializer(typeof(lColInfo_config)); -> error
+        }
+
+
+        class MyDataContractResolver : DataContractResolver
+        {
+            private Dictionary<string, XmlDictionaryString> dictionary = new Dictionary<string, XmlDictionaryString>();
+            Assembly assembly;
+
+            // Definition of the DataContractResolver
+            public MyDataContractResolver(Assembly assembly)
+            {
+                this.assembly = assembly;
+            }
+
+            // Used at deserialization
+            // Allows users to map xsi:type name to any Type 
+            public override Type ResolveName(string typeName, string typeNamespace, Type declaredType, DataContractResolver knownTypeResolver)
+            {
+                XmlDictionaryString tName;
+                XmlDictionaryString tNamespace;
+                if (dictionary.TryGetValue(typeName, out tName) && dictionary.TryGetValue(typeNamespace, out tNamespace))
+                {
+                    return this.assembly.GetType(tNamespace.Value + "." + tName.Value);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            // Used at serialization
+            // Maps any Type to a new xsi:type representation
+            public override bool TryResolveType(Type type, Type declaredType, DataContractResolver knownTypeResolver, out XmlDictionaryString typeName, out XmlDictionaryString typeNamespace)
+            {
+                string name = type.Name;
+                string namesp = type.Namespace;
+                typeName = new XmlDictionaryString(XmlDictionary.Empty, name, 0);
+                typeNamespace = new XmlDictionaryString(XmlDictionary.Empty, namesp, 0);
+                if (!dictionary.ContainsKey(type.Name))
+                {
+                    dictionary.Add(name, typeName);
+                }
+                if (!dictionary.ContainsKey(type.Namespace))
+                {
+                    dictionary.Add(namesp, typeNamespace);
+                }
+                return true;
+            }
+        }
+        class t_struct_w_resolver
+        {
+            public int x;
+        }
+        static void test_w_resolver()
+        {
+            t_struct_w_resolver tcls = new t_struct_w_resolver { x = 1 };
+            DataContractSerializerSettings s = new DataContractSerializerSettings();
+            s.DataContractResolver = new MyDataContractResolver(typeof(t_struct_w_resolver).Assembly);
+            DataContractSerializer sz = new DataContractSerializer(typeof(t_struct_w_resolver), s);
+            
+            sz.WriteObject(Console.OpenStandardOutput(), tcls);
+        }
+
+        static void test_w_point_size()
+        {
+            Size s = new Size(1, 2);
+            Point p = new Point(1, 2);
+            DataContractSerializer sz = new DataContractSerializer(typeof(Size));
+            sz.WriteObject(Console.OpenStandardOutput(), s);
+            sz = new DataContractSerializer(typeof(Point));
+            sz.WriteObject(Console.OpenStandardOutput(), p);
+        }
+
         static void Main(string[] args)
         {
+
+            test_w_knowtype();
+            //test_w_resolver();
+
             lTableInfo_config tbl1 = new lTableInfo_config();
             tbl1.m_tblName = "receipts";
             tbl1.m_tblAlias = "Bang thu";
             tbl1.m_cols = new lColInfo[]
             {
-                new lColInfo {m_alias = "alias", m_field = "field", m_lookupTbl = "lookupTbl", m_type = 1 },
-                new lColInfo {m_alias = "col2", m_field = "field", m_lookupTbl = "lookupTbl", m_type = 1 },
+                new lColInfo {m_alias = "alias", m_field = "field", m_lookupTbl = "lookupTbl", m_type = lColInfo.lColType.text },
+                new lColInfo {m_alias = "col2", m_field = "field", m_lookupTbl = "lookupTbl", m_type = lColInfo.lColType.text },
             };
             lTableInfo_config[] tbls = new lTableInfo_config[] { tbl1 };
 
@@ -156,9 +282,13 @@ namespace test_config
             jsonz.WriteObject(Console.OpenStandardOutput(), tbls);
 
             lReceiptsSearchPanel panel = new lReceiptsSearchPanel();
-            lSearchPanel[] panels = new lReceiptsSearchPanel[] { panel };
-            jsonz = new DataContractJsonSerializer(typeof(lReceiptsSearchPanel[]));
-            jsonz.WriteObject(Console.OpenStandardOutput(), panels);
+            lSearchPanel_config panel_config = (lSearchPanel_config)panel;
+            lSearchPanel_config[] panels = new lSearchPanel_config[] { panel_config };
+            //jsonz = new DataContractJsonSerializer(typeof(lSearchPanel_config[]));
+            //jsonz.WriteObject(Console.OpenStandardOutput(), panels);
+            XmlSerializer xs = new XmlSerializer(typeof(lColInfo));
+            xs.Serialize(Console.OpenStandardOutput(), tbl1.m_cols[0]);
+            //xs.Deserialize()
 
             lSearchCtrl_config[] ctrls = new lSearchCtrl_config[]
             {
@@ -170,6 +300,14 @@ namespace test_config
             jsonz = new DataContractJsonSerializer(typeof(lSearchCtrl_config[]));
             jsonz.WriteObject(Console.OpenStandardOutput(), ctrls);
 
+            {
+                DataContractSerializerSettings settings = new DataContractSerializerSettings();
+                XmlDictionary dic = new XmlDictionary();
+                settings.RootName = new XmlDictionaryString(dic, "tableInfo", 1);
+            
+                DataContractSerializer tmpz = new DataContractSerializer(typeof(lTableInfo_config), settings);
+                tmpz.WriteObject(Console.OpenStandardOutput(), tbl1);
+            }
 
             DataContractSerializer xmlz = new DataContractSerializer(typeof(lTableInfo_config[]));
             DataContractSerializer xmlz2 = new DataContractSerializer(typeof(lSearchCtrl_config[]));

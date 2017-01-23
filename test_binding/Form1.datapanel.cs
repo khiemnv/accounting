@@ -6,12 +6,12 @@ using System.Collections.Generic;
 using System;
 using System.Drawing;
 using System.Diagnostics;
+using System.Runtime.Serialization;
 
 namespace test_binding
 {
     public partial class Form1 : Form
     {
-
 
         /// <summary>
         /// Data Panel
@@ -21,6 +21,7 @@ namespace test_binding
         ///     cal sum
         ///     update data grid - auto
         /// </summary>
+        [DataContract(Name = "DataPanel")]
         class lDataPanel
         {
             //public TableLayoutPanel m_tbl = new TableLayoutPanel();
@@ -35,8 +36,13 @@ namespace test_binding
             public DataGridView m_dataGridView;
 
             lDataContent m_dataContent;
-            public lTableInfo m_tblInfo;
 
+            [DataMember(Name = "tblInfo")]
+            public lTableInfo m_tblInfo;
+            [DataMember(Name = "countOn")]
+            public string m_countOn = "";
+
+            public lDataPanel() { }
             public lDataPanel(lTableInfo tblInfo)
             {
                 m_tblInfo = tblInfo;
@@ -218,6 +224,7 @@ namespace test_binding
             }
         }
 
+        [DataContract(Name = "InterPaymentDataPanel")]
         class lInterPaymentDataPanel : lDataPanel
         {
             const int advance_payment_col = 6;
@@ -247,6 +254,7 @@ namespace test_binding
             }
         }
 
+        [DataContract(Name = "ReceiptsDataPanel")]
         class lReceiptsDataPanel : lDataPanel
         {
             const int price_col = 5;
@@ -268,6 +276,7 @@ namespace test_binding
             }
         }
 
+        [DataContract(Name = "ExterPaymentDataPanel")]
         class lExternalPaymentDataPanel : lDataPanel
         {
             const int spent_col = 6;
@@ -289,6 +298,7 @@ namespace test_binding
             }
         }
 
+        [DataContract(Name = "SalaryDataPanel")]
         class lSalaryDataPanel : lDataPanel
         {
             const int salary_col = 7;

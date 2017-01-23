@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 using System;
 using System.Data;
+using System.Runtime.Serialization;
 
 namespace test_binding
 {
@@ -22,6 +23,7 @@ namespace test_binding
             public string m_value;
         };
 
+        [DataContract(Name ="SearchCtrl")]
         class lSearchCtrl
         {
             public enum ctrlType
@@ -32,22 +34,31 @@ namespace test_binding
                 currency
             };
             public lTableInfo.lColInfo m_colInfo;
+            [DataMember(Name = "field", EmitDefaultValue = false)]
             public string m_fieldName;
             public string m_alias;
             public ctrlType m_type;
+            [DataMember(Name = "pos", EmitDefaultValue = false)]
             public Point m_pos;
+            [DataMember(Name = "size", EmitDefaultValue = false)]
             public Size m_size;
 
+            [DataContract(Name = "SeachMode")]
             public enum SearchMode
             {
+                [EnumMember]
                 like,
+                [EnumMember]
                 match
             };
+
+            [DataMember(Name = "mode", EmitDefaultValue = false)]
             public SearchMode m_mode = SearchMode.like;
 
             public FlowLayoutPanel m_panel = new FlowLayoutPanel();
             public CheckBox m_label = new CheckBox();
 
+            public lSearchCtrl() { }
             public lSearchCtrl(string fieldName, string alias, ctrlType type, Point pos, Size size)
             {
                 m_fieldName = fieldName;
@@ -83,6 +94,8 @@ namespace test_binding
             {
             }
         };
+
+        [DataContract(Name = "SearchCtrlText")]
         class lSearchCtrlText : lSearchCtrl
         {
             protected TextBox m_text = new TextBox();
@@ -125,6 +138,7 @@ namespace test_binding
                 }
             }
         }
+        [DataContract(Name = "SearchCtrlDate")]
         class lSearchCtrlDate : lSearchCtrl
         {
             private DateTimePicker m_startdate = new DateTimePicker();
@@ -168,6 +182,7 @@ namespace test_binding
                 }
             }
         }
+        [DataContract(Name = "SearchCtrlNum")]
         class lSearchCtrlNum : lSearchCtrlText
         {
             public lSearchCtrlNum(string fieldName, string alias, ctrlType type, Point pos, Size size)
@@ -176,6 +191,7 @@ namespace test_binding
                 m_mode = SearchMode.match;
             }
         }
+        [DataContract(Name = "SearchCtrlCurrency")]
         class lSearchCtrlCurrency : lSearchCtrlText
         {
             public lSearchCtrlCurrency(string fieldName, string alias, ctrlType type, Point pos, Size size)
@@ -191,15 +207,19 @@ namespace test_binding
         /// + search btn
         /// + getWhereQry
         /// </summary>
+        [DataContract(Name ="SearchPanel")]
         class lSearchPanel
         {
             public lDataPanel m_dataPanel;
             public lTableInfo m_tblInfo { get { return m_dataPanel.m_tblInfo; } }
 
             public TableLayoutPanel m_tbl = new TableLayoutPanel();
+
+            [DataMember(Name ="searchCtrls")]
             public List<lSearchCtrl> m_searchCtrls = new List<lSearchCtrl>();
             public Button m_searchBtn = new Button();
 
+            public lSearchPanel() { }
             public lSearchPanel(lDataPanel dataPanel)
             {
                 m_dataPanel = dataPanel;
@@ -267,6 +287,8 @@ namespace test_binding
                 }
             }
         }
+
+        [DataContract(Name = "InterPaymentSearchPanel")]
         class lInterPaymentSearchPanel : lSearchPanel
         {
             enum colId
@@ -342,6 +364,7 @@ namespace test_binding
             }
         }
 
+        [DataContract(Name = "ReceiptsSearchPanel")]
         class lReceiptsSearchPanel : lSearchPanel
         {
             public lReceiptsSearchPanel(lDataPanel dataPanel) : base(dataPanel)
@@ -373,6 +396,7 @@ namespace test_binding
             }
         }
 
+        [DataContract(Name = "ExternalPaymentSearchPanel")]
         class lExternalPaymentSearchPanel : lSearchPanel
         {
             public lExternalPaymentSearchPanel(lDataPanel dataPanel) : base(dataPanel)
@@ -405,6 +429,7 @@ namespace test_binding
             }
         }
 
+        [DataContract(Name = "SalarySearchPanel")]
         class lSalarySearchPanel : lSearchPanel
         {
             public lSalarySearchPanel(lDataPanel dataPanel) : base(dataPanel)
