@@ -1,5 +1,5 @@
 ﻿//#define DEBUG_DRAWING
-#define use_sqlite
+//#define use_sqlite
 
 using System;
 using System.Collections.Generic;
@@ -56,11 +56,15 @@ namespace test_binding
             m_tabCtrl.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             m_tabCtrl.Dock = DockStyle.Fill;
 
+            List<lBasePanel> newPanels = new List<lBasePanel>();
             foreach(lBasePanel panel in m_panels)
             {
-                TabPage newTab = crtTab(panel);
+                lBasePanel newPanel = lBasePanel.crtPanel(panel);
+                newPanels.Add(newPanel);
+                TabPage newTab = crtTab(newPanel);
                 m_tabCtrl.TabPages.Add(newTab);
             }
+            m_panels = newPanels;
 
             m_tabCtrl.SelectedIndex = 0;
 
@@ -194,10 +198,9 @@ namespace test_binding
             }
         }
         
-        private TabPage crtTab(lBasePanel basePanel)
+        private TabPage crtTab(lBasePanel newPanel)
         {
             TabPage newTabPage = new TabPage();
-            lBasePanel newPanel = lBasePanel.crtPanel(basePanel);
             newPanel.initCtrls();
             newTabPage.Controls.Add(newPanel.m_panel);
             newTabPage.Text = newPanel.m_tblInfo.m_tblAlias;
