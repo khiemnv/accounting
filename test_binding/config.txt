@@ -1,1 +1,0 @@
-﻿Data Source=DESKTOP-GOEF1DS\SQLEXPRESS;Initial Catalog=accounting;Integrated Security=true
