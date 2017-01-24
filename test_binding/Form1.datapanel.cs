@@ -22,7 +22,7 @@ namespace test_binding
         ///     update data grid - auto
         /// </summary>
         [DataContract(Name = "DataPanel")]
-        class lDataPanel
+        class lDataPanel: IConfigurableObj
         {
             //public TableLayoutPanel m_tbl = new TableLayoutPanel();
             public FlowLayoutPanel m_reloadPanel = new FlowLayoutPanel();
@@ -46,23 +46,6 @@ namespace test_binding
             public lDataPanel(lTableInfo tblInfo)
             {
                 m_tblInfo = tblInfo;
-
-                m_reloadBtn.Text = "Reload";
-                m_submitBtn.Text = "Save";
-
-                m_reloadBtn.Click += new System.EventHandler(reloadButton_Click);
-                m_submitBtn.Click += new System.EventHandler(submitButton_Click);
-
-                m_sumLabel.Text = "Sum";
-
-#if use_custom_dgv
-                m_dataGridView = new myDataGridView(m_tblInfo);
-#else
-                m_dataGridView = new DataGridView();
-                m_dataGridView.CellClick += M_dataGridView_CellClick;
-                m_dataGridView.CellEndEdit += M_dataGridView_CellEndEdit;
-                m_dataGridView.Scroll += M_dataGridView_Scroll;
-#endif
             }
 #if !use_custom_dgv
             private myCustomCtrl m_customCtrl;
@@ -221,6 +204,38 @@ namespace test_binding
                 m_tblInfo.LoadData();
                 m_dataContent = s_contentProvider.CreateDataContent(m_tblInfo.m_tblName);
                 m_dataGridView.DataSource = m_dataContent.m_bindingSource;
+            }
+
+            public void initInstance()
+            {
+                m_reloadPanel = new FlowLayoutPanel();
+                m_sumPanel = new FlowLayoutPanel();
+
+                m_reloadBtn = new Button();
+                m_submitBtn = new Button();
+                m_sumLabel = new Label();
+                m_sumTxt = new TextBox();
+
+                if (m_tblInfo!=null) {
+                    m_tblInfo.initInstance();
+                }
+
+                m_reloadBtn.Text = "Reload";
+                m_submitBtn.Text = "Save";
+
+                m_reloadBtn.Click += new System.EventHandler(reloadButton_Click);
+                m_submitBtn.Click += new System.EventHandler(submitButton_Click);
+
+                m_sumLabel.Text = "Sum";
+
+#if use_custom_dgv
+                m_dataGridView = new myDataGridView(m_tblInfo);
+#else
+                m_dataGridView = new DataGridView();
+                m_dataGridView.CellClick += M_dataGridView_CellClick;
+                m_dataGridView.CellEndEdit += M_dataGridView_CellEndEdit;
+                m_dataGridView.Scroll += M_dataGridView_Scroll;
+#endif
             }
         }
 

@@ -17,6 +17,10 @@ namespace test_binding
 {
     public partial class Form1 : Form
     {
+        interface IConfigurableObj
+        {
+            void initInstance();    //init instance base on config data
+        }
         class lConfigMng
         {
             public string m_cfgPath = "config.xml";

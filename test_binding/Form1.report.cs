@@ -18,7 +18,7 @@ namespace test_binding
     public partial class Form1 : Form
     {
         [DataContract(Name ="Report")]
-        class lBaseReport : IDisposable
+        class lBaseReport : IDisposable, IConfigurableObj
         {
             [DataMember(Name = "rcName")]
             public string m_rcName;     //data set
@@ -174,6 +174,11 @@ namespace test_binding
                         stream.Close();
                     m_streams = null;
                 }
+            }
+
+            public virtual void initInstance()
+            {
+                //do nothing
             }
         }
 

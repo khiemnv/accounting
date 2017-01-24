@@ -94,7 +94,7 @@ namespace test_binding
             public TableLayoutPanel m_panel;
             public Button m_printBtn;
 
-            public lBasePanel()
+            public void initInstance()
             {
                 m_panel = new TableLayoutPanel();
                 m_panel.Anchor = AnchorStyles.Top | AnchorStyles.Left;
@@ -105,6 +105,21 @@ namespace test_binding
                 m_printBtn = new Button();
                 m_printBtn.Text = "Print";
                 m_printBtn.Click += new System.EventHandler(printBtn_Click);
+
+                //reconfigurable members
+                if (m_dataPanel == null)
+                {
+                    m_dataPanel = new lDataPanel();
+                    m_searchPanel = new lSearchPanel(m_dataPanel);
+                    m_report = new lBaseReport();
+                }
+                m_dataPanel.initInstance();
+                m_searchPanel.initInstance();
+                m_report.initInstance();
+            }
+            public lBasePanel()
+            {
+                initInstance();
             }
 
             private void printBtn_Click(object sender, EventArgs e)

@@ -24,7 +24,7 @@ namespace test_binding
         };
 
         [DataContract(Name ="SearchCtrl")]
-        class lSearchCtrl
+        class lSearchCtrl:IConfigurableObj
         {
             public enum ctrlType
             {
@@ -55,8 +55,8 @@ namespace test_binding
             [DataMember(Name = "mode", EmitDefaultValue = false)]
             public SearchMode m_mode = SearchMode.like;
 
-            public FlowLayoutPanel m_panel = new FlowLayoutPanel();
-            public CheckBox m_label = new CheckBox();
+            public FlowLayoutPanel m_panel;
+            public CheckBox m_label;
 
             public lSearchCtrl() { }
             public lSearchCtrl(string fieldName, string alias, ctrlType type, Point pos, Size size)
@@ -93,17 +93,22 @@ namespace test_binding
             public virtual void LoadData()
             {
             }
+
+            public virtual void initInstance()
+            {
+                m_panel = new FlowLayoutPanel();
+                m_label = new CheckBox();
+            }
         };
 
         [DataContract(Name = "SearchCtrlText")]
         class lSearchCtrlText : lSearchCtrl
         {
-            protected TextBox m_text = new TextBox();
+            protected TextBox m_text;
             public lSearchCtrlText(string fieldName, string alias, ctrlType type, Point pos, Size size)
                 : base(fieldName, alias, type, pos, size)
             {
-                m_text.Width = 200;
-                m_panel.Controls.AddRange(new Control[] { m_label, m_text });
+                initInstance();
             }
             public override void updateSearchParams(List<string> exprs, List<lEntity> arr)
             {
@@ -137,32 +142,26 @@ namespace test_binding
                     m_text.AutoCompleteCustomSource = col;
                 }
             }
+            public override void initInstance()
+            {
+                base.initInstance();
+                m_text = new TextBox();
+
+                m_text.Width = 200;
+                m_panel.Controls.AddRange(new Control[] { m_label, m_text });
+            }
         }
         [DataContract(Name = "SearchCtrlDate")]
         class lSearchCtrlDate : lSearchCtrl
         {
-            private DateTimePicker m_startdate = new DateTimePicker();
-            private DateTimePicker m_enddate = new DateTimePicker();
-            private CheckBox m_to = new CheckBox();
+            private DateTimePicker m_startdate;
+            private DateTimePicker m_enddate;
+            private CheckBox m_to;
+
             public lSearchCtrlDate(string fieldName, string alias, ctrlType type, Point pos, Size size)
                 : base(fieldName, alias, type, pos, size)
             {
-                m_to.Text = "to";
-                m_to.AutoSize = true;
-
-                m_startdate.Width = 80;
-                m_startdate.Format = DateTimePickerFormat.Custom;
-                m_startdate.CustomFormat = "yyyy-MM-dd";
-                m_enddate.Width = 80;
-                m_enddate.Format = DateTimePickerFormat.Custom;
-                m_enddate.CustomFormat = "yyyy-MM-dd";
-                FlowLayoutPanel datePanel = new FlowLayoutPanel();
-                datePanel.BorderStyle = BorderStyle.FixedSingle;
-                datePanel.Dock = DockStyle.Top;
-                datePanel.AutoSize = true;
-                datePanel.Controls.AddRange(new Control[] { m_startdate, m_to, m_enddate });
-
-                m_panel.Controls.AddRange(new Control[] { m_label, datePanel });
+                initInstance();
             }
             public override void updateSearchParams(List<string> exprs, List<lEntity> arr)
             {
@@ -181,6 +180,31 @@ namespace test_binding
                     }
                 }
             }
+            public override void initInstance()
+            {
+                base.initInstance();
+
+                m_startdate = new DateTimePicker();
+                m_enddate = new DateTimePicker();
+                m_to = new CheckBox();
+
+                m_to.Text = "to";
+                m_to.AutoSize = true;
+
+                m_startdate.Width = 80;
+                m_startdate.Format = DateTimePickerFormat.Custom;
+                m_startdate.CustomFormat = "yyyy-MM-dd";
+                m_enddate.Width = 80;
+                m_enddate.Format = DateTimePickerFormat.Custom;
+                m_enddate.CustomFormat = "yyyy-MM-dd";
+                FlowLayoutPanel datePanel = new FlowLayoutPanel();
+                datePanel.BorderStyle = BorderStyle.FixedSingle;
+                datePanel.Dock = DockStyle.Top;
+                datePanel.AutoSize = true;
+                datePanel.Controls.AddRange(new Control[] { m_startdate, m_to, m_enddate });
+
+                m_panel.Controls.AddRange(new Control[] { m_label, datePanel });
+            }
         }
         [DataContract(Name = "SearchCtrlNum")]
         class lSearchCtrlNum : lSearchCtrlText
@@ -188,6 +212,11 @@ namespace test_binding
             public lSearchCtrlNum(string fieldName, string alias, ctrlType type, Point pos, Size size)
                 : base(fieldName, alias, type, pos, size)
             {
+                initInstance();
+            }
+            public override void initInstance()
+            {
+                base.initInstance();
                 m_mode = SearchMode.match;
             }
         }
@@ -197,6 +226,11 @@ namespace test_binding
             public lSearchCtrlCurrency(string fieldName, string alias, ctrlType type, Point pos, Size size)
                 : base(fieldName, alias, type, pos, size)
             {
+                initInstance();
+            }
+            public override void initInstance()
+            {
+                base.initInstance();
                 m_mode = SearchMode.match;
             }
         }
@@ -208,23 +242,22 @@ namespace test_binding
         /// + getWhereQry
         /// </summary>
         [DataContract(Name ="SearchPanel")]
-        class lSearchPanel
+        class lSearchPanel:IConfigurableObj
         {
+            [DataMember(Name ="searchCtrls")]
+            public List<lSearchCtrl> m_searchCtrls = new List<lSearchCtrl>();
+
             public lDataPanel m_dataPanel;
             public lTableInfo m_tblInfo { get { return m_dataPanel.m_tblInfo; } }
 
-            public TableLayoutPanel m_tbl = new TableLayoutPanel();
-
-            [DataMember(Name ="searchCtrls")]
-            public List<lSearchCtrl> m_searchCtrls = new List<lSearchCtrl>();
-            public Button m_searchBtn = new Button();
+            public TableLayoutPanel m_tbl;
+            public Button m_searchBtn;
 
             public lSearchPanel() { }
             public lSearchPanel(lDataPanel dataPanel)
             {
                 m_dataPanel = dataPanel;
-                m_searchBtn.Text = "Search";
-                m_searchBtn.Click += new System.EventHandler(searchButton_Click);
+                initInstance();
             }
             public lSearchCtrl crtSearchCtrl(lTableInfo tblInfo, string colName, Point pos, Size size)
             {
@@ -284,6 +317,21 @@ namespace test_binding
                 foreach(lSearchCtrl ctrl in m_searchCtrls)
                 {
                     ctrl.LoadData();
+                }
+            }
+
+            public void initInstance()
+            {
+                m_tbl = new TableLayoutPanel();
+                m_searchBtn = new Button();
+                
+                m_searchBtn.Text = "Search";
+                m_searchBtn.Click += new System.EventHandler(searchButton_Click);
+
+                if (m_searchCtrls != null)
+                {
+                    foreach(lSearchCtrl ctrl in m_searchCtrls)
+                        ctrl.initInstance();
                 }
             }
         }
