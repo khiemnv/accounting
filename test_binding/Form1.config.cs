@@ -12,15 +12,12 @@ using System.Data.SQLite;
 using System.Data.SqlClient;
 using System.Runtime.Serialization;
 using System.Xml;
+using System.IO;
 
 namespace test_binding
 {
     public partial class Form1 : Form
     {
-        interface IConfigurableObj
-        {
-            void initInstance();    //init instance base on config data
-        }
         class lConfigMng
         {
             public string m_cfgPath = "config.xml";
@@ -59,16 +56,22 @@ namespace test_binding
                     typeof(lSalaryPanel),
                 });
             }
-            public void LoadConfig(out List<lBasePanel> panels)
+            public List<lBasePanel> LoadConfig()
             {
                 //panels = new List<lBasePanel>();
-                XmlReader xrd = XmlReader.Create(m_cfgPath);
-                xrd.Read();
+                if (File.Exists(m_cfgPath))
+                {
+                    XmlReader xrd = XmlReader.Create(m_cfgPath);
+                    xrd.Read();
 
-                xrd.ReadToFollowing("panels");
+                    xrd.ReadToFollowing("panels");
 
-                var objs1 = m_serializer.ReadObject(xrd, false);
-                panels = (List<lBasePanel>)objs1;
+                    var objs1 = m_serializer.ReadObject(xrd, false);
+                    return (List<lBasePanel>)objs1;
+                } else
+                {
+                    return null;
+                }
             }
             public void UpdateConfig(List<lBasePanel> panels)
             {

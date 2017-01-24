@@ -22,16 +22,16 @@ namespace test_binding
         ///     update data grid - auto
         /// </summary>
         [DataContract(Name = "DataPanel")]
-        class lDataPanel: IConfigurableObj
+        class lDataPanel
         {
             //public TableLayoutPanel m_tbl = new TableLayoutPanel();
-            public FlowLayoutPanel m_reloadPanel = new FlowLayoutPanel();
-            public FlowLayoutPanel m_sumPanel = new FlowLayoutPanel();
+            public FlowLayoutPanel m_reloadPanel;
+            public FlowLayoutPanel m_sumPanel;
 
-            public Button m_reloadBtn = new Button();
-            public Button m_submitBtn = new Button();
-            public Label m_sumLabel = new Label();
-            public TextBox m_sumTxt = new TextBox();
+            public Button m_reloadBtn;
+            public Button m_submitBtn;
+            public Label m_sumLabel;
+            public TextBox m_sumTxt;
 
             public DataGridView m_dataGridView;
 
@@ -42,10 +42,48 @@ namespace test_binding
             [DataMember(Name = "countOn")]
             public string m_countOn = "";
 
-            public lDataPanel() { }
-            public lDataPanel(lTableInfo tblInfo)
+            protected lDataPanel() { }
+            /// <summary>
+            /// create new instance
+            /// </summary>
+            /// <param name="dataPanel"></param>
+            /// <returns></returns>
+            public static lDataPanel crtDataPanel(lDataPanel dataPanel)
+            {
+                lDataPanel newDataPanel = new lDataPanel();
+                newDataPanel.init(dataPanel.m_tblInfo);
+                newDataPanel.m_countOn = dataPanel.m_countOn;
+                return newDataPanel;
+            }
+
+            private void init(lTableInfo tblInfo)
             {
                 m_tblInfo = tblInfo;
+
+                m_reloadPanel = new FlowLayoutPanel();
+                m_sumPanel = new FlowLayoutPanel();
+
+                m_reloadBtn = new Button();
+                m_submitBtn = new Button();
+                m_sumLabel = new Label();
+                m_sumTxt = new TextBox();
+
+                m_reloadBtn.Text = "Reload";
+                m_submitBtn.Text = "Save";
+
+                m_reloadBtn.Click += new System.EventHandler(reloadButton_Click);
+                m_submitBtn.Click += new System.EventHandler(submitButton_Click);
+
+                m_sumLabel.Text = "Sum";
+
+#if use_custom_dgv
+                m_dataGridView = new myDataGridView(m_tblInfo);
+#else
+                m_dataGridView = new DataGridView();
+                m_dataGridView.CellClick += M_dataGridView_CellClick;
+                m_dataGridView.CellEndEdit += M_dataGridView_CellEndEdit;
+                m_dataGridView.Scroll += M_dataGridView_Scroll;
+#endif
             }
 #if !use_custom_dgv
             private myCustomCtrl m_customCtrl;
@@ -165,9 +203,10 @@ namespace test_binding
             public virtual Int64 getSum()
             {
                 Int64 sum = 0;
+                int iCol = m_tblInfo.getColIndex(m_countOn);
                 for (int i = 0; i < (m_dataGridView.RowCount - 1); i++)
                 {
-                    sum += Int64.Parse(m_dataGridView[4, i].Value.ToString());
+                    sum += Int64.Parse(m_dataGridView[iCol, i].Value.ToString());
                 }
                 return sum;
             }
@@ -205,150 +244,45 @@ namespace test_binding
                 m_dataContent = s_contentProvider.CreateDataContent(m_tblInfo.m_tblName);
                 m_dataGridView.DataSource = m_dataContent.m_bindingSource;
             }
-
-            public void initInstance()
-            {
-                m_reloadPanel = new FlowLayoutPanel();
-                m_sumPanel = new FlowLayoutPanel();
-
-                m_reloadBtn = new Button();
-                m_submitBtn = new Button();
-                m_sumLabel = new Label();
-                m_sumTxt = new TextBox();
-
-                if (m_tblInfo!=null) {
-                    m_tblInfo.initInstance();
-                }
-
-                m_reloadBtn.Text = "Reload";
-                m_submitBtn.Text = "Save";
-
-                m_reloadBtn.Click += new System.EventHandler(reloadButton_Click);
-                m_submitBtn.Click += new System.EventHandler(submitButton_Click);
-
-                m_sumLabel.Text = "Sum";
-
-#if use_custom_dgv
-                m_dataGridView = new myDataGridView(m_tblInfo);
-#else
-                m_dataGridView = new DataGridView();
-                m_dataGridView.CellClick += M_dataGridView_CellClick;
-                m_dataGridView.CellEndEdit += M_dataGridView_CellEndEdit;
-                m_dataGridView.Scroll += M_dataGridView_Scroll;
-#endif
-            }
         }
 
         [DataContract(Name = "InterPaymentDataPanel")]
         class lInterPaymentDataPanel : lDataPanel
         {
-            const int advance_payment_col = 6;
-            const int reimbursement_col = 7;
-            const int actually_spent_col = 8;
-            private Int64 advance_payment_sum;
-            private Int64 reimbursement_sum;
-            private Int64 actually_spent_sum;
-
-            public lInterPaymentDataPanel()
-                    : base(new lInternalPaymentTblInfo())
+            public lInterPaymentDataPanel()                
             {
-            }
-
-            public override Int64 getSum()
-            {
-                advance_payment_sum = 0;
-                reimbursement_sum = 0;
-                actually_spent_sum = 0;
-                for (int i = 0; i < (m_dataGridView.RowCount - 1); i++)
-                {
-                    advance_payment_sum += Int64.Parse(m_dataGridView[advance_payment_col, i].Value.ToString());
-                    reimbursement_sum += Int64.Parse(m_dataGridView[reimbursement_col, i].Value.ToString());
-                    actually_spent_sum += Int64.Parse(m_dataGridView[actually_spent_col, i].Value.ToString());
-                }
-                return actually_spent_sum;
+                m_tblInfo = new lInternalPaymentTblInfo();
+                m_countOn = "actually_spent";
             }
         }
 
         [DataContract(Name = "ReceiptsDataPanel")]
         class lReceiptsDataPanel : lDataPanel
         {
-            const int price_col = 5;
-            private Int64 price_sum;
-
             public lReceiptsDataPanel()
-                    : base(new lReceiptsTblInfo())
             {
-            }
-
-            public override Int64 getSum()
-            {
-                price_sum = 0;
-                for (int i = 0; i < (m_dataGridView.RowCount - 1); i++)
-                {
-                    price_sum += Int64.Parse(m_dataGridView[price_col, i].Value.ToString());
-                }
-                return price_sum;
+                m_tblInfo = new lReceiptsTblInfo();
+                m_countOn = "amount";
             }
         }
 
         [DataContract(Name = "ExterPaymentDataPanel")]
         class lExternalPaymentDataPanel : lDataPanel
         {
-            const int spent_col = 6;
-            private Int64 spent_sum;
-
-            public lExternalPaymentDataPanel()
-                    : base(new lExternalPaymentTblInfo())
+            public lExternalPaymentDataPanel()                
             {
-            }
-
-            public override Int64 getSum()
-            {
-                spent_sum = 0;
-                for (int i = 0; i < (m_dataGridView.RowCount - 1); i++)
-                {
-                    spent_sum += Int64.Parse(m_dataGridView[spent_col, i].Value.ToString());
-                }
-                return spent_sum;
+                m_tblInfo = new lExternalPaymentTblInfo();
+                m_countOn = "spent";
             }
         }
 
         [DataContract(Name = "SalaryDataPanel")]
         class lSalaryDataPanel : lDataPanel
         {
-            const int salary_col = 7;
-            private Int64 spent_sum;
-
             public lSalaryDataPanel()
-                    : base(new lSalaryTblInfo())
             {
-#if false
-                //update data grid view hdr
-                List<string> headers = new List<string>(
-                    new string[] { "ID", "month",
-                        "date", "payment_number",
-                        "name", "group_name",
-                        "content", "salary", "note" }
-                    );
-                List<string> fields = new List<string>(
-                    new string[] {"ID","Thang",
-                        "Ngay thang","Ma Phieu",
-                        "Ho ten", "Ban",
-                        "Noi dung", "So tien", "Ghi Chu"}
-                    );
-
-                createCols(fields, headers);
-#endif
-            }
-
-            public override Int64 getSum()
-            {
-                spent_sum = 0;
-                for (int i = 0; i < (m_dataGridView.RowCount - 1); i++)
-                {
-                    spent_sum += Int64.Parse(m_dataGridView[salary_col, i].Value.ToString());
-                }
-                return spent_sum;
+                m_tblInfo = new lSalaryTblInfo();
+                m_countOn = "salary";
             }
         }
     }

@@ -20,7 +20,7 @@ namespace test_binding
         /// + alias
         /// </summary>
         [DataContract(Name ="TableInfo")]
-        class lTableInfo:IConfigurableObj
+        class lTableInfo
         {
             //#define col_class
 #if col_class
@@ -113,11 +113,6 @@ namespace test_binding
                     i++;
                 }
                 return -1;
-            }
-
-            public void initInstance()
-            {
-                //do nothing
             }
         }
 

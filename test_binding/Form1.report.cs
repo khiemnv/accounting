@@ -18,7 +18,7 @@ namespace test_binding
     public partial class Form1 : Form
     {
         [DataContract(Name ="Report")]
-        class lBaseReport : IDisposable, IConfigurableObj
+        class lBaseReport : IDisposable
         {
             [DataMember(Name = "rcName")]
             public string m_rcName;     //data set
@@ -33,9 +33,20 @@ namespace test_binding
 #endif
             public string m_pdfPath;    //print to pdf file
             lDataSync m_data;
-            public lBaseReport()
+            protected lBaseReport()
             {
             }
+            static public lBaseReport crtReport(lBaseReport m_report)
+            {
+                lBaseReport newRpt = new lBaseReport();
+                newRpt.m_rcName = m_report.m_rcName;
+                newRpt.m_viewName = m_report.m_viewName;
+                newRpt.m_rdlcPath = m_report.m_rdlcPath;
+                newRpt.m_dsName = m_report.m_dsName;
+                newRpt.m_pdfPath = "report.pdf";
+                return newRpt;
+            }
+
             private DataTable loadData()
             {
                 //string qry = string.Format("SELECT * FROM {0}", m_viewName);
@@ -59,6 +70,7 @@ namespace test_binding
                 m_streams.Add(stream);
                 return stream;
             }
+
             private void Export(LocalReport report)
             {
                 string deviceInfo =
@@ -102,6 +114,7 @@ namespace test_binding
                 m_currentPageIndex++;
                 ev.HasMorePages = (m_currentPageIndex < m_streams.Count);
             }
+
             private void Print()
             {
                 if (m_streams == null || m_streams.Count == 0)
@@ -166,6 +179,7 @@ namespace test_binding
                 Print();
 #endif
             }
+
             public void Dispose()
             {
                 if (m_streams != null)
@@ -175,35 +189,23 @@ namespace test_binding
                     m_streams = null;
                 }
             }
-
-            public virtual void initInstance()
-            {
-                //do nothing
-            }
         }
 
-#if true
         [DataContract(Name = "ReceiptsReport")]
         class lReceiptsReport : lBaseReport
         {
-            public lReceiptsReport():base()
-            {
+            public lReceiptsReport() {
                 m_rcName = "DataSet1";
                 m_viewName = "v_receipts";
                 m_rdlcPath = @"..\..\rpt_receipts.rdlc";
                 m_dsName = "DataSet1";
                 m_pdfPath = @"..\..\report.pdf";
             }
-            public override List<ReportParameter> getReportParam()
-            {
-                return new List<ReportParameter>();
-            }
         }
         [DataContract(Name = "InternalPaymentReport")]
         class lInternalPaymentReport : lBaseReport
         {
-            public lInternalPaymentReport():base()
-            {
+            public lInternalPaymentReport() {
                 m_rcName = "DataSet1";
                 m_viewName = "v_internal_payment";
                 m_rdlcPath = @"..\..\rpt_interpayment.rdlc";
@@ -214,8 +216,7 @@ namespace test_binding
         [DataContract(Name = "ExternalPaymentReport")]
         class lExternalPaymentReport : lBaseReport
         {
-            public lExternalPaymentReport() :base()
-            {
+            public lExternalPaymentReport() {
                 m_rcName = "DataSet1";
                 m_viewName = "v_external_payment";
                 m_rdlcPath = @"..\..\rpt_exterpayment.rdlc";
@@ -226,8 +227,7 @@ namespace test_binding
         [DataContract(Name = "SalaryReport")]
         class lSalaryReport : lBaseReport
         {
-            public lSalaryReport():base()
-            {
+            public lSalaryReport() {
                 m_rcName = "DataSet1";
                 m_viewName = "v_salary";
                 m_rdlcPath = @"..\..\rpt_salary.rdlc";
@@ -235,6 +235,5 @@ namespace test_binding
                 m_pdfPath = @"..\..\report.pdf";
             }
         }
-#endif
     }
 }

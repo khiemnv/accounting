@@ -1,4 +1,5 @@
 ﻿//#define DEBUG_DRAWING
+#define use_sqlite
 
 using System;
 using System.Collections.Generic;
@@ -21,62 +22,58 @@ namespace test_binding
     {
         static lContentProvider s_contentProvider;
 
-        private TabControl tabControl1;
-        private TabPage tabPage1;   //receipts
-        private TabPage tabPage2;   //internal payment
-        private TabPage tabPage3;   //external payment
-        private TabPage tabPage4;   //salary
-
-
+        private TabControl m_tabCtrl;
         lConfigMng m_config;
         List<lBasePanel> m_panels;
 
         public Form1()
         {
             InitializeComponent();
+
 #if use_sqlite
-            m_contentProvider = lSQLiteContentProvider.getInstance();
+            s_contentProvider = lSQLiteContentProvider.getInstance();
 #else
             s_contentProvider = lSqlContentProvider.getInstance();
 #endif
-
             m_config = new lConfigMng();
-            m_config.LoadConfig(out m_panels);
+            m_panels = m_config.LoadConfig();
+
+            if (m_panels == null)
+            {
+                m_panels = new List<lBasePanel> {
+                    new lReceiptsPanel(),
+                    new lInterPaymentPanel(),
+                    new lExternalPaymentPanel(),
+                    new lSalaryPanel(),
+                };
+
+                m_config.UpdateConfig(m_panels);
+            }            
 
             //tab control
-            this.tabControl1 = new TabControl();
-            this.Controls.Add(tabControl1);
-            this.tabControl1.Anchor = AnchorStyles.Top | AnchorStyles.Left;
-            this.tabControl1.Dock = DockStyle.Fill;
+            m_tabCtrl = new TabControl();
+            Controls.Add(m_tabCtrl);
+            m_tabCtrl.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+            m_tabCtrl.Dock = DockStyle.Fill;
 
-            //tab1
-            this.tabPage1 = crtReceiptsTab();
-            this.tabControl1.TabPages.Add(tabPage1);
+            foreach(lBasePanel panel in m_panels)
+            {
+                TabPage newTab = crtTab(panel);
+                m_tabCtrl.TabPages.Add(newTab);
+            }
 
-            ///////////////////tab2
-            this.tabPage2 = crtInternalPaymentTab();
-            this.tabControl1.TabPages.Add(tabPage2);
+            m_tabCtrl.SelectedIndex = 0;
 
-            //tab3
-            this.tabPage3 = crtExternalPaymentTab();
-            this.tabControl1.TabPages.Add(tabPage3);
+            Load += new System.EventHandler(Form1_Load);
+            Text = "CBV Kế Toán";
+        }
 
-            //tab4
-            this.tabPage4 = crtSalaryTab();
-            this.tabControl1.TabPages.Add(tabPage4);
-
-            this.tabControl1.SelectedTab = tabPage1;
-
-            this.Load += new System.EventHandler(Form1_Load);
-            this.Text = "CBV Kế Toán";
-
-            //m_panels = new List<lBasePanel> {
-            //    m_receiptsPanel,
-            //    m_interPaymentPanel,
-            //    m_externalPaymentPanel,
-            //    m_salaryPanel
-            //};
-            //m_config.UpdateConfig(m_panels);
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            foreach(lBasePanel panel in m_panels)
+            {
+                panel.LoadData();
+            }
         }
 
         [DataContract(Name ="Panel")]
@@ -94,7 +91,20 @@ namespace test_binding
             public TableLayoutPanel m_panel;
             public Button m_printBtn;
 
-            public void initInstance()
+            protected lBasePanel() { }
+            public static lBasePanel crtPanel(lBasePanel panel)
+            {
+                lDataPanel dataPanel = lDataPanel.crtDataPanel(panel.m_dataPanel);
+                lSearchPanel searchPanel = lSearchPanel.crtSearchPanel(dataPanel, panel.m_searchPanel.m_searchCtrls);
+                lBaseReport report = lBaseReport.crtReport(panel.m_report);
+                lBasePanel newPanel = new lBasePanel() {
+                    m_dataPanel = dataPanel, m_searchPanel = searchPanel, m_report = report
+                };
+                newPanel.init();
+                return newPanel;
+            }
+
+            protected void init()
             {
                 m_panel = new TableLayoutPanel();
                 m_panel.Anchor = AnchorStyles.Top | AnchorStyles.Left;
@@ -105,21 +115,6 @@ namespace test_binding
                 m_printBtn = new Button();
                 m_printBtn.Text = "Print";
                 m_printBtn.Click += new System.EventHandler(printBtn_Click);
-
-                //reconfigurable members
-                if (m_dataPanel == null)
-                {
-                    m_dataPanel = new lDataPanel();
-                    m_searchPanel = new lSearchPanel(m_dataPanel);
-                    m_report = new lBaseReport();
-                }
-                m_dataPanel.initInstance();
-                m_searchPanel.initInstance();
-                m_report.initInstance();
-            }
-            public lBasePanel()
-            {
-                initInstance();
             }
 
             private void printBtn_Click(object sender, EventArgs e)
@@ -156,18 +151,18 @@ namespace test_binding
         class lInterPaymentPanel : lBasePanel
         {
             public lInterPaymentPanel()
-                : base()
             {
                 m_dataPanel = new lInterPaymentDataPanel();
                 m_searchPanel = new lInterPaymentSearchPanel(m_dataPanel);
                 m_report = new lInternalPaymentReport();
+                base.init();
             }
         }
 
         [DataContract(Name = "ReceiptsPanel")]
         class lReceiptsPanel : lBasePanel
         {
-            public lReceiptsPanel() : base()
+            public lReceiptsPanel()
             {
                 m_dataPanel = new lReceiptsDataPanel();
                 m_searchPanel = new lReceiptsSearchPanel(m_dataPanel);
@@ -179,11 +174,11 @@ namespace test_binding
         class lExternalPaymentPanel : lBasePanel
         {
             public lExternalPaymentPanel()
-                : base()
             {
                 m_dataPanel = new lExternalPaymentDataPanel();
                 m_searchPanel = new lExternalPaymentSearchPanel(m_dataPanel);
                 m_report = new lExternalPaymentReport();
+                base.init();
             }
         }
 
@@ -191,73 +186,24 @@ namespace test_binding
         class lSalaryPanel : lBasePanel
         {
             public lSalaryPanel()
-                : base()
             {
                 m_dataPanel = new lSalaryDataPanel();
                 m_searchPanel = new lSalarySearchPanel(m_dataPanel);
                 m_report = new lSalaryReport();
+                base.init();
             }
         }
-
-        /// <summary>
-        /// panels & create panel
-        /// </summary>
-        private lInterPaymentPanel m_interPaymentPanel;
-        private TabPage crtInternalPaymentTab()
+        
+        private TabPage crtTab(lBasePanel basePanel)
         {
             TabPage newTabPage = new TabPage();
-
-            m_interPaymentPanel = new lInterPaymentPanel();
-            m_interPaymentPanel.initCtrls();
-            newTabPage.Controls.Add(m_interPaymentPanel.m_panel);
-            newTabPage.Text = m_interPaymentPanel.m_tblInfo.m_tblAlias;
+            lBasePanel newPanel = lBasePanel.crtPanel(basePanel);
+            newPanel.initCtrls();
+            newTabPage.Controls.Add(newPanel.m_panel);
+            newTabPage.Text = newPanel.m_tblInfo.m_tblAlias;
             return newTabPage;
         }
-
-        private lReceiptsPanel m_receiptsPanel;
-        private TabPage crtReceiptsTab()
-        {
-            TabPage newTabPage = new TabPage();
-
-            m_receiptsPanel = new lReceiptsPanel();
-            m_receiptsPanel.initCtrls();
-            newTabPage.Controls.Add(m_receiptsPanel.m_panel);
-            newTabPage.Text = m_receiptsPanel.m_tblInfo.m_tblAlias;
-            return newTabPage;
-        }
-
-        private lExternalPaymentPanel m_externalPaymentPanel;
-        private TabPage crtExternalPaymentTab()
-        {
-            TabPage newTabPage = new TabPage();
-
-            m_externalPaymentPanel = new lExternalPaymentPanel();
-            m_externalPaymentPanel.initCtrls();
-            newTabPage.Controls.Add(m_externalPaymentPanel.m_panel);
-            newTabPage.Text = m_externalPaymentPanel.m_tblInfo.m_tblAlias;
-            return newTabPage;
-        }
-
-        private lSalaryPanel m_salaryPanel;
-        private TabPage crtSalaryTab()
-        {
-            TabPage newTabPage = new TabPage();
-
-            m_salaryPanel = new lSalaryPanel();
-            m_salaryPanel.initCtrls();
-            newTabPage.Controls.Add(m_salaryPanel.m_panel);
-            newTabPage.Text = m_salaryPanel.m_tblInfo.m_tblAlias;
-            return newTabPage;
-        }
-
-        private void Form1_Load(object sender, System.EventArgs e)
-        {
-            m_externalPaymentPanel.LoadData();
-            m_interPaymentPanel.LoadData();
-            m_receiptsPanel.LoadData();
-            m_salaryPanel.LoadData();
-        }
-
+        
         private void Form1_Resize(object sender, EventArgs e)
         {
         }
