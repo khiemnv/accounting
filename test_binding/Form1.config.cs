@@ -13,6 +13,7 @@ using System.Data.SqlClient;
 using System.Runtime.Serialization;
 using System.Xml;
 using System.IO;
+using System.Runtime.Serialization.Json;
 
 namespace test_binding
 {
@@ -21,10 +22,10 @@ namespace test_binding
         class lConfigMng
         {
             public string m_cfgPath = "config.xml";
-            DataContractSerializer m_serializer;
-            public lConfigMng()
-            {
-                m_serializer = new DataContractSerializer(typeof(List<lBasePanel>), new Type[] {
+            XmlObjectSerializer m_serializer;
+
+            void createSerializer() {
+                Type[] knownTypes = new Type[] {
                     typeof(lReceiptsTblInfo),
                     typeof(lInternalPaymentTblInfo),
                     typeof(lExternalPaymentTblInfo),
@@ -53,8 +54,26 @@ namespace test_binding
                     typeof(lReceiptsPanel),
                     typeof(lInterPaymentPanel),
                     typeof(lExternalPaymentPanel),
-                    typeof(lSalaryPanel),
-                });
+                    typeof(lSalaryPanel)
+                };
+#if false
+                DataContractSerializerSettings settings = new DataContractSerializerSettings();
+                settings.IgnoreExtensionDataObject = true;
+                settings.KnownTypes = knownTypes;
+                m_serializer = new DataContractSerializer(
+                    typeof(List<lBasePanel>), settings);
+#else
+                DataContractJsonSerializerSettings settings = new DataContractJsonSerializerSettings();
+                settings.IgnoreExtensionDataObject = true;
+                settings.EmitTypeInformation = EmitTypeInformation.Never;
+                settings.KnownTypes = knownTypes;
+                m_serializer = new DataContractJsonSerializer(
+                    typeof(List<lBasePanel>), settings);
+#endif
+            }
+            public lConfigMng()
+            {
+                createSerializer();
             }
             public List<lBasePanel> LoadConfig()
             {
@@ -68,7 +87,8 @@ namespace test_binding
 
                     var objs1 = m_serializer.ReadObject(xrd, false);
                     return (List<lBasePanel>)objs1;
-                } else
+                }
+                else
                 {
                     return null;
                 }

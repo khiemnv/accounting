@@ -51,15 +51,18 @@ namespace test_binding
             public static lDataPanel crtDataPanel(lDataPanel dataPanel)
             {
                 lDataPanel newDataPanel = new lDataPanel();
-                newDataPanel.init(dataPanel.m_tblInfo);
-                newDataPanel.m_countOn = dataPanel.m_countOn;
+                newDataPanel.init(dataPanel);
                 return newDataPanel;
             }
 
-            private void init(lTableInfo tblInfo)
+            private void init(lDataPanel dataPanel)
             {
-                m_tblInfo = tblInfo;
+                m_countOn = dataPanel.m_countOn;
+                m_tblInfo = dataPanel.m_tblInfo;
+            }
 
+            public virtual void initCtrls()
+            {
                 m_reloadPanel = new FlowLayoutPanel();
                 m_sumPanel = new FlowLayoutPanel();
 
@@ -84,7 +87,37 @@ namespace test_binding
                 m_dataGridView.CellEndEdit += M_dataGridView_CellEndEdit;
                 m_dataGridView.Scroll += M_dataGridView_Scroll;
 #endif
+
+                //reload panel with reload and save buttons
+                m_reloadPanel.AutoSize = true;
+                m_reloadPanel.AutoSizeMode = AutoSizeMode.GrowOnly;
+                m_reloadPanel.Dock = DockStyle.Left;
+#if DEBUG_DRAWING
+                m_reloadPanel.BorderStyle = BorderStyle.FixedSingle;
+#endif
+
+                m_sumPanel.AutoSize = true;
+                m_sumPanel.AutoSizeMode = AutoSizeMode.GrowOnly;
+                m_sumPanel.Dock = DockStyle.Right;
+#if DEBUG_DRAWING
+                m_sumPanel.BorderStyle = BorderStyle.FixedSingle;
+#endif
+
+                m_reloadPanel.Controls.AddRange(new Control[] { m_reloadBtn, m_submitBtn });
+
+                //sum panel with label and text ctrls
+                m_sumPanel.Controls.AddRange(new Control[] { m_sumLabel, m_sumTxt });
+
+                m_sumLabel.Anchor = AnchorStyles.Right;
+                m_sumLabel.TextAlign = ContentAlignment.MiddleRight;
+                m_sumLabel.AutoSize = true;
+
+                m_sumTxt.Width = 100;
+
+                m_dataGridView.Anchor = AnchorStyles.Top & AnchorStyles.Left;
+                m_dataGridView.Dock = DockStyle.Fill;
             }
+
 #if !use_custom_dgv
             private myCustomCtrl m_customCtrl;
             private void M_dataGridView_CellEndEdit(object sender, DataGridViewCellEventArgs e)
@@ -161,45 +194,6 @@ namespace test_binding
                 m_dataContent.Submit();
             }
 
-            public virtual void initCtrls()
-            {
-                m_reloadPanel.AutoSize = true;
-                m_reloadPanel.AutoSizeMode = AutoSizeMode.GrowOnly;
-                m_reloadPanel.Dock = DockStyle.Left;
-#if DEBUG_DRAWING
-                m_reloadPanel.BorderStyle = BorderStyle.FixedSingle;
-#endif
-
-                m_sumPanel.AutoSize = true;
-                m_sumPanel.AutoSizeMode = AutoSizeMode.GrowOnly;
-                m_sumPanel.Dock = DockStyle.Right;
-#if DEBUG_DRAWING
-                m_sumPanel.BorderStyle = BorderStyle.FixedSingle;
-#endif
-
-                m_reloadPanel.Controls.AddRange(new Control[] { m_reloadBtn, m_submitBtn });
-                m_sumPanel.Controls.AddRange(new Control[] { m_sumLabel, m_sumTxt});
-
-                m_sumLabel.Anchor = AnchorStyles.Right;
-                m_sumLabel.TextAlign = ContentAlignment.MiddleRight;
-                m_sumLabel.AutoSize = true;
-                
-                m_sumTxt.Width = 100;
-
-                m_dataGridView.Anchor = AnchorStyles.Top & AnchorStyles.Left;
-                //m_dataGridView.AutoSize = true;
-                m_dataGridView.Dock = DockStyle.Fill;
-            }
-#if false
-            public void createCols(List<string> fields, List<string> headers)
-            {
-                m_dataGridView.AutoGenerateColumns = false;
-                for (int i = 0; i < fields.Count; i++) { 
-                    m_dataGridView.Columns.Add(fields[i], headers[i]);
-                }
-                m_dataGridView.Columns[0].Visible = false;
-            }
-#endif
             public virtual Int64 getSum()
             {
                 Int64 sum = 0;

@@ -56,6 +56,7 @@ namespace test_binding
             m_tabCtrl.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             m_tabCtrl.Dock = DockStyle.Fill;
 
+#if crtnew_panel
             List<lBasePanel> newPanels = new List<lBasePanel>();
             foreach(lBasePanel panel in m_panels)
             {
@@ -65,6 +66,14 @@ namespace test_binding
                 m_tabCtrl.TabPages.Add(newTab);
             }
             m_panels = newPanels;
+#else
+            foreach (lBasePanel panel in m_panels)
+            {
+                panel.Restore();
+                TabPage newTab = crtTab(panel);
+                m_tabCtrl.TabPages.Add(newTab);
+            }
+#endif
 
             m_tabCtrl.SelectedIndex = 0;
 
@@ -108,17 +117,13 @@ namespace test_binding
                 return newPanel;
             }
 
+            public void Restore()
+            {
+                m_searchPanel.m_dataPanel = m_dataPanel;
+            }
+
             protected void init()
             {
-                m_panel = new TableLayoutPanel();
-                m_panel.Anchor = AnchorStyles.Top | AnchorStyles.Left;
-                m_panel.Dock = DockStyle.Fill;
-#if DEBUG_DRAWING
-                m_panel.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
-#endif
-                m_printBtn = new Button();
-                m_printBtn.Text = "Print";
-                m_printBtn.Click += new System.EventHandler(printBtn_Click);
             }
 
             private void printBtn_Click(object sender, EventArgs e)
@@ -131,12 +136,35 @@ namespace test_binding
 
             public virtual void initCtrls()
             {
+                //create table layout & add controls to
+                // +----------------+----------------+
+                // |search panel    |          print |
+                // |                |                |
+                // +----------------+----------------+
+                // |reload & save btn         sum    |
+                // +----------------+----------------+
+                // |data grid view                   |
+                // |                                 |
+                // +----------------+----------------+
+                m_panel = new TableLayoutPanel();
+                m_panel.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+                m_panel.Dock = DockStyle.Fill;
+#if DEBUG_DRAWING
+                m_panel.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
+#endif
+                m_printBtn = new Button();
+                m_printBtn.Text = "Print";
+                m_printBtn.Click += new System.EventHandler(printBtn_Click);
+
+                //add search panel to table layout
                 m_searchPanel.initCtrls();
                 m_panel.Controls.Add(m_searchPanel.m_tbl, 0, 0);
 
+                //add print btn to table layout
                 m_printBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
                 m_panel.Controls.Add(m_printBtn, 1, 0);
 
+                //add data panel ctrls to table layout
                 m_dataPanel.initCtrls();
                 m_panel.Controls.Add(m_dataPanel.m_reloadPanel, 0, 1);
                 m_panel.Controls.Add(m_dataPanel.m_sumPanel, 1, 1);

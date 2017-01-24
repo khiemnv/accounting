@@ -69,9 +69,9 @@ namespace test_binding
 
                 m_label.Text = alias;
                 m_label.Width = 100;
+                m_label.TextAlign = ContentAlignment.MiddleLeft;
                 m_panel.AutoSize = true;
-                //m_panel.Dock = DockStyle.Fill;
-#if DEBUG_DRAWING
+#if true
                 m_panel.BorderStyle = BorderStyle.FixedSingle;
 #endif
             }
@@ -221,18 +221,6 @@ namespace test_binding
 
             protected lSearchPanel() { }
 
-            protected void init(lDataPanel dataPanel, List<lSearchCtrl> searchCtrls)
-            {
-                m_tbl = new TableLayoutPanel();
-                m_searchBtn = new Button();
-
-                m_dataPanel = dataPanel;
-                m_searchCtrls = searchCtrls;
-
-                m_searchBtn.Text = "Search";
-                m_searchBtn.Click += new System.EventHandler(searchButton_Click);
-            }
-
             public static lSearchPanel crtSearchPanel(lDataPanel dataPanel, List<lSearchCtrl> searchCtrls)
             {
                 lSearchPanel newPanel = new lSearchPanel();
@@ -240,48 +228,20 @@ namespace test_binding
                 return newPanel;
             }
 
-            public lSearchCtrl crtSearchCtrl(lTableInfo tblInfo, string colName, Point pos, Size size)
+            protected void init(lDataPanel dataPanel, List<lSearchCtrl> searchCtrls)
             {
-                return crtSearchCtrl(tblInfo, colName, pos, size, true);
-            }
-            public lSearchCtrl crtSearchCtrl(lTableInfo tblInfo, string colName, Point pos, Size size, bool bMath)
-            {
-                int iCol = tblInfo.getColIndex(colName);
-                if (iCol != -1)
-                {
-                    return crtSearchCtrl(tblInfo, iCol, pos, size, bMath);
-                }
-                return null;
-            }
-            public lSearchCtrl crtSearchCtrl(lTableInfo tblInfo, int iCol, Point pos, Size size)
-            {
-                return crtSearchCtrl(tblInfo, iCol, pos, size, true);
-            }
-            public lSearchCtrl crtSearchCtrl(lTableInfo tblInfo, int iCol, Point pos, Size size, bool bMath)
-            {
-                lTableInfo.lColInfo col = tblInfo.m_cols[iCol];
-                switch (col.m_type)
-                {
-                    case lTableInfo.lColInfo.lColType.text:
-                        lSearchCtrlText textCtrl = new lSearchCtrlText(col.m_field, col.m_alias, lSearchCtrl.ctrlType.text, pos, size);
-                        if (bMath) textCtrl.m_mode = lSearchCtrlText.SearchMode.match;
-                        textCtrl.m_colInfo = col;
-                        return textCtrl;
-                    case lTableInfo.lColInfo.lColType.dateTime:
-                        lSearchCtrlDate dateCtrl = new lSearchCtrlDate(col.m_field, col.m_alias, lSearchCtrl.ctrlType.dateTime, pos, size);
-                        return dateCtrl;
-                    case lTableInfo.lColInfo.lColType.num:
-                        lSearchCtrlNum numCtrl = new lSearchCtrlNum(col.m_field, col.m_alias, lSearchCtrl.ctrlType.num, pos, size);
-                        return numCtrl;
-                    case lTableInfo.lColInfo.lColType.currency:
-                        lSearchCtrlCurrency currencyCtrl = new lSearchCtrlCurrency(col.m_field, col.m_alias, lSearchCtrl.ctrlType.currency, pos, size);
-                        return currencyCtrl;
-                }
-                return null;
+                m_dataPanel = dataPanel;
+                m_searchCtrls = searchCtrls;
             }
 
             public virtual void initCtrls()
             {
+                //crt search btn
+                m_searchBtn = new Button();
+                m_searchBtn.Text = "Search";
+                m_searchBtn.Click += new System.EventHandler(searchButton_Click);
+
+                //create search ctrls
                 List<lSearchCtrl> searchCtrls = m_searchCtrls;
                 m_searchCtrls = new List<lSearchCtrl>();
                 foreach (lSearchCtrl ctrl in searchCtrls) { 
@@ -291,15 +251,26 @@ namespace test_binding
                             ctrl.m_fieldName,
                             ctrl.m_pos,
                             ctrl.m_size,
-                            ctrl.m_mode == lSearchCtrl.SearchMode.match
+                            ctrl.m_mode
                             )
                         );
                 }
 
+                //create table layout & add ctrls to
+                //  +-------------------------+
+                //  |search ctrl|             |
+                //  +-------------------------+
+                //  |search ctrl|             |
+                //  +-------------------------+
+                //  |       search btn        |
+                //  +-------------------------+
+                m_tbl = new TableLayoutPanel();
                 m_tbl.AutoSize = true;
 #if DEBUG_DRAWING
                 m_tbl.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
 #endif
+
+                //add search ctrls to table layout
                 int lastRow = 0;
                 foreach (lSearchCtrl searchCtrl in m_searchCtrls)
                 {
@@ -309,7 +280,8 @@ namespace test_binding
                     lastRow = Math.Max(lastRow, searchCtrl.m_pos.Y);
                 }
 
-                m_tbl.Controls.Add(m_searchBtn, 1, lastRow + 1);
+                //  add search button to last row
+                m_tbl.Controls.Add(m_searchBtn, 0, lastRow + 1);
                 m_searchBtn.Anchor = AnchorStyles.None;
             }
 
@@ -331,19 +303,45 @@ namespace test_binding
                     ctrl.LoadData();
                 }
             }
-        }
 
-        [DataContract(Name = "InterPaymentSearchPanel")]
-        class lInterPaymentSearchPanel : lSearchPanel
-        {
-            public lInterPaymentSearchPanel(lDataPanel dataPanel){
-                m_dataPanel = dataPanel;
-                m_searchCtrls = new List<lSearchCtrl> {
-                    crtSearchCtrl(m_tblInfo, "date", new Point(1, 1), new Size(1, 1)),
-                    crtSearchCtrl(m_tblInfo, "payment_number", new Point(1, 2), new Size(1, 1)),
-                    crtSearchCtrl(m_tblInfo, "name", new Point(1, 3), new Size(1, 1), true),
-                    crtSearchCtrl(m_tblInfo, "group_name", new Point(1, 4), new Size(1, 1), true),
-                };
+            public lSearchCtrl crtSearchCtrl(lTableInfo tblInfo, string colName, Point pos, Size size)
+            {
+                return crtSearchCtrl(tblInfo, colName, pos, size, lSearchCtrl.SearchMode.match);
+            }
+            public lSearchCtrl crtSearchCtrl(lTableInfo tblInfo, string colName, Point pos, Size size, lSearchCtrl.SearchMode mode)
+            {
+                int iCol = tblInfo.getColIndex(colName);
+                if (iCol != -1)
+                {
+                    return crtSearchCtrl(tblInfo, iCol, pos, size, mode);
+                }
+                return null;
+            }
+            public lSearchCtrl crtSearchCtrl(lTableInfo tblInfo, int iCol, Point pos, Size size)
+            {
+                return crtSearchCtrl(tblInfo, iCol, pos, size, lSearchCtrl.SearchMode.match);
+            }
+            public lSearchCtrl crtSearchCtrl(lTableInfo tblInfo, int iCol, Point pos, Size size, lSearchCtrl.SearchMode mode)
+            {
+                lTableInfo.lColInfo col = tblInfo.m_cols[iCol];
+                switch (col.m_type)
+                {
+                    case lTableInfo.lColInfo.lColType.text:
+                        lSearchCtrlText textCtrl = new lSearchCtrlText(col.m_field, col.m_alias, lSearchCtrl.ctrlType.text, pos, size);
+                        textCtrl.m_mode = mode;
+                        textCtrl.m_colInfo = col;
+                        return textCtrl;
+                    case lTableInfo.lColInfo.lColType.dateTime:
+                        lSearchCtrlDate dateCtrl = new lSearchCtrlDate(col.m_field, col.m_alias, lSearchCtrl.ctrlType.dateTime, pos, size);
+                        return dateCtrl;
+                    case lTableInfo.lColInfo.lColType.num:
+                        lSearchCtrlNum numCtrl = new lSearchCtrlNum(col.m_field, col.m_alias, lSearchCtrl.ctrlType.num, pos, size);
+                        return numCtrl;
+                    case lTableInfo.lColInfo.lColType.currency:
+                        lSearchCtrlCurrency currencyCtrl = new lSearchCtrlCurrency(col.m_field, col.m_alias, lSearchCtrl.ctrlType.currency, pos, size);
+                        return currencyCtrl;
+                }
+                return null;
             }
         }
 
@@ -354,10 +352,24 @@ namespace test_binding
             {
                 m_dataPanel = dataPanel;
                 m_searchCtrls = new List<lSearchCtrl> {
-                    crtSearchCtrl(m_tblInfo, "date", new Point(1, 1), new Size(1, 1)),
-                    crtSearchCtrl(m_tblInfo, "receipt_number", new Point(1, 2), new Size(1, 1), true),
-                    crtSearchCtrl(m_tblInfo, "name", new Point(1, 3), new Size(1, 1), false),
-                    crtSearchCtrl(m_tblInfo, "content", new Point(1, 4), new Size(1, 1), false),
+                    crtSearchCtrl(m_tblInfo, "date", new Point(0, 0), new Size(1, 1)),
+                    crtSearchCtrl(m_tblInfo, "receipt_number", new Point(0, 1), new Size(1, 1), lSearchCtrl.SearchMode.match),
+                    crtSearchCtrl(m_tblInfo, "name", new Point(1, 0), new Size(1, 1), lSearchCtrl.SearchMode.like),
+                    crtSearchCtrl(m_tblInfo, "content", new Point(1, 1), new Size(1, 1), lSearchCtrl.SearchMode.match),
+                };
+            }
+        }
+
+        [DataContract(Name = "InterPaymentSearchPanel")]
+        class lInterPaymentSearchPanel : lSearchPanel
+        {
+            public lInterPaymentSearchPanel(lDataPanel dataPanel){
+                m_dataPanel = dataPanel;
+                m_searchCtrls = new List<lSearchCtrl> {
+                    crtSearchCtrl(m_tblInfo, "date", new Point(0, 0), new Size(1, 1)),
+                    crtSearchCtrl(m_tblInfo, "payment_number", new Point(0, 1), new Size(1, 1)),
+                    crtSearchCtrl(m_tblInfo, "name", new Point(1, 0), new Size(1, 1), lSearchCtrl.SearchMode.match),
+                    crtSearchCtrl(m_tblInfo, "group_name", new Point(1, 1), new Size(1, 1), lSearchCtrl.SearchMode.match),
                 };
             }
         }
@@ -368,11 +380,11 @@ namespace test_binding
             public lExternalPaymentSearchPanel(lDataPanel dataPanel) {
                 m_dataPanel = dataPanel;
                 m_searchCtrls = new List<lSearchCtrl> {
-                    crtSearchCtrl(m_tblInfo, "date", new Point(1, 1), new Size(1, 1)),
-                    crtSearchCtrl(m_tblInfo, "payment_number", new Point(1, 2), new Size(1, 1), true),
-                    crtSearchCtrl(m_tblInfo, "name", new Point(1, 3), new Size(1, 1), true),
-                    crtSearchCtrl(m_tblInfo, "group_name", new Point(1, 4), new Size(1, 1), true),
-                    crtSearchCtrl(m_tblInfo, "content", new Point(1, 5), new Size(1, 1)),
+                    crtSearchCtrl(m_tblInfo, "date", new Point(0, 0), new Size(1, 1)),
+                    crtSearchCtrl(m_tblInfo, "payment_number", new Point(0, 1), new Size(1, 1), lSearchCtrl.SearchMode.match),
+                    crtSearchCtrl(m_tblInfo, "name", new Point(1, 0), new Size(1, 1), lSearchCtrl.SearchMode.like),
+                    crtSearchCtrl(m_tblInfo, "group_name", new Point(1, 1), new Size(1, 1), lSearchCtrl.SearchMode.match),
+                    crtSearchCtrl(m_tblInfo, "content", new Point(1, 2), new Size(1, 1), lSearchCtrl.SearchMode.like),
                 };
             }
         }
@@ -384,12 +396,12 @@ namespace test_binding
             {
                 m_dataPanel = dataPanel;
                 m_searchCtrls = new List<lSearchCtrl> {
-                    crtSearchCtrl(m_tblInfo, "month", new Point(1, 0), new Size(1, 1)),
-                    crtSearchCtrl(m_tblInfo, "date", new Point(1, 1), new Size(1, 1)),
-                    crtSearchCtrl(m_tblInfo, "payment_number", new Point(1, 2), new Size(1, 1), true),
-                    crtSearchCtrl(m_tblInfo, "name", new Point(1, 3), new Size(1, 1), true),
-                    crtSearchCtrl(m_tblInfo, "group_name", new Point(1, 4), new Size(1, 1), true),
-                    crtSearchCtrl(m_tblInfo, "content", new Point(1, 5), new Size(1, 1)),
+                    crtSearchCtrl(m_tblInfo, "month", new Point(0, 0), new Size(1, 1)),
+                    crtSearchCtrl(m_tblInfo, "date", new Point(0, 1), new Size(1, 1)),
+                    crtSearchCtrl(m_tblInfo, "payment_number", new Point(0, 2), new Size(1, 1), lSearchCtrl.SearchMode.match),
+                    crtSearchCtrl(m_tblInfo, "name", new Point(1, 0), new Size(1, 1), lSearchCtrl.SearchMode.like),
+                    crtSearchCtrl(m_tblInfo, "group_name", new Point(1, 1), new Size(1, 1), lSearchCtrl.SearchMode.match),
+                    crtSearchCtrl(m_tblInfo, "content", new Point(1, 2), new Size(1, 1), lSearchCtrl.SearchMode.like),
                 };
             }
         }
