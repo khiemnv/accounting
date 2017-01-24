@@ -21,7 +21,10 @@ namespace test_binding
     {
         class lConfigMng
         {
-            public string m_cfgPath = "config.xml";
+            public string m_cfgPath = @"..\..\config.xml";
+            public string m_sqliteDbPath = @"..\..\appData.db";
+            public string m_cnnStr = @"Data Source=DESKTOP-GOEF1DS\SQLEXPRESS;Initial Catalog=accounting;Integrated Security=true";
+            public List<lBasePanel> m_panels;
             XmlObjectSerializer m_serializer;
 
             void createSerializer() {
@@ -83,10 +86,14 @@ namespace test_binding
                     XmlReader xrd = XmlReader.Create(m_cfgPath);
                     xrd.Read();
 
-                    xrd.ReadToFollowing("panels");
+                    xrd.ReadToFollowing("cnnStr");
+                    m_cnnStr = xrd.ReadElementContentAsString();
 
+                    xrd.ReadToFollowing("panels");
                     var objs1 = m_serializer.ReadObject(xrd, false);
-                    return (List<lBasePanel>)objs1;
+                    xrd.Close();
+                    m_panels = (List<lBasePanel>)objs1;
+                    return m_panels;
                 }
                 else
                 {
@@ -103,12 +110,16 @@ namespace test_binding
                 XmlWriter xwriter;
                 xwriter = XmlWriter.Create(m_cfgPath, settings);
                 xwriter.WriteStartElement("config");
-                xwriter.WriteStartElement("panels");
 
+                xwriter.WriteStartElement("cnnStr");
+                xwriter.WriteString(m_cnnStr);
+                xwriter.WriteEndElement();
+
+                xwriter.WriteStartElement("panels");
                 //write panels to config file
                 m_serializer.WriteObjectContent(xwriter, panels);
-
                 xwriter.WriteEndElement();
+
                 xwriter.WriteEndElement();
                 xwriter.Close();
             }

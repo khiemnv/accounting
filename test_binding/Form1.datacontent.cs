@@ -268,9 +268,8 @@ namespace test_binding
 
             lSqlContentProvider()
             {
-                string[] lines = System.IO.File.ReadAllLines(@"..\..\config.txt");
                 //string cnnStr = "Data Source=DESKTOP-GOEF1DS\\SQLEXPRESS;Initial Catalog=accounting;Integrated Security=true";
-                string cnnStr = lines[0];
+                string cnnStr = s_config.m_cnnStr;
                 m_cnn = new SqlConnection(cnnStr);
                 m_cnn.Open();
             }
@@ -312,7 +311,8 @@ namespace test_binding
 
             lSQLiteContentProvider()
             {
-                string dbPath = "test.db";
+                //string dbPath = "test.db";
+                string dbPath = s_config.m_sqliteDbPath;
                 if (!System.IO.File.Exists(dbPath))
                 {
                     SQLiteConnection.CreateFile(dbPath);

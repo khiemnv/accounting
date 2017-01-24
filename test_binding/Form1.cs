@@ -21,23 +21,25 @@ namespace test_binding
     public partial class Form1 : Form
     {
         static lContentProvider s_contentProvider;
+        static lConfigMng s_config;
 
         private TabControl m_tabCtrl;
-        lConfigMng m_config;
         List<lBasePanel> m_panels;
 
         public Form1()
         {
             InitializeComponent();
 
+            s_config = new lConfigMng();
+            s_config.LoadConfig();
+
 #if use_sqlite
             s_contentProvider = lSQLiteContentProvider.getInstance();
 #else
             s_contentProvider = lSqlContentProvider.getInstance();
 #endif
-            m_config = new lConfigMng();
-            m_panels = m_config.LoadConfig();
 
+            m_panels = s_config.m_panels;
             if (m_panels == null)
             {
                 m_panels = new List<lBasePanel> {
@@ -47,7 +49,8 @@ namespace test_binding
                     new lSalaryPanel(),
                 };
 
-                m_config.UpdateConfig(m_panels);
+                s_config.m_panels = m_panels;
+                s_config.UpdateConfig(m_panels);
             }            
 
             //tab control
