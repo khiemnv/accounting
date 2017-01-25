@@ -52,4 +52,5 @@ tableinfo
 9. config
   + reStore panel
   + json xml style
-10. sizing search ctrls
+10. sizing search ctrls - not yet
+11. sqlite db
