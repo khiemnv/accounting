@@ -1,4 +1,5 @@
 ﻿#define col_class
+#define crt_tables
 
 using System.Windows.Forms;
 using System.Data.SqlClient;
@@ -312,13 +313,29 @@ namespace test_binding
             lSQLiteContentProvider()
             {
                 //string dbPath = "test.db";
-                string dbPath = s_config.m_sqliteDbPath;
+                string dbPath = s_config.m_dbSchema.m_cnnStr;
+                bool bCrtTbls = false;
                 if (!System.IO.File.Exists(dbPath))
                 {
                     SQLiteConnection.CreateFile(dbPath);
+                    bCrtTbls = true;
                 }
                 m_cnn = new SQLiteConnection(string.Format("Data Source={0};Version=3;", dbPath));
                 m_cnn.Open();
+#if crt_tables
+                if (bCrtTbls) {
+                    SQLiteCommand cmd = new SQLiteCommand();
+                    cmd.Connection = m_cnn;
+                    List<string> sqls = new List<string>();
+                    sqls.AddRange(s_config.m_dbSchema.m_crtTableSqls);
+                    sqls.AddRange(s_config.m_dbSchema.m_crtViewSqls);
+                    foreach (var sql in sqls)
+                    {
+                        cmd.CommandText = sql;
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+#endif
             }
 
             private SQLiteConnection m_cnn;
@@ -338,7 +355,101 @@ namespace test_binding
 
             public DataTable GetData(string qry)
             {
-                throw new NotImplementedException();
+                SQLiteDataAdapter dataAdapter = new SQLiteDataAdapter();
+                dataAdapter.SelectCommand = new SQLiteCommand(qry, m_cnn);
+                // Populate a new data table and bind it to the BindingSource.
+                DataTable table = new DataTable();
+                table.Locale = System.Globalization.CultureInfo.InvariantCulture;
+                dataAdapter.Fill(table);
+                return table;
+            }
+        }
+
+        [DataContract(Name ="DbSchema")]
+        class lDbSchema
+        {
+            [DataMember(Name = "cnnStr")]
+            public string m_cnnStr;
+            [DataMember(Name ="crtTableSqls")]
+            public List<string> m_crtTableSqls;
+            [DataMember(Name = "crtViewSqls")]
+            public List<string> m_crtViewSqls;
+        }
+        [DataContract(Name = "SQLiteDbSchema")]
+        class lSQLiteDbSchema:lDbSchema
+        {
+            public lSQLiteDbSchema()
+            {
+                m_cnnStr = @"..\..\appData.db";
+                m_crtTableSqls = new List<string> {
+                    "CREATE TABLE if not exists  receipts("
+                    + "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + "date datetime,"
+                    + "receipt_number char(31),"
+                    + "name char(31),"
+                    + "content text,"
+                    + "amount INTEGER,"
+                    + "note text"
+                    + ")",
+                    "CREATE TABLE if not exists internal_payment("
+                    + "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + "date datetime,"
+                    + "payment_number char(31),"
+                    + "name char(31),"
+                    + "content text,"
+                    + "group_name char(31),"
+                    + "advance_payment INTEGER,"
+                    + "reimbursement INTEGER,"
+                    + "actually_spent INTEGER,"
+                    + "note text"
+                    + ")",
+                    "CREATE TABLE if not exists external_payment("
+                    + "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + "date datetime,"
+                    + "payment_number char(31),"
+                    + "name char(31),"
+                    + "content text,"
+                    + "group_name char(31),"
+                    + "spent INTEGER,"
+                    + "note text"
+                    + ")",
+                    "CREATE TABLE if not exists salary("
+                    + "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + "month INTEGER,"
+                    + "date datetime,"
+                    + "payment_number char(31),"
+                    + "name char(31),"
+                    + "group_name char(31),"
+                    + "content text,"
+                    + "salary INTEGER,"
+                    + "note text"
+                    + ")",
+                    "CREATE TABLE if not exists receipts_content(ID INTEGER PRIMARY KEY AUTOINCREMENT, content nchar(31));",
+                    "CREATE TABLE if not exists group_name(ID INTEGER PRIMARY KEY AUTOINCREMENT, name nchar(31));",
+            };
+                m_crtViewSqls = new List<string> {
+                    "CREATE VIEW if not exists v_receipts "
+                    + " as "
+                    + " select content, amount, cast(strftime('%Y', date) as integer) as year, (strftime('%m', date) + 2) / 3 as qtr "
+                    + " from receipts"
+                    + " where strftime('%Y', 'now') - strftime('%Y', date) between 0 and 4;" ,
+                    " CREATE VIEW if not exists v_internal_payment"
+                    + " as"
+                    + " select group_name, actually_spent, cast(strftime('%Y', date) as integer) as year, (strftime('%m', date) + 2) / 3 as qtr"
+                    + " from internal_payment"
+                    + " where strftime('%Y', 'now') - strftime('%Y', date) between 0 and 4;",
+
+                    "CREATE VIEW if not exists v_external_payment"
+                    + " as"
+                    + " select group_name, spent, cast(strftime('%Y', date) as integer) as year, (strftime('%m', date) + 2) / 3 as qtr"
+                    + " from external_payment"
+                    + " where strftime('%Y', 'now') - strftime('%Y', date) between 0 and 4;",
+                    "CREATE VIEW if not exists v_salary"
+                    + " as"
+                    + " select group_name, salary, cast(strftime('%Y', date) as integer) as year, (strftime('%m', date) + 2) / 3 as qtr"
+                    + " from salary"
+                    + " where strftime('%Y', 'now') - strftime('%Y', date) between 0 and 4;",
+                };
             }
         }
 
@@ -357,7 +468,7 @@ namespace test_binding
             {
                 m_bindingSource = new BindingSource();
             }
-            public virtual void Search(List<string> exprs, List<lEntity> arr) { }
+            public virtual void Search(List<string> exprs, Dictionary<string, string> srchParams) { }
             public virtual void Reload() { }
             public virtual void Submit() { }
         }
@@ -372,20 +483,19 @@ namespace test_binding
                 m_table = tblName;
                 m_cnn = cnn;
                 m_dataAdapter = new SQLiteDataAdapter();
-                m_dataAdapter.SelectCommand = new SQLiteCommand(string.Format("select * form {0}", tblName), cnn);
+                m_dataAdapter.SelectCommand = new SQLiteCommand(string.Format("select * from {0}", tblName), cnn);
             }
 
-            public override void Search(List<string> exprs, List<lEntity> arr)
+            public override void Search(List<string> exprs, Dictionary<string, string> srchParams)
             {
                 string sql = string.Format("select * from {0} ", m_table);
-
                 if (exprs.Count > 0)
                 {
                     sql += " where " + string.Join(" and ", exprs);
                     SQLiteCommand selectCommand = new SQLiteCommand(sql, m_cnn);
-                    foreach (lEntity entity in arr)
+                    foreach (var param in srchParams)
                     {
-                        selectCommand.Parameters.AddWithValue(entity.m_param, entity.m_value);
+                        selectCommand.Parameters.AddWithValue(param.Key, param.Value);
                     }
                     GetData(selectCommand);
                 }
@@ -394,6 +504,7 @@ namespace test_binding
                     GetData(sql);
                 }
             }
+            
             public override void Reload()
             {
                 GetData(m_dataAdapter.SelectCommand);
@@ -438,7 +549,7 @@ namespace test_binding
                 m_dataAdapter = new SqlDataAdapter();
                 m_dataAdapter.SelectCommand = new SqlCommand(string.Format("select * from {0}", tblName), cnn);
             }
-            public override void Search(List<string> exprs, List<lEntity> arr)
+            public override void Search(List<string> exprs, Dictionary<string, string> srchParams)
             {
                 string sql = string.Format("select * from {0} ", m_table);
 
@@ -446,9 +557,9 @@ namespace test_binding
                 {
                     sql += " where " + string.Join(" and ", exprs);
                     SqlCommand selectCommand = new SqlCommand(sql, m_cnn);
-                    foreach (lEntity entity in arr)
+                    foreach (var param in srchParams)
                     {
-                        selectCommand.Parameters.AddWithValue(entity.m_param, entity.m_value);
+                        selectCommand.Parameters.AddWithValue(param.Key, param.Value);
                     }
                     GetData(selectCommand);
                 }

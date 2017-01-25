@@ -1,5 +1,5 @@
 ﻿//#define DEBUG_DRAWING
-//#define use_sqlite
+#define use_sqlite
 
 using System;
 using System.Collections.Generic;
@@ -23,6 +23,7 @@ namespace test_binding
         static lContentProvider s_contentProvider;
         static lConfigMng s_config;
 
+        private lDbSchema m_dbSchema;
         private TabControl m_tabCtrl;
         List<lBasePanel> m_panels;
 
@@ -30,16 +31,16 @@ namespace test_binding
         {
             InitializeComponent();
 
+            //init config
             s_config = new lConfigMng();
+
+            //load config
             s_config.LoadConfig();
 
-#if use_sqlite
-            s_contentProvider = lSQLiteContentProvider.getInstance();
-#else
-            s_contentProvider = lSqlContentProvider.getInstance();
-#endif
-
             m_panels = s_config.m_panels;
+            m_dbSchema = s_config.m_dbSchema;
+
+            //save config
             if (m_panels == null)
             {
                 m_panels = new List<lBasePanel> {
@@ -48,10 +49,20 @@ namespace test_binding
                     new lExternalPaymentPanel(),
                     new lSalaryPanel(),
                 };
+                m_dbSchema = new lSQLiteDbSchema();
 
                 s_config.m_panels = m_panels;
+                s_config.m_dbSchema = m_dbSchema;
+
                 s_config.UpdateConfig(m_panels);
-            }            
+            }
+
+            //init content provider
+#if use_sqlite
+            s_contentProvider = lSQLiteContentProvider.getInstance();
+#else
+            s_contentProvider = lSqlContentProvider.getInstance();
+#endif
 
             //tab control
             m_tabCtrl = new TabControl();

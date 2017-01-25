@@ -24,10 +24,22 @@ namespace test_binding
             public string m_cfgPath = @"..\..\config.xml";
             public string m_sqliteDbPath = @"..\..\appData.db";
             public string m_cnnStr = @"Data Source=DESKTOP-GOEF1DS\SQLEXPRESS;Initial Catalog=accounting;Integrated Security=true";
+            public lDbSchema m_dbSchema;
             public List<lBasePanel> m_panels;
-            XmlObjectSerializer m_serializer;
+            XmlObjectSerializer m_panelsSerializer;
+            XmlObjectSerializer m_dbSchemaSerializer;
 
-            void createSerializer() {
+            void createDbSchemaSerializer()
+            {
+                Type[] knownTypes = new Type[] {typeof(lSQLiteDbSchema) };
+                DataContractJsonSerializerSettings settings = new DataContractJsonSerializerSettings();
+                settings.IgnoreExtensionDataObject = true;
+                settings.EmitTypeInformation = EmitTypeInformation.Never;
+                settings.KnownTypes = knownTypes;
+                m_dbSchemaSerializer = new DataContractJsonSerializer(
+                    typeof(lDbSchema), settings);
+            }
+            void createPanelsSerializer() {
                 Type[] knownTypes = new Type[] {
                     typeof(lReceiptsTblInfo),
                     typeof(lInternalPaymentTblInfo),
@@ -70,15 +82,16 @@ namespace test_binding
                 settings.IgnoreExtensionDataObject = true;
                 settings.EmitTypeInformation = EmitTypeInformation.Never;
                 settings.KnownTypes = knownTypes;
-                m_serializer = new DataContractJsonSerializer(
+                m_panelsSerializer = new DataContractJsonSerializer(
                     typeof(List<lBasePanel>), settings);
 #endif
             }
             public lConfigMng()
             {
-                createSerializer();
+                createPanelsSerializer();
+                createDbSchemaSerializer();
             }
-            public List<lBasePanel> LoadConfig()
+            public void LoadConfig()
             {
                 //panels = new List<lBasePanel>();
                 if (File.Exists(m_cfgPath))
@@ -86,18 +99,14 @@ namespace test_binding
                     XmlReader xrd = XmlReader.Create(m_cfgPath);
                     xrd.Read();
 
-                    xrd.ReadToFollowing("cnnStr");
-                    m_cnnStr = xrd.ReadElementContentAsString();
+                    xrd.ReadToFollowing("dbSchema");
+                    m_dbSchema = (lDbSchema) m_dbSchemaSerializer.ReadObject(xrd, false);
 
                     xrd.ReadToFollowing("panels");
-                    var objs1 = m_serializer.ReadObject(xrd, false);
-                    xrd.Close();
+                    var objs1 = m_panelsSerializer.ReadObject(xrd, false);
                     m_panels = (List<lBasePanel>)objs1;
-                    return m_panels;
-                }
-                else
-                {
-                    return null;
+
+                    xrd.Close();
                 }
             }
             public void UpdateConfig(List<lBasePanel> panels)
@@ -111,13 +120,14 @@ namespace test_binding
                 xwriter = XmlWriter.Create(m_cfgPath, settings);
                 xwriter.WriteStartElement("config");
 
-                xwriter.WriteStartElement("cnnStr");
-                xwriter.WriteString(m_cnnStr);
+                //write schema to config file
+                xwriter.WriteStartElement("dbSchema");
+                m_dbSchemaSerializer.WriteObjectContent(xwriter, m_dbSchema);
                 xwriter.WriteEndElement();
 
-                xwriter.WriteStartElement("panels");
                 //write panels to config file
-                m_serializer.WriteObjectContent(xwriter, panels);
+                xwriter.WriteStartElement("panels");
+                m_panelsSerializer.WriteObjectContent(xwriter, panels);
                 xwriter.WriteEndElement();
 
                 xwriter.WriteEndElement();

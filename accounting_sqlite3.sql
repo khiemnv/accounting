@@ -1,36 +1,36 @@
-CREATE TABLE if not exists  receipts(ID INTEGER PRIMARY KEY AUTOINCREMENT,date datetime,receipt_number nchar(31),name nchar(31),content nchar(31),amount INTEGER,note ntext);
+CREATE TABLE if not exists  receipts(ID INTEGER PRIMARY KEY AUTOINCREMENT,date datetime,receipt_number char(31),name char(31),content char(31),amount INTEGER,note text);
 
-CREATE TABLE if not exists  receipts_content(ID INTEGER PRIMARY KEY AUTOINCREMENT, content nchar(31));
+CREATE TABLE if not exists  receipts_content(ID INTEGER PRIMARY KEY AUTOINCREMENT, content char(31));
 
-CREATE TABLE if not exists  group_name(ID INTEGER PRIMARY KEY AUTOINCREMENT, name nchar(31));
+CREATE TABLE if not exists  group_name(ID INTEGER PRIMARY KEY AUTOINCREMENT, name char(31));
 
-CREATE TABLE if not exists internal_payment(ID INTEGER PRIMARY KEY AUTOINCREMENT,date datetime,payment_number nchar(31),name nchar(31),content ntext,group_name nchar(31),advance_payment INTEGER,reimbursement INTEGER,actually_spent INTEGER,note ntext);
+CREATE TABLE if not exists internal_payment(ID INTEGER PRIMARY KEY AUTOINCREMENT,date datetime,payment_number char(31),name char(31),content text,group_name char(31),advance_payment INTEGER,reimbursement INTEGER,actually_spent INTEGER,note text);
 
-CREATE TABLE if not exists external_payment(ID INTEGER PRIMARY KEY AUTOINCREMENT,date datetime,payment_number nchar(31),name nchar(31),content ntext,group_name nchar(31),spent INTEGER,note ntext);
+CREATE TABLE if not exists external_payment(ID INTEGER PRIMARY KEY AUTOINCREMENT,date datetime,payment_number char(31),name char(31),content text,group_name char(31),spent INTEGER,note text);
 
-CREATE TABLE if not exists salary(ID INTEGER PRIMARY KEY AUTOINCREMENT,month INTEGER,date datetime,payment_number nchar(31),name nchar(31),group_name nchar(31),content ntext,salary INTEGER,note ntext);
+CREATE TABLE if not exists salary(ID INTEGER PRIMARY KEY AUTOINCREMENT,month INTEGER,date datetime,payment_number char(31),name char(31),group_name char(31),content text,salary INTEGER,note text);
 
 CREATE VIEW if not exists v_receipts
 as
-select content, amount, strftime('%Y', date) as year, strftime('%m', date) / 4 + 1 as qtr 
+select content, amount, cast(strftime('%Y', date) as integer) as year, (strftime('%m', date) + 2) / 3 as qtr 
 from receipts
 where strftime('%Y','now') - strftime('%Y',date) between 0 and 4;
 
 CREATE VIEW if not exists v_internal_payment
 as
-select group_name, actually_spent, strftime('%Y', date) as year, strftime('%m', date) / 4 + 1 as qtr 
+select group_name, actually_spent, cast(strftime('%Y', date) as integer) as year, (strftime('%m', date) + 2) / 3 as qtr 
 from internal_payment
 where strftime('%Y','now') - strftime('%Y',date) between 0 and 4;
 
 CREATE VIEW if not exists v_external_payment
 as
-select group_name, spent, strftime('%Y', date) as year, strftime('%m', date) / 4 + 1 as qtr 
+select group_name, spent, cast(strftime('%Y', date) as integer) as year, (strftime('%m', date) + 2) / 3 as qtr 
 from external_payment
 where strftime('%Y','now') - strftime('%Y',date) between 0 and 4;
 
 CREATE VIEW if not exists v_salary
 as
-select group_name, salary, strftime('%Y', date) as year, strftime('%m', date) / 4 + 1 as qtr 
+select group_name, salary, cast(strftime('%Y', date) as integer) as year, (strftime('%m', date) + 2) / 3 as qtr 
 from salary
 where strftime('%Y','now') - strftime('%Y',date) between 0 and 4;
 

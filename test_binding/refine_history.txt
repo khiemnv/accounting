@@ -54,3 +54,6 @@ tableinfo
   + json xml style
 10. sizing search ctrls - not yet
 11. sqlite db
+  + db schema
+12 search sql
+  lEntitr -> dictionary

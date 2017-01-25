@@ -80,7 +80,7 @@ namespace test_binding
             //public virtual List<lEntity> getExprParams() { return null; }
             //public virtual string getExpr() { return null; }
             //ref: search btn click
-            public virtual void updateSearchParams(List<string> exprs, List<lEntity> arr)
+            public virtual void updateSearchParams(List<string> exprs, Dictionary<string,string> srchParams)
             {
                 //if (isChecked()) {
                 //    string expr = getExpr();
@@ -105,19 +105,19 @@ namespace test_binding
                 m_text.Width = 200;
                 m_panel.Controls.AddRange(new Control[] { m_label, m_text });
             }
-            public override void updateSearchParams(List<string> exprs, List<lEntity> arr)
+            public override void updateSearchParams(List<string> exprs, Dictionary<string, string> srchParams)
             {
                 if (m_label.Checked)
                 {
                     if (m_mode == SearchMode.like)
                     {
                         exprs.Add(string.Format("({0} like @{0})", m_fieldName));
-                        arr.Add(new lEntity(string.Format("@{0}", m_fieldName), string.Format("%{0}%", m_text.Text)));
+                        srchParams.Add(string.Format("@{0}", m_fieldName), string.Format("%{0}%", m_text.Text));
                     }
                     else
                     {
                         exprs.Add(string.Format("({0}=@{0})", m_fieldName));
-                        arr.Add(new lEntity(string.Format("@{0}", m_fieldName), m_text.Text));
+                        srchParams.Add(string.Format("@{0}", m_fieldName), m_text.Text);
                     }
                 }
             }
@@ -164,20 +164,20 @@ namespace test_binding
 
                 m_panel.Controls.AddRange(new Control[] { m_label, datePanel });
             }
-            public override void updateSearchParams(List<string> exprs, List<lEntity> arr)
+            public override void updateSearchParams(List<string> exprs, Dictionary<string,string> srchParams)
             {
                 if (m_label.Checked)
                 {
                     if (m_to.Checked)
                     {
                         exprs.Add("(date between @startDate and @endDate)");
-                        arr.Add(new lEntity("@startDate", string.Format("{0} 00:00:00", m_startdate.Text)));
-                        arr.Add(new lEntity("@endDate", string.Format("{0} 00:00:00", m_enddate.Text)));
+                        srchParams.Add("@startDate", string.Format("{0} 00:00:00", m_startdate.Text));
+                        srchParams.Add("@endDate", string.Format("{0} 00:00:00", m_enddate.Text));
                     }
                     else
                     {
                         exprs.Add("(date=@startDate)");
-                        arr.Add(new lEntity("@startDate", string.Format("{0} 00:00:00", m_startdate.Text)));
+                        srchParams.Add("@startDate", string.Format("{0} 00:00:00", m_startdate.Text));
                     }
                 }
             }
@@ -288,12 +288,12 @@ namespace test_binding
             private void searchButton_Click(object sender, System.EventArgs e)
             {
                 List<string> exprs = new List<string>();
-                List<lEntity> arr = new List<lEntity>();
+                Dictionary<string, string> srchParams = new Dictionary<string, string>();
                 foreach (lSearchCtrl searchCtrl in m_searchCtrls)
                 {
-                    searchCtrl.updateSearchParams(exprs, arr);
+                    searchCtrl.updateSearchParams(exprs, srchParams);
                 }
-                m_dataPanel.search(exprs, arr);
+                m_dataPanel.search(exprs, srchParams);
             }
 
             public virtual void LoadData()

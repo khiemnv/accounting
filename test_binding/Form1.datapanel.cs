@@ -178,10 +178,10 @@ namespace test_binding
                 }
             }
 #endif
-            public void search(List<string> exprs, List<lEntity> arr)
+            public void search(List<string> exprs, Dictionary<string,string> srchParams)
             {
                 //m_dataContent.GetData(qry);
-                m_dataContent.Search(exprs, arr);
+                m_dataContent.Search(exprs, srchParams);
                 update();
             }
             private void reloadButton_Click(object sender, System.EventArgs e)
