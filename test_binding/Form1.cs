@@ -16,8 +16,6 @@ using System.Runtime.Serialization;
 
 namespace test_binding
 {
-
-
     public partial class Form1 : Form
     {
         static lContentProvider s_contentProvider;
@@ -63,6 +61,9 @@ namespace test_binding
 #else
             s_contentProvider = lSqlContentProvider.getInstance();
 #endif
+
+            //menu
+            crtMenu();
 
             //tab control
             m_tabCtrl = new TabControl();

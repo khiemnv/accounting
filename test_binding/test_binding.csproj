@@ -145,6 +145,9 @@
     <EmbeddedResource Include="rpt_interpayment.rdlc" />
     <EmbeddedResource Include="rpt_receipts.rdlc" />
     <EmbeddedResource Include="rpt_salary.rdlc" />
+    <Compile Include="Form1.menu.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

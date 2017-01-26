@@ -77,23 +77,9 @@ namespace test_binding
 #endif
             }
 
-            //public virtual bool isChecked() { return false; } 
-            //public virtual List<lEntity> getExprParams() { return null; }
-            //public virtual string getExpr() { return null; }
-            //ref: search btn click
-            public virtual void updateSearchParams(List<string> exprs, Dictionary<string,string> srchParams)
-            {
-                //if (isChecked()) {
-                //    string expr = getExpr();
-                //    exprs.Add(getExpr());
-                //    List<lEntity> exprParams = getExprParams();
-                //    foreach (lEntity param in exprParams) arr.Add(param);
-                //}
-            }
-
-            public virtual void LoadData()
-            {
-            }
+            public virtual void updateSearchParams(List<string> exprs, Dictionary<string,string> srchParams){}
+            public virtual string getSearchParams() { return null; }
+            public virtual void LoadData(){}
         };
 
         [DataContract(Name = "SearchCtrlText")]
@@ -113,6 +99,18 @@ namespace test_binding
                 m_text = new TextBox();
                 m_text.Width = 200;
                 m_panel.Controls.AddRange(new Control[] { m_label, m_text });
+            }
+            public override string getSearchParams()
+            {
+                string srchParam = null;
+                if (m_label.Checked)
+                {
+                    if (m_mode == SearchMode.like)
+                        srchParam = string.Format("({0} like '%{1}%')", m_fieldName, m_value);
+                    else
+                        srchParam = string.Format("({0} = '{1}')", m_fieldName, m_value);
+                }
+                return srchParam;
             }
             public override void updateSearchParams(List<string> exprs, Dictionary<string, string> srchParams)
             {
@@ -181,6 +179,18 @@ namespace test_binding
                 datePanel.Controls.AddRange(new Control[] { m_startdate, m_to, m_enddate });
 
                 m_panel.Controls.AddRange(new Control[] { m_label, datePanel });
+            }
+            public override string getSearchParams()
+            {
+                string srchParams = null;
+                if (m_label.Checked)
+                {
+                    if (m_to.Checked)
+                        srchParams = string.Format("({0} between '{1}  00:00:00' and '{2} 00:00:00')", m_fieldName, m_startdate.Text, m_enddate.Text);
+                    else
+                        srchParams = string.Format("({0}='{1} 00:00:00')", m_fieldName, m_startdate.Text);
+                }
+                return srchParams;
             }
             public override void updateSearchParams(List<string> exprs, Dictionary<string,string> srchParams)
             {
@@ -305,6 +315,7 @@ namespace test_binding
 
             private void searchButton_Click(object sender, System.EventArgs e)
             {
+#if use_cmd_params
                 List<string> exprs = new List<string>();
                 Dictionary<string, string> srchParams = new Dictionary<string, string>();
                 foreach (lSearchCtrl searchCtrl in m_searchCtrls)
@@ -312,6 +323,21 @@ namespace test_binding
                     searchCtrl.updateSearchParams(exprs, srchParams);
                 }
                 m_dataPanel.search(exprs, srchParams);
+#else
+                string where = null;
+                List<string> exprs = new List<string> ();
+                foreach (lSearchCtrl searchCtrl in m_searchCtrls)
+                {
+                    string expr = searchCtrl.getSearchParams();
+                    if (expr != null)
+                        exprs.Add(expr);
+                }
+                if (exprs.Count > 0)
+                {
+                    where = string.Join(" and ", exprs);
+                }
+                m_dataPanel.search(where);
+#endif
             }
 
             public virtual void LoadData()

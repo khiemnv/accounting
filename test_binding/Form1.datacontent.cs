@@ -479,9 +479,21 @@ namespace test_binding
             {
                 m_bindingSource = new BindingSource();
             }
-            public virtual void Search(List<string> exprs, Dictionary<string, string> srchParams) { }
-            public virtual void Reload() { }
-            public virtual void Submit() { }
+            public virtual void Search(string exprs)
+            {
+                string sql = string.Format("select * from {0} ", m_table);
+                if (exprs != null)
+                {
+                    sql += " where " + exprs;
+                }
+                GetData(sql);
+            }
+#if use_cmd_params
+            public virtual void Search(List<string> exprs, Dictionary<string, string> srchParams) { throw new NotImplementedException(); }
+#endif
+            public virtual void Reload() { throw new NotImplementedException(); }
+            public virtual void Submit() { throw new NotImplementedException(); }
+            protected virtual void GetData(string sql) { throw new NotImplementedException(); }
         }
         class lSQLiteDataContent : lDataContent
         {
@@ -497,6 +509,16 @@ namespace test_binding
                 m_dataAdapter.SelectCommand = new SQLiteCommand(string.Format("select * from {0}", tblName), cnn);
             }
 
+            public override void Search(string exprs)
+            {
+                string sql = string.Format("select * from {0} ", m_table);
+                if (exprs != null)
+                {
+                    sql += " where " + exprs;
+                }
+                GetData(sql);
+            }
+#if use_cmd_params
             public override void Search(List<string> exprs, Dictionary<string, string> srchParams)
             {
                 string sql = string.Format("select * from {0} ", m_table);
@@ -515,7 +537,7 @@ namespace test_binding
                     GetData(sql);
                 }
             }
-            
+#endif
             public override void Reload()
             {
                 GetData(m_dataAdapter.SelectCommand);
@@ -532,7 +554,7 @@ namespace test_binding
                     }
                 }
             }
-            private void GetData(string selectStr)
+            protected override void GetData(string selectStr)
             {
                 SQLiteCommand selectCommand = new SQLiteCommand(selectStr, m_cnn);
                 GetData(selectCommand);
@@ -560,6 +582,17 @@ namespace test_binding
                 m_dataAdapter = new SqlDataAdapter();
                 m_dataAdapter.SelectCommand = new SqlCommand(string.Format("select * from {0}", tblName), cnn);
             }
+
+            //public override void Search(string exprs)
+            //{
+            //    string sql = string.Format("select * from {0} ", m_table);
+            //    if (exprs != null)
+            //    {
+            //        sql += " where " + exprs;
+            //    }
+            //    GetData(sql);
+            //}
+#if use_cmd_params
             public override void Search(List<string> exprs, Dictionary<string, string> srchParams)
             {
                 string sql = string.Format("select * from {0} ", m_table);
@@ -579,6 +612,7 @@ namespace test_binding
                     GetData(sql);
                 }
             }
+#endif
             public override void Reload()
             {
                 GetData(m_dataAdapter.SelectCommand);
@@ -595,7 +629,7 @@ namespace test_binding
                     }
                 }
             }
-            private void GetData(string selectStr)
+            protected override void GetData(string selectStr)
             {
                 SqlCommand selectCommand = new SqlCommand(selectStr, m_cnn);
                 GetData(selectCommand);

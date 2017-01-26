@@ -178,12 +178,20 @@ namespace test_binding
                 }
             }
 #endif
+            public void search(string where)
+            {
+                //m_dataContent.GetData(qry);
+                m_dataContent.Search(where);
+                update();
+            }
+#if use_cmd_params
             public void search(List<string> exprs, Dictionary<string,string> srchParams)
             {
                 //m_dataContent.GetData(qry);
                 m_dataContent.Search(exprs, srchParams);
                 update();
             }
+#endif
             private void reloadButton_Click(object sender, System.EventArgs e)
             {
                 m_dataContent.Reload();

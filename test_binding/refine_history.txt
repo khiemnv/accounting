@@ -57,5 +57,11 @@ tableinfo
   + db schema
 12 search sql
   lEntity -> dictionary
+  simple where
+13 seach ctrl comboBox
   lower case
   search txt comboBox
+  multi comboBox - single binding src
+14 menu - not yet
+15 not use empty string
+16 event data row change
