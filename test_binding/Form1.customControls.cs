@@ -54,11 +54,12 @@ namespace test_binding
             private ComboBox m_combo;
 
             //data table has single column
-            public myComboBox(DataGridView dgv, DataTable tbl)
+            public myComboBox(DataGridView dgv, lDataSync data)
                 : base(dgv, new ComboBox())
             {
                 m_combo = (ComboBox)getControl();
-                m_combo.DataSource = tbl;
+                m_combo.DataSource = data.m_bindingSrc;
+                DataTable tbl = (DataTable)data.m_bindingSrc.DataSource;
                 m_combo.DisplayMember = tbl.Columns[1].ColumnName;
                 m_combo.SelectedValueChanged += ctrl_ValueChanged;
             }
@@ -176,7 +177,7 @@ namespace test_binding
                 }
                 else if (m_tblInfo.m_cols[col].m_lookupData != null)
                 {
-                    //m_customCtrl = new myComboBox(this, m_tblInfo.m_cols[col].m_lookupData.m_dataSource);
+                    //m_customCtrl = new myComboBox(this, m_tblInfo.m_cols[col].m_lookupData);
                 }
                 if (m_customCtrl != null)
                 {
