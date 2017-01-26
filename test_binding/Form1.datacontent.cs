@@ -603,6 +603,8 @@ namespace test_binding
         class lDataSync
         {
             private lDataContent m_data;
+            public AutoCompleteStringCollection m_colls;
+            public Dictionary<string, string> m_maps;
             public lDataSync(lDataContent data)
             {
                 m_data = data;
@@ -610,12 +612,35 @@ namespace test_binding
             public void LoadData()
             {
                 m_data.Reload();
+                m_colls = new AutoCompleteStringCollection();
+                m_maps = new Dictionary<string, string>();
+                DataTable tbl = m_dataSource;
+                foreach (DataRow row in tbl.Rows)
+                {
+                    string key = row[1].ToString().ToLower();
+                    string val = row[1].ToString();
+                    m_colls.Add(key);
+                    m_colls.Add(val);
+                    m_maps.Add(key, val);
+                }
             }
             public DataTable m_dataSource
             {
                 get { return (DataTable)m_data.m_bindingSource.DataSource; }
             }
-            public void Add(string newValue)
+            public void Update(string selectedValue)
+            {
+                string key = selectedValue.ToLower();
+                if (!m_maps.ContainsKey(key))
+                {
+                    m_colls.Add(key);
+                    m_colls.Add(selectedValue);
+                    m_maps.Add(key, selectedValue);
+                    //update database
+                    Add(selectedValue);
+                }
+            }
+            private void Add(string newValue)
             {
                 //single col tables
                 DataRow newRow = m_dataSource.NewRow();

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System;
 using System.Data;
 using System.Runtime.Serialization;
+using System.Diagnostics;
 
 namespace test_binding
 {
@@ -99,6 +100,7 @@ namespace test_binding
         class lSearchCtrlText : lSearchCtrl
         {
             protected TextBox m_text = new TextBox();
+            ComboBox m_combo;
             public lSearchCtrlText(string fieldName, string alias, ctrlType type, Point pos, Size size)
                 : base(fieldName, alias, type, pos, size)
             {
@@ -127,15 +129,45 @@ namespace test_binding
                 {
                     m_text.AutoCompleteMode = AutoCompleteMode.Suggest;
                     m_text.AutoCompleteSource = AutoCompleteSource.CustomSource;
-
-                    AutoCompleteStringCollection col = new AutoCompleteStringCollection();
-                    DataTable tbl = m_colInfo.m_lookupData.m_dataSource;
-                    foreach (DataRow row in tbl.Rows)
-                    {
-                        col.Add(row[1].ToString());
-                    }
+                    AutoCompleteStringCollection col = m_colInfo.m_lookupData.m_colls;
                     m_text.AutoCompleteCustomSource = col;
+
+                    //create and add combo box
+                    createComboBox();
                 }
+            }
+
+            private void createComboBox()
+            {
+                if (m_combo == null) {
+                    m_combo = new ComboBox();
+                    DataTable tbl = m_colInfo.m_lookupData.m_dataSource;
+                    m_combo.DataSource = tbl;
+                    m_combo.DisplayMember = tbl.Columns[1].ColumnName;
+                    m_combo.Hide();
+
+                    m_text.Controls.Add(m_combo);
+                    m_text.Click += M_text_Click;
+                    m_combo.Validated += M_combo_Validated;
+                }
+            }
+
+            private void M_combo_Validated(object sender, EventArgs e)
+            {
+                Debug.WriteLine("M_combo_Validated");
+                m_combo.Hide();
+                //m_text.Show();
+                m_text.Text = m_combo.Text;
+            }
+
+            private void M_text_Click(object sender, EventArgs e)
+            {
+                Debug.WriteLine("M_text_Click");
+                //m_combo.Location = m_text.Location;
+                m_combo.Text = m_text.Text;
+                m_combo.Size = m_text.Size;
+                m_combo.Show();
+                //m_text.Hide();
             }
         }
         [DataContract(Name = "SearchCtrlDate")]

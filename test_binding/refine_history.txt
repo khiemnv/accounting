@@ -56,4 +56,6 @@ tableinfo
 11. sqlite db
   + db schema
 12 search sql
-  lEntitr -> dictionary
+  lEntity -> dictionary
+  lower case
+  search txt comboBox

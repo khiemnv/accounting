@@ -145,12 +145,7 @@ namespace test_binding
                     m_data = m_tblInfo.m_cols[CurrentCell.ColumnIndex].m_lookupData;
                     if (m_data == null) break;
 
-                    AutoCompleteStringCollection col = new AutoCompleteStringCollection();
-                    DataTable tbl = m_data.m_dataSource;
-                    foreach (DataRow row in tbl.Rows)
-                    {
-                        col.Add(row[1].ToString());
-                    }
+                    AutoCompleteStringCollection col = m_data.m_colls;
                     DataGridViewTextBoxEditingControl edt = (DataGridViewTextBoxEditingControl)e.Control;
                     edt.AutoCompleteMode = AutoCompleteMode.Suggest;
                     edt.AutoCompleteSource = AutoCompleteSource.CustomSource;
@@ -165,10 +160,9 @@ namespace test_binding
                 TextBox edt = (TextBox)sender;
                 Debug.WriteLine("Edt_Validated:" + edt.Text);
                 string selectedValue = edt.Text;
-                if (selectedValue != "" && !edt.AutoCompleteCustomSource.Contains(selectedValue))
+                if (selectedValue != "")
                 {
-                    edt.AutoCompleteCustomSource.Add(selectedValue);
-                    m_data.Add(selectedValue);
+                    m_data.Update(selectedValue);
                 }
                 m_data = null;
                 edt.Validated -= Edt_Validated;
