@@ -99,11 +99,18 @@ namespace test_binding
         [DataContract(Name = "SearchCtrlText")]
         class lSearchCtrlText : lSearchCtrl
         {
-            protected TextBox m_text = new TextBox();
+            protected TextBox m_text;
+            string m_value {
+                get {
+                    if (m_text != null) return m_text.Text;
+                    else return m_combo.Text;
+                }
+            }
             ComboBox m_combo;
             public lSearchCtrlText(string fieldName, string alias, ctrlType type, Point pos, Size size)
                 : base(fieldName, alias, type, pos, size)
             {
+                m_text = new TextBox();
                 m_text.Width = 200;
                 m_panel.Controls.AddRange(new Control[] { m_label, m_text });
             }
@@ -114,12 +121,12 @@ namespace test_binding
                     if (m_mode == SearchMode.like)
                     {
                         exprs.Add(string.Format("({0} like @{0})", m_fieldName));
-                        srchParams.Add(string.Format("@{0}", m_fieldName), string.Format("%{0}%", m_text.Text));
+                        srchParams.Add(string.Format("@{0}", m_fieldName), string.Format("%{0}%", m_value));
                     }
                     else
                     {
                         exprs.Add(string.Format("({0}=@{0})", m_fieldName));
-                        srchParams.Add(string.Format("@{0}", m_fieldName), m_text.Text);
+                        srchParams.Add(string.Format("@{0}", m_fieldName), m_value);
                     }
                 }
             }
@@ -127,48 +134,27 @@ namespace test_binding
             {
                 if (m_colInfo!= null && m_colInfo.m_lookupData != null)
                 {
-                    m_text.AutoCompleteMode = AutoCompleteMode.Suggest;
-                    m_text.AutoCompleteSource = AutoCompleteSource.CustomSource;
-                    AutoCompleteStringCollection col = m_colInfo.m_lookupData.m_colls;
-                    m_text.AutoCompleteCustomSource = col;
-
-                    //create and add combo box
-                    createComboBox();
-                }
-            }
-
-            private void createComboBox()
-            {
-                if (m_combo == null) {
                     m_combo = new ComboBox();
-                    DataTable tbl = m_colInfo.m_lookupData.m_dataSource;
-                    m_combo.DataSource = tbl;
-                    m_combo.DisplayMember = tbl.Columns[1].ColumnName;
-                    m_combo.Hide();
+                    m_text.Hide();
 
-                    m_text.Controls.Add(m_combo);
-                    m_text.Click += M_text_Click;
-                    m_combo.Validated += M_combo_Validated;
+                    m_combo.Size = m_text.Size;
+
+                    m_panel.Controls.Remove(m_text);
+                    m_panel.Controls.Add(m_combo);
+                    
+                    m_combo.DataSource = m_colInfo.m_lookupData.m_bindingSrc;
+                    DataTable tbl = (DataTable)m_colInfo.m_lookupData.m_bindingSrc.DataSource;
+                    m_combo.DisplayMember = tbl.Columns[1].ColumnName;
+
+                    m_combo.AutoCompleteMode = AutoCompleteMode.Suggest;
+                    m_combo.AutoCompleteSource = AutoCompleteSource.CustomSource;
+                    AutoCompleteStringCollection col = m_colInfo.m_lookupData.m_colls;
+                    m_combo.AutoCompleteCustomSource = col;
+
+                    m_text = null;
                 }
             }
 
-            private void M_combo_Validated(object sender, EventArgs e)
-            {
-                Debug.WriteLine("M_combo_Validated");
-                m_combo.Hide();
-                //m_text.Show();
-                m_text.Text = m_combo.Text;
-            }
-
-            private void M_text_Click(object sender, EventArgs e)
-            {
-                Debug.WriteLine("M_text_Click");
-                //m_combo.Location = m_text.Location;
-                m_combo.Text = m_text.Text;
-                m_combo.Size = m_text.Size;
-                m_combo.Show();
-                //m_text.Hide();
-            }
         }
         [DataContract(Name = "SearchCtrlDate")]
         class lSearchCtrlDate : lSearchCtrl

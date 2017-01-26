@@ -10,6 +10,8 @@ using System.Data.SQLite;
 using System.Xml;
 using System.Xml.Serialization;
 using System.Runtime.Serialization;
+using System.Diagnostics;
+
 namespace test_binding
 {
     public partial class Form1 : Form
@@ -336,9 +338,11 @@ namespace test_binding
                     }
                 }
 #endif
+                m_dataSyncs = new Dictionary<string, lDataSync>();
             }
 
             private SQLiteConnection m_cnn;
+            private Dictionary<string, lDataSync> m_dataSyncs;
 
             public lDataContent CreateDataContent(string tblName)
             {
@@ -348,9 +352,16 @@ namespace test_binding
 
             public lDataSync CreateDataSync(string tblName)
             {
-                lSQLiteDataContent dataContent = new lSQLiteDataContent(tblName, m_cnn);
-                lDataSync dataSync = new lDataSync(dataContent);
-                return dataSync;
+                if (!m_dataSyncs.ContainsKey(tblName)) { 
+                    lSQLiteDataContent dataContent = new lSQLiteDataContent(tblName, m_cnn);
+                    lDataSync dataSync = new lDataSync(dataContent);
+                    m_dataSyncs.Add(tblName, dataSync);
+                    return dataSync;
+                }
+                else
+                {
+                    return m_dataSyncs[tblName];
+                }
             }
 
             public DataTable GetData(string qry)
@@ -624,12 +635,17 @@ namespace test_binding
                     m_maps.Add(key, val);
                 }
             }
+            public BindingSource m_bindingSrc
+            {
+                get { return m_data.m_bindingSource; }
+            }
             public DataTable m_dataSource
             {
                 get { return (DataTable)m_data.m_bindingSource.DataSource; }
             }
             public void Update(string selectedValue)
             {
+                Debug.WriteLine(this.ToString() + ".Update");
                 string key = selectedValue.ToLower();
                 if (!m_maps.ContainsKey(key))
                 {
