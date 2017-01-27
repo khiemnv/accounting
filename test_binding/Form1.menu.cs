@@ -37,37 +37,59 @@ namespace test_binding
             this.Close();
         }
 
-        class myCmdDlg : CommonDialog
+        class lAboutDlg : Form
         {
-            public override void Reset()
+            public lAboutDlg()
             {
-                throw new NotImplementedException();
+                InitializeComponent();
             }
 
-            protected override bool RunDialog(IntPtr hwndOwner)
+            private void InitializeComponent()
             {
-                //throw new NotImplementedException();
-                return false;
+                //show about dlg
+                Form aboutDlg = this;
+                aboutDlg.Location = new Point(0, 0);
+                aboutDlg.Size = new Size(150, 120);
+                aboutDlg.FormBorderStyle = FormBorderStyle.FixedDialog;
+                aboutDlg.MinimizeBox = false;
+                aboutDlg.MaximizeBox = false;
+
+                TableLayoutPanel tblPanel = new TableLayoutPanel();
+                tblPanel.ColumnCount = 1;
+                tblPanel.Dock = DockStyle.Fill;
+
+                Label txt = new Label();
+                txt.Text = "About this app";
+                //txt.AutoSize = true;
+                txt.Dock = DockStyle.Fill;
+                //txt.Dock = DockStyle.Fill;
+
+                Button btn = new Button();
+                btn.Text = "OK";
+                btn.TextAlign = ContentAlignment.MiddleCenter;
+                btn.Anchor = AnchorStyles.None;
+                btn.AutoSize = true;
+                btn.Click += Btn_Click;
+                aboutDlg.AcceptButton = btn;
+
+                tblPanel.Controls.Add(txt, 0, 0);
+                tblPanel.Controls.Add(btn, 0, 1);
+
+                aboutDlg.Controls.Add(tblPanel);
+            }
+
+            private void Btn_Click(object sender, EventArgs e)
+            {
+                Close();
             }
         }
         private void MiAbout_Click(object sender, EventArgs e)
         {
-#if true
+#if false
             var ret = MessageBox.Show("About this app");
 #else
-            //show about dlg
-            Form aboutDlg = new Form();
-            aboutDlg.Location = this.Location;
-            aboutDlg.Size = new Size(400, 300);
-            aboutDlg.FormBorderStyle = FormBorderStyle.FixedSingle;
-
-            Label txt = new Label();
-            txt.Text = "About this app";
-            txt.Dock = DockStyle.Fill;
-            aboutDlg.Controls.Add(txt);
-
-            // Show testDialog as a modal dialog and determine if DialogResult = OK.
-            DialogResult ret = aboutDlg.ShowDialog(this);
+            lAboutDlg aboutDlg = new lAboutDlg();
+            DialogResult ret = aboutDlg.ShowDialog();
             aboutDlg.Dispose();
 #endif
         }
