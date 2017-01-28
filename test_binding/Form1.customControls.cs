@@ -102,12 +102,12 @@ namespace test_binding
             }
         }
         
-        class myDataGridView:DataGridView
+        class lCustomDGV:DataGridView
         {
-            lTableInfo m_tblInfo;
+            protected lTableInfo m_tblInfo;
             myCustomCtrl m_customCtrl;
 
-            public myDataGridView(lTableInfo tblInfo)
+            public lCustomDGV(lTableInfo tblInfo)
             {
                 m_tblInfo = tblInfo;
             }
@@ -206,6 +206,21 @@ namespace test_binding
 
                     this.Controls.Remove(m_customCtrl.getControl());
                     m_customCtrl = null;
+                }
+            }
+        }
+        class lInterPaymentDGV : lCustomDGV
+        {
+            public lInterPaymentDGV(lTableInfo tblInfo) : base(tblInfo)
+            {
+            }
+            protected override void OnCellEndEdit(DataGridViewCellEventArgs e) {
+                base.OnCellEndEdit(e);
+                if (m_tblInfo.m_cols[e.ColumnIndex].m_field == "reimbursement")
+                {
+                    Int64 advance = Int64.Parse(this.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Value.ToString());
+                    Int64 remain = Int64.Parse(this.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
+                    this.Rows[e.RowIndex].Cells[e.ColumnIndex + 1].Value = advance - remain;
                 }
             }
         }

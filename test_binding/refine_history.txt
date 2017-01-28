@@ -65,3 +65,4 @@ tableinfo
 14 menu - not yet
 15 not use empty string
 16 event data row change
+  + auto fill actually_spent
