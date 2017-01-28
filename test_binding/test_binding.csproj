@@ -109,6 +109,9 @@
     <Compile Include="Form1.customControls.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Form1.customDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Form1.report.cs">
       <SubType>Form</SubType>
     </Compile>

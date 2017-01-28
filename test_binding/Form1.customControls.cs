@@ -122,7 +122,7 @@ namespace test_binding
             {
                 base.OnCellClick(e);
                 Debug.WriteLine("OnCellClick");
-                showCustomCtrl(e.ColumnIndex, e.RowIndex);
+                if (e.ColumnIndex != -1) showCustomCtrl(e.ColumnIndex, e.RowIndex);
             }
 
             protected override void OnScroll(ScrollEventArgs e)

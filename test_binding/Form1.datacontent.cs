@@ -251,6 +251,20 @@ namespace test_binding
             }
         };
 
+        class lGroupNameTblInfo : lTableInfo
+        {
+            public lGroupNameTblInfo()
+            {
+                m_tblName = "group_name";
+                m_tblAlias = "Ban";
+                m_crtQry = "";
+                m_cols = new lColInfo[] {
+                   new lColInfo( "ID","ID", lColInfo.lColType.num),
+                   new lColInfo( "name","Ban", lColInfo.lColType.text)
+                };
+            }
+        };
+
         interface lContentProvider
         {
             lDataContent CreateDataContent(string tblName);
@@ -339,21 +353,32 @@ namespace test_binding
                 }
 #endif
                 m_dataSyncs = new Dictionary<string, lDataSync>();
+                m_dataContents = new Dictionary<string, lDataContent>();
             }
 
             private SQLiteConnection m_cnn;
             private Dictionary<string, lDataSync> m_dataSyncs;
+            private Dictionary<string, lDataContent> m_dataContents;
 
             public lDataContent CreateDataContent(string tblName)
             {
                 lSQLiteDataContent dataContent = new lSQLiteDataContent(tblName, m_cnn);
-                return dataContent;
+                if (!m_dataContents.ContainsKey(tblName))
+                {
+                    lSQLiteDataContent data = new lSQLiteDataContent(tblName, m_cnn);
+                    m_dataContents.Add(tblName, data);
+                    return data;
+                }
+                else
+                {
+                    return m_dataContents[tblName];
+                }
             }
 
             public lDataSync CreateDataSync(string tblName)
             {
                 if (!m_dataSyncs.ContainsKey(tblName)) { 
-                    lSQLiteDataContent dataContent = new lSQLiteDataContent(tblName, m_cnn);
+                    lDataContent dataContent = CreateDataContent(tblName);
                     lDataSync dataSync = new lDataSync(dataContent);
                     m_dataSyncs.Add(tblName, dataSync);
                     return dataSync;
@@ -475,7 +500,8 @@ namespace test_binding
         {
             public BindingSource m_bindingSource;
             protected string m_table;
-            protected lDataContent()
+            public IRefresher m_refresher;
+            public lDataContent()
             {
                 m_bindingSource = new BindingSource();
             }
@@ -491,8 +517,10 @@ namespace test_binding
 #if use_cmd_params
             public virtual void Search(List<string> exprs, Dictionary<string, string> srchParams) { throw new NotImplementedException(); }
 #endif
+            bool m_changed = true;
+            public virtual void Load() { if (m_changed) { m_changed = false; Reload(); } }
             public virtual void Reload() { throw new NotImplementedException(); }
-            public virtual void Submit() { throw new NotImplementedException(); }
+            public virtual void Submit() { m_changed = false; }
             protected virtual void GetData(string sql) { throw new NotImplementedException(); }
         }
         class lSQLiteDataContent : lDataContent
@@ -544,6 +572,7 @@ namespace test_binding
             }
             public override void Submit()
             {
+                base.Submit();
                 using (SQLiteCommandBuilder builder = new SQLiteCommandBuilder(m_dataAdapter))
                 {
                     DataTable dt = (DataTable)m_bindingSource.DataSource;
@@ -567,6 +596,10 @@ namespace test_binding
                 table.Locale = System.Globalization.CultureInfo.InvariantCulture;
                 m_dataAdapter.Fill(table);
                 m_bindingSource.DataSource = table;
+                if (m_refresher != null)
+                {
+                    m_refresher.Refresh();
+                }
             }
         }
         class lSqlDataContent : lDataContent
@@ -645,7 +678,11 @@ namespace test_binding
             }
         }
 
-        class lDataSync
+        interface IRefresher
+        {
+            void Refresh();
+        }
+        class lDataSync: IRefresher
         {
             private lDataContent m_data;
             public AutoCompleteStringCollection m_colls;
@@ -653,10 +690,10 @@ namespace test_binding
             public lDataSync(lDataContent data)
             {
                 m_data = data;
+                m_data.m_refresher = this;
             }
-            public void LoadData()
+            public void Refresh()
             {
-                m_data.Reload();
                 m_colls = new AutoCompleteStringCollection();
                 m_maps = new Dictionary<string, string>();
                 DataTable tbl = m_dataSource;
@@ -668,6 +705,22 @@ namespace test_binding
                     m_colls.Add(val);
                     m_maps.Add(key, val);
                 }
+            }
+            public void LoadData()
+            {
+                m_data.Load();
+                Refresh();
+                //m_colls = new AutoCompleteStringCollection();
+                //m_maps = new Dictionary<string, string>();
+                //DataTable tbl = m_dataSource;
+                //foreach (DataRow row in tbl.Rows)
+                //{
+                //    string key = row[1].ToString().ToLower();
+                //    string val = row[1].ToString();
+                //    m_colls.Add(key);
+                //    m_colls.Add(val);
+                //    m_maps.Add(key, val);
+                //}
             }
             public BindingSource m_bindingSrc
             {
@@ -693,6 +746,7 @@ namespace test_binding
             private void Add(string newValue)
             {
                 //single col tables
+                m_dataSource.AcceptChanges();
                 DataRow newRow = m_dataSource.NewRow();
                 newRow[1] = newValue;
                 m_dataSource.Rows.Add(newRow);

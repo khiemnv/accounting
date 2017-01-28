@@ -30,6 +30,23 @@ namespace test_binding
             MenuItem miAbout = new MenuItem("&About");
             miHelp.MenuItems.Add(miAbout);
             miAbout.Click += MiAbout_Click;
+
+            MenuItem miEdit = new MenuItem("&Edit");
+            MenuItem miEditGroupName = new MenuItem("GroupName");
+            miEditGroupName.Click += MiEditGroupName_Click;
+            MenuItem miEditReceiptsContent = new MenuItem("ReceiptsContent");
+            miEdit.MenuItems.Add(miEditGroupName);
+            miEdit.MenuItems.Add(miEditReceiptsContent);
+            mainMenu.MenuItems.Add(miEdit);
+        }
+
+        private void MiEditGroupName_Click(object sender, EventArgs e)
+        {
+            lGroupNameEditDlg edtDlg = new lGroupNameEditDlg();
+            edtDlg.ShowDialog();
+            edtDlg.Dispose();
+            //udpate lookup data
+
         }
 
         private void MiClose_Click(object sender, EventArgs e)

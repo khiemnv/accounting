@@ -7,6 +7,7 @@ using System;
 using System.Drawing;
 using System.Diagnostics;
 using System.Runtime.Serialization;
+using System.Data;
 
 namespace test_binding
 {
@@ -30,12 +31,13 @@ namespace test_binding
 
             public Button m_reloadBtn;
             public Button m_submitBtn;
+            public Label m_status;
             public Label m_sumLabel;
             public TextBox m_sumTxt;
 
             public DataGridView m_dataGridView;
 
-            lDataContent m_dataContent;
+            public lDataContent m_dataContent;
 
             [DataMember(Name = "tblInfo")]
             public lTableInfo m_tblInfo;
@@ -68,11 +70,15 @@ namespace test_binding
 
                 m_reloadBtn = new Button();
                 m_submitBtn = new Button();
+                m_status = new Label();
                 m_sumLabel = new Label();
                 m_sumTxt = new TextBox();
 
                 m_reloadBtn.Text = "Reload";
                 m_submitBtn.Text = "Save";
+                m_status.AutoSize = true;
+                m_status.TextAlign = ContentAlignment.MiddleLeft;
+                m_status.Dock = DockStyle.Fill;
 
                 m_reloadBtn.Click += new System.EventHandler(reloadButton_Click);
                 m_submitBtn.Click += new System.EventHandler(submitButton_Click);
@@ -104,7 +110,7 @@ namespace test_binding
                 m_sumPanel.BorderStyle = BorderStyle.FixedSingle;
 #endif
 
-                m_reloadPanel.Controls.AddRange(new Control[] { m_reloadBtn, m_submitBtn });
+                m_reloadPanel.Controls.AddRange(new Control[] { m_reloadBtn, m_submitBtn, m_status });
 
                 //sum panel with label and text ctrls
                 m_sumPanel.Controls.AddRange(new Control[] { m_sumLabel, m_sumTxt });
@@ -197,10 +203,12 @@ namespace test_binding
             {
                 m_dataContent.Reload();
                 update();
+                m_status.Text = "Reloading completed!";
             }
             private void submitButton_Click(object sender, System.EventArgs e)
             {
                 m_dataContent.Submit();
+                m_status.Text = "Saving completed!";
             }
 
             public virtual Int64 getSum()
@@ -246,6 +254,7 @@ namespace test_binding
                 m_tblInfo.LoadData();
                 m_dataContent = s_contentProvider.CreateDataContent(m_tblInfo.m_tblName);
                 m_dataGridView.DataSource = m_dataContent.m_bindingSource;
+                if (m_dataGridView.ColumnCount > 0) {update();}
             }
         }
 
@@ -286,6 +295,20 @@ namespace test_binding
             {
                 m_tblInfo = new lSalaryTblInfo();
                 m_countOn = "salary";
+            }
+        }
+
+        class lGroupNameDataPanel : lDataPanel
+        {
+            public lGroupNameDataPanel()
+            {
+                m_tblInfo = new lGroupNameTblInfo();
+            }
+            public override Int64 getSum()
+            {
+                BindingSource bs = (BindingSource)m_dataGridView.DataSource;
+                DataTable tbl = (DataTable)bs.DataSource;
+                return tbl.Rows.Count;
             }
         }
     }

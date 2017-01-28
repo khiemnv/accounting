@@ -10,6 +10,22 @@ namespace test_dlg
 {
     class Program
     {
+        class lGroupNameEditDlg : Form
+        {
+            public lGroupNameEditDlg()
+            {
+                InitializeComponent();
+            }
+            private void InitializeComponent()
+            {
+                Form form = this;
+                form.Location = new Point(0, 0);
+                form.Size = new Size(400, 300);
+                form.FormBorderStyle = FormBorderStyle.FixedDialog;
+                form.MinimizeBox = false;
+                form.MaximizeBox = false;
+            }
+        }
         class lAboutDlg : Form
         {
             public lAboutDlg()
@@ -67,7 +83,7 @@ namespace test_dlg
         }
         static void Main(string[] args)
         {
-            lAboutDlg aboutDlg = new lAboutDlg();
+            Form aboutDlg = new lGroupNameEditDlg();
             // Show testDialog as a modal dialog and determine if DialogResult = OK.
             DialogResult ret = aboutDlg.ShowDialog();
             aboutDlg.Dispose();
