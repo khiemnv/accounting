@@ -62,7 +62,10 @@ tableinfo
   lower case
   search txt comboBox
   multi comboBox - single binding src
-14 menu - not yet
+  auto check
+14 menu: edit, file, help
 15 not use empty string
 16 event data row change
   + auto fill actually_spent
+  + header cell style
+17 speed loading - not yet

@@ -80,6 +80,10 @@ namespace test_binding
             public virtual void updateSearchParams(List<string> exprs, Dictionary<string,string> srchParams){}
             public virtual string getSearchParams() { return null; }
             public virtual void LoadData(){}
+            protected virtual void valueChanged(object sender, EventArgs e)
+            {
+                m_label.Checked = true;
+            }
         };
 
         [DataContract(Name = "SearchCtrlText")]
@@ -98,8 +102,10 @@ namespace test_binding
             {
                 m_text = new TextBox();
                 m_text.Width = 200;
+                m_text.TextChanged += valueChanged;
                 m_panel.Controls.AddRange(new Control[] { m_label, m_text });
             }
+
             public override string getSearchParams()
             {
                 string srchParam = null;
@@ -149,6 +155,9 @@ namespace test_binding
                     AutoCompleteStringCollection col = m_colInfo.m_lookupData.m_colls;
                     m_combo.AutoCompleteCustomSource = col;
 
+                    m_combo.SelectedValueChanged += valueChanged;
+
+                    m_text.Dispose();
                     m_text = null;
                 }
             }
@@ -179,7 +188,16 @@ namespace test_binding
                 datePanel.Controls.AddRange(new Control[] { m_startdate, m_to, m_enddate });
 
                 m_panel.Controls.AddRange(new Control[] { m_label, datePanel });
+
+                m_startdate.TextChanged += valueChanged;
+                m_enddate.TextChanged += M_enddate_TextChanged;
             }
+
+            private void M_enddate_TextChanged(object sender, EventArgs e)
+            {
+                m_to.Checked = true;
+            }
+
             public override string getSearchParams()
             {
                 string srchParams = null;
