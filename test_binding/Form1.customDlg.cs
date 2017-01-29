@@ -34,7 +34,7 @@ namespace test_binding
             {
                 Form form = this;
                 form.Location = new Point(0, 0);
-                form.Size = new Size(400, 300);
+                form.Size = new Size(500, 300);
                 form.FormBorderStyle = FormBorderStyle.FixedDialog;
                 form.MinimizeBox = false;
                 form.MaximizeBox = false;

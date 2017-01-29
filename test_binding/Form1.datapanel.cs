@@ -227,7 +227,9 @@ namespace test_binding
                 //dataGridView1.AutoResizeColumns(
                 //    DataGridViewAutoSizeColumnsMode.AllCellsExceptHeader);
                 m_dataGridView.Columns[0].Visible = false;
-                lTableInfo tblInfo = m_tblInfo;                
+                lTableInfo tblInfo = m_tblInfo;
+                m_dataGridView.ColumnHeadersDefaultCellStyle.BackColor = Color.Silver;
+                m_dataGridView.EnableHeadersVisualStyles = false;
                 for (int i = 1; i < m_dataGridView.ColumnCount; i++)
                 {
                     m_dataGridView.Columns[i].HeaderText = tblInfo.m_cols[i].m_alias;

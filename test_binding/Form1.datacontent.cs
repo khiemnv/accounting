@@ -256,11 +256,11 @@ namespace test_binding
             public lGroupNameTblInfo()
             {
                 m_tblName = "group_name";
-                m_tblAlias = "Ban";
+                m_tblAlias = "Các ban";
                 m_crtQry = "";
                 m_cols = new lColInfo[] {
                    new lColInfo( "ID","ID", lColInfo.lColType.num),
-                   new lColInfo( "name","Ban", lColInfo.lColType.text)
+                   new lColInfo( "name","Các ban", lColInfo.lColType.text)
                 };
             }
         };
