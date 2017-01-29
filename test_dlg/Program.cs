@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -16,6 +17,15 @@ namespace test_dlg
             {
                 InitializeComponent();
             }
+
+            void pickColor(out Color color)
+            {
+                ColorDialog dlg = new ColorDialog();
+                var ret = dlg.ShowDialog();
+                color = dlg.Color;
+                dlg.Dispose();
+            }
+
             private void InitializeComponent()
             {
                 Form form = this;
@@ -24,6 +34,30 @@ namespace test_dlg
                 form.FormBorderStyle = FormBorderStyle.FixedDialog;
                 form.MinimizeBox = false;
                 form.MaximizeBox = false;
+
+                DataGridView dgv = new DataGridView();
+                Color color;
+                pickColor(out color);
+                //dgv.ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle() { BackColor = Color.Blue };
+                dgv.ColumnHeadersDefaultCellStyle.BackColor = color;
+                dgv.ColumnHeadersDefaultCellStyle.Font = new Font(dgv.ColumnHeadersDefaultCellStyle.Font, FontStyle.Bold);
+                form.Controls.Add(dgv);
+                dgv.AutoSize = true;
+                dgv.Dock = DockStyle.Fill;
+
+                DataTable table = new DataTable();
+                table.Columns.Add("Dosage", typeof(int));
+                table.Columns.Add("Drug", typeof(string));
+                table.Columns.Add("Patient", typeof(string));
+                table.Columns.Add("Date", typeof(DateTime));
+
+                table.Rows.Add(25, "Indocin", "David", DateTime.Now);
+                table.Rows.Add(50, "Enebrel", "Sam", DateTime.Now);
+                table.Rows.Add(10, "Hydralazine", "Christoff", DateTime.Now);
+                table.Rows.Add(21, "Combivent", "Janet", DateTime.Now);
+                table.Rows.Add(100, "Dilantin", "Melanie", DateTime.Now);
+
+                dgv.DataSource = table;
             }
         }
         class lAboutDlg : Form
@@ -88,6 +122,5 @@ namespace test_dlg
             DialogResult ret = aboutDlg.ShowDialog();
             aboutDlg.Dispose();
         }
-
     }
 }
