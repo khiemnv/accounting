@@ -9,7 +9,7 @@ namespace test_binding
 {
     public partial class Form1 : Form
     {
-        class myCustomCtrl
+        class myCustomCtrl:IDisposable
         {
             public DataGridView m_DGV;
             public Control m_ctrl;
@@ -47,6 +47,11 @@ namespace test_binding
                 Rectangle rec = m_DGV.GetCellDisplayRectangle(m_iCol, m_iRow, true);
                 m_ctrl.Size = rec.Size;
                 m_ctrl.Location = rec.Location;
+            }
+
+            public void Dispose()
+            {
+                m_ctrl.Dispose();
             }
         }
         class myComboBox : myCustomCtrl
@@ -117,6 +122,14 @@ namespace test_binding
                 base.OnCellEndEdit(e);
                 Debug.WriteLine("OnCellEndEdit");
                 hideCustomCtrl();
+                //update selected value
+                lDataSync data = m_tblInfo.m_cols[e.ColumnIndex].m_lookupData;
+                if (data != null)
+                {
+                    string curVal = CurrentCell.Value.ToString();
+                    string newVal = data.m_maps[curVal.ToLower()];
+                    CurrentCell.Value = newVal;
+                }
             }
             protected override void OnCellClick(DataGridViewCellEventArgs e)
             {
@@ -148,7 +161,7 @@ namespace test_binding
 
                     AutoCompleteStringCollection col = m_data.m_colls;
                     DataGridViewTextBoxEditingControl edt = (DataGridViewTextBoxEditingControl)e.Control;
-                    edt.AutoCompleteMode = AutoCompleteMode.Suggest;
+                    edt.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
                     edt.AutoCompleteSource = AutoCompleteSource.CustomSource;
                     edt.AutoCompleteCustomSource = col;
 
@@ -165,6 +178,7 @@ namespace test_binding
                 {
                     m_data.Update(selectedValue);
                 }
+
                 m_data = null;
                 edt.Validated -= Edt_Validated;
             }
@@ -205,6 +219,7 @@ namespace test_binding
                     }
 
                     this.Controls.Remove(m_customCtrl.getControl());
+                    m_customCtrl.Dispose();
                     m_customCtrl = null;
                 }
             }

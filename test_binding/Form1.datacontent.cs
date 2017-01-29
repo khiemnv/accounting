@@ -714,7 +714,7 @@ namespace test_binding
                 {
                     string key = row[1].ToString().ToLower();
                     string val = row[1].ToString();
-                    m_colls.Add(key);
+                    //m_colls.Add(key);
                     m_colls.Add(val);
                     m_maps.Add(key, val);
                 }
@@ -723,17 +723,6 @@ namespace test_binding
             {
                 m_data.Load();
                 Refresh();
-                //m_colls = new AutoCompleteStringCollection();
-                //m_maps = new Dictionary<string, string>();
-                //DataTable tbl = m_dataSource;
-                //foreach (DataRow row in tbl.Rows)
-                //{
-                //    string key = row[1].ToString().ToLower();
-                //    string val = row[1].ToString();
-                //    m_colls.Add(key);
-                //    m_colls.Add(val);
-                //    m_maps.Add(key, val);
-                //}
             }
             public BindingSource m_bindingSrc
             {

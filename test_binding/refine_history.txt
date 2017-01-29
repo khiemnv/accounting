@@ -33,7 +33,7 @@ tableinfo
   + auto fill datetime to new row (set cell template)
   + datetime short format (ToShortDateString)
   + comboBox with dataTable
-  
+  + auto correct case
 4. redesign
   + content provider
   + load data
@@ -69,3 +69,4 @@ tableinfo
   + auto fill actually_spent
   + header cell style
 17 speed loading - not yet
+18 progess - not yet

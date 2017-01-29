@@ -150,7 +150,7 @@ namespace test_binding
                     DataTable tbl = (DataTable)m_colInfo.m_lookupData.m_bindingSrc.DataSource;
                     m_combo.DisplayMember = tbl.Columns[1].ColumnName;
 
-                    m_combo.AutoCompleteMode = AutoCompleteMode.Suggest;
+                    m_combo.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
                     m_combo.AutoCompleteSource = AutoCompleteSource.CustomSource;
                     AutoCompleteStringCollection col = m_colInfo.m_lookupData.m_colls;
                     m_combo.AutoCompleteCustomSource = col;
