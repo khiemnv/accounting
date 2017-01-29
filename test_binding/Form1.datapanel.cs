@@ -311,5 +311,12 @@ namespace test_binding
                 return tbl.Rows.Count;
             }
         }
+        class lReceiptsContentDataPanel : lGroupNameDataPanel
+        {
+            public lReceiptsContentDataPanel()
+            {
+                m_tblInfo = new lReceiptsContentTblInfo();
+            }
+        }
     }
 }

@@ -264,6 +264,19 @@ namespace test_binding
                 };
             }
         };
+        class lReceiptsContentTblInfo : lTableInfo
+        {
+            public lReceiptsContentTblInfo()
+            {
+                m_tblName = "receipts_content";
+                m_tblAlias = "Nội dung chi";
+                m_crtQry = "";
+                m_cols = new lColInfo[] {
+                   new lColInfo( "ID","ID", lColInfo.lColType.num),
+                   new lColInfo( "content","Nội dung chi", lColInfo.lColType.text)
+                };
+            }
+        };
 
         interface lContentProvider
         {

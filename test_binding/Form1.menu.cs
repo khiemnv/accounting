@@ -19,34 +19,47 @@ namespace test_binding
         {
             MainMenu mainMenu = new MainMenu();
             this.Menu = mainMenu;
-            MenuItem miFile = new MenuItem("&File");
-            MenuItem miHelp = new MenuItem("&Help");
-            mainMenu.MenuItems.AddRange(new MenuItem[] { miFile, miHelp });
 
+            //File
+            //  Close
+            MenuItem miFile = new MenuItem("&File");
             MenuItem miClose = new MenuItem("&Close");
             miFile.MenuItems.Add(miClose);
             miClose.Click += MiClose_Click;
 
+            //Help
+            //  About
+            MenuItem miHelp = new MenuItem("&Help");
             MenuItem miAbout = new MenuItem("&About");
             miHelp.MenuItems.Add(miAbout);
             miAbout.Click += MiAbout_Click;
 
+            //Edit
+            //  GroupName
+            //  ReceiptsContent
             MenuItem miEdit = new MenuItem("&Edit");
             MenuItem miEditGroupName = new MenuItem("GroupName");
             miEditGroupName.Click += MiEditGroupName_Click;
             MenuItem miEditReceiptsContent = new MenuItem("ReceiptsContent");
+            miEditReceiptsContent.Click += MiEditReceiptsContent_Click;
             miEdit.MenuItems.Add(miEditGroupName);
             miEdit.MenuItems.Add(miEditReceiptsContent);
-            mainMenu.MenuItems.Add(miEdit);
+
+            mainMenu.MenuItems.AddRange(new MenuItem[] { miFile, miEdit, miHelp });
+        }
+
+        private void MiEditReceiptsContent_Click(object sender, EventArgs e)
+        {
+            lEditDlg edtDlg = new lReceiptsContentEditDlg();
+            edtDlg.ShowDialog();
+            edtDlg.Dispose();
         }
 
         private void MiEditGroupName_Click(object sender, EventArgs e)
         {
-            lGroupNameEditDlg edtDlg = new lGroupNameEditDlg();
+            lEditDlg edtDlg = new lGroupNameEditDlg();
             edtDlg.ShowDialog();
             edtDlg.Dispose();
-            //udpate lookup data
-
         }
 
         private void MiClose_Click(object sender, EventArgs e)

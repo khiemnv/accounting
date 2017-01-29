@@ -9,14 +9,15 @@ namespace test_binding
 {
     public partial class Form1 : Form
     {
-        class lGroupNameEditDlg : Form
+        class lEditDlg : Form
         {
             lDataPanel m_dataPanel;
             TableLayoutPanel m_tblPanel;
-            public lGroupNameEditDlg()
+            protected lEditDlg(lDataPanel dataPanel)
             {
+                m_dataPanel = dataPanel;
+
                 InitializeComponent();
-                m_dataPanel  = new lGroupNameDataPanel();
                 m_dataPanel.initCtrls();
 
                 m_tblPanel = new TableLayoutPanel();
@@ -47,6 +48,21 @@ namespace test_binding
             {
                 m_dataPanel.m_dataContent.Reload();
                 base.OnClosed(e);
+            }
+        }
+
+        class lGroupNameEditDlg : lEditDlg
+        {
+            public lGroupNameEditDlg()
+                :base(new lGroupNameDataPanel())
+            {
+            }
+        }
+        class lReceiptsContentEditDlg : lEditDlg
+        {
+            public lReceiptsContentEditDlg()
+                : base(new lReceiptsContentDataPanel())
+            {
             }
         }
     }
