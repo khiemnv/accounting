@@ -72,3 +72,4 @@ tableinfo
 17 speed loading - not yet
 18 progress - not yet
 19 generate test data
+  + test 1000*1000 rows

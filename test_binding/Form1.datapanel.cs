@@ -90,6 +90,19 @@ namespace test_binding
 #if use_custom_dgv
                 m_dataGridView = m_tblInfo.m_tblName == "internal_payment" ?
                     new lInterPaymentDGV(m_tblInfo): new lCustomDGV(m_tblInfo);
+                m_dataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.EnableResizing;
+                m_dataGridView.ColumnHeadersDefaultCellStyle.BackColor = Color.Silver;
+                m_dataGridView.EnableHeadersVisualStyles = false;
+                m_dataGridView.AutoGenerateColumns = false;
+                foreach(var col in m_tblInfo.m_cols) {
+                    //var dgvcol = new DataGridViewColumn();
+                    //dgvcol.DataPropertyName = col.m_field;
+                    //dgvcol.HeaderText = col.m_alias;
+                    //dgvcol.Name = col.m_field;
+                    //m_dataGridView.Columns.Add(dgvcol);
+                    int i = m_dataGridView.Columns.Add(col.m_field, col.m_alias);
+                    m_dataGridView.Columns[i].DataPropertyName = col.m_field;
+                }
 #else
                 m_dataGridView = new DataGridView();
                 m_dataGridView.CellClick += M_dataGridView_CellClick;
@@ -228,10 +241,9 @@ namespace test_binding
                 // Resize the DataGridView columns to fit the newly loaded content.
                 //dataGridView1.AutoResizeColumns(
                 //    DataGridViewAutoSizeColumnsMode.AllCellsExceptHeader);
+#if false
                 m_dataGridView.Columns[0].Visible = false;
                 lTableInfo tblInfo = m_tblInfo;
-                m_dataGridView.ColumnHeadersDefaultCellStyle.BackColor = Color.Silver;
-                m_dataGridView.EnableHeadersVisualStyles = false;
                 for (int i = 1; i < m_dataGridView.ColumnCount; i++)
                 {
                     m_dataGridView.Columns[i].HeaderText = tblInfo.m_cols[i].m_alias;
@@ -245,11 +257,12 @@ namespace test_binding
                             m_dataGridView.Columns[i].DefaultCellStyle.Format = "yyyy-MM-dd";
                             break;
                     }
-                    m_dataGridView.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-                    m_dataGridView.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-                    m_dataGridView.Columns[i].FillWeight = 1;
+                    //m_dataGridView.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                    //m_dataGridView.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    //m_dataGridView.Columns[i].FillWeight = 1;
                 }
 
+#endif
                 Int64 sum = getSum();
                 m_sumTxt.Text = sum.ToString("#0,0");
             }
