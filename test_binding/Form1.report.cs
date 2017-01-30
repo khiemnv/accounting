@@ -49,11 +49,11 @@ namespace test_binding
 
             private DataTable loadData()
             {
-                //string qry = string.Format("SELECT * FROM {0}", m_viewName);
-                //DataTable dt = m_cp.getData(qry);
-                m_data = s_contentProvider.CreateDataContent(m_viewName);
-                m_data.Reload();
-                DataTable dt = (DataTable)m_data.m_bindingSource.DataSource;
+                string qry = string.Format("SELECT * FROM {0}", m_viewName);
+                DataTable dt = s_contentProvider.GetData(qry);
+                //m_data = s_contentProvider.CreateDataContent(m_viewName);
+                //m_data.Reload();
+                //DataTable dt = (DataTable)m_data.m_bindingSource.DataSource;
                 dt.TableName = m_viewName;
 #if crt_xml
                 dt.WriteXml(m_xmlPath);
@@ -143,11 +143,7 @@ namespace test_binding
                 DataTable dt = s_contentProvider.GetData(qry);
                 for (int i = 0; i< 5;i++)
                 {
-                    string val = "0";
-                    if (i < dt.Rows.Count)
-                    {
-                        val = dt.Rows[i][0].ToString();
-                    }
+                    string val = i < dt.Rows.Count? dt.Rows[i][0].ToString() : "0";
                     Debug.WriteLine(string.Format("details({0}) {1}", i, val));
                     rpParam.Values.Add(val);
                 }
