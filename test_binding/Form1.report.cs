@@ -32,7 +32,7 @@ namespace test_binding
         public string m_xmlPath;    //xml path
 #endif
             public string m_pdfPath;    //print to pdf file
-            lDataSync m_data;
+            lDataContent m_data;
             protected lBaseReport()
             {
             }
@@ -51,9 +51,9 @@ namespace test_binding
             {
                 //string qry = string.Format("SELECT * FROM {0}", m_viewName);
                 //DataTable dt = m_cp.getData(qry);
-                m_data = s_contentProvider.CreateDataSync(m_viewName);
-                m_data.LoadData();
-                DataTable dt = m_data.m_dataSource;
+                m_data = s_contentProvider.CreateDataContent(m_viewName);
+                m_data.Reload();
+                DataTable dt = (DataTable)m_data.m_bindingSource.DataSource;
                 dt.TableName = m_viewName;
 #if crt_xml
                 dt.WriteXml(m_xmlPath);
@@ -200,6 +200,10 @@ namespace test_binding
                 m_rdlcPath = @"..\..\rpt_receipts.rdlc";
                 m_dsName = "DataSet1";
                 m_pdfPath = @"..\..\report.pdf";
+            }
+            public override List<ReportParameter> getReportParam()
+            {
+                return new List<ReportParameter>();
             }
         }
         [DataContract(Name = "InternalPaymentReport")]

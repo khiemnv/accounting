@@ -42,7 +42,7 @@ tableinfo
 5. fix report .rdlc
   + fix search ctrl load data
   + fix get report params
-  
+  + fix receipts report - not yet
 6. showing edit control - auto complete
   + search by content - auto complete
 7. refine table - unicode
@@ -52,6 +52,7 @@ tableinfo
 9. config
   + reStore panel
   + json xml style
+  + table - schema
 10. sizing search ctrls - not yet
 11. sqlite db
   + db schema
@@ -69,4 +70,5 @@ tableinfo
   + auto fill actually_spent
   + header cell style
 17 speed loading - not yet
-18 progess - not yet
+18 progress - not yet
+19 generate test data

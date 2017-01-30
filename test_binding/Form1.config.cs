@@ -19,32 +19,34 @@ namespace test_binding
 {
     public partial class Form1 : Form
     {
+        [DataContract(Name ="config")]
         class lConfigMng
         {
-            public string m_cfgPath = @"..\..\config.xml";
-            public string m_sqliteDbPath = @"..\..\appData.db";
-            public string m_cnnStr = @"Data Source=DESKTOP-GOEF1DS\SQLEXPRESS;Initial Catalog=accounting;Integrated Security=true";
-            public lDbSchema m_dbSchema;
-            public List<lBasePanel> m_panels;
-            XmlObjectSerializer m_panelsSerializer;
-            XmlObjectSerializer m_dbSchemaSerializer;
+            static string m_cfgPath = @"..\..\config.xml";
+            //string m_sqliteDbPath = @"..\..\appData.db";
+            //string m_cnnStr = @"Data Source=DESKTOP-GOEF1DS\SQLEXPRESS;Initial Catalog=accounting;Integrated Security=true";
 
-            void createDbSchemaSerializer()
-            {
-                Type[] knownTypes = new Type[] {typeof(lSQLiteDbSchema) };
-                DataContractJsonSerializerSettings settings = new DataContractJsonSerializerSettings();
-                settings.IgnoreExtensionDataObject = true;
-                settings.EmitTypeInformation = EmitTypeInformation.Never;
-                settings.KnownTypes = knownTypes;
-                m_dbSchemaSerializer = new DataContractJsonSerializer(
-                    typeof(lDbSchema), settings);
-            }
-            void createPanelsSerializer() {
+            [DataMember(Name ="dbSchema")]
+            public lDbSchema m_dbSchema;
+            [DataMember(Name ="panels")]
+            public List<lBasePanel> m_panels;
+
+            XmlObjectSerializer m_Serializer;
+
+            static XmlObjectSerializer createSerializer() {
                 Type[] knownTypes = new Type[] {
+                    typeof(lSQLiteDbSchema),
+
                     typeof(lReceiptsTblInfo),
                     typeof(lInternalPaymentTblInfo),
                     typeof(lExternalPaymentTblInfo),
                     typeof(lSalaryTblInfo),
+                    typeof(lGroupNameTblInfo),
+                    typeof(lReceiptsContentTblInfo),
+                    typeof(lReceiptsViewInfo),
+                    typeof(lInterPaymentViewInfo),
+                    typeof(lExterPaymentViewInfo),
+                    typeof(lSalaryViewInfo),
 
                     typeof(lReceiptsDataPanel),
                     typeof(lInterPaymentDataPanel),
@@ -80,36 +82,41 @@ namespace test_binding
 #else
                 DataContractJsonSerializerSettings settings = new DataContractJsonSerializerSettings();
                 settings.IgnoreExtensionDataObject = true;
-                settings.EmitTypeInformation = EmitTypeInformation.Never;
+                settings.EmitTypeInformation = EmitTypeInformation.AsNeeded;
                 settings.KnownTypes = knownTypes;
-                m_panelsSerializer = new DataContractJsonSerializer(
-                    typeof(List<lBasePanel>), settings);
+                return new DataContractJsonSerializer(
+                    typeof(lConfigMng), settings);
 #endif
             }
-            public lConfigMng()
+            static lConfigMng m_instance;
+            public static lConfigMng crtInstance()
             {
-                createPanelsSerializer();
-                createDbSchemaSerializer();
-            }
-            public void LoadConfig()
-            {
-                //panels = new List<lBasePanel>();
-                if (File.Exists(m_cfgPath))
+                string cfgPath = m_cfgPath;
+                if (m_instance == null)
                 {
-                    XmlReader xrd = XmlReader.Create(m_cfgPath);
-                    xrd.Read();
-
-                    xrd.ReadToFollowing("dbSchema");
-                    m_dbSchema = (lDbSchema) m_dbSchemaSerializer.ReadObject(xrd, false);
-
-                    xrd.ReadToFollowing("panels");
-                    var objs1 = m_panelsSerializer.ReadObject(xrd, false);
-                    m_panels = (List<lBasePanel>)objs1;
-
-                    xrd.Close();
+                    XmlObjectSerializer sz = createSerializer();
+                    if (File.Exists(cfgPath))
+                    {
+                        XmlReader xrd = XmlReader.Create(cfgPath);
+                        xrd.Read();
+                        xrd.ReadToFollowing("config");
+                        var obj = sz.ReadObject(xrd, false);
+                        xrd.Close();
+                        m_instance = (lConfigMng)obj;
+                    }
+                    else
+                    {
+                        m_instance = new lConfigMng();
+                    }
+                    m_instance.m_Serializer = sz;
                 }
+                return m_instance;
             }
-            public void UpdateConfig(List<lBasePanel> panels)
+
+            lConfigMng(){
+            }
+
+            public void UpdateConfig()
             {
                 XmlWriterSettings settings = new XmlWriterSettings();
                 settings.Indent = true;
@@ -119,21 +126,22 @@ namespace test_binding
                 XmlWriter xwriter;
                 xwriter = XmlWriter.Create(m_cfgPath, settings);
                 xwriter.WriteStartElement("config");
-
-                //write schema to config file
-                xwriter.WriteStartElement("dbSchema");
-                m_dbSchemaSerializer.WriteObjectContent(xwriter, m_dbSchema);
-                xwriter.WriteEndElement();
-
-                //write panels to config file
-                xwriter.WriteStartElement("panels");
-                m_panelsSerializer.WriteObjectContent(xwriter, panels);
-                xwriter.WriteEndElement();
-
+                m_Serializer.WriteObjectContent(xwriter, this);
                 xwriter.WriteEndElement();
                 xwriter.Close();
             }
-
+            public lTableInfo getTable(string tblName)
+            {
+                List<lTableInfo> tbls = new List<lTableInfo>();
+                tbls.AddRange(m_dbSchema.m_tables);
+                tbls.AddRange(m_dbSchema.m_views);
+                foreach (lTableInfo tbl in tbls)
+                {
+                    if (tbl.m_tblName == tblName)
+                        return tbl;
+                }
+                return null;
+            }
             public void test(lReceiptsPanel receiptsPanel)
             {
                 DataContractSerializer sz;

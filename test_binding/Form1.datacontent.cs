@@ -250,31 +250,92 @@ namespace test_binding
                 };
             }
         };
-
+        [DataContract(Name = "lGroupNameTblInfo")]
         class lGroupNameTblInfo : lTableInfo
         {
             public lGroupNameTblInfo()
             {
                 m_tblName = "group_name";
                 m_tblAlias = "Các ban";
-                m_crtQry = "";
+                m_crtQry = "CREATE TABLE if not exists group_name("
+                    + "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + "name nchar(31))";
                 m_cols = new lColInfo[] {
                    new lColInfo( "ID","ID", lColInfo.lColType.num),
                    new lColInfo( "name","Các ban", lColInfo.lColType.text)
                 };
             }
         };
+        [DataContract(Name = "lReceiptsContentTblInfo")]
         class lReceiptsContentTblInfo : lTableInfo
         {
             public lReceiptsContentTblInfo()
             {
                 m_tblName = "receipts_content";
                 m_tblAlias = "Nội dung chi";
-                m_crtQry = "";
+                m_crtQry = "CREATE TABLE if not exists receipts_content("
+                    + "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + " content nchar(31))";
                 m_cols = new lColInfo[] {
                    new lColInfo( "ID","ID", lColInfo.lColType.num),
                    new lColInfo( "content","Nội dung chi", lColInfo.lColType.text)
                 };
+            }
+        };
+        [DataContract(Name = "lReceiptsViewInfo")]
+        class lReceiptsViewInfo : lTableInfo
+        {
+            public lReceiptsViewInfo()
+            {
+                m_tblName = "v_receipts";
+                m_crtQry = "CREATE VIEW if not exists v_receipts  as  "
+                    + "select content, "
+                    + "amount, cast(strftime('%Y', date) as integer) as year, "
+                    + "(strftime('%m', date) + 2) / 3 as qtr "
+                    + "from receipts "
+                    + "where strftime('%Y', 'now') - strftime('%Y', date) between 0 and 4;";
+            }
+        };
+        [DataContract(Name = "lInterPaymentViewInfo")]
+        class lInterPaymentViewInfo : lTableInfo
+        {
+            public lInterPaymentViewInfo()
+            {
+                m_tblName = "v_internal_payment";
+                m_crtQry = "CREATE VIEW if not exists v_internal_payment as "
+                    + "select group_name, actually_spent, "
+                    + "cast(strftime('%Y', date) as integer) as year, "
+                    + "(strftime('%m', date) + 2) / 3 as qtr "
+                    + "from internal_payment "
+                    + "where strftime('%Y', 'now') - strftime('%Y', date) between 0 and 4;";
+            }
+        };
+        [DataContract(Name = "lExterPaymentViewInfo")]
+        class lExterPaymentViewInfo : lTableInfo
+        {
+            public lExterPaymentViewInfo()
+            {
+                m_tblName = "v_external_payment";
+                m_crtQry = "CREATE VIEW if not exists v_external_payment as "
+                    + "select group_name, spent, "
+                    + "cast(strftime('%Y', date) as integer) as year, "
+                    + "(strftime('%m', date) + 2) / 3 as qtr "
+                    + "from external_payment "
+                    + "where strftime('%Y', 'now') - strftime('%Y', date) between 0 and 4;";
+            }
+        };
+        [DataContract(Name = "lSalaryViewInfo")]
+        class lSalaryViewInfo : lTableInfo
+        {
+            public lSalaryViewInfo()
+            {
+                m_tblName = "v_salary";
+                m_crtQry = "CREATE VIEW if not exists v_salary as "
+                    + "select group_name, salary, "
+                    + "cast(strftime('%Y', date) as integer) as year, "
+                    + "(strftime('%m', date) + 2) / 3 as qtr "
+                    + "from salary "
+                    + "where strftime('%Y', 'now') - strftime('%Y', date) between 0 and 4;";
             }
         };
 
@@ -299,7 +360,7 @@ namespace test_binding
             lSqlContentProvider()
             {
                 //string cnnStr = "Data Source=DESKTOP-GOEF1DS\\SQLEXPRESS;Initial Catalog=accounting;Integrated Security=true";
-                string cnnStr = s_config.m_cnnStr;
+                string cnnStr = s_config.m_dbSchema.m_cnnStr;
                 m_cnn = new SqlConnection(cnnStr);
                 m_cnn.Open();
             }
@@ -356,8 +417,14 @@ namespace test_binding
                     SQLiteCommand cmd = new SQLiteCommand();
                     cmd.Connection = m_cnn;
                     List<string> sqls = new List<string>();
-                    sqls.AddRange(s_config.m_dbSchema.m_crtTableSqls);
-                    sqls.AddRange(s_config.m_dbSchema.m_crtViewSqls);
+                    foreach(lTableInfo tbl in s_config.m_dbSchema.m_tables)
+                    {
+                        sqls.Add(tbl.m_crtQry);
+                    }
+                    foreach (lTableInfo view in s_config.m_dbSchema.m_views)
+                    {
+                        sqls.Add(view.m_crtQry);
+                    }
                     foreach (var sql in sqls)
                     {
                         cmd.CommandText = sql;
@@ -419,10 +486,20 @@ namespace test_binding
         {
             [DataMember(Name = "cnnStr")]
             public string m_cnnStr;
+#if crt_qry
             [DataMember(Name ="crtTableSqls")]
             public List<string> m_crtTableSqls;
             [DataMember(Name = "crtViewSqls")]
             public List<string> m_crtViewSqls;
+#endif
+            [DataMember(Name ="tables")]
+            public List<lTableInfo> m_tables;
+            [DataMember(Name = "views")]
+            public List<lTableInfo> m_views;
+
+            public lDbSchema()
+            {
+            }
         }
         [DataContract(Name = "SQLiteDbSchema")]
         class lSQLiteDbSchema:lDbSchema
@@ -430,6 +507,7 @@ namespace test_binding
             public lSQLiteDbSchema()
             {
                 m_cnnStr = @"..\..\appData.db";
+#if crt_qry
                 m_crtTableSqls = new List<string> {
                     "CREATE TABLE if not exists  receipts("
                     + "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -498,6 +576,21 @@ namespace test_binding
                     + " select group_name, salary, cast(strftime('%Y', date) as integer) as year, (strftime('%m', date) + 2) / 3 as qtr"
                     + " from salary"
                     + " where strftime('%Y', 'now') - strftime('%Y', date) between 0 and 4;",
+                };
+#endif
+                m_tables = new List<lTableInfo>() {
+                    new lReceiptsTblInfo(),
+                    new lInternalPaymentTblInfo(),
+                    new lExternalPaymentTblInfo(),
+                    new lSalaryTblInfo(),
+                    new lReceiptsContentTblInfo(),
+                    new lGroupNameTblInfo()
+                };
+                m_views = new List<lTableInfo>() {
+                    new lReceiptsViewInfo(),
+                    new lInterPaymentViewInfo(),
+                    new lExterPaymentViewInfo(),
+                    new lSalaryViewInfo()
                 };
             }
         }

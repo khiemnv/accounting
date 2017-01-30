@@ -21,38 +21,30 @@ namespace test_binding
         static lContentProvider s_contentProvider;
         static lConfigMng s_config;
 
-        private lDbSchema m_dbSchema;
+        private lDbSchema m_dbSchema {
+            get { return s_config.m_dbSchema; }
+        }
+        List<lBasePanel> m_panels {
+            get { return s_config.m_panels; }
+        }
+
         private TabControl m_tabCtrl;
-        List<lBasePanel> m_panels;
 
         public Form1()
         {
             InitializeComponent();
 
-            //init config
-            s_config = new lConfigMng();
-
-            //load config
-            s_config.LoadConfig();
-
-            m_panels = s_config.m_panels;
-            m_dbSchema = s_config.m_dbSchema;
-
-            //save config
-            if (m_panels == null)
-            {
-                m_panels = new List<lBasePanel> {
+            //init config & load config
+            s_config = lConfigMng.crtInstance();
+            if (s_config.m_dbSchema == null) {
+                s_config.m_dbSchema = new lSQLiteDbSchema();
+                s_config.m_panels = new List<lBasePanel> {
                     new lReceiptsPanel(),
                     new lInterPaymentPanel(),
                     new lExternalPaymentPanel(),
                     new lSalaryPanel(),
                 };
-                m_dbSchema = new lSQLiteDbSchema();
-
-                s_config.m_panels = m_panels;
-                s_config.m_dbSchema = m_dbSchema;
-
-                s_config.UpdateConfig(m_panels);
+                s_config.UpdateConfig();
             }
 
             //init content provider

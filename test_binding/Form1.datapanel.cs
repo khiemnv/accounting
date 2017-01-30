@@ -39,8 +39,10 @@ namespace test_binding
 
             public lDataContent m_dataContent;
 
-            [DataMember(Name = "tblInfo")]
-            public lTableInfo m_tblInfo;
+            public lTableInfo m_tblInfo { get { return s_config.getTable(m_tblName); } }
+
+            [DataMember(Name = "tblName")]
+            public string m_tblName;
             [DataMember(Name = "countOn")]
             public string m_countOn = "";
 
@@ -60,7 +62,7 @@ namespace test_binding
             private void init(lDataPanel dataPanel)
             {
                 m_countOn = dataPanel.m_countOn;
-                m_tblInfo = dataPanel.m_tblInfo;
+                //m_tblInfo = dataPanel.m_tblInfo;
             }
 
             public virtual void initCtrls()
@@ -253,6 +255,7 @@ namespace test_binding
             }
             public virtual void LoadData()
             {
+                //m_tblInfo = s_config.getTable(m_tblName);
                 m_tblInfo.LoadData();
                 m_dataContent = s_contentProvider.CreateDataContent(m_tblInfo.m_tblName);
                 m_dataGridView.DataSource = m_dataContent.m_bindingSource;
@@ -265,7 +268,7 @@ namespace test_binding
         {
             public lInterPaymentDataPanel()                
             {
-                m_tblInfo = new lInternalPaymentTblInfo();
+                m_tblName = "internal_payment";
                 m_countOn = "actually_spent";
             }
         }
@@ -275,7 +278,7 @@ namespace test_binding
         {
             public lReceiptsDataPanel()
             {
-                m_tblInfo = new lReceiptsTblInfo();
+                m_tblName = "receipts";
                 m_countOn = "amount";
             }
         }
@@ -285,7 +288,7 @@ namespace test_binding
         {
             public lExternalPaymentDataPanel()                
             {
-                m_tblInfo = new lExternalPaymentTblInfo();
+                m_tblName = "external_payment";
                 m_countOn = "spent";
             }
         }
@@ -295,7 +298,7 @@ namespace test_binding
         {
             public lSalaryDataPanel()
             {
-                m_tblInfo = new lSalaryTblInfo();
+                m_tblName = "salary";
                 m_countOn = "salary";
             }
         }
@@ -304,7 +307,7 @@ namespace test_binding
         {
             public lGroupNameDataPanel()
             {
-                m_tblInfo = new lGroupNameTblInfo();
+                m_tblName = "group_name";
             }
             public override Int64 getSum()
             {
@@ -317,7 +320,7 @@ namespace test_binding
         {
             public lReceiptsContentDataPanel()
             {
-                m_tblInfo = new lReceiptsContentTblInfo();
+                m_tblName = "receipts_content";
             }
         }
     }
