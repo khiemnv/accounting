@@ -102,14 +102,14 @@
               <TablixCells>
                 <TablixCell>
                   <CellContents>
-                    <Textbox Name="price">
+                    <Textbox Name="amount">
                       <CanGrow>true</CanGrow>
                       <KeepTogether>true</KeepTogether>
                       <Paragraphs>
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=Sum(Fields!price.Value)</Value>
+                              <Value>=Sum(Fields!amount.Value)</Value>
                               <Style>
                                 <FontFamily>Tahoma</FontFamily>
                                 <Format>#,0;(#,0)</Format>
@@ -120,7 +120,7 @@
                           <Style />
                         </Paragraph>
                       </Paragraphs>
-                      <rd:DefaultName>price</rd:DefaultName>
+                      <rd:DefaultName>amount</rd:DefaultName>
                       <Style>
                         <Border>
                           <Color>#e5e5e5</Color>
@@ -143,7 +143,7 @@
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=Sum(Fields!price.Value)</Value>
+                              <Value>=Sum(Fields!amount.Value)</Value>
                               <Style>
                                 <FontFamily>Tahoma</FontFamily>
                                 <FontWeight>Bold</FontWeight>
@@ -184,7 +184,7 @@
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=Sum(Fields!price.Value)</Value>
+                              <Value>=Sum(Fields!amount.Value)</Value>
                               <Style>
                                 <FontFamily>Tahoma</FontFamily>
                                 <FontWeight>Bold</FontWeight>
@@ -220,7 +220,7 @@
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=Sum(Fields!price.Value)</Value>
+                              <Value>=Sum(Fields!amount.Value)</Value>
                               <Style>
                                 <FontFamily>Tahoma</FontFamily>
                                 <FontWeight>Bold</FontWeight>
@@ -261,7 +261,7 @@
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=Sum(Fields!price.Value)</Value>
+                              <Value>=Sum(Fields!amount.Value)</Value>
                               <Style>
                                 <FontFamily>Tahoma</FontFamily>
                                 <FontWeight>Bold</FontWeight>
@@ -297,7 +297,7 @@
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=Sum(Fields!price.Value)</Value>
+                              <Value>=Sum(Fields!amount.Value)</Value>
                               <Style>
                                 <FontFamily>Tahoma</FontFamily>
                                 <FontWeight>Bold</FontWeight>
@@ -731,7 +731,7 @@
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=Sum(Fields!price.Value)</Value>
+                              <Value>=Sum(Fields!amount.Value)</Value>
                               <Style>
                                 <Format>#,0</Format>
                               </Style>
@@ -768,7 +768,7 @@
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=Sum(Fields!price.Value)</Value>
+                              <Value>=Sum(Fields!amount.Value)</Value>
                               <Style>
                                 <Format>#,0</Format>
                               </Style>
@@ -1129,8 +1129,8 @@
           <DataField>content</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="price">
-          <DataField>price</DataField>
+        <Field Name="amount">
+          <DataField>amount</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
       </Fields>

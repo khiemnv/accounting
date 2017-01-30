@@ -10,6 +10,7 @@ using Microsoft.Reporting.WinForms;
 using System.Drawing;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.Data.SQLite;
 
 public class Demo : IDisposable
 {
@@ -33,13 +34,10 @@ public class Demo : IDisposable
 #endif
         public string m_pdfPath;    //print to pdf file
         public string m_dsName;     //data set name
-
-        protected SqlConnection m_cnn;
         private DataSet m_ds = new DataSet();
-        public void init(SqlConnection cnn)
-        {
-            m_cnn = cnn;
-        }
+#if sql_server
+        protected SqlConnection m_cnn;
+        public void init(SqlConnection cnn) { m_cnn = cnn; }
         private DataTable loadData()
         {
             string qry = string.Format("SELECT * FROM {0}", m_viewName);
@@ -55,6 +53,25 @@ public class Demo : IDisposable
 #endif
             return m_ds.Tables[0];
         }
+#else
+        protected SQLiteConnection m_cnn;
+        public void init(SQLiteConnection cnn) { m_cnn = cnn; }
+        private DataTable loadData()
+        {
+            string qry = string.Format("SELECT * FROM {0}", m_viewName);
+            SQLiteDataAdapter cmd = new SQLiteDataAdapter(qry, m_cnn);
+
+            // Create and fill a DataSet.
+            m_ds.Clear();
+            m_ds.DataSetName = m_dsName;
+            cmd.Fill(m_ds);
+            m_ds.Tables[0].TableName = m_viewName;
+#if crt_xml
+            m_ds.WriteXml(m_xmlPath);
+#endif
+            return m_ds.Tables[0];
+        }
+#endif
 
         private List<Stream> m_streams;
         private Stream CreateStream(string name,
@@ -132,9 +149,13 @@ public class Demo : IDisposable
             rpParam.Name = "details";
 
             string qry = string.Format("select DISTINCT[year] from {0} order by [year] desc", m_viewName);
+#if sql_server
             SqlCommand command = new SqlCommand(qry, m_cnn);
             SqlDataReader reader = command.ExecuteReader();
-
+#else
+            SQLiteCommand command = new SQLiteCommand(qry, m_cnn);
+            SQLiteDataReader reader = command.ExecuteReader();
+#endif
             // Call Read before accessing data.
             int curYear = DateTime.Now.Year;
             int i = 0;
@@ -370,7 +391,7 @@ public class Demo : IDisposable
         //report.DataSources.Add(new ReportDataSource("Sales", LoadSalesData()));
         report.DataSources.Add(new ReportDataSource(rc_name, loadOtherData()));
         report.Refresh();
-#if false
+#if true
         string pdfPath = @"..\..\report.pdf";
         byte[] bytes = report.Render("PDF");
         FileStream fs = new FileStream(pdfPath, FileMode.OpenOrCreate);
@@ -395,12 +416,16 @@ public class Demo : IDisposable
 
     public static void Main(string[] args)
     {
-        using (lBaseReport demo = new lInternalPaymentReport())
+        using (lBaseReport demo = new lReceiptsReport())
         {
+            string dbPath = @"E:\tmp\accounting\test_binding\appData.db";
+            SQLiteConnection cnn = new SQLiteConnection(string.Format("Data Source={0};Version=3;", dbPath));
+#if sql_server
             string cnnStr = "Data Source=localhost\\SQLEXPRESS;Initial Catalog=accounting;Integrated Security=True;Pooling=False";
             SqlConnection conn = new SqlConnection(cnnStr);
-            conn.Open();
-            demo.init(conn);
+#endif
+            cnn.Open();
+            demo.init(cnn);
             demo.Run();
             demo.Dispose();
         }
