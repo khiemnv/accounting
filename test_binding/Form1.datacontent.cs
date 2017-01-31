@@ -640,7 +640,14 @@ namespace test_binding
                 m_table = tblName;
                 m_cnn = cnn;
                 m_dataAdapter = new SQLiteDataAdapter();
-                m_dataAdapter.SelectCommand = new SQLiteCommand(string.Format("select * from {0}", tblName), cnn);
+                m_dataAdapter.SelectCommand = new SQLiteCommand(
+                    selectLast100(),
+                    cnn);
+            }
+
+            string selectLast100()
+            {
+                return string.Format("select * from {0} where id > (SELECT max(rowid) from {0}) - 100", m_table);
             }
 
             public override void Search(string exprs)
@@ -649,6 +656,9 @@ namespace test_binding
                 if (exprs != null)
                 {
                     sql += " where " + exprs;
+                } else
+                {
+                    sql = selectLast100();
                 }
                 GetData(sql);
             }

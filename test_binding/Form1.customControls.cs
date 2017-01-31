@@ -198,7 +198,9 @@ namespace test_binding
                     m_customCtrl.m_iRow = row;
                     m_customCtrl.m_iCol = col;
                     this.Controls.Add(m_customCtrl.getControl());
-                    m_customCtrl.setValue(this.CurrentCell.Value.ToString());
+                    if (CurrentCell.Value != null) { 
+                        m_customCtrl.setValue(this.CurrentCell.Value.ToString());
+                    }
                     Rectangle rec = this.GetCellDisplayRectangle(col, row, true);
                     m_customCtrl.show(rec);
 
