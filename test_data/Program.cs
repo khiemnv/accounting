@@ -1,16 +1,325 @@
-﻿using System;
+﻿#define update_dgv
+
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Data.SQLite;
+using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace test_data
 {
     class Program
     {
+        class myElapsed:IDisposable
+        {
+            int m_begin;
+            string m_msg = "";
+            public myElapsed(string msg)
+            {
+                m_msg = msg;
+                m_begin = Environment.TickCount;
+            }
+            public myElapsed()
+            {
+                m_begin = Environment.TickCount;
+            }
+
+            public void Dispose()
+            {
+                Debug.WriteLine("[{0}] elapsed {1}", m_msg, Environment.TickCount - m_begin);
+            }
+        }
+        class lDataDlg : Form
+        {
+            public FlowLayoutPanel m_reloadPanel;
+            public FlowLayoutPanel m_sumPanel;
+
+            public Button m_reloadBtn;
+            public Button m_submitBtn;
+            public Label m_status;
+            public Label m_sumLabel;
+            public TextBox m_sumTxt;
+
+            public DataGridView m_dataGridView;
+            BindingSource m_bs;
+            DataTable m_tbl;
+            SQLiteDataAdapter m_adapter;
+            Thread m_thread;
+            SQLiteConnection m_cnn;
+            SQLiteCommand m_cmd;
+
+            public lDataDlg()
+            {
+                InitializeComponent();
+
+                initCtrls();
+            }
+
+            private void InitializeComponent()
+            {
+                Form form = this;
+                form.Location = new Point(0, 0);
+                form.Size = new Size(800, 600);
+                form.FormBorderStyle = FormBorderStyle.FixedDialog;
+                form.MinimizeBox = false;
+                form.MaximizeBox = false;
+                
+                this.Load += LDataDlg_Load;
+            }
+            public virtual void initCtrls()
+            {
+                m_reloadPanel = new FlowLayoutPanel();
+                m_sumPanel = new FlowLayoutPanel();
+
+                m_reloadBtn = new Button();
+                m_submitBtn = new Button();
+                m_status = new Label();
+                m_sumLabel = new Label();
+                m_sumTxt = new TextBox();
+
+                m_reloadBtn.Text = "Reload";
+                m_submitBtn.Text = "Save";
+                m_status.AutoSize = true;
+                m_status.TextAlign = ContentAlignment.MiddleLeft;
+                m_status.Dock = DockStyle.Fill;
+
+                m_reloadBtn.Click += new System.EventHandler(reloadButton_Click);
+                m_submitBtn.Click += new System.EventHandler(submitButton_Click);
+
+                m_sumLabel.Text = "Sum";
+
+#if use_custom_dgv
+                m_dataGridView = m_tblInfo.m_tblName == "internal_payment" ?
+                    new lInterPaymentDGV(m_tblInfo): new lCustomDGV(m_tblInfo);
+                m_dataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.EnableResizing;
+                m_dataGridView.ColumnHeadersDefaultCellStyle.BackColor = Color.Silver;
+                m_dataGridView.EnableHeadersVisualStyles = false;
+                m_dataGridView.AutoGenerateColumns = false;
+                foreach(var col in m_tblInfo.m_cols) {
+                    //var dgvcol = new DataGridViewColumn();
+                    //dgvcol.DataPropertyName = col.m_field;
+                    //dgvcol.HeaderText = col.m_alias;
+                    //dgvcol.Name = col.m_field;
+                    //m_dataGridView.Columns.Add(dgvcol);
+                    int i = m_dataGridView.Columns.Add(col.m_field, col.m_alias);
+                    m_dataGridView.Columns[i].DataPropertyName = col.m_field;
+                }
+#else
+                m_dataGridView = new DataGridView();
+#endif
+
+                //reload panel with reload and save buttons
+                m_reloadPanel.AutoSize = true;
+                m_reloadPanel.AutoSizeMode = AutoSizeMode.GrowOnly;
+                m_reloadPanel.Dock = DockStyle.Left;
+#if DEBUG_DRAWING
+                m_reloadPanel.BorderStyle = BorderStyle.FixedSingle;
+#endif
+
+                m_sumPanel.AutoSize = true;
+                m_sumPanel.AutoSizeMode = AutoSizeMode.GrowOnly;
+                m_sumPanel.Dock = DockStyle.Right;
+#if DEBUG_DRAWING
+                m_sumPanel.BorderStyle = BorderStyle.FixedSingle;
+#endif
+
+                m_reloadPanel.Controls.AddRange(new Control[] { m_reloadBtn, m_submitBtn, m_status });
+
+                //sum panel with label and text ctrls
+                m_sumPanel.Controls.AddRange(new Control[] { m_sumLabel, m_sumTxt });
+
+                m_sumLabel.Anchor = AnchorStyles.Right;
+                m_sumLabel.TextAlign = ContentAlignment.MiddleRight;
+                m_sumLabel.AutoSize = true;
+
+                m_sumTxt.Width = 100;
+
+                m_dataGridView.Anchor = AnchorStyles.Top & AnchorStyles.Left;
+                m_dataGridView.Dock = DockStyle.Fill;
+                
+                // +----------------+----------------+
+                // |reload & save btn         sum    |
+                // +----------------+----------------+
+                // |data grid view                   |
+                // |                                 |
+                // +----------------+----------------+
+                var m_panel = new TableLayoutPanel();
+                m_panel.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+                m_panel.Dock = DockStyle.Fill;
+#if DEBUG_DRAWING
+                m_panel.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
+#endif
+                //add data panel ctrls to table layout
+                m_panel.Controls.Add(m_reloadPanel, 0, 1);
+                m_panel.Controls.Add(m_sumPanel, 1, 1);
+                m_panel.Controls.Add(m_dataGridView, 0, 2);
+                m_panel.SetColumnSpan(m_dataGridView, 2);
+
+                Controls.Add(m_panel);
+
+                //m_dataGridView.CellValueNeeded += M_dataGridView_CellValueNeeded;
+            }
+
+            private void submitButton_Click(object sender, EventArgs e)
+            {
+                m_status.Text = m_thread.ThreadState.ToString();
+            }
+
+            private void reloadButton_Click(object sender, EventArgs e)
+            {
+                int begin = Environment.TickCount;
+#if true
+                //m_dataGridView.VirtualMode = true;
+                //m_dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+                //m_dataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
+                m_tbl.Clear();
+                using (myElapsed t = new myElapsed("fill data"))
+                {
+                    m_adapter.Fill(m_tbl);
+                }
+                int elapsed = Environment.TickCount - begin;
+                m_status.Text = string.Format("Loading completed ({0} ms)", elapsed);
+#if update_dgv
+                update();
+#endif
+#else //
+                m_tbl.Clear();
+                //using (myElapsed t = new myElapsed("fill data"))
+                //{
+                //    m_adapter.Fill(m_tbl);
+                //}
+                //m_thread = new Thread(new ThreadStart(threadRun));
+                //m_thread.Start();
+                //m_status.Text = m_thread.ThreadState.ToString();
+                threadRun();
+#endif
+            }
+            public void threadRun()
+            {
+                Debug.WriteLine("threadRun");
+                using (myElapsed t = new myElapsed("fill data"))
+                {
+                    //m_adapter.Fill(m_tbl);
+                    SQLiteDataReader rd = m_cmd.ExecuteReader();
+                    m_tbl.Columns.Add("ID", typeof(Int64));
+                    m_tbl.Columns.Add("date", typeof(DateTime));
+                    m_tbl.Columns.Add("receipt_number", typeof(string));
+                    m_tbl.Columns.Add("name", typeof(string));
+                    m_tbl.Columns.Add("content", typeof(string));
+                    m_tbl.Columns.Add("amount", typeof(Int64));
+                    m_tbl.Columns.Add("note", typeof(string));
+                    while (rd.Read())
+                    {
+                        m_tbl.Rows.Add(rd[0], rd[1], rd[2], rd[3],rd[4],rd[5], rd[6]);
+                    }
+                    rd.Close();
+                }
+            }
+            private void M_dataGridView_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e)
+            {
+                //BindingSource bs = (BindingSource)m_dataGridView.DataSource;
+                //DataTable dt = (DataTable)bs.DataSource;
+                DataTable dt = m_tbl;
+                if (e.RowIndex >= dt.Rows.Count)
+                    return;
+
+                if (e.ColumnIndex >= dt.Columns.Count)
+                    return;
+
+                e.Value = dt.Rows[e.RowIndex][e.ColumnIndex];
+            }
+
+            private void update()
+            {
+                // Resize the DataGridView columns to fit the newly loaded content.
+                //dataGridView1.AutoResizeColumns(
+                //    DataGridViewAutoSizeColumnsMode.AllCellsExceptHeader);
+#if false
+                m_dataGridView.Columns[0].Visible = false;
+                lTableInfo tblInfo = m_tblInfo;
+                for (int i = 1; i < m_dataGridView.ColumnCount; i++)
+                {
+                    m_dataGridView.Columns[i].HeaderText = tblInfo.m_cols[i].m_alias;
+
+                    switch (tblInfo.m_cols[i].m_type)
+                    {
+                        case lTableInfo.lColInfo.lColType.currency:
+                            m_dataGridView.Columns[i].DefaultCellStyle.Format = "#0,0";
+                            break;
+                        case lTableInfo.lColInfo.lColType.dateTime:
+                            m_dataGridView.Columns[i].DefaultCellStyle.Format = "yyyy-MM-dd";
+                            break;
+                    }
+                    //m_dataGridView.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                    //m_dataGridView.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    //m_dataGridView.Columns[i].FillWeight = 1;
+                }
+
+#endif
+                using (var t = new myElapsed("update time"))
+                {
+                    m_dataGridView.Columns[0].Visible = false;
+                    //for (int i = 1; i < m_dataGridView.ColumnCount; i++)
+                    //{
+                    //    m_dataGridView.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                    //    m_dataGridView.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    //    m_dataGridView.Columns[i].FillWeight = 1;
+                    //}
+                    m_dataGridView.Columns[6].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                    m_dataGridView.Columns[6].FillWeight = 1;
+                    m_dataGridView.Columns[5].DefaultCellStyle.Format = "#0,0";
+                    m_dataGridView.Columns[1].DefaultCellStyle.Format = "yyyy-MM-dd";
+                    Int64 sum = getSum();
+
+                    m_sumTxt.Text = sum.ToString("#0,0");
+                }
+            }
+            public virtual Int64 getSum()
+            {
+                Int64 sum = 0;
+                int iCol = 5;
+                for (int i = 0; i < (m_tbl.Rows.Count - 1); i++)
+                {
+                    sum += Int64.Parse(m_tbl.Rows[i][iCol].ToString());
+                }
+                return sum;
+            }
+            private void LDataDlg_Load(object sender, EventArgs e)
+            {
+                string dbPath = @"E:\tmp\accounting\test_binding\appData.db";
+                m_cnn = new SQLiteConnection(string.Format("Data Source={0};Version=3;", dbPath));
+                m_cnn.Open();
+
+                m_cmd = new SQLiteCommand();
+                m_cmd.Connection = m_cnn;
+                m_cmd.CommandText = "select * from receipts where strftime('%Y', date) == '2016'";   //~1p
+                m_adapter = new SQLiteDataAdapter(m_cmd);
+
+                m_bs = new BindingSource();
+                m_tbl = new DataTable();
+                m_bs.DataSource = m_tbl;
+                m_dataGridView.DataSource = m_bs;
+                m_dataGridView.AutoGenerateColumns = true;
+            }
+        }
+
         static void Main(string[] args)
+        {
+            lDataDlg dlg = new lDataDlg();
+            dlg.ShowDialog();
+        }
+        static void load_data()
+        {
+
+        }
+        static void gen_data()
         {
             string dbPath = @"E:\tmp\accounting\test_binding\appData.db";
             SQLiteConnection cnn = new SQLiteConnection(string.Format("Data Source={0};Version=3;", dbPath));
