@@ -300,7 +300,7 @@ namespace test_data
 
                 m_cmd = new SQLiteCommand();
                 m_cmd.Connection = m_cnn;
-                m_cmd.CommandText = "select * from receipts where strftime('%Y', date) == '2016' limit 10";   //~1p
+                m_cmd.CommandText = "select * from receipts where strftime('%Y', date) == '2016'";   //~1p
                 m_adapter = new SQLiteDataAdapter(m_cmd);
 
                 m_bs = new BindingSource();
@@ -320,6 +320,7 @@ namespace test_data
                 col.Name = "date";
                 col.DataPropertyName = "date";
                 col.SortMode = DataGridViewColumnSortMode.Automatic;
+                col.DefaultCellStyle.Format = "yyyy/MM/dd";
 
                 i = m_dataGridView.Columns.Add("receipt_number", "ma so");
                 m_dataGridView.Columns[i].DataPropertyName = "receipt_number";
