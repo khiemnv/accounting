@@ -1,6 +1,7 @@
 ﻿//#define DEBUG_DRAWING
 #define use_custom_dgv
 #define manual_crt_columns
+#define use_custom_cols
 
 using System.Windows.Forms;
 using System.Collections.Generic;
@@ -90,40 +91,17 @@ namespace test_binding
 
 #if use_custom_dgv
                 m_dataGridView = m_tblInfo.m_tblName == "internal_payment" ?
-                    new lInterPaymentDGV(m_tblInfo): new lCustomDGV(m_tblInfo);
+                    new lInterPaymentDGV(m_tblInfo) : new lCustomDGV(m_tblInfo);
+                //m_dataGridView = new DataGridView();
 #else
                 m_dataGridView = new DataGridView();
                 m_dataGridView.CellClick += M_dataGridView_CellClick;
                 m_dataGridView.CellEndEdit += M_dataGridView_CellEndEdit;
                 m_dataGridView.Scroll += M_dataGridView_Scroll;
 #endif  //use custom dgv
-#if manual_crt_columns
-                m_dataGridView.ColumnHeadersDefaultCellStyle.BackColor = Color.Silver;
-                m_dataGridView.EnableHeadersVisualStyles = false;
-                m_dataGridView.AutoGenerateColumns = false;
 
-                int i = 0;
-                foreach (var field in m_tblInfo.m_cols)
-                {
-                    i = m_dataGridView.Columns.Add(field.m_field, field.m_alias);
-                    var dgvcol = m_dataGridView.Columns[i];
-                    dgvcol.DataPropertyName = field.m_field;
-                    switch (field.m_type)
-                    {
-                        case lTableInfo.lColInfo.lColType.currency:
-                            dgvcol.DefaultCellStyle.Format = "#0,0";
-                            break;
-                        case lTableInfo.lColInfo.lColType.dateTime:
-                            dgvcol.DefaultCellStyle.Format = "yyyy-MM-dd";
-                            break;
-                    }
-                }
-                m_dataGridView.Columns[0].Visible = false;
-                //last columns
-                var lastCol = m_dataGridView.Columns[i];
-                lastCol.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-                lastCol.FillWeight = 1;
-#endif
+                //m_dataGridView.ColumnHeadersDefaultCellStyle.BackColor = Color.Silver;
+                m_dataGridView.EnableHeadersVisualStyles = false;
 
                 //reload panel with reload and save buttons
                 m_reloadPanel.AutoSize = true;
@@ -153,6 +131,59 @@ namespace test_binding
 
                 m_dataGridView.Anchor = AnchorStyles.Top & AnchorStyles.Left;
                 m_dataGridView.Dock = DockStyle.Fill;
+            }
+
+            private void crtColumns()
+            {
+                int i = 0;
+                foreach (var field in m_tblInfo.m_cols)
+                {
+#if !use_custom_cols
+                    i = m_dataGridView.Columns.Add(field.m_field, field.m_alias);
+                    var dgvcol = m_dataGridView.Columns[i];
+#else
+                    DataGridViewColumn dgvcol;
+                    if (field.m_type == lTableInfo.lColInfo.lColType.dateTime)
+                    {
+                        dgvcol = new CalendarColumn();
+                        dgvcol.SortMode = DataGridViewColumnSortMode.Automatic;
+                    }
+                    else if (field.m_lookupTbl != null)
+                    {
+                        var cmb = new DataGridViewComboBoxColumn();
+                        cmb.DataSource = field.m_lookupData.m_bindingSrc;
+                        DataTable tbl = (DataTable)field.m_lookupData.m_bindingSrc.DataSource;
+                        cmb.DisplayMember = tbl.Columns[1].ColumnName;
+                        cmb.AutoComplete = true;
+                        cmb.DisplayStyle = DataGridViewComboBoxDisplayStyle.Nothing;
+                        cmb.FlatStyle = FlatStyle.Flat;
+                        dgvcol = cmb;
+                        dgvcol.SortMode = DataGridViewColumnSortMode.Automatic;
+                    }
+                    else
+                    { 
+                        dgvcol = new DataGridViewTextBoxColumn();
+                    }
+                    i = m_dataGridView.Columns.Add(dgvcol);
+                    dgvcol.HeaderText = field.m_alias;
+                    dgvcol.Name = field.m_field;
+#endif
+                    dgvcol.DataPropertyName = field.m_field;
+                    switch (field.m_type)
+                    {
+                        case lTableInfo.lColInfo.lColType.currency:
+                            dgvcol.DefaultCellStyle.Format = "#0,0";
+                            break;
+                        case lTableInfo.lColInfo.lColType.dateTime:
+                            dgvcol.DefaultCellStyle.Format = "yyyy-MM-dd";
+                            break;
+                    }
+                }
+                m_dataGridView.Columns[0].Visible = false;
+                //last columns
+                var lastCol = m_dataGridView.Columns[i];
+                lastCol.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                lastCol.FillWeight = 1;
             }
 
 #if !use_custom_dgv
@@ -289,6 +320,11 @@ namespace test_binding
             {
                 //m_tblInfo = s_config.getTable(m_tblName);
                 m_tblInfo.LoadData();
+
+#if manual_crt_columns
+                m_dataGridView.AutoGenerateColumns = false;
+                crtColumns();
+#endif
                 m_dataContent = s_contentProvider.CreateDataContent(m_tblInfo.m_tblName);
                 m_dataGridView.DataSource = m_dataContent.m_bindingSource;
                 DataTable tbl = (DataTable)m_dataContent.m_bindingSource.DataSource;

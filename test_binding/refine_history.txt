@@ -34,6 +34,8 @@ tableinfo
   + datetime short format (ToShortDateString)
   + comboBox with dataTable
   + auto correct case
+  + dgv calendar column
+  + dgv comboBox column
 4. redesign
   + content provider
   + load data
@@ -73,3 +75,5 @@ tableinfo
 18 progress - not yet
 19 generate test data
   + test 1000*1000 rows
+20 error handing
+  + dgv data error

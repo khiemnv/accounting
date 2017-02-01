@@ -1,4 +1,6 @@
-﻿using System.Windows.Forms;
+﻿#define use_custom_cols
+
+using System.Windows.Forms;
 using System.Collections.Generic;
 using System;
 using System.Drawing;
@@ -116,7 +118,12 @@ namespace test_binding
             {
                 m_tblInfo = tblInfo;
             }
-
+            protected override void OnDataError(bool displayErrorDialogIfNoHandler, DataGridViewDataErrorEventArgs e)
+            {
+                //base.OnDataError(displayErrorDialogIfNoHandler, e);
+                //do nothing
+            }
+#if !use_custom_cols
             protected override void OnCellEndEdit(DataGridViewCellEventArgs e)
             {
                 base.OnCellEndEdit(e);
@@ -225,6 +232,7 @@ namespace test_binding
                     m_customCtrl = null;
                 }
             }
+#endif
         }
         class lInterPaymentDGV : lCustomDGV
         {

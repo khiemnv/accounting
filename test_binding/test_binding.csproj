@@ -106,6 +106,9 @@
     <Compile Include="Form1.config.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Form1.customColumn.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Form1.customControls.cs">
       <SubType>Form</SubType>
     </Compile>
