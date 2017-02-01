@@ -1,4 +1,5 @@
 ﻿#define update_dgv
+#define manual_crt_col
 
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ using System.Windows.Forms;
 
 namespace test_data
 {
-    class Program
+    public partial class Program
     {
         class myElapsed:IDisposable
         {
@@ -299,17 +300,66 @@ namespace test_data
 
                 m_cmd = new SQLiteCommand();
                 m_cmd.Connection = m_cnn;
-                m_cmd.CommandText = "select * from receipts where strftime('%Y', date) == '2016'";   //~1p
+                m_cmd.CommandText = "select * from receipts where strftime('%Y', date) == '2016' limit 10";   //~1p
                 m_adapter = new SQLiteDataAdapter(m_cmd);
 
                 m_bs = new BindingSource();
                 m_tbl = new DataTable();
                 m_bs.DataSource = m_tbl;
                 m_dataGridView.DataSource = m_bs;
+
+#if manual_crt_col
+                int i;
+                i = m_dataGridView.Columns.Add("ID", "ID");
+                m_dataGridView.Columns[i].DataPropertyName = "ID";
+
+                //m_dataGridView.Columns.Add("date", "ngay");
+                DataGridViewColumn col = new CalendarColumn();
+                i = m_dataGridView.Columns.Add(col);
+                col.HeaderText = "ngay thang";
+                col.Name = "date";
+                col.DataPropertyName = "date";
+                col.SortMode = DataGridViewColumnSortMode.Automatic;
+
+                i = m_dataGridView.Columns.Add("receipt_number", "ma so");
+                m_dataGridView.Columns[i].DataPropertyName = "receipt_number";
+                
+
+                i = m_dataGridView.Columns.Add("name", "ho ten");
+                m_dataGridView.Columns[i].DataPropertyName = "name";
+
+                DataGridViewComboBoxColumn cmbCol = new DataGridViewComboBoxColumn();
+                cmbCol.HeaderText = "noi dung chi";
+                cmbCol.Name = "content";
+                cmbCol.DataPropertyName = "content";
+                cmbCol.DataSource = new List<string>() {"su phu giao", "do hom cong duc", "other" };
+                //cmbCol.Items.AddRange(new List<string>() {"su phu giao", "do hom cong duc", "other" });
+                cmbCol.AutoComplete = true;
+                cmbCol.SortMode = DataGridViewColumnSortMode.Automatic;
+                i = m_dataGridView.Columns.Add(cmbCol);
+                
+
+                i = m_dataGridView.Columns.Add("amount", "so tien");
+                m_dataGridView.Columns[i].DataPropertyName = "amount";
+
+                i = m_dataGridView.Columns.Add("note", "ghi chu");
+                m_dataGridView.Columns[i].DataPropertyName = "note";
+
+                m_dataGridView.AutoGenerateColumns = false;
+
+                m_dataGridView.DataError += M_dataGridView_DataError;
+#else
                 m_dataGridView.AutoGenerateColumns = true;
+#endif
+            }
+
+            private void M_dataGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)
+            {
+                //MessageBox.Show("invalid value", "dgv data error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
+        [STAThread]
         static void Main(string[] args)
         {
             lDataDlg dlg = new lDataDlg();
