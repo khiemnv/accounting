@@ -294,7 +294,6 @@ namespace test_data
             }
             private void LDataDlg_Load(object sender, EventArgs e)
             {
-                string dbPath = @"E:\tmp\accounting\test_binding\appData.db";
                 m_cnn = new SQLiteConnection(string.Format("Data Source={0};Version=3;", dbPath));
                 m_cnn.Open();
 
@@ -363,16 +362,31 @@ namespace test_data
         [STAThread]
         static void Main(string[] args)
         {
-            lDataDlg dlg = new lDataDlg();
-            dlg.ShowDialog();
+            crtDict();
+            //gen_data();
+            //lDataDlg dlg = new lDataDlg();
+            //dlg.ShowDialog();
         }
+
+        private static void crtDict()
+        {
+            string val = contents[1];
+            string lower = val.ToLower();
+            Encoding ascii = new ASCIIEncoding();
+            Encoding unicode = new UnicodeEncoding();
+            Byte[] encodedBytes = ascii.GetBytes(val);
+            string v2 = ascii.GetString(encodedBytes);
+            string v3 = unicode.GetString(encodedBytes);
+            //Convert.()
+        }
+
         static void load_data()
         {
 
         }
+        static string dbPath = @"..\..\..\test_binding\appData.db";
         static void gen_data()
         {
-            string dbPath = @"E:\tmp\accounting\test_binding\appData.db";
             SQLiteConnection cnn = new SQLiteConnection(string.Format("Data Source={0};Version=3;", dbPath));
             cnn.Open();
 
