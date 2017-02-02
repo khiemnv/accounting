@@ -145,9 +145,11 @@ namespace test_binding
 
                     m_panel.Controls.Remove(m_text);
                     m_panel.Controls.Add(m_combo);
-                    
-                    m_combo.DataSource = m_colInfo.m_lookupData.m_bindingSrc;
-                    DataTable tbl = (DataTable)m_colInfo.m_lookupData.m_bindingSrc.DataSource;
+
+                    DataTable tbl = m_colInfo.m_lookupData.m_dataSource;
+                    BindingSource bs = new BindingSource();
+                    bs.DataSource = tbl;
+                    m_combo.DataSource = bs;
                     m_combo.DisplayMember = tbl.Columns[1].ColumnName;
 
                     m_combo.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
@@ -155,7 +157,8 @@ namespace test_binding
                     AutoCompleteStringCollection col = m_colInfo.m_lookupData.m_colls;
                     m_combo.AutoCompleteCustomSource = col;
 
-                    m_combo.SelectedValueChanged += valueChanged;
+                    m_combo.SelectedIndex = 0;
+                    m_combo.Click += valueChanged;
 
                     m_text.Dispose();
                     m_text = null;

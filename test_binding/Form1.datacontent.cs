@@ -11,6 +11,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using System.Runtime.Serialization;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace test_binding
 {
@@ -22,7 +23,7 @@ namespace test_binding
         /// + fileds type
         /// + alias
         /// </summary>
-        [DataContract(Name ="TableInfo")]
+        [DataContract(Name = "TableInfo")]
         class lTableInfo
         {
             //#define col_class
@@ -413,11 +414,12 @@ namespace test_binding
                 m_cnn = new SQLiteConnection(string.Format("Data Source={0};Version=3;", dbPath));
                 m_cnn.Open();
 #if crt_tables
-                if (bCrtTbls) {
+                if (bCrtTbls)
+                {
                     SQLiteCommand cmd = new SQLiteCommand();
                     cmd.Connection = m_cnn;
                     List<string> sqls = new List<string>();
-                    foreach(lTableInfo tbl in s_config.m_dbSchema.m_tables)
+                    foreach (lTableInfo tbl in s_config.m_dbSchema.m_tables)
                     {
                         sqls.Add(tbl.m_crtQry);
                     }
@@ -431,7 +433,7 @@ namespace test_binding
                         cmd.ExecuteNonQuery();
                     }
                 }
-#endif
+#endif  //crt_tables
                 m_dataSyncs = new Dictionary<string, lDataSync>();
                 m_dataContents = new Dictionary<string, lDataContent>();
             }
@@ -457,7 +459,8 @@ namespace test_binding
 
             public lDataSync CreateDataSync(string tblName)
             {
-                if (!m_dataSyncs.ContainsKey(tblName)) { 
+                if (!m_dataSyncs.ContainsKey(tblName))
+                {
                     lDataContent dataContent = CreateDataContent(tblName);
                     lDataSync dataSync = new lDataSync(dataContent);
                     m_dataSyncs.Add(tblName, dataSync);
@@ -481,7 +484,7 @@ namespace test_binding
             }
         }
 
-        [DataContract(Name ="DbSchema")]
+        [DataContract(Name = "DbSchema")]
         class lDbSchema
         {
             [DataMember(Name = "cnnStr")]
@@ -492,7 +495,7 @@ namespace test_binding
             [DataMember(Name = "crtViewSqls")]
             public List<string> m_crtViewSqls;
 #endif
-            [DataMember(Name ="tables")]
+            [DataMember(Name = "tables")]
             public List<lTableInfo> m_tables;
             [DataMember(Name = "views")]
             public List<lTableInfo> m_views;
@@ -502,7 +505,7 @@ namespace test_binding
             }
         }
         [DataContract(Name = "SQLiteDbSchema")]
-        class lSQLiteDbSchema:lDbSchema
+        class lSQLiteDbSchema : lDbSchema
         {
             public lSQLiteDbSchema()
             {
@@ -577,7 +580,7 @@ namespace test_binding
                     + " from salary"
                     + " where strftime('%Y', 'now') - strftime('%Y', date) between 0 and 4;",
                 };
-#endif
+#endif  //crt_qry
                 m_tables = new List<lTableInfo>() {
                     new lReceiptsTblInfo(),
                     new lInternalPaymentTblInfo(),
@@ -604,12 +607,14 @@ namespace test_binding
         /// </summary>
         class lDataContent
         {
+            public DataTable m_dataTable { get { return (DataTable)m_bindingSource.DataSource; } }
             public BindingSource m_bindingSource;
             protected string m_table;
             public IRefresher m_refresher;
             public lDataContent()
             {
                 m_bindingSource = new BindingSource();
+                m_bindingSource.DataSource = new DataTable();
             }
             public virtual void Search(string exprs)
             {
@@ -624,8 +629,8 @@ namespace test_binding
             public virtual void Search(List<string> exprs, Dictionary<string, string> srchParams) { throw new NotImplementedException(); }
 #endif
             bool m_changed = true;
-            public virtual void Load() { if (m_changed) { m_changed = false; Reload(); } }
-            public virtual void Reload() { throw new NotImplementedException(); }
+            public virtual void Load() { if (m_changed) { Reload(); } }
+            public virtual void Reload() { m_changed = false; }
             public virtual void Submit() { m_changed = false; }
             protected virtual void GetData(string sql) { throw new NotImplementedException(); }
         }
@@ -643,6 +648,7 @@ namespace test_binding
                 m_dataAdapter.SelectCommand = new SQLiteCommand(
                     selectLast100(),
                     cnn);
+                m_dataAdapter.RowUpdated += M_dataAdapter_RowUpdated;
             }
 
             string selectLast100()
@@ -656,7 +662,8 @@ namespace test_binding
                 if (exprs != null)
                 {
                     sql += " where " + exprs;
-                } else
+                }
+                else
                 {
                     sql = selectLast100();
                 }
@@ -684,6 +691,7 @@ namespace test_binding
 #endif
             public override void Reload()
             {
+                base.Reload();
                 GetData(m_dataAdapter.SelectCommand);
             }
             public override void Submit()
@@ -691,7 +699,7 @@ namespace test_binding
                 base.Submit();
                 using (SQLiteCommandBuilder builder = new SQLiteCommandBuilder(m_dataAdapter))
                 {
-                    DataTable dt = (DataTable)m_bindingSource.DataSource;
+                    DataTable dt = m_dataTable;
                     if (dt != null)
                     {
                         m_dataAdapter.UpdateCommand = builder.GetUpdateCommand();
@@ -699,6 +707,18 @@ namespace test_binding
                     }
                 }
             }
+
+            private void M_dataAdapter_RowUpdated(object sender, System.Data.Common.RowUpdatedEventArgs e)
+            {
+                //udpate row id
+                if (e.StatementType == StatementType.Insert)
+                {
+                    Int64 rowid = m_cnn.LastInsertRowId;
+                    e.Row[0] = rowid;
+                    Debug.WriteLine("M_dataAdapter_RowUpdated {0}", e.Row[0]);
+                }
+            }
+
             protected override void GetData(string selectStr)
             {
                 SQLiteCommand selectCommand = new SQLiteCommand(selectStr, m_cnn);
@@ -706,12 +726,13 @@ namespace test_binding
             }
             private void GetData(SQLiteCommand selectCommand)
             {
+                Debug.WriteLine("{0}.GetData {1}", this, selectCommand.CommandText);
                 m_dataAdapter.SelectCommand = selectCommand;
                 // Populate a new data table and bind it to the BindingSource.
-                DataTable table = new DataTable();
+                DataTable table = m_dataTable;
+                table.Clear();
                 table.Locale = System.Globalization.CultureInfo.InvariantCulture;
                 m_dataAdapter.Fill(table);
-                m_bindingSource.DataSource = table;
                 if (m_refresher != null)
                 {
                     m_refresher.Refresh();
@@ -798,7 +819,7 @@ namespace test_binding
         {
             void Refresh();
         }
-        class lDataSync: IRefresher
+        class lDataSync : IRefresher
         {
             private lDataContent m_data;
             public AutoCompleteStringCollection m_colls;
@@ -808,6 +829,30 @@ namespace test_binding
                 m_data = data;
                 m_data.m_refresher = this;
             }
+
+            static Dictionary<string, string> dict = new Dictionary<string, string>() {
+                {"[áàảãạ]", "a"  },
+                {"[ăằắẵẳặ]", "a"},
+                {"[âầấẫẩậ]", "a"},
+                {"[đ]", "d"     },
+                {"[éèẻẽẹ]", "e" },
+                {"[êềếễểệ]", "e"},
+                {"[íìĩỉị]", "i" },
+                {"[òóỏõọ]",  "o"},
+                {"[ồôỗốộổ]",  "o"},
+                {"[ơờớỡởợ]", "o"},
+                {"[úùủũụ]", "u" },
+                {"[ừưữứửự]", "u"},
+            };
+            static string genKey(string value)
+            {
+                string key = value.ToLower();
+                foreach (var i in dict)
+                {
+                    key = Regex.Replace(key, i.Key, i.Value);
+                }
+                return key;
+            }
             public void Refresh()
             {
                 m_colls = new AutoCompleteStringCollection();
@@ -815,10 +860,10 @@ namespace test_binding
                 DataTable tbl = m_dataSource;
                 foreach (DataRow row in tbl.Rows)
                 {
-                    string key = row[1].ToString().ToLower();
                     string val = row[1].ToString();
-                    //m_colls.Add(key);
+                    string key = genKey(val);
                     m_colls.Add(val);
+                    m_colls.Add(key);
                     m_maps.Add(key, val);
                 }
             }
@@ -833,12 +878,12 @@ namespace test_binding
             }
             public DataTable m_dataSource
             {
-                get { return (DataTable)m_data.m_bindingSource.DataSource; }
+                get { return m_data.m_dataTable; }
             }
             public void Update(string selectedValue)
             {
-                Debug.WriteLine(this.ToString() + ".Update");
-                string key = selectedValue.ToLower();
+                Debug.WriteLine("{0}.Update {1}", this, selectedValue);
+                string key = genKey(selectedValue);
                 if (!m_maps.ContainsKey(key))
                 {
                     m_colls.Add(key);
@@ -851,11 +896,15 @@ namespace test_binding
             private void Add(string newValue)
             {
                 //single col tables
-                m_dataSource.AcceptChanges();
                 DataRow newRow = m_dataSource.NewRow();
                 newRow[1] = newValue;
                 m_dataSource.Rows.Add(newRow);
                 m_data.Submit();
+            }
+            public string find(string key)
+            {
+                key = genKey(key);
+                return m_maps[key];
             }
         }
     }

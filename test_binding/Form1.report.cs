@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -196,10 +195,6 @@ namespace test_binding
                 m_rdlcPath = @"..\..\rpt_receipts.rdlc";
                 m_dsName = "DataSet1";
                 m_pdfPath = @"..\..\report.pdf";
-            }
-            public override List<ReportParameter> getReportParam()
-            {
-                return new List<ReportParameter>();
             }
         }
         [DataContract(Name = "InternalPaymentReport")]

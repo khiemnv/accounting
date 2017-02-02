@@ -1,9 +1,6 @@
 ﻿using System.Windows.Forms;
-using System.Collections.Generic;
 using System;
 using System.Drawing;
-using System.Diagnostics;
-using System.Data;
 
 namespace test_binding
 {
@@ -46,7 +43,7 @@ namespace test_binding
             }
             protected override void OnClosed(EventArgs e)
             {
-                m_dataPanel.m_dataContent.Reload();
+                m_dataPanel.m_dataContent.m_dataTable.RejectChanges();
                 base.OnClosed(e);
             }
         }
@@ -54,7 +51,7 @@ namespace test_binding
         class lGroupNameEditDlg : lEditDlg
         {
             public lGroupNameEditDlg()
-                :base(new lGroupNameDataPanel())
+                : base(new lGroupNameDataPanel())
             {
             }
         }

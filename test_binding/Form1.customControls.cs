@@ -1,7 +1,6 @@
-﻿#define use_custom_cols
+﻿//#define use_custom_cols
 
 using System.Windows.Forms;
-using System.Collections.Generic;
 using System;
 using System.Drawing;
 using System.Diagnostics;
@@ -11,7 +10,7 @@ namespace test_binding
 {
     public partial class Form1 : Form
     {
-        class myCustomCtrl:IDisposable
+        class myCustomCtrl : IDisposable
         {
             public DataGridView m_DGV;
             public Control m_ctrl;
@@ -108,8 +107,8 @@ namespace test_binding
                 }
             }
         }
-        
-        class lCustomDGV:DataGridView
+
+        class lCustomDGV : DataGridView
         {
             protected lTableInfo m_tblInfo;
             myCustomCtrl m_customCtrl;
@@ -134,8 +133,11 @@ namespace test_binding
                 if (data != null)
                 {
                     string curVal = CurrentCell.Value.ToString();
-                    string newVal = data.m_maps[curVal.ToLower()];
-                    CurrentCell.Value = newVal;
+                    if (curVal != "")
+                    {
+                        string newVal = data.find(curVal);
+                        CurrentCell.Value = newVal;
+                    }
                 }
             }
             protected override void OnCellClick(DataGridViewCellEventArgs e)
@@ -193,7 +195,8 @@ namespace test_binding
             public virtual void showCustomCtrl(int col, int row)
             {
                 Debug.WriteLine("showDtp");
-                if (m_tblInfo.m_cols[col].m_type == lTableInfo.lColInfo.lColType.dateTime) { 
+                if (m_tblInfo.m_cols[col].m_type == lTableInfo.lColInfo.lColType.dateTime)
+                {
                     m_customCtrl = new myDateTimePicker(this);
                 }
                 else if (m_tblInfo.m_cols[col].m_lookupData != null)
@@ -205,7 +208,8 @@ namespace test_binding
                     m_customCtrl.m_iRow = row;
                     m_customCtrl.m_iCol = col;
                     this.Controls.Add(m_customCtrl.getControl());
-                    if (CurrentCell.Value != null) { 
+                    if (CurrentCell.Value != null)
+                    {
                         m_customCtrl.setValue(this.CurrentCell.Value.ToString());
                     }
                     Rectangle rec = this.GetCellDisplayRectangle(col, row, true);
@@ -239,7 +243,8 @@ namespace test_binding
             public lInterPaymentDGV(lTableInfo tblInfo) : base(tblInfo)
             {
             }
-            protected override void OnCellEndEdit(DataGridViewCellEventArgs e) {
+            protected override void OnCellEndEdit(DataGridViewCellEventArgs e)
+            {
                 base.OnCellEndEdit(e);
                 if (m_tblInfo.m_cols[e.ColumnIndex].m_field == "reimbursement")
                 {

@@ -1,13 +1,11 @@
 ﻿//#define DEBUG_DRAWING
 #define use_custom_dgv
 #define manual_crt_columns
-#define use_custom_cols
+//#define use_custom_cols
 
 using System.Windows.Forms;
-using System.Collections.Generic;
 using System;
 using System.Drawing;
-using System.Diagnostics;
 using System.Runtime.Serialization;
 using System.Data;
 
@@ -151,8 +149,10 @@ namespace test_binding
                     else if (field.m_lookupTbl != null)
                     {
                         var cmb = new DataGridViewComboBoxColumn();
-                        cmb.DataSource = field.m_lookupData.m_bindingSrc;
-                        DataTable tbl = (DataTable)field.m_lookupData.m_bindingSrc.DataSource;
+                        DataTable tbl = field.m_lookupData.m_dataSource;
+                        BindingSource bs = new BindingSource();
+                        bs.DataSource = tbl;
+                        cmb.DataSource = bs;
                         cmb.DisplayMember = tbl.Columns[1].ColumnName;
                         cmb.AutoComplete = true;
                         cmb.DisplayStyle = DataGridViewComboBoxDisplayStyle.Nothing;
@@ -167,7 +167,7 @@ namespace test_binding
                     i = m_dataGridView.Columns.Add(dgvcol);
                     dgvcol.HeaderText = field.m_alias;
                     dgvcol.Name = field.m_field;
-#endif
+#endif //use_custom_cols
                     dgvcol.DataPropertyName = field.m_field;
                     switch (field.m_type)
                     {
@@ -326,16 +326,17 @@ namespace test_binding
                 crtColumns();
 #endif
                 m_dataContent = s_contentProvider.CreateDataContent(m_tblInfo.m_tblName);
+                m_dataContent.Load();
                 m_dataGridView.DataSource = m_dataContent.m_bindingSource;
                 DataTable tbl = (DataTable)m_dataContent.m_bindingSource.DataSource;
-                if (tbl != null) {update();}
+                if (tbl != null) { update(); }
             }
         }
 
         [DataContract(Name = "InterPaymentDataPanel")]
         class lInterPaymentDataPanel : lDataPanel
         {
-            public lInterPaymentDataPanel()                
+            public lInterPaymentDataPanel()
             {
                 m_tblName = "internal_payment";
                 m_countOn = "actually_spent";
@@ -355,7 +356,7 @@ namespace test_binding
         [DataContract(Name = "ExterPaymentDataPanel")]
         class lExternalPaymentDataPanel : lDataPanel
         {
-            public lExternalPaymentDataPanel()                
+            public lExternalPaymentDataPanel()
             {
                 m_tblName = "external_payment";
                 m_countOn = "spent";

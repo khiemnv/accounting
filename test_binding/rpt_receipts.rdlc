@@ -1144,6 +1144,13 @@
       </rd:DataSetInfo>
     </DataSet>
   </DataSets>
+  <ReportParameters>
+    <ReportParameter Name="details">
+      <DataType>Integer</DataType>
+      <Prompt>ReportParameter1</Prompt>
+      <MultiValue>true</MultiValue>
+    </ReportParameter>
+  </ReportParameters>
   <rd:ReportUnitType>Inch</rd:ReportUnitType>
   <rd:ReportID>7c7a1b3f-7970-40e8-a0f3-9420d3bddbb6</rd:ReportID>
 </Report>

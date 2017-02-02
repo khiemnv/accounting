@@ -52,7 +52,7 @@ namespace test_binding
             s_contentProvider = lSQLiteContentProvider.getInstance();
 #else
             s_contentProvider = lSqlContentProvider.getInstance();
-#endif
+#endif  //use_sqlite
 
             //menu
             crtMenu();
@@ -80,7 +80,7 @@ namespace test_binding
                 TabPage newTab = crtTab(panel);
                 m_tabCtrl.TabPages.Add(newTab);
             }
-#endif
+#endif  //crtnew_panel
 
             m_tabCtrl.SelectedIndex = 0;
 
