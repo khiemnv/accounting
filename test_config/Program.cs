@@ -258,14 +258,39 @@ namespace test_config
             Point p = new Point(1, 2);
             DataContractSerializer sz = new DataContractSerializer(typeof(Size));
             sz.WriteObject(Console.OpenStandardOutput(), s);
+            Console.Clear();
             sz = new DataContractSerializer(typeof(Point));
             sz.WriteObject(Console.OpenStandardOutput(), p);
+            Console.Clear();
+            DataContractJsonSerializer jsz = new DataContractJsonSerializer(typeof(Size));
+            jsz.WriteObject(Console.OpenStandardOutput(), s);
+        }
+
+        class searchCtrl_config
+        {
+        }
+        class searchCtrl:searchCtrl_config
+        {
+            searchCtrl()
+            {
+
+            }
+            public static searchCtrl_config getInstance()
+            {
+                return new searchCtrl();
+            }
+        }
+
+        static void test_getInstance() {
+            searchCtrl_config sctrcfg;
+            sctrcfg  = searchCtrl.getInstance();
         }
 
         static void Main(string[] args)
         {
-
-            test_w_knowtype();
+            test_w_point_size();
+            //test_getInstance();
+            //test_w_knowtype();
             //test_w_resolver();
 
             lTableInfo_config tbl1 = new lTableInfo_config();
