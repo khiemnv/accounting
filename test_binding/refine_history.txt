@@ -59,6 +59,7 @@ tableinfo
 10. sizing search ctrls - not yet
 11. sqlite db
   + db schema
+  + view
 12 search sql
   lEntity -> dictionary
   simple where
@@ -73,6 +74,7 @@ tableinfo
 16 event data row change
   + auto fill actually_spent
   + header cell style
+  + auto fill month (1-12)
 17 speed loading - not yet
 18 progress - not yet
 19 generate test data

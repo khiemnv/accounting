@@ -88,8 +88,8 @@ namespace test_binding
                 m_sumLabel.Text = "Sum";
 
 #if use_custom_dgv
-                m_dataGridView = m_tblInfo.m_tblName == "internal_payment" ?
-                    new lInterPaymentDGV(m_tblInfo) : new lCustomDGV(m_tblInfo);
+                m_dataGridView = m_tblInfo.m_tblName == "internal_payment" ? new lInterPaymentDGV(m_tblInfo) :
+                    m_tblInfo.m_tblName == "salary" ? new lSalaryDGV(m_tblInfo) : new lCustomDGV(m_tblInfo);
                 //m_dataGridView = new DataGridView();
 #else
                 m_dataGridView = new DataGridView();

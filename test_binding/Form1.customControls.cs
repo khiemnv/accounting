@@ -248,9 +248,24 @@ namespace test_binding
                 base.OnCellEndEdit(e);
                 if (m_tblInfo.m_cols[e.ColumnIndex].m_field == "reimbursement")
                 {
-                    Int64 advance = Int64.Parse(this.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Value.ToString());
-                    Int64 remain = Int64.Parse(this.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
-                    this.Rows[e.RowIndex].Cells[e.ColumnIndex + 1].Value = advance - remain;
+                    Int64 advance = (Int64)Rows[e.RowIndex].Cells["advance_payment"].Value;
+                    Int64 remain = (Int64)Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
+                    this.Rows[e.RowIndex].Cells["actually_spent"].Value = advance - remain;
+                }
+            }
+        }
+        class lSalaryDGV : lCustomDGV
+        {
+            public lSalaryDGV(lTableInfo tblInfo) : base(tblInfo)
+            {
+            }
+            protected override void OnCellEndEdit(DataGridViewCellEventArgs e)
+            {
+                base.OnCellEndEdit(e);
+                if (m_tblInfo.m_cols[e.ColumnIndex].m_field == "date")
+                {
+                    DateTime cur = (DateTime)Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
+                    this.Rows[e.RowIndex].Cells["month"].Value = cur.Month;
                 }
             }
         }
