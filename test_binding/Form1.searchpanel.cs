@@ -157,7 +157,6 @@ namespace test_binding
                     AutoCompleteStringCollection col = m_colInfo.m_lookupData.m_colls;
                     m_combo.AutoCompleteCustomSource = col;
 
-                    m_combo.SelectedIndex = 0;
                     m_combo.Click += valueChanged;
 
                     m_text.Dispose();

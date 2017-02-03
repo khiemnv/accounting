@@ -265,7 +265,8 @@ namespace test_binding
                 if (m_tblInfo.m_cols[e.ColumnIndex].m_field == "date")
                 {
                     DateTime cur = (DateTime)Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
-                    this.Rows[e.RowIndex].Cells["month"].Value = cur.Month;
+                    if (Rows[e.RowIndex].Cells["month"].Value == DBNull.Value)
+                        this.Rows[e.RowIndex].Cells["month"].Value = cur.Month;
                 }
             }
         }
