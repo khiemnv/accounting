@@ -290,8 +290,8 @@ namespace test_binding
             {
                 m_tblName = "v_receipts";
                 m_crtQry = "CREATE VIEW if not exists v_receipts  as  "
-                    + "select content, "
-                    + "amount, cast(strftime('%Y', date) as integer) as year, "
+                    + "select content, amount/1000 as amount, "
+                    + "cast(strftime('%Y', date) as integer) as year, "
                     + "(strftime('%m', date) + 2) / 3 as qtr "
                     + "from receipts "
                     + "where strftime('%Y', 'now') - strftime('%Y', date) between 0 and 4;";
@@ -304,7 +304,7 @@ namespace test_binding
             {
                 m_tblName = "v_internal_payment";
                 m_crtQry = "CREATE VIEW if not exists v_internal_payment as "
-                    + "select group_name, actually_spent, "
+                    + "select group_name, actually_spent/1000 as actually_spent, "
                     + "cast(strftime('%Y', date) as integer) as year, "
                     + "(strftime('%m', date) + 2) / 3 as qtr "
                     + "from internal_payment "
@@ -318,7 +318,7 @@ namespace test_binding
             {
                 m_tblName = "v_external_payment";
                 m_crtQry = "CREATE VIEW if not exists v_external_payment as "
-                    + "select group_name, spent, "
+                    + "select group_name, spent/1000 as spent, "
                     + "cast(strftime('%Y', date) as integer) as year, "
                     + "(strftime('%m', date) + 2) / 3 as qtr "
                     + "from external_payment "
@@ -332,7 +332,7 @@ namespace test_binding
             {
                 m_tblName = "v_salary";
                 m_crtQry = "CREATE VIEW if not exists v_salary as "
-                    + "select group_name, salary, "
+                    + "select group_name, salary/1000 as salary, "
                     + "cast(strftime('%Y', date) as integer) as year, "
                     + "(strftime('%m', date) + 2) / 3 as qtr "
                     + "from salary "
