@@ -1,5 +1,5 @@
 ﻿#define update_dgv
-#define manual_crt_col
+//#define manual_crt_col
 
 using System;
 using System.Collections.Generic;
@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -165,12 +166,82 @@ namespace test_data
 
                 Controls.Add(m_panel);
 
+                m_dataGridView.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
+                m_dataGridView.KeyDown += M_dataGridView_KeyDown;
                 //m_dataGridView.CellValueNeeded += M_dataGridView_CellValueNeeded;
+            }
+
+            private void M_dataGridView_KeyDown(object sender, KeyEventArgs e)
+            {
+                if (e.Control)
+                {
+                    switch (e.KeyCode) { 
+                        case Keys.C:
+                            //copy to clip board
+                            copyClipboard();
+                        break;
+                    case Keys.V:
+                            //paste data
+                            pasteClipboard();
+                        break;
+                    }
+                }
+            }
+
+            private void pasteClipboard()
+            {
+                Debug.WriteLine("{0}.pasteClipboard {1}", this, Clipboard.GetText());
+                string inTxt = Clipboard.GetText();
+                var lines = inTxt.Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
+
+                int baseRow = m_dataGridView.CurrentCell.RowIndex;
+                int baseCol = m_dataGridView.CurrentCell.ColumnIndex;
+                DataTable tbl = m_tbl;
+                int iRow = baseRow;
+                foreach (var line in lines)
+                {
+                    bool bNewRow = false;
+                    var fields = line.Split(new char[] { '\t', ';', ',' });
+                    DataRow row;
+                    if (iRow < tbl.Rows.Count)
+                    {
+                        row = tbl.Rows[iRow];
+                    }
+                    else
+                    {
+                        row = tbl.NewRow();
+                        bNewRow = true;
+                    }
+                    int iCol = baseCol;
+                    foreach (var field in fields)
+                    {
+                        //m_dataGridView[iCol, iRow].Value = field;
+                        row[iCol] = field;
+                        iCol++;
+                    }
+                    if (bNewRow) tbl.Rows.Add(row);
+                    iRow++;
+                }
+                //m_dataGridView.CurrentCell = m_dataGridView[baseCol, baseRow];
+            }
+
+            private void copyClipboard()
+            {
+                Clipboard.SetDataObject(m_dataGridView.GetClipboardContent());
+                Debug.WriteLine("{0}.copyClipboard {1}", this, Clipboard.GetText());
             }
 
             private void submitButton_Click(object sender, EventArgs e)
             {
-                m_status.Text = m_thread.ThreadState.ToString();
+                using (SQLiteCommandBuilder builder = new SQLiteCommandBuilder(m_adapter))
+                {
+                    DataTable dt = m_tbl;
+                    if (dt != null)
+                    {
+                        m_adapter.UpdateCommand = builder.GetUpdateCommand();
+                        m_adapter.Update(dt);
+                    }
+                }
             }
 
             private void reloadButton_Click(object sender, EventArgs e)
@@ -288,7 +359,9 @@ namespace test_data
                 int iCol = 5;
                 for (int i = 0; i < (m_tbl.Rows.Count - 1); i++)
                 {
-                    sum += Int64.Parse(m_tbl.Rows[i][iCol].ToString());
+                    Int64 val = 0;
+                    if (Int64.TryParse(m_tbl.Rows[i][iCol].ToString(), out val))
+                        sum += val;
                 }
                 return sum;
             }
@@ -299,7 +372,7 @@ namespace test_data
 
                 m_cmd = new SQLiteCommand();
                 m_cmd.Connection = m_cnn;
-                m_cmd.CommandText = "select * from receipts where strftime('%Y', date) == '2016'";   //~1p
+                m_cmd.CommandText = "select * from receipts where rowid > ((select max(rowid) from receipts) - 10)";   //~1p
                 m_adapter = new SQLiteDataAdapter(m_cmd);
 
                 m_bs = new BindingSource();
@@ -351,6 +424,7 @@ namespace test_data
 #else
                 m_dataGridView.AutoGenerateColumns = true;
 #endif
+                
             }
 
             private void M_dataGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)
@@ -362,10 +436,10 @@ namespace test_data
         [STAThread]
         static void Main(string[] args)
         {
-            crtDict();
+            //crtDict();
             //gen_data();
-            //lDataDlg dlg = new lDataDlg();
-            //dlg.ShowDialog();
+            lDataDlg dlg = new lDataDlg();
+            dlg.ShowDialog();
         }
 
         private static void crtDict()
