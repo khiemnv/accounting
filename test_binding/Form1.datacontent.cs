@@ -607,14 +607,32 @@ namespace test_binding
         /// </summary>
         class lDataContent
         {
-            public DataTable m_dataTable { get { return (DataTable)m_bindingSource.DataSource; } }
-            public BindingSource m_bindingSource;
+            public readonly DataTable m_dataTable;
+            public readonly BindingSource m_bindingSource;
             protected string m_table;
             public IRefresher m_refresher;
             public lDataContent()
             {
+                m_dataTable = new DataTable();
                 m_bindingSource = new BindingSource();
-                m_bindingSource.DataSource = new DataTable();
+                m_bindingSource.DataSource = m_dataTable;
+            }
+            public void InitCols()
+            {
+                foreach (var col in s_config.getTable(m_table).m_cols)
+                {
+                    DataColumn dc = m_dataTable.Columns.Add(col.m_field);
+                    switch (col.m_type)
+                    {
+                        case lTableInfo.lColInfo.lColType.num:
+                        case lTableInfo.lColInfo.lColType.currency:
+                            dc.DataType = typeof(Int64);
+                            break;
+                        case lTableInfo.lColInfo.lColType.dateTime:
+                            dc.DataType = typeof(DateTime);
+                            break;
+                    }
+                }
             }
             public virtual void Search(string exprs)
             {
@@ -645,15 +663,13 @@ namespace test_binding
                 m_table = tblName;
                 m_cnn = cnn;
                 m_dataAdapter = new SQLiteDataAdapter();
-                m_dataAdapter.SelectCommand = new SQLiteCommand(
-                    selectLast100(),
-                    cnn);
+                m_dataAdapter.SelectCommand = new SQLiteCommand(selectLast100(), cnn);
                 m_dataAdapter.RowUpdated += M_dataAdapter_RowUpdated;
             }
 
             string selectLast100()
             {
-                return string.Format("select * from {0} where id > (SELECT max(rowid) from {0}) - 100", m_table);
+                return string.Format("select * from {0} where id in (SELECT rowid from {0} order by rowid desc limit {1})", m_table, 100);
             }
 
             public override void Search(string exprs)

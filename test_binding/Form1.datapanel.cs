@@ -281,7 +281,7 @@ namespace test_binding
 
                 foreach (DataRow row in tbl.Rows)
                 {
-                    sum += (Int64)row[iCol];
+                    if (row[iCol]!=DBNull.Value) sum += (Int64)row[iCol];
                 }
                 return sum;
             }
@@ -326,7 +326,11 @@ namespace test_binding
                 crtColumns();
 #endif
                 m_dataContent = s_contentProvider.CreateDataContent(m_tblInfo.m_tblName);
+#if init_datatable_cols
+                m_dataContent.InitCols();
+#else
                 m_dataContent.Load();
+#endif
                 m_dataGridView.DataSource = m_dataContent.m_bindingSource;
                 DataTable tbl = (DataTable)m_dataContent.m_bindingSource.DataSource;
                 if (tbl != null) { update(); }
