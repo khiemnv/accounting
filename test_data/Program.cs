@@ -187,7 +187,7 @@ namespace test_data
                     }
                 }
             }
-
+            DataRow m_newrow;
             private void pasteClipboard()
             {
                 Debug.WriteLine("{0}.pasteClipboard {1}", this, Clipboard.GetText());
@@ -209,7 +209,13 @@ namespace test_data
                     }
                     else
                     {
-                        row = tbl.NewRow();
+                        if (m_newrow != null)
+                        {
+                            row = m_newrow;
+                        } else { 
+                            row = tbl.NewRow();
+                        }
+                        m_newrow = null;
                         bNewRow = true;
                     }
                     int iCol = baseCol;
@@ -219,10 +225,13 @@ namespace test_data
                         row[iCol] = field;
                         iCol++;
                     }
+                    Debug.WriteLine("before tbl add row");
                     if (bNewRow) tbl.Rows.Add(row);
+                    Debug.WriteLine("after tbl add row");
                     iRow++;
                 }
                 //m_dataGridView.CurrentCell = m_dataGridView[baseCol, baseRow];
+                Debug.WriteLine("{0}.pasteClipboard end", this);
             }
 
             private void copyClipboard()
@@ -377,6 +386,8 @@ namespace test_data
 
                 m_bs = new BindingSource();
                 m_tbl = new DataTable();
+                m_tbl.TableNewRow += M_tbl_TableNewRow;
+                m_tbl.RowDeleted += M_tbl_RowDeleted;
                 m_bs.DataSource = m_tbl;
                 m_dataGridView.DataSource = m_bs;
 
@@ -424,7 +435,35 @@ namespace test_data
 #else
                 m_dataGridView.AutoGenerateColumns = true;
 #endif
-                
+                m_dataGridView.UserAddedRow += M_dataGridView_UserAddedRow;
+                m_dataGridView.RowsAdded += M_dataGridView_RowsAdded;
+            }
+
+            private void M_dataGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+            {
+                Debug.WriteLine("{0} rowadded {1}", this, e.RowIndex);
+                if (e.RowIndex > m_tbl.Rows.Count)
+                {
+                    DataGridView dgv = (DataGridView)sender;
+                }
+            }
+
+            private void M_dataGridView_UserAddedRow(object sender, DataGridViewRowEventArgs e)
+            {
+                Debug.WriteLine("{0} useraddedrow {1}", this, e.Row);
+            }
+
+            private void M_tbl_RowDeleted(object sender, DataRowChangeEventArgs e)
+            {
+                Debug.WriteLine("{0}.onRowDelete {1}", e.Row[0]);
+            }
+
+            private void M_tbl_TableNewRow(object sender, DataTableNewRowEventArgs e)
+            {
+                Debug.WriteLine("{0}.onNewRow", this);
+                //DataTable tbl = (DataTable)sender;
+                //tbl.Rows.Add(e.Row);
+                m_newrow = e.Row;
             }
 
             private void M_dataGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)
