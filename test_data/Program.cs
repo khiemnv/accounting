@@ -346,7 +346,7 @@ namespace test_data
 #endif
                 using (var t = new myElapsed("update time"))
                 {
-                    m_dataGridView.Columns[0].Visible = false;
+                    //m_dataGridView.Columns[0].Visible = false;
                     //for (int i = 1; i < m_dataGridView.ColumnCount; i++)
                     //{
                     //    m_dataGridView.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
@@ -381,11 +381,19 @@ namespace test_data
 
                 m_cmd = new SQLiteCommand();
                 m_cmd.Connection = m_cnn;
-                m_cmd.CommandText = "select * from receipts where rowid > ((select max(rowid) from receipts) - 10)";   //~1p
+                m_cmd.CommandText = "select * from receipts where rowid in (select rowid from receipts order by rowid desc limit 10 )";   //~1p
                 m_adapter = new SQLiteDataAdapter(m_cmd);
 
                 m_bs = new BindingSource();
                 m_tbl = new DataTable();
+                m_tbl.Columns.Add("ID");
+                m_tbl.Columns.Add("date");
+                m_tbl.Columns.Add("receipt_number");
+                m_tbl.Columns.Add("name");
+                m_tbl.Columns.Add("content");
+                m_tbl.Columns.Add("amount");
+                m_tbl.Columns.Add("note");
+
                 m_tbl.TableNewRow += M_tbl_TableNewRow;
                 m_tbl.RowDeleted += M_tbl_RowDeleted;
                 m_bs.DataSource = m_tbl;
@@ -455,7 +463,7 @@ namespace test_data
 
             private void M_tbl_RowDeleted(object sender, DataRowChangeEventArgs e)
             {
-                Debug.WriteLine("{0}.onRowDelete {1}", e.Row[0]);
+                Debug.WriteLine("{0}.onRowDelete");
             }
 
             private void M_tbl_TableNewRow(object sender, DataTableNewRowEventArgs e)
