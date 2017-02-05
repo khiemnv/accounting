@@ -2,13 +2,16 @@
 #define use_custom_dgv
 #define manual_crt_columns
 //#define use_custom_cols
-//#define init_datatable_cols
+#define init_datatable_cols
+#define format_currency
+#define use_cmd_params
 
 using System.Windows.Forms;
 using System;
 using System.Drawing;
 using System.Runtime.Serialization;
 using System.Data;
+using System.Collections.Generic;
 
 namespace test_binding
 {
@@ -24,7 +27,7 @@ namespace test_binding
         ///     update data grid - auto
         /// </summary>
         [DataContract(Name = "DataPanel")]
-        class lDataPanel
+        class lDataPanel:IDisposable
         {
             //public TableLayoutPanel m_tbl = new TableLayoutPanel();
             public FlowLayoutPanel m_reloadPanel;
@@ -249,16 +252,17 @@ namespace test_binding
                 }
             }
 #endif
+#if !use_cmd_params
             public void search(string where)
             {
                 //m_dataContent.GetData(qry);
                 m_dataContent.Search(where);
                 update();
             }
+#endif
 #if use_cmd_params
             public void search(List<string> exprs, Dictionary<string,string> srchParams)
             {
-                //m_dataContent.GetData(qry);
                 m_dataContent.Search(exprs, srchParams);
                 update();
             }
@@ -336,6 +340,22 @@ namespace test_binding
                 m_dataGridView.DataSource = m_dataContent.m_bindingSource;
                 DataTable tbl = (DataTable)m_dataContent.m_bindingSource.DataSource;
                 if (tbl != null) { update(); }
+            }
+
+            public void Dispose()
+            {
+                m_reloadPanel.Dispose();
+                m_sumPanel.Dispose();
+
+                m_reloadBtn.Dispose();
+                m_submitBtn.Dispose();
+                m_status.Dispose();
+                m_sumLabel.Dispose();
+                m_sumTxt.Dispose();
+
+                m_dataGridView.Dispose();
+
+                m_dataContent.Dispose();
             }
         }
 

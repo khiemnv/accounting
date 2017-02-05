@@ -1,4 +1,5 @@
 ﻿//#define DEBUG_DRAWING
+#define use_cmd_params
 
 using System.Drawing;
 using System.Windows.Forms;
@@ -25,7 +26,7 @@ namespace test_binding
         };
 
         [DataContract(Name ="SearchCtrl")]
-        class lSearchCtrl
+        class lSearchCtrl:IDisposable
         {
             public enum ctrlType
             {
@@ -84,19 +85,25 @@ namespace test_binding
             {
                 m_label.Checked = true;
             }
+
+            public virtual void Dispose()
+            {
+                m_panel.Dispose();
+                m_label.Dispose();
+            }
         };
 
         [DataContract(Name = "SearchCtrlText")]
         class lSearchCtrlText : lSearchCtrl
         {
             protected TextBox m_text;
+            ComboBox m_combo;
             string m_value {
                 get {
                     if (m_text != null) return m_text.Text;
                     else return m_combo.Text;
                 }
             }
-            ComboBox m_combo;
             public lSearchCtrlText(string fieldName, string alias, ctrlType type, Point pos, Size size)
                 : base(fieldName, alias, type, pos, size)
             {
@@ -163,7 +170,12 @@ namespace test_binding
                     m_text = null;
                 }
             }
-
+            public override void Dispose()
+            {
+                if (m_text != null) m_text.Dispose();
+                if (m_combo != null) m_combo.Dispose();
+                base.Dispose();
+            }
         }
         [DataContract(Name = "SearchCtrlDate")]
         class lSearchCtrlDate : lSearchCtrl
@@ -256,7 +268,7 @@ namespace test_binding
         /// + getWhereQry
         /// </summary>
         [DataContract(Name ="SearchPanel")]
-        class lSearchPanel
+        class lSearchPanel:IDisposable
         {
             public lDataPanel m_dataPanel;
             public lTableInfo m_tblInfo { get { return m_dataPanel.m_tblInfo; } }
@@ -406,6 +418,16 @@ namespace test_binding
                         return currencyCtrl;
                 }
                 return null;
+            }
+
+            public void Dispose()
+            {
+                m_tbl.Dispose();
+                m_searchBtn.Dispose();
+                foreach (var ctrl in m_searchCtrls)
+                {
+                    ctrl.Dispose();
+                }
             }
         }
 

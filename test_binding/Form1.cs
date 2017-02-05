@@ -97,7 +97,7 @@ namespace test_binding
         }
 
         [DataContract(Name ="Panel")]
-        class lBasePanel
+        class lBasePanel:IDisposable
         {
             public lTableInfo m_tblInfo { get { return m_dataPanel.m_tblInfo; } }
             //public lDataContent m_data;
@@ -183,6 +183,15 @@ namespace test_binding
             {
                 m_dataPanel.LoadData();
                 m_searchPanel.LoadData();
+            }
+
+            public void Dispose()
+            {
+                m_printBtn.Dispose();
+                m_panel.Dispose();
+                m_dataPanel.Dispose();
+                m_searchPanel.Dispose();
+                m_report.Dispose();
             }
         }
 

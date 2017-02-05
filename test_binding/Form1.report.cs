@@ -31,7 +31,7 @@ namespace test_binding
         public string m_xmlPath;    //xml path
 #endif
             public string m_pdfPath;    //print to pdf file
-            lDataContent m_data;
+            //lDataContent m_data;
             protected lBaseReport()
             {
             }

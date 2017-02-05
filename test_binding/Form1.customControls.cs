@@ -1,5 +1,5 @@
 ﻿//#define use_custom_cols
-//#define format_currency
+#define format_currency
 
 using System.Windows.Forms;
 using System;
@@ -14,15 +14,15 @@ namespace test_binding
         class myCustomCtrl : IDisposable
         {
             public DataGridView m_DGV;
-            public Control m_ctrl;
+            public Control m_ctrl { get { return getControl(); } }
             public bool m_bChanged = false;
             public int m_iRow;
             public int m_iCol;
 
-            public myCustomCtrl(DataGridView dgv, Control ctrl)
+            protected myCustomCtrl(DataGridView dgv)
             {
                 m_DGV = dgv;
-                m_ctrl = ctrl;
+                //m_ctrl = ctrl;
             }
 
             public virtual void show(Rectangle rec)
@@ -36,7 +36,7 @@ namespace test_binding
             public virtual bool isChanged() { return m_bChanged; }
             public virtual string getValue() { return ""; }
             public virtual void setValue(string text) { }
-            public virtual Control getControl() { return m_ctrl; }
+            public virtual Control getControl() { return null; }
             public virtual void ctrl_ValueChanged(object sender, EventArgs e)
             {
                 Debug.WriteLine("ctrl_ValueChanged");
@@ -53,6 +53,7 @@ namespace test_binding
 
             public void Dispose()
             {
+                m_DGV.Dispose();
                 m_ctrl.Dispose();
             }
         }
@@ -62,15 +63,18 @@ namespace test_binding
 
             //data table has single column
             public myComboBox(DataGridView dgv, lDataSync data)
-                : base(dgv, new ComboBox())
+                : base(dgv)
             {
-                m_combo = (ComboBox)getControl();
+                m_combo = new ComboBox();
                 m_combo.DataSource = data.m_bindingSrc;
                 DataTable tbl = (DataTable)data.m_bindingSrc.DataSource;
                 m_combo.DisplayMember = tbl.Columns[1].ColumnName;
                 m_combo.SelectedValueChanged += ctrl_ValueChanged;
             }
-
+            public override Control getControl()
+            {
+                return m_combo;
+            }
             public override string getValue()
             {
                 Debug.WriteLine("getValue: " + m_combo.Text);
@@ -88,12 +92,16 @@ namespace test_binding
             public DateTimePicker m_dtp;
 
             public myDateTimePicker(DataGridView dgv)
-                : base(dgv, new DateTimePicker())
+                : base(dgv)
             {
-                m_dtp = (DateTimePicker)getControl();
+                m_dtp = new DateTimePicker();
                 m_dtp.Format = DateTimePickerFormat.Custom;
                 m_dtp.CustomFormat = "yyyy-MM-dd";
                 m_dtp.ValueChanged += ctrl_ValueChanged;
+            }
+            public override Control getControl()
+            {
+                return m_dtp;
             }
             public override string getValue()
             {
@@ -326,6 +334,7 @@ namespace test_binding
             {
                 base.Dispose(disposing);
                 m_dataTable.TableNewRow -= Dt_TableNewRow;
+                if (m_customCtrl != null) m_customCtrl.Dispose();
             }
         }
         class lInterPaymentDGV : lCustomDGV

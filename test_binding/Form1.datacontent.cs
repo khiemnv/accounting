@@ -1,5 +1,7 @@
 ﻿#define col_class
 #define crt_tables
+#define init_datatable_cols
+#define use_cmd_params
 
 using System.Windows.Forms;
 using System.Data.SqlClient;
@@ -12,6 +14,7 @@ using System.Xml.Serialization;
 using System.Runtime.Serialization;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
+using System.Data.Common;
 
 namespace test_binding
 {
@@ -340,13 +343,56 @@ namespace test_binding
             }
         };
 
-        interface lContentProvider
+        class lContentProvider
         {
-            lDataContent CreateDataContent(string tblName);
-            lDataSync CreateDataSync(string tblName);
-            DataTable GetData(string qry);
+            protected lContentProvider()
+            {
+                m_dataSyncs = new Dictionary<string, lDataSync>();
+                m_dataContents = new Dictionary<string, lDataContent>();
+            }
+
+            private Dictionary<string, lDataSync> m_dataSyncs;
+            private Dictionary<string, lDataContent> m_dataContents;
+
+            protected virtual lDataContent newDataContent(string tblName) { return null; }
+            protected virtual lDataSync newDataSync(string tblName)
+            {
+                lDataContent dataContent = CreateDataContent(tblName);
+                lDataSync dataSync = new lDataSync(dataContent);
+                return dataSync;
+            }
+
+            public virtual DataTable GetData(string qry) { return null; }
+            public lDataContent CreateDataContent(string tblName)
+            {
+                lDataContent dataContent = newDataContent(tblName);
+                if (!m_dataContents.ContainsKey(tblName))
+                {
+                    lDataContent data = newDataContent(tblName);
+                    m_dataContents.Add(tblName, data);
+                    return data;
+                }
+                else
+                {
+                    return m_dataContents[tblName];
+                }
+            }
+            public lDataSync CreateDataSync(string tblName)
+            {
+                if (!m_dataSyncs.ContainsKey(tblName))
+                {
+                    lDataContent dataContent = CreateDataContent(tblName);
+                    lDataSync dataSync = new lDataSync(dataContent);
+                    m_dataSyncs.Add(tblName, dataSync);
+                    return dataSync;
+                }
+                else
+                {
+                    return m_dataSyncs[tblName];
+                }
+            }
         }
-        class lSqlContentProvider : lContentProvider
+        class lSqlContentProvider : lContentProvider, IDisposable
         {
             static lSqlContentProvider m_instance;
             public static lContentProvider getInstance()
@@ -358,30 +404,23 @@ namespace test_binding
                 return m_instance;
             }
 
-            lSqlContentProvider()
+            lSqlContentProvider() : base()
             {
-                //string cnnStr = "Data Source=DESKTOP-GOEF1DS\\SQLEXPRESS;Initial Catalog=accounting;Integrated Security=true";
-                string cnnStr = s_config.m_dbSchema.m_cnnStr;
+                string cnnStr = "Data Source=DESKTOP-GOEF1DS\\SQLEXPRESS;Initial Catalog=accounting;Integrated Security=true";
+                //string cnnStr = s_config.m_dbSchema.m_cnnStr;
                 m_cnn = new SqlConnection(cnnStr);
                 m_cnn.Open();
             }
 
             private SqlConnection m_cnn;
 
-            public lDataContent CreateDataContent(string tblName)
+            protected override lDataContent newDataContent(string tblName)
             {
                 lSqlDataContent data = new lSqlDataContent(tblName, m_cnn);
                 return data;
             }
 
-            public lDataSync CreateDataSync(string tblName)
-            {
-                lDataContent dataContent = CreateDataContent(tblName);
-                lDataSync dataSync = new lDataSync(dataContent);
-                return dataSync;
-            }
-
-            public DataTable GetData(string qry)
+            public override DataTable GetData(string qry)
             {
                 SqlDataAdapter dataAdapter = new SqlDataAdapter();
                 dataAdapter.SelectCommand = new SqlCommand(qry, m_cnn);
@@ -391,8 +430,13 @@ namespace test_binding
                 dataAdapter.Fill(table);
                 return table;
             }
+
+            public void Dispose()
+            {
+                m_cnn.Dispose();
+            }
         }
-        class lSQLiteContentProvider : lContentProvider
+        class lSQLiteContentProvider : lContentProvider, IDisposable
         {
             static lSQLiteContentProvider m_instance;
             public static lContentProvider getInstance()
@@ -401,7 +445,7 @@ namespace test_binding
                 return m_instance;
             }
 
-            lSQLiteContentProvider()
+            lSQLiteContentProvider() : base()
             {
                 //string dbPath = "test.db";
                 string dbPath = s_config.m_dbSchema.m_cnnStr;
@@ -434,45 +478,11 @@ namespace test_binding
                     }
                 }
 #endif  //crt_tables
-                m_dataSyncs = new Dictionary<string, lDataSync>();
-                m_dataContents = new Dictionary<string, lDataContent>();
             }
 
             private SQLiteConnection m_cnn;
-            private Dictionary<string, lDataSync> m_dataSyncs;
-            private Dictionary<string, lDataContent> m_dataContents;
 
-            public lDataContent CreateDataContent(string tblName)
-            {
-                lSQLiteDataContent dataContent = new lSQLiteDataContent(tblName, m_cnn);
-                if (!m_dataContents.ContainsKey(tblName))
-                {
-                    lSQLiteDataContent data = new lSQLiteDataContent(tblName, m_cnn);
-                    m_dataContents.Add(tblName, data);
-                    return data;
-                }
-                else
-                {
-                    return m_dataContents[tblName];
-                }
-            }
-
-            public lDataSync CreateDataSync(string tblName)
-            {
-                if (!m_dataSyncs.ContainsKey(tblName))
-                {
-                    lDataContent dataContent = CreateDataContent(tblName);
-                    lDataSync dataSync = new lDataSync(dataContent);
-                    m_dataSyncs.Add(tblName, dataSync);
-                    return dataSync;
-                }
-                else
-                {
-                    return m_dataSyncs[tblName];
-                }
-            }
-
-            public DataTable GetData(string qry)
+            public override DataTable GetData(string qry)
             {
                 SQLiteDataAdapter dataAdapter = new SQLiteDataAdapter();
                 dataAdapter.SelectCommand = new SQLiteCommand(qry, m_cnn);
@@ -481,6 +491,18 @@ namespace test_binding
                 table.Locale = System.Globalization.CultureInfo.InvariantCulture;
                 dataAdapter.Fill(table);
                 return table;
+            }
+
+
+            protected override lDataContent newDataContent(string tblName)
+            {
+                lSQLiteDataContent data = new lSQLiteDataContent(tblName, m_cnn);
+                return data;
+            }
+
+            public void Dispose()
+            {
+                m_cnn.Dispose();
             }
         }
 
@@ -605,7 +627,7 @@ namespace test_binding
         /// + reload()
         /// + submit()
         /// </summary>
-        class lDataContent
+        class lDataContent : IDisposable
         {
             public DataTable m_dataTable { get; private set; }
             public BindingSource m_bindingSource { get; private set; }
@@ -637,6 +659,7 @@ namespace test_binding
                     }
                 }
             }
+#if !use_cmd_params
             public virtual void Search(string exprs)
             {
                 string sql = string.Format("select * from {0} ", m_table);
@@ -646,6 +669,7 @@ namespace test_binding
                 }
                 GetData(sql);
             }
+#endif
 #if use_cmd_params
             public virtual void Search(List<string> exprs, Dictionary<string, string> srchParams) { throw new NotImplementedException(); }
 #endif
@@ -654,6 +678,25 @@ namespace test_binding
             public virtual void Reload() { m_changed = false; }
             public virtual void Submit() { m_changed = false; }
             protected virtual void GetData(string sql) { throw new NotImplementedException(); }
+            protected virtual DbDataAdapter getDataAdapter() { return null; }
+
+            protected void fillTable(DbDataAdapter da)
+            {
+                DataTable table = m_dataTable;
+                table.Clear();
+                table.Locale = System.Globalization.CultureInfo.InvariantCulture;
+                //DbDataAdapter da = getDataAdapter();
+                da.Fill(table);
+                if (m_refresher != null)
+                {
+                    m_refresher.Refresh();
+                }
+            }
+            public void Dispose()
+            {
+                m_bindingSource.Dispose();
+                m_dataTable.Dispose();
+            }
         }
         class lSQLiteDataContent : lDataContent
         {
@@ -677,7 +720,7 @@ namespace test_binding
             {
                 return string.Format("select * from {0} where id in (SELECT rowid from {0} order by rowid desc limit {1})", m_table, 100);
             }
-
+#if !use_cmd_params
             public override void Search(string exprs)
             {
                 string sql = string.Format("select * from {0} ", m_table);
@@ -691,26 +734,29 @@ namespace test_binding
                 }
                 GetData(sql);
             }
+#endif
 #if use_cmd_params
             public override void Search(List<string> exprs, Dictionary<string, string> srchParams)
             {
+                SQLiteCommand selectCommand;
                 string sql = string.Format("select * from {0} ", m_table);
                 if (exprs.Count > 0)
                 {
                     sql += " where " + string.Join(" and ", exprs);
-                    SQLiteCommand selectCommand = new SQLiteCommand(sql, m_cnn);
+                    selectCommand = new SQLiteCommand(sql, m_cnn);
                     foreach (var param in srchParams)
                     {
                         selectCommand.Parameters.AddWithValue(param.Key, param.Value);
                     }
-                    GetData(selectCommand);
                 }
                 else
                 {
-                    GetData(sql);
+                    selectCommand = new SQLiteCommand(selectLast100(), m_cnn);
                 }
+                GetData(selectCommand);
             }
 #endif
+
             public override void Reload()
             {
                 base.Reload();
@@ -751,14 +797,7 @@ namespace test_binding
                 Debug.WriteLine("{0}.GetData {1}", this, selectCommand.CommandText);
                 m_dataAdapter.SelectCommand = selectCommand;
                 // Populate a new data table and bind it to the BindingSource.
-                DataTable table = m_dataTable;
-                table.Clear();
-                table.Locale = System.Globalization.CultureInfo.InvariantCulture;
-                m_dataAdapter.Fill(table);
-                if (m_refresher != null)
-                {
-                    m_refresher.Refresh();
-                }
+                fillTable(m_dataAdapter);
             }
         }
         class lSqlDataContent : lDataContent
@@ -775,15 +814,17 @@ namespace test_binding
                 m_dataAdapter.SelectCommand = new SqlCommand(string.Format("select * from {0}", tblName), cnn);
             }
 
-            //public override void Search(string exprs)
-            //{
-            //    string sql = string.Format("select * from {0} ", m_table);
-            //    if (exprs != null)
-            //    {
-            //        sql += " where " + exprs;
-            //    }
-            //    GetData(sql);
-            //}
+#if !use_cmd_params
+            public override void Search(string exprs)
+            {
+                string sql = string.Format("select * from {0} ", m_table);
+                if (exprs != null)
+                {
+                    sql += " where " + exprs;
+                }
+                GetData(sql);
+            }
+#endif
 #if use_cmd_params
             public override void Search(List<string> exprs, Dictionary<string, string> srchParams)
             {
@@ -807,10 +848,12 @@ namespace test_binding
 #endif
             public override void Reload()
             {
+                base.Reload();
                 GetData(m_dataAdapter.SelectCommand);
             }
             public override void Submit()
             {
+                base.Submit();
                 using (SqlCommandBuilder builder = new SqlCommandBuilder(m_dataAdapter))
                 {
                     DataTable dt = (DataTable)m_bindingSource.DataSource;
@@ -830,10 +873,7 @@ namespace test_binding
             {
                 m_dataAdapter.SelectCommand = selectCommand;
                 // Populate a new data table and bind it to the BindingSource.
-                DataTable table = new DataTable();
-                table.Locale = System.Globalization.CultureInfo.InvariantCulture;
-                m_dataAdapter.Fill(table);
-                m_bindingSource.DataSource = table;
+                fillTable(m_dataAdapter);
             }
         }
 
@@ -886,7 +926,11 @@ namespace test_binding
                     string key = genKey(val);
                     m_colls.Add(val);
                     m_colls.Add(key);
-                    m_maps.Add(key, val);
+                    try
+                    {
+                        m_maps.Add(key, val);
+                    }
+                    catch { }
                 }
             }
             public void LoadData()
