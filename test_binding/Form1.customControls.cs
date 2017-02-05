@@ -1,4 +1,5 @@
 ﻿//#define use_custom_cols
+//#define format_currency
 
 using System.Windows.Forms;
 using System;
@@ -174,7 +175,16 @@ namespace test_binding
                     foreach (var field in fields)
                     {
                         //m_dataGridView[iCol, iRow].Value = field;
-                        row[iCol] = field;
+                        switch (m_tblInfo.m_cols[iCol].m_type) {
+#if format_currency
+                            case lTableInfo.lColInfo.lColType.currency:
+                                row[iCol] = field.Replace(",","");
+                                break;
+#endif
+                            default:
+                                row[iCol] = field;
+                                break;
+                        }
                         iCol++;
                     }
                     Debug.WriteLine("before tbl add row");

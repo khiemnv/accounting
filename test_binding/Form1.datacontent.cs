@@ -607,8 +607,8 @@ namespace test_binding
         /// </summary>
         class lDataContent
         {
-            public readonly DataTable m_dataTable;
-            public readonly BindingSource m_bindingSource;
+            public DataTable m_dataTable { get; private set; }
+            public BindingSource m_bindingSource { get; private set; }
             protected string m_table;
             public IRefresher m_refresher;
             public lDataContent()
@@ -617,7 +617,7 @@ namespace test_binding
                 m_bindingSource = new BindingSource();
                 m_bindingSource.DataSource = m_dataTable;
             }
-            public void InitCols()
+            protected void init()
             {
                 if (m_dataTable.Columns.Count == 0)
                 {
@@ -668,6 +668,9 @@ namespace test_binding
                 m_dataAdapter = new SQLiteDataAdapter();
                 m_dataAdapter.SelectCommand = new SQLiteCommand(selectLast100(), cnn);
                 m_dataAdapter.RowUpdated += M_dataAdapter_RowUpdated;
+#if init_datatable_cols
+                init();
+#endif
             }
 
             string selectLast100()

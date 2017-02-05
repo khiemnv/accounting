@@ -2,6 +2,7 @@
 #define use_custom_dgv
 #define manual_crt_columns
 //#define use_custom_cols
+//#define init_datatable_cols
 
 using System.Windows.Forms;
 using System;
@@ -171,9 +172,11 @@ namespace test_binding
                     dgvcol.DataPropertyName = field.m_field;
                     switch (field.m_type)
                     {
+#if format_currency
                         case lTableInfo.lColInfo.lColType.currency:
-                            //dgvcol.DefaultCellStyle.Format = "#0,0";
+                            dgvcol.DefaultCellStyle.Format = "#0,0";
                             break;
+#endif
                         case lTableInfo.lColInfo.lColType.dateTime:
                             dgvcol.DefaultCellStyle.Format = "yyyy-MM-dd";
                             break;
@@ -326,9 +329,8 @@ namespace test_binding
                 crtColumns();
 #endif
                 m_dataContent = s_contentProvider.CreateDataContent(m_tblInfo.m_tblName);
-#if init_datatable_cols
-                m_dataContent.InitCols();
-#else
+
+#if !init_datatable_cols
                 m_dataContent.Load();
 #endif
                 m_dataGridView.DataSource = m_dataContent.m_bindingSource;
