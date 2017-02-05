@@ -112,11 +112,85 @@ namespace test_binding
         {
             protected lTableInfo m_tblInfo;
             myCustomCtrl m_customCtrl;
+            DataRow m_newRow;
+            DataTable m_dataTable;
 
             public lCustomDGV(lTableInfo tblInfo)
             {
                 m_tblInfo = tblInfo;
+                DataTable dt = s_contentProvider.CreateDataContent(m_tblInfo.m_tblName).m_dataTable;
+                dt.TableNewRow += Dt_TableNewRow;
+                m_dataTable = dt;
             }
+
+            private void Dt_TableNewRow(object sender, DataTableNewRowEventArgs e)
+            {
+                m_newRow = e.Row;
+            }
+
+            protected override void OnKeyDown(KeyEventArgs e)
+            {
+                base.OnKeyDown(e);
+                if (e.Control)
+                    switch (e.KeyCode)
+                    {
+                        case Keys.C:
+                            //copy to clip board
+                            copyClipboard();
+                            break;
+                        case Keys.V:
+                            //paste data
+                            pasteClipboard();
+                            break;
+                    }
+            }
+
+            private void pasteClipboard()
+            {
+                Debug.WriteLine("{0}.pasteClipboard {1}", this, Clipboard.GetText());
+                string inTxt = Clipboard.GetText();
+                var lines = inTxt.Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
+
+                int baseRow = CurrentCell.RowIndex;
+                int baseCol = CurrentCell.ColumnIndex;
+                DataTable tbl = m_dataTable;
+                int iRow = baseRow;
+                foreach (var line in lines)
+                {
+                    bool bNewRow = false;
+                    var fields = line.Split(new char[] { '\t', ';' });
+                    DataRow row;
+                    if (iRow < tbl.Rows.Count)
+                    {
+                        row = tbl.Rows[iRow];
+                    }
+                    else
+                    {
+                        row = (m_newRow != null) ?m_newRow:tbl.NewRow();
+                        m_newRow = null;
+                        bNewRow = true;
+                    }
+                    int iCol = baseCol;
+                    foreach (var field in fields)
+                    {
+                        //m_dataGridView[iCol, iRow].Value = field;
+                        row[iCol] = field;
+                        iCol++;
+                    }
+                    Debug.WriteLine("before tbl add row");
+                    if (bNewRow) tbl.Rows.Add(row);
+                    Debug.WriteLine("after tbl add row");
+                    iRow++;
+                }
+                //m_dataGridView.CurrentCell = m_dataGridView[baseCol, baseRow];
+                Debug.WriteLine("{0}.pasteClipboard end", this);
+            }
+
+            private void copyClipboard()
+            {
+                Clipboard.SetDataObject(GetClipboardContent());
+            }
+
             protected override void OnDataError(bool displayErrorDialogIfNoHandler, DataGridViewDataErrorEventArgs e)
             {
                 //base.OnDataError(displayErrorDialogIfNoHandler, e);
@@ -140,9 +214,9 @@ namespace test_binding
                     }
                 }
             }
-            protected override void OnCellClick(DataGridViewCellEventArgs e)
+            protected override void OnCellDoubleClick(DataGridViewCellEventArgs e)
             {
-                base.OnCellClick(e);
+                base.OnCellDoubleClick(e);
                 Debug.WriteLine("OnCellClick");
                 if (e.ColumnIndex != -1) showCustomCtrl(e.ColumnIndex, e.RowIndex);
             }
@@ -156,7 +230,8 @@ namespace test_binding
                 }
             }
 
-            lDataSync m_data;
+            lDataSync m_customCtrlData;
+
             protected override void OnEditingControlShowing(DataGridViewEditingControlShowingEventArgs e)
             {
                 base.OnEditingControlShowing(e);
@@ -165,10 +240,10 @@ namespace test_binding
                 {
                     if (m_customCtrl != null) break;
 
-                    m_data = m_tblInfo.m_cols[CurrentCell.ColumnIndex].m_lookupData;
-                    if (m_data == null) break;
+                    m_customCtrlData = m_tblInfo.m_cols[CurrentCell.ColumnIndex].m_lookupData;
+                    if (m_customCtrlData == null) break;
 
-                    AutoCompleteStringCollection col = m_data.m_colls;
+                    AutoCompleteStringCollection col = m_customCtrlData.m_colls;
                     DataGridViewTextBoxEditingControl edt = (DataGridViewTextBoxEditingControl)e.Control;
                     edt.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
                     edt.AutoCompleteSource = AutoCompleteSource.CustomSource;
@@ -185,10 +260,10 @@ namespace test_binding
                 string selectedValue = edt.Text;
                 if (selectedValue != "")
                 {
-                    m_data.Update(selectedValue);
+                    m_customCtrlData.Update(selectedValue);
                 }
 
-                m_data = null;
+                m_customCtrlData = null;
                 edt.Validated -= Edt_Validated;
             }
 
@@ -237,6 +312,11 @@ namespace test_binding
                 }
             }
 #endif
+            protected override void Dispose(bool disposing)
+            {
+                base.Dispose(disposing);
+                m_dataTable.TableNewRow -= Dt_TableNewRow;
+            }
         }
         class lInterPaymentDGV : lCustomDGV
         {

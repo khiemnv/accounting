@@ -619,18 +619,21 @@ namespace test_binding
             }
             public void InitCols()
             {
-                foreach (var col in s_config.getTable(m_table).m_cols)
+                if (m_dataTable.Columns.Count == 0)
                 {
-                    DataColumn dc = m_dataTable.Columns.Add(col.m_field);
-                    switch (col.m_type)
+                    foreach (var col in s_config.getTable(m_table).m_cols)
                     {
-                        case lTableInfo.lColInfo.lColType.num:
-                        case lTableInfo.lColInfo.lColType.currency:
-                            dc.DataType = typeof(Int64);
-                            break;
-                        case lTableInfo.lColInfo.lColType.dateTime:
-                            dc.DataType = typeof(DateTime);
-                            break;
+                        DataColumn dc = m_dataTable.Columns.Add(col.m_field);
+                        switch (col.m_type)
+                        {
+                            case lTableInfo.lColInfo.lColType.num:
+                            case lTableInfo.lColInfo.lColType.currency:
+                                dc.DataType = typeof(Int64);
+                                break;
+                            case lTableInfo.lColInfo.lColType.dateTime:
+                                dc.DataType = typeof(DateTime);
+                                break;
+                        }
                     }
                 }
             }

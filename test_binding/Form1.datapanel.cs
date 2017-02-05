@@ -172,7 +172,7 @@ namespace test_binding
                     switch (field.m_type)
                     {
                         case lTableInfo.lColInfo.lColType.currency:
-                            dgvcol.DefaultCellStyle.Format = "#0,0";
+                            //dgvcol.DefaultCellStyle.Format = "#0,0";
                             break;
                         case lTableInfo.lColInfo.lColType.dateTime:
                             dgvcol.DefaultCellStyle.Format = "yyyy-MM-dd";
