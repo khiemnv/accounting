@@ -8,6 +8,7 @@ using System.Data.SqlClient;
 using System.Data.SQLite;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -201,7 +202,7 @@ namespace test_data
                 foreach (var line in lines)
                 {
                     bool bNewRow = false;
-                    var fields = line.Split(new char[] { '\t', ';', ',' });
+                    var fields = line.Split(new char[] { '\t', ';' });
                     DataRow row;
                     if (iRow < tbl.Rows.Count)
                     {
@@ -222,7 +223,13 @@ namespace test_data
                     foreach (var field in fields)
                     {
                         //m_dataGridView[iCol, iRow].Value = field;
-                        row[iCol] = field;
+                        if (iCol == 5) {
+                            row[iCol] = field.Replace(",","");
+                        }
+                        else
+                        {
+                            row[iCol] = field;
+                        }
                         iCol++;
                     }
                     Debug.WriteLine("before tbl add row");
@@ -387,11 +394,11 @@ namespace test_data
                 m_bs = new BindingSource();
                 m_tbl = new DataTable();
                 m_tbl.Columns.Add("ID");
-                m_tbl.Columns.Add("date");
+                m_tbl.Columns.Add("date", typeof(DateTime));
                 m_tbl.Columns.Add("receipt_number");
                 m_tbl.Columns.Add("name");
                 m_tbl.Columns.Add("content");
-                m_tbl.Columns.Add("amount");
+                m_tbl.Columns.Add("amount", typeof(Int64));
                 m_tbl.Columns.Add("note");
 
                 m_tbl.TableNewRow += M_tbl_TableNewRow;
