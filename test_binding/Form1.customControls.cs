@@ -53,7 +53,7 @@ namespace test_binding
 
             public void Dispose()
             {
-                m_DGV.Dispose();
+                //m_DGV.Dispose();
                 m_ctrl.Dispose();
             }
         }
