@@ -82,3 +82,6 @@ tableinfo
 20 error handing
   + dgv data error
   + insert new row - udpate rowid
+21 fix warning
+  + dispose
+22 fix sql qry error
