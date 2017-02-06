@@ -1,6 +1,6 @@
 ﻿//#define DEBUG_DRAWING
 #define use_custom_dgv
-//#define manual_crt_columns
+//#define manual_crt_dgv_columns
 //#define use_custom_cols
 #define init_datatable_cols
 #define format_currency
@@ -192,6 +192,34 @@ namespace test_binding
                 lastCol.FillWeight = 1;
             }
 
+            private void updateCols()
+            {
+                m_dataGridView.Columns[0].Visible = false;
+                lTableInfo tblInfo = m_tblInfo;
+                int i = 1;
+                for (; i < m_dataGridView.ColumnCount; i++)
+                {
+                    m_dataGridView.Columns[i].HeaderText = tblInfo.m_cols[i].m_alias;
+
+                    switch (tblInfo.m_cols[i].m_type)
+                    {
+                        case lTableInfo.lColInfo.lColType.currency:
+                            m_dataGridView.Columns[i].DefaultCellStyle.Format = "#0,0";
+                            break;
+                        case lTableInfo.lColInfo.lColType.dateTime:
+                            m_dataGridView.Columns[i].DefaultCellStyle.Format = "yyyy-MM-dd";
+                            break;
+                    }
+#if false
+                    m_dataGridView.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                    m_dataGridView.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    m_dataGridView.Columns[i].FillWeight = 1;
+#endif
+                }
+                m_dataGridView.Columns[i - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                m_dataGridView.Columns[i - 1].FillWeight = 1;
+            }
+
 #if !use_custom_dgv
             private myCustomCtrl m_customCtrl;
             private void M_dataGridView_CellEndEdit(object sender, DataGridViewCellEventArgs e)
@@ -294,45 +322,23 @@ namespace test_binding
             }
             private void update()
             {
-#if !manual_crt_columns
+#if !manual_crt_dgv_columns
                 if (m_dataGridView.AutoGenerateColumns == true)
                 {
-                    m_dataGridView.Columns[0].Visible = false;
-                    lTableInfo tblInfo = m_tblInfo;
-                    int i = 1;
-                    for (; i < m_dataGridView.ColumnCount; i++)
-                    {
-                        m_dataGridView.Columns[i].HeaderText = tblInfo.m_cols[i].m_alias;
-
-                        switch (tblInfo.m_cols[i].m_type)
-                        {
-                            case lTableInfo.lColInfo.lColType.currency:
-                                m_dataGridView.Columns[i].DefaultCellStyle.Format = "#0,0";
-                                break;
-                            case lTableInfo.lColInfo.lColType.dateTime:
-                                m_dataGridView.Columns[i].DefaultCellStyle.Format = "yyyy-MM-dd";
-                                break;
-                        }
-#if false
-                    m_dataGridView.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-                    m_dataGridView.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-                    m_dataGridView.Columns[i].FillWeight = 1;
-#endif
-                    }
-                    m_dataGridView.Columns[i - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-                    m_dataGridView.Columns[i - 1].FillWeight = 1;
+                    updateCols();
                     m_dataGridView.AutoGenerateColumns = false;
                 }
 #endif
                 Int64 sum = getSum();
                 m_sumTxt.Text = sum.ToString("#0,0");
             }
+
             public virtual void LoadData()
             {
                 //m_tblInfo = s_config.getTable(m_tblName);
                 m_tblInfo.LoadData();
 
-#if manual_crt_columns
+#if manual_crt_dgv_columns
                 m_dataGridView.AutoGenerateColumns = false;
                 crtColumns();
 #endif
