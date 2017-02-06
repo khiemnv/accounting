@@ -974,7 +974,10 @@ namespace test_binding
             public string find(string key)
             {
                 key = genKey(key);
-                return m_maps[key];
+                if (m_maps.ContainsKey(key))
+                    return m_maps[key];
+                else
+                    return null;
             }
         }
     }

@@ -224,12 +224,10 @@ namespace test_binding
                 lDataSync data = m_tblInfo.m_cols[e.ColumnIndex].m_lookupData;
                 if (data != null)
                 {
-                    string curVal = CurrentCell.Value.ToString();
-                    if (curVal != "")
-                    {
-                        string newVal = data.find(curVal);
-                        CurrentCell.Value = newVal;
-                    }
+                    string key = CurrentCell.Value.ToString();
+                    string val = data.find(key);
+                    if (val != null)
+                        CurrentCell.Value = val;
                 }
             }
             protected override void OnCellDoubleClick(DataGridViewCellEventArgs e)
@@ -248,7 +246,7 @@ namespace test_binding
                 }
             }
 
-            lDataSync m_customCtrlData;
+            lDataSync m_autoCompleteData;
 
             protected override void OnEditingControlShowing(DataGridViewEditingControlShowingEventArgs e)
             {
@@ -258,10 +256,10 @@ namespace test_binding
                 {
                     if (m_customCtrl != null) break;
 
-                    m_customCtrlData = m_tblInfo.m_cols[CurrentCell.ColumnIndex].m_lookupData;
-                    if (m_customCtrlData == null) break;
+                    m_autoCompleteData = m_tblInfo.m_cols[CurrentCell.ColumnIndex].m_lookupData;
+                    if (m_autoCompleteData == null) break;
 
-                    AutoCompleteStringCollection col = m_customCtrlData.m_colls;
+                    AutoCompleteStringCollection col = m_autoCompleteData.m_colls;
                     DataGridViewTextBoxEditingControl edt = (DataGridViewTextBoxEditingControl)e.Control;
                     edt.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
                     edt.AutoCompleteSource = AutoCompleteSource.CustomSource;
@@ -278,10 +276,10 @@ namespace test_binding
                 string selectedValue = edt.Text;
                 if (selectedValue != "")
                 {
-                    m_customCtrlData.Update(selectedValue);
+                    m_autoCompleteData.Update(selectedValue);
                 }
 
-                m_customCtrlData = null;
+                m_autoCompleteData = null;
                 edt.Validated -= Edt_Validated;
             }
 

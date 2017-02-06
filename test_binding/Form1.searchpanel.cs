@@ -202,11 +202,21 @@ namespace test_binding
                     m_combo.AutoCompleteCustomSource = col;
 
                     m_combo.Click += valueChanged;
+                    m_combo.Validated += M_combo_Validated;
 
                     m_text.Dispose();
                     m_text = null;
                 }
             }
+
+            private void M_combo_Validated(object sender, EventArgs e)
+            {
+                string key = m_combo.Text;
+                string val = m_colInfo.m_lookupData.find(key);
+                if (val != null)
+                    m_combo.Text = val;
+            }
+
             public override void Dispose()
             {
                 if (m_text != null) m_text.Dispose();
