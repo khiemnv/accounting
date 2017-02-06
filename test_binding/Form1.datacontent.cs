@@ -812,6 +812,9 @@ namespace test_binding
                 m_cnn = cnn;
                 m_dataAdapter = new SqlDataAdapter();
                 m_dataAdapter.SelectCommand = new SqlCommand(string.Format("select * from {0}", tblName), cnn);
+#if init_datatable_cols
+                init();
+#endif
             }
 
 #if !use_cmd_params

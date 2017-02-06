@@ -1,6 +1,6 @@
 ﻿//#define DEBUG_DRAWING
 #define use_custom_dgv
-#define manual_crt_columns
+//#define manual_crt_columns
 //#define use_custom_cols
 #define init_datatable_cols
 #define format_currency
@@ -27,7 +27,7 @@ namespace test_binding
         ///     update data grid - auto
         /// </summary>
         [DataContract(Name = "DataPanel")]
-        class lDataPanel:IDisposable
+        class lDataPanel : IDisposable
         {
             //public TableLayoutPanel m_tbl = new TableLayoutPanel();
             public FlowLayoutPanel m_reloadPanel;
@@ -261,7 +261,7 @@ namespace test_binding
             }
 #endif
 #if use_cmd_params
-            public void search(List<string> exprs, Dictionary<string,string> srchParams)
+            public void search(List<string> exprs, Dictionary<string, string> srchParams)
             {
                 m_dataContent.Search(exprs, srchParams);
                 update();
@@ -288,37 +288,41 @@ namespace test_binding
 
                 foreach (DataRow row in tbl.Rows)
                 {
-                    if (row[iCol]!=DBNull.Value) sum += (Int64)row[iCol];
+                    if (row[iCol] != DBNull.Value) sum += (Int64)row[iCol];
                 }
                 return sum;
             }
             private void update()
             {
 #if !manual_crt_columns
-                m_dataGridView.Columns[0].Visible = false;
-                lTableInfo tblInfo = m_tblInfo;
-                int i = 1;
-                for (; i < m_dataGridView.ColumnCount; i++)
+                if (m_dataGridView.AutoGenerateColumns == true)
                 {
-                    m_dataGridView.Columns[i].HeaderText = tblInfo.m_cols[i].m_alias;
-
-                    switch (tblInfo.m_cols[i].m_type)
+                    m_dataGridView.Columns[0].Visible = false;
+                    lTableInfo tblInfo = m_tblInfo;
+                    int i = 1;
+                    for (; i < m_dataGridView.ColumnCount; i++)
                     {
-                        case lTableInfo.lColInfo.lColType.currency:
-                            m_dataGridView.Columns[i].DefaultCellStyle.Format = "#0,0";
-                            break;
-                        case lTableInfo.lColInfo.lColType.dateTime:
-                            m_dataGridView.Columns[i].DefaultCellStyle.Format = "yyyy-MM-dd";
-                            break;
-                    }
+                        m_dataGridView.Columns[i].HeaderText = tblInfo.m_cols[i].m_alias;
+
+                        switch (tblInfo.m_cols[i].m_type)
+                        {
+                            case lTableInfo.lColInfo.lColType.currency:
+                                m_dataGridView.Columns[i].DefaultCellStyle.Format = "#0,0";
+                                break;
+                            case lTableInfo.lColInfo.lColType.dateTime:
+                                m_dataGridView.Columns[i].DefaultCellStyle.Format = "yyyy-MM-dd";
+                                break;
+                        }
 #if false
                     m_dataGridView.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                     m_dataGridView.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                     m_dataGridView.Columns[i].FillWeight = 1;
 #endif
+                    }
+                    m_dataGridView.Columns[i - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                    m_dataGridView.Columns[i - 1].FillWeight = 1;
+                    m_dataGridView.AutoGenerateColumns = false;
                 }
-                m_dataGridView.Columns[i-1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-                m_dataGridView.Columns[i-1].FillWeight = 1;
 #endif
                 Int64 sum = getSum();
                 m_sumTxt.Text = sum.ToString("#0,0");
