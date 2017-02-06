@@ -671,7 +671,7 @@ namespace test_binding
             }
 #endif
 #if use_cmd_params
-            public virtual void Search(List<string> exprs, Dictionary<string, string> srchParams) { throw new NotImplementedException(); }
+            public virtual void Search(List<string> exprs, List<lSearchParam> srchParams) { throw new NotImplementedException(); }
 #endif
             bool m_changed = true;
             public virtual void Load() { if (m_changed) { Reload(); } }
@@ -736,7 +736,7 @@ namespace test_binding
             }
 #endif
 #if use_cmd_params
-            public override void Search(List<string> exprs, Dictionary<string, string> srchParams)
+            public override void Search(List<string> exprs, List<lSearchParam> srchParams)
             {
                 SQLiteCommand selectCommand;
                 string sql = string.Format("select * from {0} ", m_table);
@@ -746,7 +746,7 @@ namespace test_binding
                     selectCommand = new SQLiteCommand(sql, m_cnn);
                     foreach (var param in srchParams)
                     {
-                        selectCommand.Parameters.AddWithValue(param.Key, param.Value);
+                        selectCommand.Parameters.AddWithValue(param.key, param.val);
                     }
                 }
                 else
@@ -829,7 +829,7 @@ namespace test_binding
             }
 #endif
 #if use_cmd_params
-            public override void Search(List<string> exprs, Dictionary<string, string> srchParams)
+            public override void Search(List<string> exprs, List<lSearchParam> srchParams)
             {
                 string sql = string.Format("select * from {0} ", m_table);
 
@@ -839,7 +839,8 @@ namespace test_binding
                     SqlCommand selectCommand = new SqlCommand(sql, m_cnn);
                     foreach (var param in srchParams)
                     {
-                        selectCommand.Parameters.AddWithValue(param.Key, param.Value);
+                        var p = selectCommand.Parameters.AddWithValue(param.key, param.val);
+                        if (param.type == DbType.String) { p.DbType = DbType.String; }
                     }
                     GetData(selectCommand);
                 }

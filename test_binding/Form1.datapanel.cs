@@ -289,7 +289,7 @@ namespace test_binding
             }
 #endif
 #if use_cmd_params
-            public void search(List<string> exprs, Dictionary<string, string> srchParams)
+            public void search(List<string> exprs, List<lSearchParam> srchParams)
             {
                 m_dataContent.Search(exprs, srchParams);
                 update();

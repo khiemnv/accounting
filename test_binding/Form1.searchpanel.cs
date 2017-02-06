@@ -1,5 +1,6 @@
 ﻿//#define DEBUG_DRAWING
 #define use_cmd_params
+#define use_sqlite
 
 using System.Drawing;
 using System.Windows.Forms;
@@ -8,6 +9,7 @@ using System;
 using System.Data;
 using System.Runtime.Serialization;
 using System.Diagnostics;
+using System.Data.Common;
 
 namespace test_binding
 {
@@ -25,8 +27,8 @@ namespace test_binding
             public string m_value;
         };
 
-        [DataContract(Name ="SearchCtrl")]
-        class lSearchCtrl:IDisposable
+        [DataContract(Name = "SearchCtrl")]
+        class lSearchCtrl : IDisposable
         {
             public enum ctrlType
             {
@@ -78,9 +80,9 @@ namespace test_binding
 #endif
             }
 
-            public virtual void updateSearchParams(List<string> exprs, Dictionary<string,string> srchParams){}
+            public virtual void updateSearchParams(List<string> exprs, List<lSearchParam> srchParams) { }
             public virtual string getSearchParams() { return null; }
-            public virtual void LoadData(){}
+            public virtual void LoadData() { }
             protected virtual void valueChanged(object sender, EventArgs e)
             {
                 m_label.Checked = true;
@@ -93,13 +95,22 @@ namespace test_binding
             }
         };
 
+        class lSearchParam
+        {
+            public string key;
+            public string val;
+            public DbType type;
+        }
+
         [DataContract(Name = "SearchCtrlText")]
         class lSearchCtrlText : lSearchCtrl
         {
             protected TextBox m_text;
             ComboBox m_combo;
-            string m_value {
-                get {
+            string m_value
+            {
+                get
+                {
                     if (m_text != null) return m_text.Text;
                     else return m_combo.Text;
                 }
@@ -125,25 +136,51 @@ namespace test_binding
                 }
                 return srchParam;
             }
-            public override void updateSearchParams(List<string> exprs, Dictionary<string, string> srchParams)
+            public override void updateSearchParams(List<string> exprs, List<lSearchParam> srchParams)
             {
                 if (m_label.Checked)
                 {
+#if use_sqlite
                     if (m_mode == SearchMode.like)
                     {
                         exprs.Add(string.Format("({0} like @{0})", m_fieldName));
-                        srchParams.Add(string.Format("@{0}", m_fieldName), string.Format("%{0}%", m_value));
+                        srchParams.Add(
+                            new lSearchParam()
+                            {
+                                key = string.Format("@{0}", m_fieldName),
+                                val = string.Format("%{0}%", m_value)
+                            }
+                        );
                     }
                     else
                     {
                         exprs.Add(string.Format("({0}=@{0})", m_fieldName));
-                        srchParams.Add(string.Format("@{0}", m_fieldName), m_value);
+                        srchParams.Add(
+                            new lSearchParam()
+                            {
+                                key = string.Format("@{0}", m_fieldName),
+                                val = m_value
+                            }
+                        );
                     }
+#else   //use sql server
+                    exprs.Add(string.Format("({0} like @{0})", m_fieldName));
+                    srchParams.Add(
+                        new lSearchParam()
+                        {
+                            key = string.Format("@{0}", m_fieldName),
+                            val = string.Format("%{0}%", m_value),
+                            type = DbType.String
+                        }
+                    );
+                    //exprs.Add(string.Format("({0} like @{0})", m_fieldName));
+                    //srchParams.Add(string.Format("@{0}", m_fieldName), string.Format("%{0}%", m_value));
+#endif
                 }
             }
             public override void LoadData()
             {
-                if (m_colInfo!= null && m_colInfo.m_lookupData != null)
+                if (m_colInfo != null && m_colInfo.m_lookupData != null)
                 {
                     m_combo = new ComboBox();
                     m_text.Hide();
@@ -224,20 +261,33 @@ namespace test_binding
                 }
                 return srchParams;
             }
-            public override void updateSearchParams(List<string> exprs, Dictionary<string,string> srchParams)
+            public override void updateSearchParams(List<string> exprs, List<lSearchParam> srchParams)
             {
                 if (m_label.Checked)
                 {
+                    srchParams.Add(
+                        new lSearchParam()
+                        {
+                            key = "@startDate",
+                            val = string.Format("{0} 00:00:00", m_startdate.Text),
+                            type = DbType.Date
+                        }
+                    );
                     if (m_to.Checked)
                     {
                         exprs.Add("(date between @startDate and @endDate)");
-                        srchParams.Add("@startDate", string.Format("{0} 00:00:00", m_startdate.Text));
-                        srchParams.Add("@endDate", string.Format("{0} 00:00:00", m_enddate.Text));
+                        srchParams.Add(
+                            new lSearchParam()
+                            {
+                                key = "@endDate",
+                                val = string.Format("{0} 00:00:00", m_enddate.Text),
+                                type = DbType.Date
+                            }
+                        );
                     }
                     else
                     {
                         exprs.Add("(date=@startDate)");
-                        srchParams.Add("@startDate", string.Format("{0} 00:00:00", m_startdate.Text));
                     }
                 }
             }
@@ -267,8 +317,8 @@ namespace test_binding
         /// + search btn
         /// + getWhereQry
         /// </summary>
-        [DataContract(Name ="SearchPanel")]
-        class lSearchPanel:IDisposable
+        [DataContract(Name = "SearchPanel")]
+        class lSearchPanel : IDisposable
         {
             public lDataPanel m_dataPanel;
             public lTableInfo m_tblInfo { get { return m_dataPanel.m_tblInfo; } }
@@ -276,7 +326,7 @@ namespace test_binding
             public TableLayoutPanel m_tbl;
             public Button m_searchBtn;
 
-            [DataMember(Name ="searchCtrls")]
+            [DataMember(Name = "searchCtrls")]
             public List<lSearchCtrl> m_searchCtrls;
 
             protected lSearchPanel() { }
@@ -304,7 +354,8 @@ namespace test_binding
                 //create search ctrls
                 List<lSearchCtrl> searchCtrls = m_searchCtrls;
                 m_searchCtrls = new List<lSearchCtrl>();
-                foreach (lSearchCtrl ctrl in searchCtrls) { 
+                foreach (lSearchCtrl ctrl in searchCtrls)
+                {
                     m_searchCtrls.Add(
                         crtSearchCtrl(
                             m_tblInfo,
@@ -349,7 +400,7 @@ namespace test_binding
             {
 #if use_cmd_params
                 List<string> exprs = new List<string>();
-                Dictionary<string, string> srchParams = new Dictionary<string, string>();
+                List<lSearchParam> srchParams = new List<lSearchParam>();
                 foreach (lSearchCtrl searchCtrl in m_searchCtrls)
                 {
                     searchCtrl.updateSearchParams(exprs, srchParams);
@@ -374,7 +425,7 @@ namespace test_binding
 
             public virtual void LoadData()
             {
-                foreach(lSearchCtrl ctrl in m_searchCtrls)
+                foreach (lSearchCtrl ctrl in m_searchCtrls)
                 {
                     ctrl.LoadData();
                 }
@@ -449,7 +500,8 @@ namespace test_binding
         [DataContract(Name = "InterPaymentSearchPanel")]
         class lInterPaymentSearchPanel : lSearchPanel
         {
-            public lInterPaymentSearchPanel(lDataPanel dataPanel){
+            public lInterPaymentSearchPanel(lDataPanel dataPanel)
+            {
                 m_dataPanel = dataPanel;
                 m_searchCtrls = new List<lSearchCtrl> {
                     crtSearchCtrl(m_tblInfo, "date", new Point(0, 0), new Size(1, 1)),
@@ -463,7 +515,8 @@ namespace test_binding
         [DataContract(Name = "ExternalPaymentSearchPanel")]
         class lExternalPaymentSearchPanel : lSearchPanel
         {
-            public lExternalPaymentSearchPanel(lDataPanel dataPanel) {
+            public lExternalPaymentSearchPanel(lDataPanel dataPanel)
+            {
                 m_dataPanel = dataPanel;
                 m_searchCtrls = new List<lSearchCtrl> {
                     crtSearchCtrl(m_tblInfo, "date", new Point(0, 0), new Size(1, 1)),
