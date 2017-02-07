@@ -1,4 +1,4 @@
-﻿#define update_dgv
+﻿//#define update_dgv
 //#define manual_crt_col
 
 using System;
@@ -36,9 +36,84 @@ namespace test_data
 
             public void Dispose()
             {
-                Debug.WriteLine("[{0}] elapsed {1}", m_msg, Environment.TickCount - m_begin);
+                Debug.WriteLine("[{0}] elapsed {1} ms", m_msg, Environment.TickCount - m_begin);
             }
         }
+
+        class lPrgDlg:Form
+        {
+            ProgressBar m_prg;
+            Label m_log;
+            public object m_param;
+            public lPrgDlg()
+            {
+                m_log = new Label();
+                m_log.Height = 50;
+                m_log.Dock = DockStyle.Top;
+                Controls.Add(m_log);
+
+                m_prg = new ProgressBar();
+                m_prg = new ProgressBar();
+                m_prg.Height = 25;
+                m_prg.Dock = DockStyle.Bottom;
+                m_prg.Maximum = 100;
+                m_prg.Step = 1;
+                //m_prg.Value = 50;
+                Controls.Add(m_prg);
+
+                Load += LPrgDlg_Load;
+            }
+            delegate void CloseDlg();
+            void closeDlgCallback()
+            {
+                if (this.m_prg.InvokeRequired)
+                {
+                    //call it self in form thread
+                    CloseDlg d = new CloseDlg(this.closeDlgCallback);
+                    this.Invoke(d);
+                }
+                else
+                {
+                    this.Close();
+                }
+            }
+            delegate void IncProgress(int i);
+            void incPrgCallback(int i)
+            {
+                if (this.m_prg.InvokeRequired)
+                {
+                    //call it self in form thread
+                    IncProgress d = new IncProgress(this.incPrgCallback);
+                    this.Invoke(d, new object[] { i });
+                }
+                else
+                {
+                    if (i < 100) { 
+                        this.m_prg.Value = i;
+                    }
+                    m_log.Text = string.Format("elapsed {0}", i);
+                }
+            }
+            private void LPrgDlg_Load(object sender, EventArgs e)
+            {
+                IAsyncResult t = (IAsyncResult)m_param;
+                Task.Run(() =>
+                {
+                    for (int i = 1; ; i++)
+                    {
+                        if (t.IsCompleted) break;
+
+                        incPrgCallback(i);
+                        Thread.Sleep(100);
+                        Console.WriteLine("elapsed {0} s", i);
+                    }
+                    //t.AsyncWaitHandle.WaitOne();
+                    incPrgCallback(100);
+                    closeDlgCallback();
+                });
+            }
+        }
+
         class lDataDlg : Form
         {
             public FlowLayoutPanel m_reloadPanel;
@@ -49,6 +124,7 @@ namespace test_data
             public Label m_status;
             public Label m_sumLabel;
             public TextBox m_sumTxt;
+            public ProgressBar m_prg;
 
             public DataGridView m_dataGridView;
             BindingSource m_bs;
@@ -170,6 +246,14 @@ namespace test_data
                 m_dataGridView.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
                 m_dataGridView.KeyDown += M_dataGridView_KeyDown;
                 //m_dataGridView.CellValueNeeded += M_dataGridView_CellValueNeeded;
+
+                m_prg = new ProgressBar();
+                m_prg.Height = 25;
+                m_prg.Dock = DockStyle.Bottom;
+                m_prg.Maximum = 100;
+                m_prg.Step = 1;
+                //m_prg.Value = 50;
+                Controls.Add(m_prg);
             }
 
             private void M_dataGridView_KeyDown(object sender, KeyEventArgs e)
@@ -263,7 +347,7 @@ namespace test_data
             private void reloadButton_Click(object sender, EventArgs e)
             {
                 int begin = Environment.TickCount;
-#if true
+#if false
                 //m_dataGridView.VirtualMode = true;
                 //m_dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
                 //m_dataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
@@ -278,17 +362,103 @@ namespace test_data
                 update();
 #endif
 #else //
-                m_tbl.Clear();
-                //using (myElapsed t = new myElapsed("fill data"))
-                //{
-                //    m_adapter.Fill(m_tbl);
-                //}
-                //m_thread = new Thread(new ThreadStart(threadRun));
-                //m_thread.Start();
-                //m_status.Text = m_thread.ThreadState.ToString();
-                threadRun();
+                //m_task = new Task(monitorGetData);
+                //m_task.Start();
+                var t = m_dataGridView.BeginInvoke(new noParamDelegate(getData));
 #endif
+                lPrgDlg prg = new lPrgDlg();
+                prg.m_param = t;
+                Task tMor = Task.Run(() =>
+                {
+                    //for (int i = 1; i < 99; i++)
+                    //{
+                    //    if (t.IsCompleted) break;
+
+                    //    //incPrgCallback(i);
+                    //    Thread.Sleep(100);
+                    //    Console.WriteLine("elapsed {0} s", i);
+                    //}
+                    //t.AsyncWaitHandle.WaitOne();
+                    //incPrgCallback(100);
+                    prg.ShowDialog();
+                });
             }
+
+            delegate void oneParamDelegate(object o);
+
+            delegate void IncProgress(int i);
+            void incPrgCallback(int i)
+            {
+                if (this.m_prg.InvokeRequired)
+                {
+                    //call it self in form thread
+                    IncProgress d = new IncProgress(this.incPrgCallback);
+                    this.Invoke(d, new object[] { i });
+                }
+                else
+                {
+                    this.m_prg.Value = i;
+                }
+            }
+
+            delegate void noParamDelegate();
+            void updateDgvCallback()
+            {
+                if (this.m_dataGridView.InvokeRequired)
+                {
+                    //call it self in form thread
+                    noParamDelegate d = new noParamDelegate(this.updateDgvCallback);
+                    this.Invoke(d);
+                }
+                else
+                {
+                    this.m_dataGridView.DataSource = null;
+                    m_bs.DataSource = m_tbl;
+                    this.m_dataGridView.DataSource = m_bs;
+                }
+            }
+
+            Task m_task;
+            void monitorGetData()
+            {
+#if false
+                var tmp = m_dataGridView.BeginInvoke(new noParamFunc(getData));
+                for (int i = 1; i<90;i++)
+                {
+                    Thread.Sleep(100);
+                    incPrgCallback(i);
+                    if (tmp.IsCompleted) break;
+                }
+                tmp.AsyncWaitHandle.WaitOne();
+                incPrgCallback(100);
+#endif
+#if true
+                var t = new Task(getData);
+                t.Start();
+                for(int i = 1; i<99;i++)
+                {
+                    incPrgCallback(i);
+                    if (t.Status == TaskStatus.RanToCompletion) break;
+                    Thread.Sleep(100);
+                }
+                t.Wait();
+                incPrgCallback(100);
+#endif
+                m_dataGridView.BeginInvoke(new noParamDelegate(updateDgvCallback));
+            }
+            void updateData()
+            {
+                m_dataGridView.DataSource = m_bs;
+            }
+            void getData()
+            {
+                m_tbl.Clear();
+                using (myElapsed t = new myElapsed("fill data"))
+                {
+                    m_adapter.Fill(m_tbl);
+                }
+            }
+
             public void threadRun()
             {
                 Debug.WriteLine("threadRun");
@@ -384,11 +554,11 @@ namespace test_data
             private void LDataDlg_Load(object sender, EventArgs e)
             {
                 m_cnn = new SQLiteConnection(string.Format("Data Source={0};Version=3;", dbPath));
-                m_cnn.Open();
+                m_cnn.OpenAsync();
 
                 m_cmd = new SQLiteCommand();
                 m_cmd.Connection = m_cnn;
-                m_cmd.CommandText = "select * from receipts where rowid in (select rowid from receipts order by rowid desc limit 10 )";   //~1p
+                m_cmd.CommandText = "select * from receipts where rowid in (select rowid from receipts order by rowid desc limit 100000 )";   //~1p
                 m_adapter = new SQLiteDataAdapter(m_cmd);
 
                 m_bs = new BindingSource();
