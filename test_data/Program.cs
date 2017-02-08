@@ -1,5 +1,7 @@
 ﻿//#define update_dgv
 //#define manual_crt_col
+//#define use_page_select
+#define use_progress_dlg
 
 using System;
 using System.Collections.Generic;
@@ -40,29 +42,78 @@ namespace test_data
             }
         }
 
+        interface myCursor
+        {
+            Int64 getPos();
+        }
+
         class lPrgDlg:Form
         {
+            TableLayoutPanel m_panel;
             ProgressBar m_prg;
-            Label m_log;
+            Label m_header;
+            Button m_btn;
             public object m_param;
+
+            public Int64 m_maxRowid;
+            public Int64 m_step;
+            public myCursor m_cursor;
+            public bool m_isCancel = false;
+
             public lPrgDlg()
             {
-                m_log = new Label();
-                m_log.Height = 50;
-                m_log.Dock = DockStyle.Top;
-                Controls.Add(m_log);
+                m_panel = new TableLayoutPanel();
+                m_panel.RowCount = 3;
 
-                m_prg = new ProgressBar();
+                m_btn = new Button();
+                m_btn.Text = "Cancel";
+                m_btn.Click += M_btn_Click;
+                m_btn.AutoSize = true;
+                m_btn.Dock = DockStyle.Bottom;
+                m_panel.Controls.Add(m_btn, 0, 2);
+
+                m_header = new Label();
+                m_header.Height = 50;
+                m_header.Anchor = AnchorStyles.Left|AnchorStyles.Top;
+                m_panel.Controls.Add(m_header, 0, 0);
+
+
                 m_prg = new ProgressBar();
                 m_prg.Height = 25;
-                m_prg.Dock = DockStyle.Bottom;
+                m_prg.Dock = DockStyle.None;
                 m_prg.Maximum = 100;
                 m_prg.Step = 1;
-                //m_prg.Value = 50;
-                Controls.Add(m_prg);
+                m_panel.Controls.Add(m_prg, 0, 1);
 
+                m_panel.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
+                m_panel.Dock = DockStyle.Fill;
+
+                Controls.Add(m_panel);
+
+                this.FormClosing += LPrgDlg_FormClosing;
                 Load += LPrgDlg_Load;
             }
+
+            protected override void OnClosed(EventArgs e)
+            {
+                sleepClose();
+            }
+
+            private void LPrgDlg_FormClosing(object sender, FormClosingEventArgs e)
+            {
+                //sleepClose();
+            }
+
+            private void M_btn_Click(object sender, EventArgs e)
+            {
+                sleepClose();
+            }
+
+            void sleepClose()
+            {
+                m_isCancel = true;
+            }
+            
             delegate void CloseDlg();
             void closeDlgCallback()
             {
@@ -77,44 +128,49 @@ namespace test_data
                     this.Close();
                 }
             }
-            delegate void IncProgress(int i);
-            void incPrgCallback(int i)
+            delegate void IncProgress(int iStep, int elapsed);
+            void incPrgCallback(int iStep, int elapsed)
             {
+                if (m_isCancel) return;
                 if (this.m_prg.InvokeRequired)
                 {
                     //call it self in form thread
                     IncProgress d = new IncProgress(this.incPrgCallback);
-                    this.Invoke(d, new object[] { i });
+                    this.Invoke(d, new object[] { iStep, elapsed });
                 }
                 else
                 {
-                    if (i < 100) { 
-                        this.m_prg.Value = i;
-                    }
-                    m_log.Text = string.Format("elapsed {0}", i);
+                    this.m_prg.Value = iStep;
+                    m_header.Text = string.Format("elapsed {0}", elapsed);
                 }
             }
+
+            Task m_task;
             private void LPrgDlg_Load(object sender, EventArgs e)
             {
+                Int64 nStep = m_maxRowid / m_step;
+                m_prg.Maximum = (int)nStep;
+                m_prg.Value = 0;
                 IAsyncResult t = (IAsyncResult)m_param;
-                Task.Run(() =>
+                m_task = Task.Run(() =>
                 {
                     for (int i = 1; ; i++)
                     {
+                        if (m_isCancel) break;
                         if (t.IsCompleted) break;
-
-                        incPrgCallback(i);
-                        Thread.Sleep(100);
-                        Console.WriteLine("elapsed {0} s", i);
+                        Int64 cur = m_cursor.getPos()/m_step;
+                        incPrgCallback((int)cur, i/10);
+                        Thread.Sleep(10);
+                        Console.WriteLine("elapsed {0} s", i/10);
                     }
                     //t.AsyncWaitHandle.WaitOne();
-                    incPrgCallback(100);
+                    //incPrgCallback();
                     closeDlgCallback();
                 });
             }
         }
 
-        class lDataDlg : Form
+        class lDataDlg : Form, myCursor
         {
             public FlowLayoutPanel m_reloadPanel;
             public FlowLayoutPanel m_sumPanel;
@@ -253,6 +309,7 @@ namespace test_data
                 m_prg.Maximum = 100;
                 m_prg.Step = 1;
                 //m_prg.Value = 50;
+                m_prg.Visible = false;
                 Controls.Add(m_prg);
             }
 
@@ -344,6 +401,51 @@ namespace test_data
                 }
             }
 
+            class syncParam
+            {
+                object t;
+                Int64 iCur;
+                Int64 n;
+            }
+            void fetchData()
+            {
+                m_iCursor = 0;
+                Int64 n = getMaxRowId();
+                SQLiteConnection cnn = m_cnn;
+                SQLiteCommand cmd = new SQLiteCommand(cnn);
+
+                //DataTable tbl = new DataTable();
+                DataTable tbl = m_tbl;
+                tbl.Clear();
+                SQLiteDataAdapter da = new SQLiteDataAdapter(cmd);
+                string tmp = "select * from receipts "
+                    + " where (rowid between {0} and {1}) "
+                    + " and (strftime('%Y', date) = '2016')";
+
+                using (new myElapsed())
+                {
+                    for (; m_iCursor < n; m_iCursor += 1000)
+                    {
+                        if (m_cancel) n = 0;    //exit loop
+                        da.SelectCommand.CommandText = string.Format(tmp, m_iCursor + 1, m_iCursor + 100);
+                        da.Fill(tbl);
+                    }
+                }
+            }
+
+            Int64 myCursor.getPos()
+            {
+                return m_iCursor;
+            }
+            Int64 getMaxRowId()
+            {
+                SQLiteConnection cnn = m_cnn;
+                string qry = "select max(rowid) from receipts;";
+                SQLiteCommand cmd = new SQLiteCommand(qry, cnn);
+                var ret = cmd.ExecuteScalar();
+                Int64 maxRowid = (Int64)ret;
+                return maxRowid;
+            }
             private void reloadButton_Click(object sender, EventArgs e)
             {
                 int begin = Environment.TickCount;
@@ -361,27 +463,116 @@ namespace test_data
 #if update_dgv
                 update();
 #endif
-#else //
+#endif //
+#if use_progress_dlg
                 //m_task = new Task(monitorGetData);
                 //m_task.Start();
-                var t = m_dataGridView.BeginInvoke(new noParamDelegate(getData));
-#endif
-                lPrgDlg prg = new lPrgDlg();
-                prg.m_param = t;
-                Task tMor = Task.Run(() =>
                 {
-                    //for (int i = 1; i < 99; i++)
-                    //{
-                    //    if (t.IsCompleted) break;
+                    m_cancel = false;
+                    var t = m_dataGridView.BeginInvoke(new noParamDelegate(fetchData));
+                    lPrgDlg prg = new lPrgDlg();
+                    prg.m_param = t;
+                    prg.m_cursor = this;
+                    prg.m_maxRowid = getMaxRowId();
+                    prg.m_step = 1000;
+                    Task tMor = Task.Run(() =>
+                    {
+                        prg.ShowDialog();
+                        if (prg.m_isCancel)
+                        {
+                            m_cancel = true;
+                        }
+                    });
+                }
+#endif
+#if use_page_select
+                Debug.WriteLine("{0} thread {1}", this, m_thread);
+                if (m_thread == null || !m_thread.IsAlive) {
+                    Debug.WriteLine("+ start thread");
+                    SQLiteConnection cnn = m_cnn;
+                    string qry = "select max(rowid) from receipts;";
+                    SQLiteCommand cmd = new SQLiteCommand(qry, cnn);
+                    var ret = cmd.ExecuteScalar();
+                    Int64 maxRowid = (Int64)ret;
+                    //max = max / 1000;
+                    m_prg.Maximum = (int)(maxRowid/1000);
+                    m_prg.Step = 1;
 
-                    //    //incPrgCallback(i);
-                    //    Thread.Sleep(100);
-                    //    Console.WriteLine("elapsed {0} s", i);
-                    //}
-                    //t.AsyncWaitHandle.WaitOne();
-                    //incPrgCallback(100);
-                    prg.ShowDialog();
-                });
+                    m_tbl.Clear();
+                    m_iCursor = 0;
+                    m_cancel = false;
+                    m_prg.Value = 0;
+                    m_prg.Show();
+                    m_thread = new Thread(new ParameterizedThreadStart(this.pageSelect));
+                    m_thread.Start(maxRowid);
+                }
+                else
+                {
+                    Debug.WriteLine("+ stop thread {0}", m_thread.ThreadState);
+                    if (m_thread.IsAlive) { 
+                        var t = Task.Run( new Action(this.cancelGetData));
+                    }
+                }
+#endif
+            }
+
+            Mutex m_mutex = new Mutex();
+            Int64 m_iCursor = 0;
+            struct fillOnePageParams {
+                string tmp;
+                SQLiteDataAdapter da;
+                Int64 i;
+            }
+            void fillOnePage(object param)
+            {
+                SQLiteConnection cnn = m_cnn;
+                SQLiteCommand cmd = new SQLiteCommand(cnn);
+
+                //DataTable tbl = new DataTable();
+                DataTable tbl = m_tbl;
+                SQLiteDataAdapter da = new SQLiteDataAdapter(cmd);
+                string tmp = "select * from receipts "
+                    + " where (rowid between {0} and {1}) "
+                    + " and (strftime('%Y', date) = '2016')";
+
+                da.SelectCommand.CommandText = string.Format(tmp, m_iCursor + 1, m_iCursor + 100);
+                da.Fill(tbl);
+                m_prg.PerformStep();
+            }
+
+            void cancelGetData()
+            {
+                m_mutex.WaitOne();
+                m_cancel = true;
+                m_mutex.ReleaseMutex();
+            }
+
+            bool m_cancel = false;
+
+            private void pageSelect(object maxRowid)
+            {
+                Int64 n = (Int64)maxRowid;
+                using (new myElapsed())
+                {
+                    for (; m_iCursor < n; m_iCursor += 1000)
+                    {
+                        m_mutex.WaitOne();
+                        if (!m_cancel)
+                        {
+                            var t = m_dataGridView.BeginInvoke(new oneParamDelegate(this.fillOnePage),
+                                 new object[] { m_iCursor });
+                            t.AsyncWaitHandle.WaitOne();
+                        }
+                        else
+                        {
+                            n = 0;
+                        }
+                        m_mutex.ReleaseMutex();
+                        Thread.Sleep(1);
+                    }
+                    m_prg.Invoke(new noParamDelegate(m_prg.Hide));
+                }
+                this.Invoke(new noParamDelegate(this.update));
             }
 
             delegate void oneParamDelegate(object o);
@@ -655,6 +846,7 @@ namespace test_data
             {
                 //MessageBox.Show("invalid value", "dgv data error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+
         }
 
         [STAThread]
@@ -662,6 +854,7 @@ namespace test_data
         {
             //crtDict();
             //gen_data();
+            //test_page();
             lDataDlg dlg = new lDataDlg();
             dlg.ShowDialog();
         }
@@ -683,10 +876,16 @@ namespace test_data
 
         }
         static string dbPath = @"..\..\..\test_binding\appData.db";
-        static void gen_data()
+
+        static SQLiteConnection get_cnn()
         {
             SQLiteConnection cnn = new SQLiteConnection(string.Format("Data Source={0};Version=3;", dbPath));
             cnn.Open();
+            return cnn;
+        }
+        static void gen_data()
+        {
+            SQLiteConnection cnn = get_cnn();
 
             var cmd = new SQLiteCommand();
             cmd.Connection = cnn;
@@ -699,6 +898,31 @@ namespace test_data
                 var ret = cmd.ExecuteNonQuery();
             }
             transaction.Commit();
+        }
+
+        static void test_page()
+        {
+            SQLiteConnection cnn = get_cnn();
+            string qry = "select max(rowid) from receipts;";
+            SQLiteCommand cmd = new SQLiteCommand(qry, cnn);
+            var ret = cmd.ExecuteScalar();
+
+            DataTable tbl = new DataTable();
+            SQLiteDataAdapter da = new SQLiteDataAdapter(cmd);
+            string tmp = "select * from receipts "
+                + " where (rowid between {0} and {1}) "
+                + " and (strftime('%Y', date) = '2016')";
+            Int64 i = 0;
+            for (; i < (Int64)ret; i += 100)
+            {
+                da.SelectCommand.CommandText = string.Format(tmp, i + 1, i + 100);
+                da.Fill(tbl);
+            }
+
+            //DataTable tbl2 = new DataTable();
+            //da.SelectCommand.CommandText = "select * from receipts "
+            //    + " where (strftime('%Y', date) = '2016')";
+            //da.Fill(tbl2);
         }
 
         static string[] createReceiptsRec()
