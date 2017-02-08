@@ -20,6 +20,11 @@ using System.Windows.Forms;
 
 namespace test_data
 {
+    public interface myCursor
+    {
+        Int64 getPos();
+    }
+
     public partial class Program
     {
         class myElapsed:IDisposable
@@ -42,11 +47,6 @@ namespace test_data
             }
         }
 
-        interface myCursor
-        {
-            Int64 getPos();
-        }
-
         class lPrgDlg:Form
         {
             TableLayoutPanel m_panel;
@@ -56,7 +56,7 @@ namespace test_data
             public object m_param;
 
             public Int64 m_maxRowid;
-            public Int64 m_step;
+            public Int64 m_scale;
             public myCursor m_cursor;
             public bool m_isCancel = false;
 
@@ -148,7 +148,7 @@ namespace test_data
             Task m_task;
             private void LPrgDlg_Load(object sender, EventArgs e)
             {
-                Int64 nStep = m_maxRowid / m_step;
+                Int64 nStep = m_maxRowid / m_scale;
                 m_prg.Maximum = (int)nStep;
                 m_prg.Value = 0;
                 IAsyncResult t = (IAsyncResult)m_param;
@@ -158,9 +158,9 @@ namespace test_data
                     {
                         if (m_isCancel) break;
                         if (t.IsCompleted) break;
-                        Int64 cur = m_cursor.getPos()/m_step;
+                        Int64 cur = m_cursor.getPos()/m_scale;
                         incPrgCallback((int)cur, i/10);
-                        Thread.Sleep(10);
+                        Thread.Sleep(100);
                         Console.WriteLine("elapsed {0} s", i/10);
                     }
                     //t.AsyncWaitHandle.WaitOne();
@@ -470,11 +470,13 @@ namespace test_data
                 {
                     m_cancel = false;
                     var t = m_dataGridView.BeginInvoke(new noParamDelegate(fetchData));
-                    lPrgDlg prg = new lPrgDlg();
+                    //lPrgDlg prg = new lPrgDlg();
+                    ProgressDlg prg = new ProgressDlg();
                     prg.m_param = t;
                     prg.m_cursor = this;
                     prg.m_maxRowid = getMaxRowId();
-                    prg.m_step = 1000;
+                    prg.m_scale = 1000;
+                    prg.m_descr = "Getting data ...";
                     Task tMor = Task.Run(() =>
                     {
                         prg.ShowDialog();
@@ -482,6 +484,7 @@ namespace test_data
                         {
                             m_cancel = true;
                         }
+                        prg.Dispose();
                     });
                 }
 #endif
@@ -817,7 +820,7 @@ namespace test_data
 
             private void M_dataGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
             {
-                Debug.WriteLine("{0} rowadded {1}", this, e.RowIndex);
+                //Debug.WriteLine("{0} rowadded {1}", this, e.RowIndex);
                 if (e.RowIndex > m_tbl.Rows.Count)
                 {
                     DataGridView dgv = (DataGridView)sender;
