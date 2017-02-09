@@ -459,6 +459,7 @@ namespace test_data
                 SQLiteCommand cmd = new SQLiteCommand(qry, cnn);
                 var ret = cmd.ExecuteScalar();
                 Int64 maxRowid = (Int64)ret;
+                cmd.Dispose();
                 return maxRowid;
             }
             private void reloadButton_Click(object sender, EventArgs e)
@@ -484,7 +485,8 @@ namespace test_data
                 //m_task.Start();
                 {
                     m_cancel = false;
-                    var t = m_dataGridView.BeginInvoke(new noParamDelegate(fetchData));
+                    //var t = m_dataGridView.BeginInvoke(new noParamDelegate(fetchData));
+                    var t = this.BeginInvoke(new noParamDelegate(fetchData));
                     //lPrgDlg prg = new lPrgDlg();
                     ProgressDlg prg = new ProgressDlg();
                     prg.m_param = t;
@@ -762,8 +764,7 @@ namespace test_data
             }
             private void LDataDlg_Load(object sender, EventArgs e)
             {
-                m_cnn = new SQLiteConnection(string.Format("Data Source={0};Version=3;", dbPath));
-                m_cnn.OpenAsync();
+                m_cnn = get_cnn();
 
                 m_cmd = new SQLiteCommand();
                 m_cmd.Connection = m_cnn;
@@ -893,7 +894,7 @@ namespace test_data
         {
 
         }
-        static string dbPath = @"E:\training\appData.db";
+        static string dbPath = @"..\..\..\test_binding\appData.db";
 
         static SQLiteConnection get_cnn()
         {
