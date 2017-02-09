@@ -76,7 +76,8 @@ tableinfo
   + header cell style
   + auto fill month (1-12)
 17 speed loading - not yet
-18 progress - not yet
+18 progress
+  + show dialog
 19 generate test data
   + test 1000*1000 rows
 20 error handing

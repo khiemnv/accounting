@@ -49,7 +49,7 @@ namespace test_binding
 
             //init content provider
 #if use_sqlite
-            s_contentProvider = lSQLiteContentProvider.getInstance();
+            s_contentProvider = lSQLiteContentProvider.getInstance(this);
 #else
             s_contentProvider = lSqlContentProvider.getInstance();
 #endif  //use_sqlite

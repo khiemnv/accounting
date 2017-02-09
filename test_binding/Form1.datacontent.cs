@@ -2,6 +2,8 @@
 #define crt_tables
 #define init_datatable_cols
 #define use_cmd_params
+#define use_single_qry
+#define use_progress_dlg
 
 using System.Windows.Forms;
 using System.Data.SqlClient;
@@ -15,6 +17,7 @@ using System.Runtime.Serialization;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Data.Common;
+using System.Threading.Tasks;
 
 namespace test_binding
 {
@@ -351,6 +354,7 @@ namespace test_binding
                 m_dataContents = new Dictionary<string, lDataContent>();
             }
 
+            protected Form m_form;
             private Dictionary<string, lDataSync> m_dataSyncs;
             private Dictionary<string, lDataContent> m_dataContents;
 
@@ -369,6 +373,7 @@ namespace test_binding
                 if (!m_dataContents.ContainsKey(tblName))
                 {
                     lDataContent data = newDataContent(tblName);
+                    data.m_form = m_form;
                     m_dataContents.Add(tblName, data);
                     return data;
                 }
@@ -395,11 +400,12 @@ namespace test_binding
         class lSqlContentProvider : lContentProvider, IDisposable
         {
             static lSqlContentProvider m_instance;
-            public static lContentProvider getInstance()
+            public static lContentProvider getInstance(Form parent)
             {
                 if (m_instance == null)
                 {
                     m_instance = new lSqlContentProvider();
+                    m_instance.m_form = parent;
                 }
                 return m_instance;
             }
@@ -439,9 +445,12 @@ namespace test_binding
         class lSQLiteContentProvider : lContentProvider, IDisposable
         {
             static lSQLiteContentProvider m_instance;
-            public static lContentProvider getInstance()
+            public static lContentProvider getInstance(Form parent)
             {
-                if (m_instance == null) { m_instance = new lSQLiteContentProvider(); }
+                if (m_instance == null) {
+                    m_instance = new lSQLiteContentProvider();
+                    m_instance.m_form = parent;
+                }
                 return m_instance;
             }
 
@@ -627,8 +636,9 @@ namespace test_binding
         /// + reload()
         /// + submit()
         /// </summary>
-        class lDataContent : IDisposable
+        class lDataContent : IDisposable, myCursor
         {
+            public Form m_form;
             public DataTable m_dataTable { get; private set; }
             public BindingSource m_bindingSource { get; private set; }
             protected string m_table;
@@ -643,7 +653,9 @@ namespace test_binding
             {
                 if (m_dataTable.Columns.Count == 0)
                 {
-                    foreach (var col in s_config.getTable(m_table).m_cols)
+                    lTableInfo tbl = s_config.getTable(m_table);
+                    if (tbl == null) return;
+                    foreach (var col in tbl.m_cols)
                     {
                         DataColumn dc = m_dataTable.Columns.Add(col.m_field);
                         switch (col.m_type)
@@ -680,13 +692,94 @@ namespace test_binding
             protected virtual void GetData(string sql) { throw new NotImplementedException(); }
             protected virtual DbDataAdapter getDataAdapter() { return null; }
 
-            protected void fillTable(DbDataAdapter da)
+            class myElapsed : IDisposable
+            {
+                int m_begin;
+                string m_msg = "";
+                public myElapsed(string msg)
+                {
+                    m_msg = msg;
+                    m_begin = Environment.TickCount;
+                }
+                public myElapsed()
+                {
+                    m_begin = Environment.TickCount;
+                }
+
+                public void Dispose()
+                {
+                    Debug.WriteLine("[{0}] elapsed {1} ms", m_msg, Environment.TickCount - m_begin);
+                }
+            }
+            protected virtual Int64 getMaxRowId(){return 0;}
+            protected virtual Int64 getRowCount(){return 0; }
+            IAsyncResult m_task;
+            void fetchLargeData(object param)
+            {
+                if (m_task == null)
+                {
+                    m_task = m_form.BeginInvoke(new oneParamDelegate(fetchLargeData), new object[] { param });
+                    //lPrgDlg prg = new lPrgDlg();
+                    ProgressDlg prg = new ProgressDlg();
+                    prg.m_param = m_task;
+                    prg.m_cursor = this;
+                    prg.m_maxRowid = getMaxRowId();
+                    prg.m_scale = 1000;
+                    prg.m_descr = "Getting data ...";
+                    Task tMor = Task.Run(() =>
+                    {
+                        prg.ShowDialog();
+                        prg.Dispose();
+                        m_task = null;
+                    });
+                }
+                else
+                {
+                    using (new myElapsed())
+                    {
+                        DataTable tbl = m_dataTable;
+                        DbDataAdapter da = (DbDataAdapter)param;
+
+                        tbl.Clear();
+                        tbl.Locale = System.Globalization.CultureInfo.InvariantCulture;
+
+                        tbl.RowChanged += M_tbl_RowChanged;
+                        m_lastId = 0;
+
+                        da.Fill(tbl);
+                        tbl.RowChanged -= M_tbl_RowChanged;
+
+                        if (m_refresher != null)
+                        {
+                            m_refresher.Refresh();
+                        }
+                    }
+                }
+            }
+#if use_single_qry
+            Int64 m_lastId = 0;
+            private void M_tbl_RowChanged(object sender, DataRowChangeEventArgs e)
+            {
+                //Debug.WriteLine("{0}.M_tbl_RowChanged {1}", this, e.Row[0]);
+                m_lastId = (Int64)e.Row[0];
+            }
+            Int64 myCursor.getPos() { return m_lastId; }
+#endif
+            delegate void oneParamDelegate(object obj);
+            protected void fetchData(DbDataAdapter da)
+            {
+                if (getRowCount() > 1000)
+                    fetchLargeData(da);
+                else
+                    fetchSmallData(da);
+            }
+            void fetchSmallData(DbDataAdapter da)
             {
                 DataTable table = m_dataTable;
                 table.Clear();
                 table.Locale = System.Globalization.CultureInfo.InvariantCulture;
-                //DbDataAdapter da = getDataAdapter();
                 da.Fill(table);
+
                 if (m_refresher != null)
                 {
                     m_refresher.Refresh();
@@ -709,16 +802,19 @@ namespace test_binding
                 m_table = tblName;
                 m_cnn = cnn;
                 m_dataAdapter = new SQLiteDataAdapter();
-                m_dataAdapter.SelectCommand = new SQLiteCommand(selectLast100(), cnn);
+                m_dataAdapter.SelectCommand = new SQLiteCommand(selectLast(100), cnn);
                 m_dataAdapter.RowUpdated += M_dataAdapter_RowUpdated;
 #if init_datatable_cols
                 init();
 #endif
             }
 
-            string selectLast100()
+            string selectLast(int count)
             {
-                return string.Format("select * from {0} where id in (SELECT rowid from {0} order by rowid desc limit {1})", m_table, 100);
+                return string.Format("select * from {0} "
+                    +" where "
+                    + " id in (SELECT id from {0} order by id desc limit {1})",
+                    m_table, count);
             }
 #if !use_cmd_params
             public override void Search(string exprs)
@@ -751,7 +847,7 @@ namespace test_binding
                 }
                 else
                 {
-                    selectCommand = new SQLiteCommand(selectLast100(), m_cnn);
+                    selectCommand = new SQLiteCommand(selectLast(100), m_cnn);
                 }
                 GetData(selectCommand);
             }
@@ -797,7 +893,28 @@ namespace test_binding
                 Debug.WriteLine("{0}.GetData {1}", this, selectCommand.CommandText);
                 m_dataAdapter.SelectCommand = selectCommand;
                 // Populate a new data table and bind it to the BindingSource.
-                fillTable(m_dataAdapter);
+                fetchData(m_dataAdapter);
+            }
+
+            protected override Int64 getMaxRowId()
+            {
+                SQLiteConnection cnn = m_cnn;
+                string qry = string.Format("select max(rowid) from {0}", m_table);
+                SQLiteCommand cmd = new SQLiteCommand(qry, cnn);
+                var ret = cmd.ExecuteScalar();
+                Int64 maxRowid = (Int64)ret;
+                cmd.Dispose();
+                return maxRowid;
+            }
+            protected override Int64 getRowCount()
+            {
+                SQLiteConnection cnn = m_cnn;
+                string qry = string.Format("select count(*) from {0}", m_table);
+                SQLiteCommand cmd = new SQLiteCommand(qry, cnn);
+                var ret = cmd.ExecuteScalar();
+                Int64 rowCount = (Int64)ret;
+                cmd.Dispose();
+                return rowCount;
             }
         }
         class lSqlDataContent : lDataContent
@@ -877,7 +994,7 @@ namespace test_binding
             {
                 m_dataAdapter.SelectCommand = selectCommand;
                 // Populate a new data table and bind it to the BindingSource.
-                fillTable(m_dataAdapter);
+                fetchData(m_dataAdapter);
             }
         }
 
