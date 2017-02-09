@@ -2,6 +2,8 @@
 //#define manual_crt_col
 //#define use_page_select
 #define use_progress_dlg
+#define use_single_qry
+//#define use_page_select
 
 using System;
 using System.Collections.Generic;
@@ -401,42 +403,55 @@ namespace test_data
                 }
             }
 
-            class syncParam
-            {
-                object t;
-                Int64 iCur;
-                Int64 n;
-            }
             void fetchData()
             {
-                m_iCursor = 0;
-                Int64 n = getMaxRowId();
-                SQLiteConnection cnn = m_cnn;
-                SQLiteCommand cmd = new SQLiteCommand(cnn);
-
-                //DataTable tbl = new DataTable();
-                DataTable tbl = m_tbl;
-                tbl.Clear();
-                SQLiteDataAdapter da = new SQLiteDataAdapter(cmd);
-                string tmp = "select * from receipts "
-                    + " where (rowid between {0} and {1}) "
-                    + " and (strftime('%Y', date) = '2016')";
-
                 using (new myElapsed())
                 {
-                    for (; m_iCursor < n; m_iCursor += 1000)
+                    m_iCursor = 0;
+                    Int64 n = getMaxRowId();
+                    SQLiteConnection cnn = m_cnn;
+                    SQLiteCommand cmd = new SQLiteCommand(cnn);
+
+                    //DataTable tbl = new DataTable();
+                    DataTable tbl = m_tbl;
+                    tbl.Clear();
+                    SQLiteDataAdapter da = new SQLiteDataAdapter(cmd);
+
+#if use_page_select
+                    string tmp = "select * from receipts "
+                    + " where (rowid between {0} and {1}) "
+                    + " and (strftime('%Y', date) = '2016')";
+                    int nRow = 1000;
+                    for (; m_iCursor < n; m_iCursor += nRow)
                     {
                         if (m_cancel) n = 0;    //exit loop
-                        da.SelectCommand.CommandText = string.Format(tmp, m_iCursor + 1, m_iCursor + 100);
+                        da.SelectCommand.CommandText = string.Format(tmp, m_iCursor + 1, m_iCursor + nRow);
                         da.Fill(tbl);
                     }
+#endif
+#if use_single_qry
+                    m_tbl.RowChanged += M_tbl_RowChanged;
+                    m_lastId = 0;
+                    da.SelectCommand.CommandText = "select * from receipts "
+                    + " where (strftime('%Y', date) = '2016')";
+                    da.Fill(tbl);
+                    m_tbl.RowChanged -= M_tbl_RowChanged;
+#endif
                 }
             }
-
-            Int64 myCursor.getPos()
+#if use_single_qry
+            Int64 m_lastId = 0;
+            private void M_tbl_RowChanged(object sender, DataRowChangeEventArgs e)
             {
-                return m_iCursor;
+                //Debug.WriteLine("{0}.M_tbl_RowChanged {1}", this, e.Row[0]);
+                m_lastId = (Int64)e.Row[0];
             }
+            Int64 myCursor.getPos(){ return m_lastId;}
+#endif
+#if use_page_select
+            Int64 myCursor.getPos() { return m_iCursor; }
+#endif
+
             Int64 getMaxRowId()
             {
                 SQLiteConnection cnn = m_cnn;
@@ -488,7 +503,7 @@ namespace test_data
                     });
                 }
 #endif
-#if use_page_select
+#if !use_progress_dlg
                 Debug.WriteLine("{0} thread {1}", this, m_thread);
                 if (m_thread == null || !m_thread.IsAlive) {
                     Debug.WriteLine("+ start thread");
@@ -757,7 +772,7 @@ namespace test_data
 
                 m_bs = new BindingSource();
                 m_tbl = new DataTable();
-                m_tbl.Columns.Add("ID");
+                m_tbl.Columns.Add("ID", typeof(Int64));
                 m_tbl.Columns.Add("date", typeof(DateTime));
                 m_tbl.Columns.Add("receipt_number");
                 m_tbl.Columns.Add("name");
@@ -878,7 +893,7 @@ namespace test_data
         {
 
         }
-        static string dbPath = @"..\..\..\test_binding\appData.db";
+        static string dbPath = @"E:\training\appData.db";
 
         static SQLiteConnection get_cnn()
         {

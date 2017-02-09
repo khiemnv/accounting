@@ -1,4 +1,6 @@
-﻿using System;
+﻿//#define enable_cancel
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -32,6 +34,17 @@ namespace test_data
         Thread m_task;
         Int64 m_nStep;
 
+        public event EventHandler customEvent;
+
+        protected virtual void OncustomEvent(EventArgs e)
+        {
+            EventHandler handler = customEvent;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
         class myMutex
         {
             Mutex m_mutex;
@@ -56,36 +69,37 @@ namespace test_data
         public ProgressDlg()
         {
             InitializeComponent();
-
+#if enable_cancel
             m_cancelBtn.Click += M_cancelBtn_Click;
+#else
+            m_cancelBtn.Visible = false;
+#endif
 
             this.Load += ProgressDlg_Load;
         }
 
         void cancel()
         {
+#if enable_cancel
             m_isCancel = true;
+#endif
         }
 
-        protected override void OnClosed(EventArgs e)
+        protected override void OnClosing(CancelEventArgs e)
         {
-            Debug.WriteLine("{0}.OnClosed cur thread {1}", this, Thread.CurrentThread.ManagedThreadId);
-            if (m_state == state.init)
-            {
-                m_state = state.closed;
+            if (m_state == state.init) { 
                 cancel();
-                m_task.Abort();
+                e.Cancel = true;
             }
         }
 
         private void M_cancelBtn_Click(object sender, EventArgs e)
         {
             Debug.WriteLine("{0}.M_cancelBtn_Click cur thread {1}", this, Thread.CurrentThread.ManagedThreadId);
-            m_state = state.canceled;
             cancel();
         }
 
-        private void ProgressDlg_Load(object sender, EventArgs e)
+        void start()
         {
             m_nStep = m_maxRowid / m_scale;
             m_prg.Maximum = (int)m_nStep;
@@ -93,43 +107,36 @@ namespace test_data
             IAsyncResult t = (IAsyncResult)m_param;
             m_task = new Thread(new ThreadStart(() =>
             {
-                //bool bLoop = true;
-                for (int i = 1; !m_isCancel; i++)
+                for (int i = 1; ; i++)
                 {
                     if (t.IsCompleted)
                     {
                         m_state = state.completed;
                         break;
                     }
-                    Int64 cur = m_cursor.getPos() / m_scale;
-#if false
                     if (m_isCancel)
                     {
-                        bLoop = false;
+                        m_state = state.canceled;
+                        break;
                     }
-                    else
-                    {
-                        lIncProgress d = new lIncProgress(this.incPrgCallback);
-                        this.Invoke(d, new object[] { (int)cur, i / 10 });
-                    }
-#else
+                    Int64 cur = m_cursor.getPos() / m_scale;
                     incPrgCallback((int)cur, i / 10);
-#endif
                     Thread.Sleep(100);
                     Debug.WriteLine("{0}.m_task cur thread {1} elapsed {2} s",
-                        this, 
+                        this,
                         Thread.CurrentThread.ManagedThreadId,
                         i / 10);
                 }
                 closeDlgCallback();
-            }));
+            }
+            ));
             m_task.Start();
         }
 
-        //protected override void OnClose(EventArgs e)
-        //{
-        //    m_isCancel = true;
-        //}
+        private void ProgressDlg_Load(object sender, EventArgs e)
+        {
+            start();
+        }
 
         delegate void lCloseDlg();
         void closeDlgCallback()
