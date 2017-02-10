@@ -25,6 +25,7 @@ tableinfo
 	lInternalPaymentTblInfo
 2. clean code
 	+ receipt tbl
+  + public scope
 3. custom cell
 	+ DTP
   + combobox
@@ -86,3 +87,4 @@ tableinfo
 21 fix warning
   + dispose
 22 fix sql qry error
+

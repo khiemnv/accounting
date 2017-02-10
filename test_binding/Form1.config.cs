@@ -1,15 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Data.SQLite;
-using System.Data.SqlClient;
 using System.Runtime.Serialization;
 using System.Xml;
 using System.IO;
@@ -17,24 +9,23 @@ using System.Runtime.Serialization.Json;
 
 namespace test_binding
 {
-    public partial class Form1 : Form
+    [DataContract(Name = "config")]
+    public class lConfigMng
     {
-        [DataContract(Name ="config")]
-        class lConfigMng
+        static string m_cfgPath = @"..\..\config.xml";
+        //string m_sqliteDbPath = @"..\..\appData.db";
+        //string m_cnnStr = @"Data Source=DESKTOP-GOEF1DS\SQLEXPRESS;Initial Catalog=accounting;Integrated Security=true";
+
+        [DataMember(Name = "dbSchema")]
+        public lDbSchema m_dbSchema;
+        [DataMember(Name = "panels")]
+        public List<lBasePanel> m_panels;
+
+        XmlObjectSerializer m_Serializer;
+
+        static XmlObjectSerializer createSerializer()
         {
-            static string m_cfgPath = @"..\..\config.xml";
-            //string m_sqliteDbPath = @"..\..\appData.db";
-            //string m_cnnStr = @"Data Source=DESKTOP-GOEF1DS\SQLEXPRESS;Initial Catalog=accounting;Integrated Security=true";
-
-            [DataMember(Name ="dbSchema")]
-            public lDbSchema m_dbSchema;
-            [DataMember(Name ="panels")]
-            public List<lBasePanel> m_panels;
-
-            XmlObjectSerializer m_Serializer;
-
-            static XmlObjectSerializer createSerializer() {
-                Type[] knownTypes = new Type[] {
+            Type[] knownTypes = new Type[] {
                     typeof(lSQLiteDbSchema),
 
                     typeof(lReceiptsTblInfo),
@@ -80,95 +71,96 @@ namespace test_binding
                 m_serializer = new DataContractSerializer(
                     typeof(List<lBasePanel>), settings);
 #else
-                DataContractJsonSerializerSettings settings = new DataContractJsonSerializerSettings();
-                settings.IgnoreExtensionDataObject = true;
-                settings.EmitTypeInformation = EmitTypeInformation.AsNeeded;
-                settings.KnownTypes = knownTypes;
-                return new DataContractJsonSerializer(
-                    typeof(lConfigMng), settings);
+            DataContractJsonSerializerSettings settings = new DataContractJsonSerializerSettings();
+            settings.IgnoreExtensionDataObject = true;
+            settings.EmitTypeInformation = EmitTypeInformation.AsNeeded;
+            settings.KnownTypes = knownTypes;
+            return new DataContractJsonSerializer(
+                typeof(lConfigMng), settings);
 #endif
-            }
-            static lConfigMng m_instance;
-            public static lConfigMng crtInstance()
+        }
+        static lConfigMng m_instance;
+        public static lConfigMng crtInstance()
+        {
+            string cfgPath = m_cfgPath;
+            if (m_instance == null)
             {
-                string cfgPath = m_cfgPath;
-                if (m_instance == null)
+                XmlObjectSerializer sz = createSerializer();
+                if (File.Exists(cfgPath))
                 {
-                    XmlObjectSerializer sz = createSerializer();
-                    if (File.Exists(cfgPath))
-                    {
-                        XmlReader xrd = XmlReader.Create(cfgPath);
-                        xrd.Read();
-                        xrd.ReadToFollowing("config");
-                        var obj = sz.ReadObject(xrd, false);
-                        xrd.Close();
-                        m_instance = (lConfigMng)obj;
-                    }
-                    else
-                    {
-                        m_instance = new lConfigMng();
-                    }
-                    m_instance.m_Serializer = sz;
+                    XmlReader xrd = XmlReader.Create(cfgPath);
+                    xrd.Read();
+                    xrd.ReadToFollowing("config");
+                    var obj = sz.ReadObject(xrd, false);
+                    xrd.Close();
+                    m_instance = (lConfigMng)obj;
                 }
-                return m_instance;
-            }
-
-            lConfigMng(){
-            }
-
-            public void UpdateConfig()
-            {
-                XmlWriterSettings settings = new XmlWriterSettings();
-                settings.Indent = true;
-                settings.IndentChars = "\t";
-                settings.Encoding = Encoding.Unicode;
-
-                XmlWriter xwriter;
-                xwriter = XmlWriter.Create(m_cfgPath, settings);
-                xwriter.WriteStartElement("config");
-                m_Serializer.WriteObjectContent(xwriter, this);
-                xwriter.WriteEndElement();
-                xwriter.Close();
-            }
-            public lTableInfo getTable(string tblName)
-            {
-                List<lTableInfo> tbls = new List<lTableInfo>();
-                tbls.AddRange(m_dbSchema.m_tables);
-                tbls.AddRange(m_dbSchema.m_views);
-                foreach (lTableInfo tbl in tbls)
+                else
                 {
-                    if (tbl.m_tblName == tblName)
-                        return tbl;
+                    m_instance = new lConfigMng();
                 }
-                return null;
+                m_instance.m_Serializer = sz;
             }
-            public void test(lReceiptsPanel receiptsPanel)
+            return m_instance;
+        }
+
+        lConfigMng()
+        {
+        }
+
+        public void UpdateConfig()
+        {
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.Indent = true;
+            settings.IndentChars = "\t";
+            settings.Encoding = Encoding.Unicode;
+
+            XmlWriter xwriter;
+            xwriter = XmlWriter.Create(m_cfgPath, settings);
+            xwriter.WriteStartElement("config");
+            m_Serializer.WriteObjectContent(xwriter, this);
+            xwriter.WriteEndElement();
+            xwriter.Close();
+        }
+        public lTableInfo getTable(string tblName)
+        {
+            List<lTableInfo> tbls = new List<lTableInfo>();
+            tbls.AddRange(m_dbSchema.m_tables);
+            tbls.AddRange(m_dbSchema.m_views);
+            foreach (lTableInfo tbl in tbls)
             {
-                DataContractSerializer sz;
-                //sz = new DataContractSerializer(typeof(lTableInfo), new Type[] { typeof(lReceiptsTblInfo) });
-                //sz.WriteObject(Console.OpenStandardOutput(), m_receiptsPanel.m_tblInfo);
-                //sz = new DataContractSerializer(typeof(lDataPanel), new Type[] {
-                //    typeof(lReceiptsTblInfo),
-                //    typeof(lReceiptsDataPanel),
-                //});
-                //sz.WriteObject(Console.OpenStandardOutput(), m_receiptsPanel.m_dataPanel);
-                //sz = new DataContractSerializer(typeof(lBaseReport), 
-                //    new Type[] {
-                //        typeof(lReceiptsReport),
-                //    }
-                //);
-                //sz.WriteObject(Console.OpenStandardOutput(), m_receiptsPanel.m_report);
-                //sz = new DataContractSerializer(typeof(lSearchPanel),
-                //    new Type[] {
-                //        typeof(lSearchCtrlText),
-                //        typeof(lSearchCtrlDate),
-                //        typeof(lSearchCtrlNum),
-                //        typeof(lSearchCtrlCurrency),
-                //        typeof(lReceiptsSearchPanel),
-                //    }
-                //);
-                //sz.WriteObject(Console.OpenStandardOutput(), m_receiptsPanel.m_searchPanel);
-                sz = new DataContractSerializer(typeof(lBasePanel), new Type[] {
+                if (tbl.m_tblName == tblName)
+                    return tbl;
+            }
+            return null;
+        }
+        public void test(lReceiptsPanel receiptsPanel)
+        {
+            DataContractSerializer sz;
+            //sz = new DataContractSerializer(typeof(lTableInfo), new Type[] { typeof(lReceiptsTblInfo) });
+            //sz.WriteObject(Console.OpenStandardOutput(), m_receiptsPanel.m_tblInfo);
+            //sz = new DataContractSerializer(typeof(lDataPanel), new Type[] {
+            //    typeof(lReceiptsTblInfo),
+            //    typeof(lReceiptsDataPanel),
+            //});
+            //sz.WriteObject(Console.OpenStandardOutput(), m_receiptsPanel.m_dataPanel);
+            //sz = new DataContractSerializer(typeof(lBaseReport), 
+            //    new Type[] {
+            //        typeof(lReceiptsReport),
+            //    }
+            //);
+            //sz.WriteObject(Console.OpenStandardOutput(), m_receiptsPanel.m_report);
+            //sz = new DataContractSerializer(typeof(lSearchPanel),
+            //    new Type[] {
+            //        typeof(lSearchCtrlText),
+            //        typeof(lSearchCtrlDate),
+            //        typeof(lSearchCtrlNum),
+            //        typeof(lSearchCtrlCurrency),
+            //        typeof(lReceiptsSearchPanel),
+            //    }
+            //);
+            //sz.WriteObject(Console.OpenStandardOutput(), m_receiptsPanel.m_searchPanel);
+            sz = new DataContractSerializer(typeof(lBasePanel), new Type[] {
                     typeof(lReceiptsTblInfo),
                     typeof(lReceiptsDataPanel),
                     typeof(lReceiptsReport),
@@ -179,8 +171,7 @@ namespace test_binding
                     typeof(lReceiptsSearchPanel),
                     typeof(lReceiptsPanel)
                 });
-                sz.WriteObject(Console.OpenStandardOutput(), receiptsPanel);
-            }
+            sz.WriteObject(Console.OpenStandardOutput(), receiptsPanel);
         }
     }
 }

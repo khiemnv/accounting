@@ -103,39 +103,21 @@
     <Reference Include="System.Xml.Serialization" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Form1.config.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form1.customColumn.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form1.customControls.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="Form1.config.cs" />
+    <Compile Include="Form1.customColumn.cs" />
+    <Compile Include="Form1.customControls.cs" />
     <Compile Include="Form1.customDlg.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.progress.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form1.report.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form1.datacontent.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form1.datapanel.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="Form1.progress.cs" />
+    <Compile Include="Form1.report.cs" />
+    <Compile Include="Form1.datacontent.cs" />
+    <Compile Include="Form1.cs" />
+    <Compile Include="Form1.datapanel.cs" />
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form1.searchpanel.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="Form1.searchpanel.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
