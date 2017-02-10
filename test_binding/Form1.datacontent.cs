@@ -373,7 +373,6 @@ namespace test_binding
                 if (!m_dataContents.ContainsKey(tblName))
                 {
                     lDataContent data = newDataContent(tblName);
-                    data.m_form = m_form;
                     m_dataContents.Add(tblName, data);
                     return data;
                 }
@@ -502,10 +501,10 @@ namespace test_binding
                 return table;
             }
 
-
             protected override lDataContent newDataContent(string tblName)
             {
                 lSQLiteDataContent data = new lSQLiteDataContent(tblName, m_cnn);
+                data.m_form = m_form;
                 return data;
             }
 
@@ -629,6 +628,26 @@ namespace test_binding
             }
         }
 
+        class myElapsed : IDisposable
+        {
+            int m_begin;
+            string m_msg = "";
+            public myElapsed(string msg)
+            {
+                m_msg = msg;
+                m_begin = Environment.TickCount;
+            }
+            public myElapsed()
+            {
+                m_begin = Environment.TickCount;
+            }
+
+            public void Dispose()
+            {
+                Debug.WriteLine("[{0}] elapsed {1} ms", m_msg, Environment.TickCount - m_begin);
+            }
+        }
+
         /// <summary>
         /// data content
         /// + getdata()
@@ -636,10 +655,82 @@ namespace test_binding
         /// + reload()
         /// + submit()
         /// </summary>
-        class lDataContent : IDisposable, myCursor
+        class lDataContent : myCursor, IDisposable
         {
+            #region fetch_data
             public Form m_form;
             public DataTable m_dataTable { get; private set; }
+
+            protected virtual Int64 getMaxRowId() { return 0; }
+            protected virtual Int64 getRowCount() { return 0; }
+            protected virtual void fillTable() { throw new NotImplementedException(); }
+            IAsyncResult m_task;
+            void invokeFetchLargeData()
+            {
+                m_task = m_form.BeginInvoke(new noParamDelegate(fetchLargeData));
+                //lPrgDlg prg = new lPrgDlg();
+                ProgressDlg prg = new ProgressDlg();
+                prg.m_param = m_task;
+                prg.m_cursor = this;
+                prg.m_maxRowid = getMaxRowId();
+                prg.m_scale = 1000;
+                prg.m_descr = "Getting data ...";
+                Task tMor = Task.Run(() =>
+                {
+                    prg.ShowDialog();
+                    prg.Dispose();
+                    m_task = null;
+                });
+            }
+            void fetchLargeData()
+            {
+                using (new myElapsed())
+                {
+                    DataTable tbl = m_dataTable;
+
+                    tbl.Clear();
+                    tbl.Locale = System.Globalization.CultureInfo.InvariantCulture;
+
+                    tbl.RowChanged += M_tbl_RowChanged;
+                    m_lastId = 0;
+
+                    fillTable();
+
+                    tbl.RowChanged -= M_tbl_RowChanged;
+                }
+
+                if (m_refresher != null)
+                    m_refresher.Refresh();
+            }
+#if use_single_qry
+            Int64 m_lastId = 0;
+            private void M_tbl_RowChanged(object sender, DataRowChangeEventArgs e)
+            {
+                //Debug.WriteLine("{0}.M_tbl_RowChanged {1}", this, e.Row[0]);
+                m_lastId = (Int64)e.Row[0];
+            }
+            Int64 myCursor.getPos() { return m_lastId; }
+#endif
+            delegate void noParamDelegate();
+            protected virtual void fetchData()
+            {
+                if (getRowCount() > 1000)
+                    invokeFetchLargeData();
+                else
+                    fetchSmallData();
+            }
+            void fetchSmallData()
+            {
+                DataTable table = m_dataTable;
+                table.Clear();
+                table.Locale = System.Globalization.CultureInfo.InvariantCulture;
+                fillTable();
+
+                if (m_refresher != null)
+                    m_refresher.Refresh();
+            }
+            #endregion
+
             public BindingSource m_bindingSource { get; private set; }
             protected string m_table;
             public IRefresher m_refresher;
@@ -690,101 +781,7 @@ namespace test_binding
             public virtual void Reload() { m_changed = false; }
             public virtual void Submit() { m_changed = false; }
             protected virtual void GetData(string sql) { throw new NotImplementedException(); }
-            protected virtual DbDataAdapter getDataAdapter() { return null; }
 
-            class myElapsed : IDisposable
-            {
-                int m_begin;
-                string m_msg = "";
-                public myElapsed(string msg)
-                {
-                    m_msg = msg;
-                    m_begin = Environment.TickCount;
-                }
-                public myElapsed()
-                {
-                    m_begin = Environment.TickCount;
-                }
-
-                public void Dispose()
-                {
-                    Debug.WriteLine("[{0}] elapsed {1} ms", m_msg, Environment.TickCount - m_begin);
-                }
-            }
-            protected virtual Int64 getMaxRowId(){return 0;}
-            protected virtual Int64 getRowCount(){return 0; }
-            IAsyncResult m_task;
-            void fetchLargeData(object param)
-            {
-                if (m_task == null)
-                {
-                    m_task = m_form.BeginInvoke(new oneParamDelegate(fetchLargeData), new object[] { param });
-                    //lPrgDlg prg = new lPrgDlg();
-                    ProgressDlg prg = new ProgressDlg();
-                    prg.m_param = m_task;
-                    prg.m_cursor = this;
-                    prg.m_maxRowid = getMaxRowId();
-                    prg.m_scale = 1000;
-                    prg.m_descr = "Getting data ...";
-                    Task tMor = Task.Run(() =>
-                    {
-                        prg.ShowDialog();
-                        prg.Dispose();
-                        m_task = null;
-                    });
-                }
-                else
-                {
-                    using (new myElapsed())
-                    {
-                        DataTable tbl = m_dataTable;
-                        DbDataAdapter da = (DbDataAdapter)param;
-
-                        tbl.Clear();
-                        tbl.Locale = System.Globalization.CultureInfo.InvariantCulture;
-
-                        tbl.RowChanged += M_tbl_RowChanged;
-                        m_lastId = 0;
-
-                        da.Fill(tbl);
-                        tbl.RowChanged -= M_tbl_RowChanged;
-
-                        if (m_refresher != null)
-                        {
-                            m_refresher.Refresh();
-                        }
-                    }
-                }
-            }
-#if use_single_qry
-            Int64 m_lastId = 0;
-            private void M_tbl_RowChanged(object sender, DataRowChangeEventArgs e)
-            {
-                //Debug.WriteLine("{0}.M_tbl_RowChanged {1}", this, e.Row[0]);
-                m_lastId = (Int64)e.Row[0];
-            }
-            Int64 myCursor.getPos() { return m_lastId; }
-#endif
-            delegate void oneParamDelegate(object obj);
-            protected void fetchData(DbDataAdapter da)
-            {
-                if (getRowCount() > 1000)
-                    fetchLargeData(da);
-                else
-                    fetchSmallData(da);
-            }
-            void fetchSmallData(DbDataAdapter da)
-            {
-                DataTable table = m_dataTable;
-                table.Clear();
-                table.Locale = System.Globalization.CultureInfo.InvariantCulture;
-                da.Fill(table);
-
-                if (m_refresher != null)
-                {
-                    m_refresher.Refresh();
-                }
-            }
             public void Dispose()
             {
                 m_bindingSource.Dispose();
@@ -893,29 +890,30 @@ namespace test_binding
                 Debug.WriteLine("{0}.GetData {1}", this, selectCommand.CommandText);
                 m_dataAdapter.SelectCommand = selectCommand;
                 // Populate a new data table and bind it to the BindingSource.
-                fetchData(m_dataAdapter);
+                fetchData();
             }
 
-            protected override Int64 getMaxRowId()
+            #region fetch_data
+            Int64 qryOne(string qry)
             {
                 SQLiteConnection cnn = m_cnn;
-                string qry = string.Format("select max(rowid) from {0}", m_table);
                 SQLiteCommand cmd = new SQLiteCommand(qry, cnn);
                 var ret = cmd.ExecuteScalar();
-                Int64 maxRowid = (Int64)ret;
-                cmd.Dispose();
-                return maxRowid;
+                return (Int64)ret;
+            }
+            protected override Int64 getMaxRowId()
+            {
+                return qryOne(string.Format("select max(id) from {0}", m_table));
             }
             protected override Int64 getRowCount()
             {
-                SQLiteConnection cnn = m_cnn;
-                string qry = string.Format("select count(*) from {0}", m_table);
-                SQLiteCommand cmd = new SQLiteCommand(qry, cnn);
-                var ret = cmd.ExecuteScalar();
-                Int64 rowCount = (Int64)ret;
-                cmd.Dispose();
-                return rowCount;
+                return qryOne(string.Format("select count(*) from {0}", m_table));
             }
+            protected override void fillTable()
+            {
+                m_dataAdapter.Fill(m_dataTable);
+            }
+            #endregion
         }
         class lSqlDataContent : lDataContent
         {
@@ -994,7 +992,7 @@ namespace test_binding
             {
                 m_dataAdapter.SelectCommand = selectCommand;
                 // Populate a new data table and bind it to the BindingSource.
-                fetchData(m_dataAdapter);
+                fetchData();
             }
         }
 
