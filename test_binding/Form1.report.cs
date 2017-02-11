@@ -47,9 +47,9 @@ namespace test_binding
         {
             string qry = string.Format("SELECT * FROM {0}", m_viewName);
             DataTable dt = appConfig.s_contentProvider.GetData(qry);
-            //m_data = s_contentProvider.CreateDataContent(m_viewName);
-            //m_data.Reload();
-            //DataTable dt = (DataTable)m_data.m_bindingSource.DataSource;
+            //lDataContent data = appConfig.s_contentProvider.CreateDataContent(m_viewName);
+            //data.Load(true);    //load full table
+            //DataTable dt = data.m_dataTable;
             dt.TableName = m_viewName;
 #if crt_xml
                 dt.WriteXml(m_xmlPath);
