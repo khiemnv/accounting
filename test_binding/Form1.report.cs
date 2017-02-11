@@ -45,11 +45,14 @@ namespace test_binding
 
         private DataTable loadData()
         {
+#if false
             string qry = string.Format("SELECT * FROM {0}", m_viewName);
             DataTable dt = appConfig.s_contentProvider.GetData(qry);
-            //lDataContent data = appConfig.s_contentProvider.CreateDataContent(m_viewName);
-            //data.Load(true);    //load full table
-            //DataTable dt = data.m_dataTable;
+#else
+            lDataContent data = appConfig.s_contentProvider.CreateDataContent(m_viewName);
+            data.Load(true);    //load full table
+            DataTable dt = data.m_dataTable;
+#endif
             dt.TableName = m_viewName;
 #if crt_xml
                 dt.WriteXml(m_xmlPath);
@@ -180,6 +183,7 @@ namespace test_binding
                     stream.Close();
                 m_streams = null;
             }
+            appConfig.s_contentProvider.ReleaseDataContent(m_viewName);
         }
     }
 

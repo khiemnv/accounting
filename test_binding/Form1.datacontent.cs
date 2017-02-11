@@ -403,6 +403,21 @@ namespace test_binding
                 return m_dataContents[tblName];
             }
         }
+        public bool ReleaseDataContent(string tblName)
+        {
+            lDataContent dataContent = newDataContent(tblName);
+            if (!m_dataContents.ContainsKey(tblName))
+            {
+                return false;
+            }
+            else
+            {
+                lDataContent data = m_dataContents[tblName];
+                m_dataContents.Remove(tblName);
+                data.Dispose();
+                return true;
+            }
+        }
         public lDataSync CreateDataSync(string tblName)
         {
             if (!m_dataSyncs.ContainsKey(tblName))
@@ -682,17 +697,22 @@ namespace test_binding
         public event EventHandler<FillTableCompletedEventArgs> FillTableCompleted;
 
         protected virtual Int64 getMaxRowId() { return 0; }
-        protected virtual Int64 getRowCount() { return 0; }
+        protected virtual Int64 getRowCount() { return 0; } //not used
         protected virtual void fillTable() { throw new NotImplementedException(); }
         void invokeFetchLargeData()
         {
             var task = m_form.BeginInvoke(new noParamDelegate(fetchLargeData));
+            //if (m_isView) { return; }
             //lPrgDlg prg = new lPrgDlg();
             ProgressDlg prg = new ProgressDlg();
+            prg.TopMost = true;
             prg.m_param = task;
-            prg.m_cursor = this;
-            prg.m_maxRowid = getMaxRowId();
-            prg.m_scale = 1000;
+            if (!m_isView)
+            {
+                prg.m_cursor = this;
+                prg.m_maxRowid = getMaxRowId();
+                prg.m_scale = 1000;
+            }
             prg.m_descr = "Getting data ...";
             Task tMor = Task.Run(() =>
             {
@@ -709,12 +729,16 @@ namespace test_binding
                 tbl.Clear();
                 tbl.Locale = System.Globalization.CultureInfo.InvariantCulture;
 
-                tbl.RowChanged += M_tbl_RowChanged;
-                m_lastId = 0;
+                if (!m_isView) {
+                    tbl.RowChanged += M_tbl_RowChanged; //udpate last row id
+                    m_lastId = 0;
+                }
 
                 fillTable();
 
-                tbl.RowChanged -= M_tbl_RowChanged;
+                if (!m_isView) { 
+                    tbl.RowChanged -= M_tbl_RowChanged;
+                }
             }
 
             OnFillTableCompleted(new FillTableCompletedEventArgs());
@@ -734,7 +758,7 @@ namespace test_binding
         delegate void noParamDelegate();
         protected virtual void fetchData()
         {
-            if (getRowCount() > 1000)
+            if (m_isView || (getMaxRowId() > 1000))
                 invokeFetchLargeData();
             else
                 fetchSmallData();
@@ -752,7 +776,7 @@ namespace test_binding
                 m_refresher.Refresh();
         }
         #endregion
-
+        public bool m_isView;
         public BindingSource m_bindingSource { get; private set; }
         protected string m_table;
         public IRefresher m_refresher;
@@ -770,7 +794,7 @@ namespace test_binding
                 if (tbl == null) return;
 
                 //not need to init cols for views
-                //if (tbl.m_cols == null) return;
+                if (tbl.m_cols == null) return;
 
                 foreach (var col in tbl.m_cols)
                 {
@@ -803,7 +827,7 @@ namespace test_binding
         public virtual void Search(List<string> exprs, List<lSearchParam> srchParams) { throw new NotImplementedException(); }
 #endif
         bool m_changed = true;
-        public virtual void Load(bool bLoadFullData) { throw new NotFiniteNumberException(); }
+        public virtual void Load(bool isView) { throw new NotFiniteNumberException(); }
         public virtual void Load() { if (m_changed) { Reload(); } }
         public virtual void Reload() { m_changed = false; }
         public virtual void Submit() { m_changed = false; }
@@ -876,10 +900,11 @@ namespace test_binding
             GetData(selectCommand);
         }
 #endif
-        public override void Load(bool bLoadFullData)
+        public override void Load(bool isView)
         {
-            if (bLoadFullData)
+            if (isView)
             {
+                m_isView = true;
                 m_dataAdapter.SelectCommand.CommandText = string.Format("select * from {0}", m_table);
             }
             Reload();

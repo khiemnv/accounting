@@ -47,6 +47,7 @@ tableinfo
   + fix search ctrl load data
   + fix get report params
   + fix receipts report - details param
+  + release view data
 6. showing edit control - auto complete
   + search by content - auto complete
 7. refine table - unicode
@@ -78,7 +79,11 @@ tableinfo
   + auto fill month (1-12)
 17 speed loading - not yet
 18 progress
-  + show dialog
+  + show progress dialog
+  + show progress
+  + load tbl data
+  + load view data
+  + on top most
 19 generate test data
   + test 1000*1000 rows
 20 error handing
@@ -87,4 +92,8 @@ tableinfo
 21 fix warning
   + dispose
 22 fix sql qry error
-
+23 fetch data
+  + on fill data complete event
+  + update last rowid
+24 thread delegate event
+  + invokeFetchLargeData

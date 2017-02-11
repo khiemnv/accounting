@@ -181,6 +181,7 @@ namespace test_binding
         public string m_descr;
         public myCursor m_cursor;
         public bool m_isCancel = false;
+        int m_timeOut;
         enum state
         {
             init,
@@ -189,7 +190,6 @@ namespace test_binding
             closed,
         };
         state m_state = state.init;
-
         Thread m_task;
         Int64 m_nStep;
 
@@ -226,6 +226,10 @@ namespace test_binding
 #endif
 
             this.Load += ProgressDlg_Load;
+            m_maxRowid = 1000;
+            m_scale = 1;
+
+            m_timeOut = 100;        //100 ms
         }
 
         void cancel()
@@ -264,6 +268,7 @@ namespace test_binding
             IAsyncResult t = (IAsyncResult)m_param;
             m_task = new Thread(new ThreadStart(() =>
             {
+                Int64 cur = 0;
                 for (int i = 1; ; i++)
                 {
                     if (t.IsCompleted)
@@ -276,9 +281,17 @@ namespace test_binding
                         m_state = state.canceled;
                         break;
                     }
-                    Int64 cur = m_cursor.getPos() / m_scale;
+                    if (m_cursor == null) {
+                        if (cur < (m_nStep - 1)) {
+                            cur++;
+                        }
+                    }
+                    else
+                    {
+                        cur = m_cursor.getPos() / m_scale;
+                    }
                     incPrgCallback((int)cur, i / 10);
-                    Thread.Sleep(100);
+                    Thread.Sleep(m_timeOut);
                     Debug.WriteLine("{0}.m_task cur thread {1} elapsed {2} s",
                         this,
                         Thread.CurrentThread.ManagedThreadId,
