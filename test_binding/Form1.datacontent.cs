@@ -674,7 +674,6 @@ namespace test_binding
             {
                 prg.ShowDialog();
                 prg.Dispose();
-                m_task = null;
             });
         }
         void fetchLargeData()
@@ -776,6 +775,7 @@ namespace test_binding
         public virtual void Search(List<string> exprs, List<lSearchParam> srchParams) { throw new NotImplementedException(); }
 #endif
         bool m_changed = true;
+        public virtual void Load(bool bLoadFullData) { throw new NotFiniteNumberException(); }
         public virtual void Load() { if (m_changed) { Reload(); } }
         public virtual void Reload() { m_changed = false; }
         public virtual void Submit() { m_changed = false; }
@@ -787,9 +787,9 @@ namespace test_binding
             m_dataTable.Dispose();
         }
     }
-    public class lSQLiteDataContent : lDataContent
+    public class lSQLiteDataContent : lDataContent, IDisposable
     {
-        private SQLiteConnection m_cnn;
+        private readonly SQLiteConnection m_cnn;
         private SQLiteDataAdapter m_dataAdapter;
 
         public lSQLiteDataContent(string tblName, SQLiteConnection cnn)
@@ -848,7 +848,14 @@ namespace test_binding
             GetData(selectCommand);
         }
 #endif
-
+        public override void Load(bool bLoadFullData)
+        {
+            if (bLoadFullData)
+            {
+                m_dataAdapter.SelectCommand.CommandText = string.Format("select * from {0}", m_table);
+            }
+            Reload();
+        }
         public override void Reload()
         {
             base.Reload();
@@ -890,6 +897,11 @@ namespace test_binding
             m_dataAdapter.SelectCommand = selectCommand;
             // Populate a new data table and bind it to the BindingSource.
             fetchData();
+        }
+
+        public new void Dispose()
+        {
+            m_dataAdapter.Dispose();
         }
 
         #region fetch_data
