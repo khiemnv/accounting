@@ -299,6 +299,12 @@ namespace test_binding
                 + "(strftime('%m', date) + 2) / 3 as qtr "
                 + "from receipts "
                 + "where strftime('%Y', 'now') - strftime('%Y', date) between 0 and 4;";
+            m_cols = new lColInfo[] {
+                   new lColInfo( "content","Nội dung", lColInfo.lColType.text),
+                   new lColInfo( "amount","Số tiền", lColInfo.lColType.currency),
+                   new lColInfo( "year","Năm", lColInfo.lColType.num),
+                   new lColInfo( "qtr","Quý", lColInfo.lColType.num),
+                };
         }
     };
     [DataContract(Name = "lInterPaymentViewInfo")]
@@ -313,6 +319,12 @@ namespace test_binding
                 + "(strftime('%m', date) + 2) / 3 as qtr "
                 + "from internal_payment "
                 + "where strftime('%Y', 'now') - strftime('%Y', date) between 0 and 4;";
+            m_cols = new lColInfo[] {
+                   new lColInfo( "group_name","Ban", lColInfo.lColType.text),
+                   new lColInfo( "actually_spent","Thực chi", lColInfo.lColType.currency),
+                   new lColInfo( "year","Năm", lColInfo.lColType.num),
+                   new lColInfo( "qtr","Quý", lColInfo.lColType.num),
+                };
         }
     };
     [DataContract(Name = "lExterPaymentViewInfo")]
@@ -327,6 +339,12 @@ namespace test_binding
                 + "(strftime('%m', date) + 2) / 3 as qtr "
                 + "from external_payment "
                 + "where strftime('%Y', 'now') - strftime('%Y', date) between 0 and 4;";
+            m_cols = new lColInfo[] {
+                new lColInfo("group_name", "Ban", lColInfo.lColType.text),
+                new lColInfo("spent", "Chi", lColInfo.lColType.currency),
+                new lColInfo("year", "Năm", lColInfo.lColType.num),
+                new lColInfo("qtr", "Quý", lColInfo.lColType.num),
+            };
         }
     };
     [DataContract(Name = "lSalaryViewInfo")]
@@ -341,6 +359,12 @@ namespace test_binding
                 + "(strftime('%m', date) + 2) / 3 as qtr "
                 + "from salary "
                 + "where strftime('%Y', 'now') - strftime('%Y', date) between 0 and 4;";
+            m_cols = new lColInfo[] {
+                new lColInfo("group_name", "Ban", lColInfo.lColType.text),
+                new lColInfo("salary", "Lương", lColInfo.lColType.currency),
+                new lColInfo("year", "Năm", lColInfo.lColType.num),
+                new lColInfo("qtr", "Quý", lColInfo.lColType.num),
+            };
         }
     };
 
@@ -744,6 +768,10 @@ namespace test_binding
             {
                 lTableInfo tbl = appConfig.s_config.getTable(m_table);
                 if (tbl == null) return;
+
+                //not need to init cols for views
+                //if (tbl.m_cols == null) return;
+
                 foreach (var col in tbl.m_cols)
                 {
                     DataColumn dc = m_dataTable.Columns.Add(col.m_field);
