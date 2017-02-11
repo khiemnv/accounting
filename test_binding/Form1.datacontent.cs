@@ -640,16 +640,32 @@ namespace test_binding
         public Form m_form;
         public DataTable m_dataTable { get; private set; }
 
+        public class FillTableCompletedEventArgs : EventArgs
+        {
+            public Int64 Sum { get; set; }
+            public DateTime TimeComplete { get; set; }
+        }
+
+        protected virtual void OnFillTableCompleted(FillTableCompletedEventArgs e)
+        {
+            EventHandler< FillTableCompletedEventArgs> handler = FillTableCompleted;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        public event EventHandler<FillTableCompletedEventArgs> FillTableCompleted;
+
         protected virtual Int64 getMaxRowId() { return 0; }
         protected virtual Int64 getRowCount() { return 0; }
         protected virtual void fillTable() { throw new NotImplementedException(); }
-        IAsyncResult m_task;
         void invokeFetchLargeData()
         {
-            m_task = m_form.BeginInvoke(new noParamDelegate(fetchLargeData));
+            var task = m_form.BeginInvoke(new noParamDelegate(fetchLargeData));
             //lPrgDlg prg = new lPrgDlg();
             ProgressDlg prg = new ProgressDlg();
-            prg.m_param = m_task;
+            prg.m_param = task;
             prg.m_cursor = this;
             prg.m_maxRowid = getMaxRowId();
             prg.m_scale = 1000;
@@ -678,6 +694,8 @@ namespace test_binding
                 tbl.RowChanged -= M_tbl_RowChanged;
             }
 
+            OnFillTableCompleted(new FillTableCompletedEventArgs());
+
             if (m_refresher != null)
                 m_refresher.Refresh();
         }
@@ -704,6 +722,8 @@ namespace test_binding
             table.Clear();
             table.Locale = System.Globalization.CultureInfo.InvariantCulture;
             fillTable();
+
+            OnFillTableCompleted(new FillTableCompletedEventArgs());
 
             if (m_refresher != null)
                 m_refresher.Refresh();

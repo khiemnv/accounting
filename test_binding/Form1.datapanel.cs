@@ -288,15 +288,19 @@ namespace test_binding
 #if use_cmd_params
         public void search(List<string> exprs, List<lSearchParam> srchParams)
         {
+            m_status.Text = "";
             m_dataContent.Search(exprs, srchParams);
-            update();
+            //update();
         }
 #endif
+
+
         private void reloadButton_Click(object sender, System.EventArgs e)
         {
+            m_status.Text = "";
             m_dataContent.Reload();
-            update();
-            m_status.Text = "Reloading completed!";
+            //update();
+            //m_status.Text = "Reloading completed!";
         }
         private void submitButton_Click(object sender, System.EventArgs e)
         {
@@ -340,13 +344,18 @@ namespace test_binding
                 crtColumns();
 #endif
             m_dataContent = appConfig.s_contentProvider.CreateDataContent(m_tblInfo.m_tblName);
-
+            m_dataContent.FillTableCompleted += M_dataContent_FillTableCompleted; ;
 #if !init_datatable_cols
                 m_dataContent.Load();
 #endif
             m_dataGridView.DataSource = m_dataContent.m_bindingSource;
             DataTable tbl = (DataTable)m_dataContent.m_bindingSource.DataSource;
             if (tbl != null) { update(); }
+        }
+
+        private void M_dataContent_FillTableCompleted(object sender, lDataContent.FillTableCompletedEventArgs e)
+        {
+            update();
         }
 
         public void Dispose()
