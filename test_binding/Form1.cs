@@ -59,7 +59,7 @@ namespace test_binding
             if (m_report != null)
             {
                 m_report.Run();
-                //m_report.Dispose();
+                m_report.Dispose();
             }
         }
 
@@ -127,14 +127,14 @@ namespace test_binding
         {
             if (disposing)
             {
-                // free managed resources  
+                // free managed resources
+                m_printBtn.Dispose();
+                m_panel.Dispose();
+                m_dataPanel.Dispose();
+                m_searchPanel.Dispose();
+                m_report.Dispose();
             }
-            // free native resources if there are any.  
-            m_printBtn.Dispose();
-            m_panel.Dispose();
-            m_dataPanel.Dispose();
-            m_searchPanel.Dispose();
-            m_report.Dispose();
+            // free native resources if there are any. 
         }
         #endregion
     }

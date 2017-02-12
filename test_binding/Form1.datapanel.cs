@@ -359,21 +359,43 @@ namespace test_binding
             update();
         }
 
+        #region dispose
+        // Dispose() calls Dispose(true)  
         public void Dispose()
         {
-            m_reloadPanel.Dispose();
-            m_sumPanel.Dispose();
-
-            m_reloadBtn.Dispose();
-            m_submitBtn.Dispose();
-            m_status.Dispose();
-            m_sumLabel.Dispose();
-            m_sumTxt.Dispose();
-
-            m_dataGridView.Dispose();
-
-            m_dataContent.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
+        // NOTE: Leave out the finalizer altogether if this class doesn't   
+        // own unmanaged resources itself, but leave the other methods  
+        // exactly as they are.   
+        ~lDataPanel()
+        {
+            // Finalizer calls Dispose(false)  
+            Dispose(false);
+        }
+        // The bulk of the clean-up code is implemented in Dispose(bool)  
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                // free managed resources
+                m_reloadPanel.Dispose();
+                m_sumPanel.Dispose();
+
+                m_reloadBtn.Dispose();
+                m_submitBtn.Dispose();
+                m_status.Dispose();
+                m_sumLabel.Dispose();
+                m_sumTxt.Dispose();
+
+                m_dataGridView.Dispose();
+
+                appConfig.s_contentProvider.ReleaseDataContent(m_tblName);
+            }
+            // free native resources if there are any.  
+        }
+        #endregion
     }
 
     [DataContract(Name = "InterPaymentDataPanel")]

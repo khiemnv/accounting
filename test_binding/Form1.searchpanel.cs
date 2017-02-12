@@ -74,11 +74,26 @@ namespace test_binding
             m_label.Checked = true;
         }
 
-        public virtual void Dispose()
+        #region dispose
+        public void Dispose()
         {
-            m_panel.Dispose();
-            m_label.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
+        ~lSearchCtrl()
+        {
+            // Finalizer calls Dispose(false)  
+            Dispose(false);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                m_panel.Dispose();
+                m_label.Dispose();
+            }
+        }
+        #endregion
     };
 
     public class lSearchParam
@@ -203,11 +218,14 @@ namespace test_binding
                 m_combo.Text = val;
         }
 
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            if (m_text != null) m_text.Dispose();
-            if (m_combo != null) m_combo.Dispose();
-            base.Dispose();
+            if (disposing)
+            {
+                if (m_text != null) m_text.Dispose();
+                if (m_combo != null) m_combo.Dispose();
+            }
+            base.Dispose(disposing);
         }
     }
     [DataContract(Name = "SearchCtrlDate")]

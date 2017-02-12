@@ -1,4 +1,6 @@
-﻿using Microsoft.Reporting.WinForms;
+﻿#define use_progress
+
+using Microsoft.Reporting.WinForms;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -29,11 +31,10 @@ namespace test_binding
 #endif
         public string m_pdfPath;    //print to pdf file
 
-        lDataContent m_data;
-
         protected lBaseReport()
         {
         }
+
         static public lBaseReport crtReport(lBaseReport m_report)
         {
             lBaseReport newRpt = new lBaseReport();
@@ -48,21 +49,8 @@ namespace test_binding
         DataTable m_dt;
         private void loadData()
         {
-#if !use_progress_for_view
             string qry = string.Format("SELECT * FROM {0}", m_viewName);
             m_dt = appConfig.s_contentProvider.GetData(qry);
-            runAfterLoadDataComplete();
-#else
-            m_data = appConfig.s_contentProvider.CreateDataContent(m_viewName);
-            m_data.ProgessCompleted += M_data_FillTableCompleted;
-            m_data.Load(true);    //load full table
-#endif
-            //return dt;
-        }
-
-        private void M_data_FillTableCompleted(object sender, EventArgs e)
-        {
-            runAfterLoadDataComplete();
         }
 
         private List<Stream> m_streams;
@@ -156,26 +144,33 @@ namespace test_binding
             return rpParams;
         }
 
+        private delegate void loadDataCaller();
+        private delegate void exportCaller(LocalReport report);
+
         public void Run()
         {
+            //long time work
+#if !use_progress
             loadData();
+#else
+            {
+                var d = new loadDataCaller(loadData);
+                var t = d.BeginInvoke(null, null);
+                ProgressDlg prg = new ProgressDlg();
+                prg.m_param = t;
+                prg.m_descr = "Load view data ...";
+                prg.ShowDialog();
+            }
+#endif
 
             //after load data complete
-        }
-        void runAfterLoadDataComplete()
-        {
-#if !runAfterLoadDataComplete
-            DataTable dt = m_dt;
-#else
-            DataTable dt = m_data.m_dataTable;
-#endif
-            dt.TableName = m_viewName;
+            m_dt.TableName = m_viewName;
 #if crt_xml
                 dt.WriteXml(m_xmlPath);
 #endif
             LocalReport report = new LocalReport();
             report.ReportPath = m_rdlcPath;
-            report.DataSources.Add(new ReportDataSource(m_rcName, dt));
+            report.DataSources.Add(new ReportDataSource(m_rcName, m_dt));
 
             //add report params
             List<ReportParameter> rpParams = getReportParam();
@@ -189,21 +184,51 @@ namespace test_binding
                 fs.Write(bytes, 0, bytes.Length);
                 fs.Close();
 #else
+
+#if !use_progress
+            //long time work
             Export(report);
+#else
+            { 
+                var d2 = new exportCaller(Export);
+                var t2 = d2.BeginInvoke(report, null, null);
+                ProgressDlg prg = new ProgressDlg();
+                prg.m_param = t2;
+                prg.m_descr = "Exporting ...";
+                prg.ShowDialog();
+            }
+#endif
+
             Print();
 #endif
         }
-
+        #region dispose
         public void Dispose()
         {
-            if (m_streams != null)
-            {
-                foreach (Stream stream in m_streams)
-                    stream.Close();
-                m_streams = null;
-            }
-            appConfig.s_contentProvider.ReleaseDataContent(m_viewName);
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
+        ~lBaseReport()
+        {
+            // Finalizer calls Dispose(false)  
+            Dispose(false);
+        }
+        // The bulk of the clean-up code is implemented in Dispose(bool)  
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (m_streams != null)
+                {
+                    foreach (Stream stream in m_streams)
+                        stream.Close();
+                    m_streams = null;
+                }
+                m_dt.Clear();
+                m_dt.Dispose();
+            }
+        }
+        #endregion
     }
 
     [DataContract(Name = "ReceiptsReport")]

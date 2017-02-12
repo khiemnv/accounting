@@ -411,7 +411,6 @@ namespace test_binding
         public virtual DataTable GetData(string qry) { return null; }
         public lDataContent CreateDataContent(string tblName)
         {
-            lDataContent dataContent = newDataContent(tblName);
             if (!m_dataContents.ContainsKey(tblName))
             {
                 lDataContent data = newDataContent(tblName);
@@ -516,6 +515,7 @@ namespace test_binding
             return data;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         public override DataTable GetData(string qry)
         {
             SqlDataAdapter dataAdapter = new SqlDataAdapter();
@@ -528,29 +528,14 @@ namespace test_binding
         }
 
         #region dispose
-        // Dispose() calls Dispose(true)  
-        public new void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-        // NOTE: Leave out the finalizer altogether if this class doesn't   
-        // own unmanaged resources itself, but leave the other methods  
-        // exactly as they are.   
-        ~lSqlContentProvider()
-        {
-            // Finalizer calls Dispose(false)  
-            Dispose(false);
-        }
-        // The bulk of the clean-up code is implemented in Dispose(bool)  
         protected override void Dispose(bool disposing)
         {
-            base.Dispose(disposing);
             if (disposing)
             {
+                m_cnn.Dispose();
             }
-            // free native resources if there are any.  
-            m_cnn.Dispose();
+            // free native resources if there are any.
+            base.Dispose(disposing);
         }
         #endregion
     }
@@ -567,6 +552,7 @@ namespace test_binding
             return m_instance;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         lSQLiteContentProvider() : base()
         {
             //string dbPath = "test.db";
@@ -604,6 +590,7 @@ namespace test_binding
 
         private SQLiteConnection m_cnn;
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         public override DataTable GetData(string qry)
         {
             SQLiteDataAdapter dataAdapter = new SQLiteDataAdapter();
@@ -622,10 +609,13 @@ namespace test_binding
             return data;
         }
 
-        public new void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            base.Dispose();
-            m_cnn.Dispose();
+            if (disposing) {
+                m_cnn.Close();
+                m_cnn.Dispose();
+            }
+            base.Dispose(disposing);
         }
     }
 
@@ -841,7 +831,11 @@ namespace test_binding
             //Debug.WriteLine("{0}.M_tbl_RowChanged {1}", this, e.Row[0]);
             m_lastId = (Int64)e.Row[0];
         }
-        Int64 myCursor.getPos() { return m_lastId; }
+        Int64 myCursor.getPos() { return getPos(); }
+        protected Int64 getPos()
+        {
+            return m_lastId;
+        }
 #endif
         delegate void noParamDelegate();
         protected virtual void fetchData()
@@ -923,7 +917,7 @@ namespace test_binding
 
         #region dispose
         // Dispose() calls Dispose(true)  
-        public virtual void Dispose()
+        public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
@@ -941,18 +935,19 @@ namespace test_binding
         {
             if (disposing)
             {
+                m_bindingSource.Dispose();
+                m_dataTable.Dispose();
             }
             // free native resources if there are any. 
-            m_bindingSource.Dispose();
-            m_dataTable.Dispose();
         }
         #endregion
     }
-    public class lSQLiteDataContent : lDataContent, IDisposable
+    public class lSQLiteDataContent : lDataContent
     {
         private readonly SQLiteConnection m_cnn;
         private SQLiteDataAdapter m_dataAdapter;
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         public lSQLiteDataContent(string tblName, SQLiteConnection cnn)
             : base()
         {
@@ -989,6 +984,7 @@ namespace test_binding
             }
 #endif
 #if use_cmd_params
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         public override void Search(List<string> exprs, List<lSearchParam> srchParams)
         {
             SQLiteCommand selectCommand;
@@ -1009,6 +1005,7 @@ namespace test_binding
             GetData(selectCommand);
         }
 #endif
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         public override void Load(bool isView)
         {
             if (isView)
@@ -1048,6 +1045,7 @@ namespace test_binding
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         protected override void GetData(string selectStr)
         {
             SQLiteCommand selectCommand = new SQLiteCommand(selectStr, m_cnn);
@@ -1061,12 +1059,20 @@ namespace test_binding
             fetchData();
         }
 
-        public sealed override void Dispose()
+        #region dispose
+        protected override void Dispose(bool disposing)
         {
-            m_dataAdapter.Dispose();
+            if (disposing)
+            {
+                m_dataAdapter.Dispose();
+            }
+            // free native resources if there are any. 
+            base.Dispose(disposing);
         }
+        #endregion
 
         #region fetch_data
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         Int64 qryOne(string qry)
         {
             SQLiteConnection cnn = m_cnn;
@@ -1096,6 +1102,7 @@ namespace test_binding
         private SqlConnection m_cnn;
         private SqlDataAdapter m_dataAdapter;
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         public lSqlDataContent(string tblName, SqlConnection cnn)
             : base()
         {
@@ -1120,6 +1127,7 @@ namespace test_binding
             }
 #endif
 #if use_cmd_params
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         public override void Search(List<string> exprs, List<lSearchParam> srchParams)
         {
             string sql = string.Format("select * from {0} ", m_table);
@@ -1159,6 +1167,7 @@ namespace test_binding
                 }
             }
         }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         protected override void GetData(string selectStr)
         {
             SqlCommand selectCommand = new SqlCommand(selectStr, m_cnn);
@@ -1271,10 +1280,32 @@ namespace test_binding
                 return null;
         }
 
+        #region dispose
+        // Dispose() calls Dispose(true)  
         public void Dispose()
         {
-            m_colls.Clear();
-            m_maps.Clear();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
+        // NOTE: Leave out the finalizer altogether if this class doesn't   
+        // own unmanaged resources itself, but leave the other methods  
+        // exactly as they are.   
+        ~lDataSync()
+        {
+            // Finalizer calls Dispose(false)  
+            Dispose(false);
+        }
+        // The bulk of the clean-up code is implemented in Dispose(bool)  
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                // free managed resources
+                m_colls.Clear();
+                m_maps.Clear();
+            }
+            // free native resources if there are any.  
+        }
+        #endregion
     }
 }

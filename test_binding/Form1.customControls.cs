@@ -349,9 +349,12 @@ namespace test_binding
 #endif
         protected override void Dispose(bool disposing)
         {
+            if (disposing) {
+                m_dataTable.TableNewRow -= Dt_TableNewRow;
+                if (m_customCtrl != null)
+                    m_customCtrl.Dispose();
+            }
             base.Dispose(disposing);
-            m_dataTable.TableNewRow -= Dt_TableNewRow;
-            if (m_customCtrl != null) m_customCtrl.Dispose();
         }
     }
     public class lInterPaymentDGV : lCustomDGV

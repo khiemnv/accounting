@@ -32,11 +32,24 @@ namespace test_binding
         {
             m_begin = Environment.TickCount;
         }
-
+        #region dispose
         public void Dispose()
         {
-            Debug.WriteLine("[{0}] elapsed {1} ms", m_msg, Environment.TickCount - m_begin);
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
+        ~myElapsed()
+        {
+            Dispose(false);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Debug.WriteLine("[{0}] elapsed {1} ms", m_msg, Environment.TickCount - m_begin);
+            }
+        }
+        #endregion
     }
     public class ProgressDlg : Form
     {
@@ -193,6 +206,7 @@ namespace test_binding
         Thread m_task;
         Int64 m_nStep;
 
+#if false
         class myMutex
         {
             Mutex m_mutex;
@@ -213,6 +227,7 @@ namespace test_binding
                 Debug.WriteLine("+ leave done");
             }
         }
+#endif
 
         public ProgressDlg()
         {
