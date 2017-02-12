@@ -272,6 +272,8 @@ namespace test_binding
         private void ProgressDlg_Load(object sender, EventArgs e)
         {
             this.Text = m_descr;
+            if (m_cursor == null)
+                m_prg.Style = ProgressBarStyle.Marquee;
             start();
         }
 

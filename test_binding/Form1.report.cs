@@ -16,7 +16,7 @@ using System.Windows.Forms;
 namespace test_binding
 {
     [DataContract(Name = "Report")]
-    public class lBaseReport : IDisposable
+    public class lBaseReport : IDisposable, myCursor
     {
         [DataMember(Name = "rcName")]
         public string m_rcName;     //data set
@@ -46,11 +46,11 @@ namespace test_binding
             return newRpt;
         }
 
-        DataTable m_dt;
-        private void loadData()
+        private DataTable loadData()
         {
             string qry = string.Format("SELECT * FROM {0}", m_viewName);
-            m_dt = appConfig.s_contentProvider.GetData(qry);
+            DataTable dt = appConfig.s_contentProvider.GetData(qry);
+            return dt;
         }
 
         private List<Stream> m_streams;
@@ -144,61 +144,68 @@ namespace test_binding
             return rpParams;
         }
 
-        private delegate void loadDataCaller();
-        private delegate void exportCaller(LocalReport report);
+        private delegate void voidCaller();
+
+        long m_iWork;
+        public long getPos()
+        {
+            return m_iWork;
+        }
 
         public void Run()
         {
-            //long time work
-#if !use_progress
-            loadData();
-#else
-            {
-                var d = new loadDataCaller(loadData);
-                var t = d.BeginInvoke(null, null);
-                ProgressDlg prg = new ProgressDlg();
-                prg.m_param = t;
-                prg.m_descr = "Load view data ...";
-                prg.ShowDialog();
-            }
-#endif
+            ProgressDlg prg = new ProgressDlg();
+            var d = new voidCaller(()=> {
 
-            //after load data complete
-            m_dt.TableName = m_viewName;
+                //display wait msg
+                prg.m_descr = "Load view data ...";
+
+                //long time work
+                DataTable dt = loadData();
+                m_iWork = 50;
+
+                //after load data complete
+                dt.TableName = m_viewName;
 #if crt_xml
                 dt.WriteXml(m_xmlPath);
 #endif
-            LocalReport report = new LocalReport();
-            report.ReportPath = m_rdlcPath;
-            report.DataSources.Add(new ReportDataSource(m_rcName, m_dt));
+                LocalReport report = new LocalReport();
+                report.ReportPath = m_rdlcPath;
+                report.DataSources.Add(new ReportDataSource(m_rcName, dt));
 
-            //add report params
-            List<ReportParameter> rpParams = getReportParam();
-            report.SetParameters(rpParams);
+                //add report params
+                List<ReportParameter> rpParams = getReportParam();
+                report.SetParameters(rpParams);
 
-            report.Refresh();
-#if false
-                byte[] bytes = report.Render("PDF");
-                FileStream fs = new FileStream(m_pdfPath, FileMode.Create);
-                fs.Seek(0, SeekOrigin.Begin);
-                fs.Write(bytes, 0, bytes.Length);
-                fs.Close();
-#else
+                report.Refresh();
 
-#if !use_progress
-            //long time work
-            Export(report);
-#else
-            { 
-                var d2 = new exportCaller(Export);
-                var t2 = d2.BeginInvoke(report, null, null);
-                ProgressDlg prg = new ProgressDlg();
-                prg.m_param = t2;
+                //display wait msg
                 prg.m_descr = "Exporting ...";
-                prg.ShowDialog();
-            }
-#endif
 
+                //long time work
+                Export(report);
+                m_iWork = 100;
+
+                dt.Dispose();
+                report.Dispose();
+            });
+
+            var t = d.BeginInvoke(null, null);
+            m_iWork = 0;
+            prg.m_maxRowid = 100;
+            prg.m_cursor = this;
+            prg.m_param = t;
+            prg.ShowDialog();
+            prg.Dispose();
+
+            //print
+#if false
+            byte[] bytes = report.Render("PDF");
+            FileStream fs = new FileStream(m_pdfPath, FileMode.Create);
+            fs.Seek(0, SeekOrigin.Begin);
+            fs.Write(bytes, 0, bytes.Length);
+            fs.Close();
+#else
             Print();
 #endif
         }
@@ -224,8 +231,6 @@ namespace test_binding
                         stream.Close();
                     m_streams = null;
                 }
-                m_dt.Clear();
-                m_dt.Dispose();
             }
         }
         #endregion
