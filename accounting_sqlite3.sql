@@ -4,9 +4,11 @@ CREATE TABLE if not exists  receipts_content(ID INTEGER PRIMARY KEY AUTOINCREMEN
 
 CREATE TABLE if not exists  group_name(ID INTEGER PRIMARY KEY AUTOINCREMENT, name char(31));
 
+CREATE TABLE if not exists  building(ID INTEGER PRIMARY KEY AUTOINCREMENT, name char(31));
+
 CREATE TABLE if not exists internal_payment(ID INTEGER PRIMARY KEY AUTOINCREMENT,date datetime,payment_number char(31),name char(31),content text,group_name char(31),advance_payment INTEGER,reimbursement INTEGER,actually_spent INTEGER,note text);
 
-CREATE TABLE if not exists external_payment(ID INTEGER PRIMARY KEY AUTOINCREMENT,date datetime,payment_number char(31),name char(31),content text,group_name char(31),spent INTEGER,note text);
+CREATE TABLE if not exists external_payment(ID INTEGER PRIMARY KEY AUTOINCREMENT,date datetime,payment_number char(31),name char(31),content text,building char(31),group_name char(31),spent INTEGER,note text);
 
 CREATE TABLE if not exists salary(ID INTEGER PRIMARY KEY AUTOINCREMENT,month INTEGER,date datetime,payment_number char(31),name char(31),group_name char(31),content text,salary INTEGER,note text);
 
@@ -33,6 +35,9 @@ as
 select group_name, salary, cast(strftime('%Y', date) as integer) as year, (strftime('%m', date) + 2) / 3 as qtr 
 from salary
 where strftime('%Y','now') - strftime('%Y',date) between 0 and 4;
+
+CREATE INDEX IF NOT EXISTS idx_receipts_date ON receipts(date);
+CREATE INDEX IF NOT EXISTS idx_receipts_content ON receipts(content);
 
 insert into receipts(date, content, amount) values('2015-01-12','content 1', 10000000);
 insert into receipts(date, content, amount) values('2015-04-12','content 1', 10000000);
