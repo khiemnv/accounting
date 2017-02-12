@@ -467,14 +467,35 @@ namespace test_binding
             return null;
         }
 
+        // Dispose() calls Dispose(true)  
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        // NOTE: Leave out the finalizer altogether if this class doesn't   
+        // own unmanaged resources itself, but leave the other methods  
+        // exactly as they are.   
+        ~lSearchPanel()
+        {
+            // Finalizer calls Dispose(false)  
+            Dispose(false);
+        }
+        // The bulk of the clean-up code is implemented in Dispose(bool)  
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                // free managed resources  
+                foreach (var ctrl in m_searchCtrls)
+                {
+                    ctrl.Dispose();
+                }
+            }
+            // free native resources if there are any.  
             m_tbl.Dispose();
             m_searchBtn.Dispose();
-            foreach (var ctrl in m_searchCtrls)
-            {
-                ctrl.Dispose();
-            }
+            m_searchCtrls.Clear();
         }
     }
 
@@ -517,9 +538,10 @@ namespace test_binding
             m_searchCtrls = new List<lSearchCtrl> {
                     crtSearchCtrl(m_tblInfo, "date", new Point(0, 0), new Size(1, 1)),
                     crtSearchCtrl(m_tblInfo, "payment_number", new Point(0, 1), new Size(1, 1), lSearchCtrl.SearchMode.match),
-                    crtSearchCtrl(m_tblInfo, "name", new Point(1, 0), new Size(1, 1), lSearchCtrl.SearchMode.like),
-                    crtSearchCtrl(m_tblInfo, "group_name", new Point(1, 1), new Size(1, 1), lSearchCtrl.SearchMode.match),
-                    crtSearchCtrl(m_tblInfo, "content", new Point(1, 2), new Size(1, 1), lSearchCtrl.SearchMode.like),
+                    crtSearchCtrl(m_tblInfo, "name", new Point(0, 2), new Size(1, 1), lSearchCtrl.SearchMode.like),
+                    crtSearchCtrl(m_tblInfo, "group_name", new Point(1, 0), new Size(1, 1), lSearchCtrl.SearchMode.match),
+                    crtSearchCtrl(m_tblInfo, "content", new Point(1, 1), new Size(1, 1), lSearchCtrl.SearchMode.like),
+                    crtSearchCtrl(m_tblInfo, "building", new Point(1, 2), new Size(1, 1), lSearchCtrl.SearchMode.match),
                 };
         }
     }

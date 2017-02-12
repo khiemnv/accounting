@@ -37,15 +37,29 @@ namespace test_binding
             //Edit
             //  GroupName
             //  ReceiptsContent
+            //  Building
             MenuItem miEdit = new MenuItem("&Edit");
+
             MenuItem miEditGroupName = new MenuItem("GroupName");
             miEditGroupName.Click += MiEditGroupName_Click;
+            miEdit.MenuItems.Add(miEditGroupName);
+
             MenuItem miEditReceiptsContent = new MenuItem("ReceiptsContent");
             miEditReceiptsContent.Click += MiEditReceiptsContent_Click;
-            miEdit.MenuItems.Add(miEditGroupName);
             miEdit.MenuItems.Add(miEditReceiptsContent);
 
+            MenuItem miBuilding = new MenuItem("Building");
+            miBuilding.Click += MiBuilding_Click;
+            miEdit.MenuItems.Add(miBuilding);
+
             mainMenu.MenuItems.AddRange(new MenuItem[] { miFile, miEdit, miHelp });
+        }
+
+        private void MiBuilding_Click(object sender, EventArgs e)
+        {
+            lEditDlg edtDlg = new lBuildingEditDlg();
+            edtDlg.ShowDialog();
+            edtDlg.Dispose();
         }
 
         private void MiEditReceiptsContent_Click(object sender, EventArgs e)

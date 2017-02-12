@@ -33,6 +33,7 @@ namespace test_binding
                     typeof(lExternalPaymentTblInfo),
                     typeof(lSalaryTblInfo),
                     typeof(lGroupNameTblInfo),
+                    typeof(lBuildingTblInfo),
                     typeof(lReceiptsContentTblInfo),
                     typeof(lReceiptsViewInfo),
                     typeof(lInterPaymentViewInfo),

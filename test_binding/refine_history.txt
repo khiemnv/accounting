@@ -77,7 +77,10 @@ tableinfo
   + auto fill actually_spent
   + header cell style
   + auto fill month (1-12)
-17 speed loading - not yet
+17 speed loading
+  + adater fill - best
+  + page select
+  + command reader - slowest
 18 progress
   + show progress dialog
   + show progress
@@ -97,3 +100,4 @@ tableinfo
   + update last rowid
 24 thread delegate event
   + invokeFetchLargeData
+25 index - not yet

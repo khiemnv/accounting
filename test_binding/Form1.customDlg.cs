@@ -60,4 +60,11 @@ namespace test_binding
         {
         }
     }
+    public class lBuildingEditDlg : lEditDlg
+    {
+        public lBuildingEditDlg()
+            : base(new lBuildingDataPanel())
+        {
+        }
+    }
 }

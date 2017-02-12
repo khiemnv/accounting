@@ -90,7 +90,8 @@ namespace test_binding
 
 #if use_custom_dgv
             m_dataGridView = m_tblInfo.m_tblName == "internal_payment" ? new lInterPaymentDGV(m_tblInfo) :
-                m_tblInfo.m_tblName == "salary" ? new lSalaryDGV(m_tblInfo) : new lCustomDGV(m_tblInfo);
+                m_tblInfo.m_tblName == "salary" ? new lSalaryDGV(m_tblInfo) :
+                new lCustomDGV(m_tblInfo);
             //m_dataGridView = new DataGridView();
 #else
                 m_dataGridView = new DataGridView();
@@ -433,6 +434,13 @@ namespace test_binding
         public lReceiptsContentDataPanel()
         {
             m_tblName = "receipts_content";
+        }
+    }
+    public class lBuildingDataPanel : lGroupNameDataPanel
+    {
+        public lBuildingDataPanel()
+        {
+            m_tblName = "building";
         }
     }
 }

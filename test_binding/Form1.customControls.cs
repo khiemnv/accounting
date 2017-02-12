@@ -49,11 +49,31 @@ namespace test_binding
             m_ctrl.Location = rec.Location;
         }
 
+        #region dispose
+        // Dispose() calls Dispose(true)  
         public void Dispose()
         {
-            //m_DGV.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        // NOTE: Leave out the finalizer altogether if this class doesn't   
+        // own unmanaged resources itself, but leave the other methods  
+        // exactly as they are.   
+        ~myCustomCtrl()
+        {
+            // Finalizer calls Dispose(false)  
+            Dispose(false);
+        }
+        // The bulk of the clean-up code is implemented in Dispose(bool)  
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+            }
+            // free native resources if there are any.  
             m_ctrl.Dispose();
         }
+        #endregion
     }
     public class myComboBox : myCustomCtrl
     {
@@ -221,7 +241,7 @@ namespace test_binding
             hideCustomCtrl();
             //update selected value
             lDataSync data = m_tblInfo.m_cols[e.ColumnIndex].m_lookupData;
-            if (data != null)
+            if (data != null && CurrentCell.Value != null)
             {
                 string key = CurrentCell.Value.ToString();
                 string val = data.find(key);
@@ -360,9 +380,12 @@ namespace test_binding
             base.OnCellEndEdit(e);
             if (m_tblInfo.m_cols[e.ColumnIndex].m_field == "date")
             {
-                DateTime cur = (DateTime)Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
+                var val = Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
+                if (val != DBNull.Value) { 
+                DateTime cur = (DateTime)val;
                 if (Rows[e.RowIndex].Cells["month"].Value == DBNull.Value)
                     this.Rows[e.RowIndex].Cells["month"].Value = cur.Month;
+                }
             }
         }
     }

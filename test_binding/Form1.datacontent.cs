@@ -208,6 +208,7 @@ namespace test_binding
             + "payment_number char(31),"
             + "name char(31),"
             + "content text,"
+            + "building char(31),"
             + "group_name char(31),"
             + "spent INTEGER,"
             + "note text"
@@ -218,6 +219,7 @@ namespace test_binding
                    new lColInfo( "payment_number","Mã Phiếu Chi", lColInfo.lColType.text),
                    new lColInfo( "name","Họ Tên", lColInfo.lColType.text),
                    new lColInfo( "content","Nội dung", lColInfo.lColType.text),
+                   new lColInfo( "building","Công trình", lColInfo.lColType.text, "building"),
                    new lColInfo( "group_name","Thuộc ban", lColInfo.lColType.text, "group_name"),
                    new lColInfo( "spent","Số tiền", lColInfo.lColType.currency),
                    new lColInfo( "note","Ghi Chú", lColInfo.lColType.text),
@@ -271,6 +273,24 @@ namespace test_binding
                 };
         }
     };
+
+    [DataContract(Name = "lBuildingTblInfo")]
+    public class lBuildingTblInfo : lTableInfo
+    {
+        public lBuildingTblInfo()
+        {
+            m_tblName = "building";
+            m_tblAlias = "Công trình";
+            m_crtQry = "CREATE TABLE if not exists building("
+                + "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "name nchar(31))";
+            m_cols = new lColInfo[] {
+                   new lColInfo( "ID","ID", lColInfo.lColType.num),
+                   new lColInfo( "name","Công trình", lColInfo.lColType.text)
+                };
+        }
+    };
+
     [DataContract(Name = "lReceiptsContentTblInfo")]
     public class lReceiptsContentTblInfo : lTableInfo
     {
@@ -368,7 +388,7 @@ namespace test_binding
         }
     };
 
-    public class lContentProvider
+    public class lContentProvider:IDisposable
     {
         protected lContentProvider()
         {
@@ -405,7 +425,6 @@ namespace test_binding
         }
         public bool ReleaseDataContent(string tblName)
         {
-            lDataContent dataContent = newDataContent(tblName);
             if (!m_dataContents.ContainsKey(tblName))
             {
                 return false;
@@ -432,8 +451,43 @@ namespace test_binding
                 return m_dataSyncs[tblName];
             }
         }
+
+        #region dispose
+        // Dispose() calls Dispose(true)  
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        // NOTE: Leave out the finalizer altogether if this class doesn't   
+        // own unmanaged resources itself, but leave the other methods  
+        // exactly as they are.   
+        ~lContentProvider()
+        {
+            // Finalizer calls Dispose(false)  
+            Dispose(false);
+        }
+        // The bulk of the clean-up code is implemented in Dispose(bool)  
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                foreach (lDataSync ds in m_dataSyncs.Values)
+                {
+                    ds.Dispose();
+                }
+                foreach (lDataContent dc in m_dataContents.Values)
+                {
+                    dc.Dispose();
+                }
+            }
+            // free native resources if there are any.
+            m_dataSyncs.Clear();
+            m_dataContents.Clear();
+        }
+        #endregion
     }
-    public class lSqlContentProvider : lContentProvider, IDisposable
+    public class lSqlContentProvider : lContentProvider
     {
         static lSqlContentProvider m_instance;
         public static lContentProvider getInstance(Form parent)
@@ -473,12 +527,34 @@ namespace test_binding
             return table;
         }
 
-        public void Dispose()
+        #region dispose
+        // Dispose() calls Dispose(true)  
+        public new void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        // NOTE: Leave out the finalizer altogether if this class doesn't   
+        // own unmanaged resources itself, but leave the other methods  
+        // exactly as they are.   
+        ~lSqlContentProvider()
+        {
+            // Finalizer calls Dispose(false)  
+            Dispose(false);
+        }
+        // The bulk of the clean-up code is implemented in Dispose(bool)  
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+            if (disposing)
+            {
+            }
+            // free native resources if there are any.  
             m_cnn.Dispose();
         }
+        #endregion
     }
-    public class lSQLiteContentProvider : lContentProvider, IDisposable
+    public class lSQLiteContentProvider : lContentProvider
     {
         static lSQLiteContentProvider m_instance;
         public static lContentProvider getInstance(Form parent)
@@ -546,8 +622,9 @@ namespace test_binding
             return data;
         }
 
-        public void Dispose()
+        public new void Dispose()
         {
+            base.Dispose();
             m_cnn.Dispose();
         }
     }
@@ -655,7 +732,8 @@ namespace test_binding
                     new lExternalPaymentTblInfo(),
                     new lSalaryTblInfo(),
                     new lReceiptsContentTblInfo(),
-                    new lGroupNameTblInfo()
+                    new lGroupNameTblInfo(),
+                    new lBuildingTblInfo()
                 };
             m_views = new List<lTableInfo>() {
                     new lReceiptsViewInfo(),
@@ -693,8 +771,17 @@ namespace test_binding
                 handler(this, e);
             }
         }
-
         public event EventHandler<FillTableCompletedEventArgs> FillTableCompleted;
+
+        protected virtual void OnProgessCompleted(EventArgs e)
+        {
+            EventHandler handler = ProgessCompleted;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+        public event EventHandler ProgessCompleted;
 
         protected virtual Int64 getMaxRowId() { return 0; }
         protected virtual Int64 getRowCount() { return 0; } //not used
@@ -718,6 +805,7 @@ namespace test_binding
             {
                 prg.ShowDialog();
                 prg.Dispose();
+                OnProgessCompleted(EventArgs.Empty);
             });
         }
         void fetchLargeData()
@@ -833,11 +921,32 @@ namespace test_binding
         public virtual void Submit() { m_changed = false; }
         protected virtual void GetData(string sql) { throw new NotImplementedException(); }
 
-        public void Dispose()
+        #region dispose
+        // Dispose() calls Dispose(true)  
+        public virtual void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        // NOTE: Leave out the finalizer altogether if this class doesn't   
+        // own unmanaged resources itself, but leave the other methods  
+        // exactly as they are.   
+        ~lDataContent()
+        {
+            // Finalizer calls Dispose(false)  
+            Dispose(false);
+        }
+        // The bulk of the clean-up code is implemented in Dispose(bool)  
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+            }
+            // free native resources if there are any. 
             m_bindingSource.Dispose();
             m_dataTable.Dispose();
         }
+        #endregion
     }
     public class lSQLiteDataContent : lDataContent, IDisposable
     {
@@ -952,7 +1061,7 @@ namespace test_binding
             fetchData();
         }
 
-        public new void Dispose()
+        public sealed override void Dispose()
         {
             m_dataAdapter.Dispose();
         }
@@ -963,7 +1072,10 @@ namespace test_binding
             SQLiteConnection cnn = m_cnn;
             SQLiteCommand cmd = new SQLiteCommand(qry, cnn);
             var ret = cmd.ExecuteScalar();
-            return (Int64)ret;
+            if (ret != DBNull.Value)
+                return (Int64)ret;
+            else
+                return 0;
         }
         protected override Int64 getMaxRowId()
         {
@@ -1064,7 +1176,7 @@ namespace test_binding
     {
         void Refresh();
     }
-    public class lDataSync : IRefresher
+    public class lDataSync : IRefresher, IDisposable
     {
         private lDataContent m_data;
         public AutoCompleteStringCollection m_colls;
@@ -1157,6 +1269,12 @@ namespace test_binding
                 return m_maps[key];
             else
                 return null;
+        }
+
+        public void Dispose()
+        {
+            m_colls.Clear();
+            m_maps.Clear();
         }
     }
 }

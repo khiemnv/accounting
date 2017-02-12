@@ -28,7 +28,9 @@ namespace test_binding
         public string m_xmlPath;    //xml path
 #endif
         public string m_pdfPath;    //print to pdf file
-                                    //lDataContent m_data;
+
+        lDataContent m_data;
+
         protected lBaseReport()
         {
         }
@@ -43,21 +45,24 @@ namespace test_binding
             return newRpt;
         }
 
-        private DataTable loadData()
+        DataTable m_dt;
+        private void loadData()
         {
-#if false
+#if !use_progress_for_view
             string qry = string.Format("SELECT * FROM {0}", m_viewName);
-            DataTable dt = appConfig.s_contentProvider.GetData(qry);
+            m_dt = appConfig.s_contentProvider.GetData(qry);
+            runAfterLoadDataComplete();
 #else
-            lDataContent data = appConfig.s_contentProvider.CreateDataContent(m_viewName);
-            data.Load(true);    //load full table
-            DataTable dt = data.m_dataTable;
+            m_data = appConfig.s_contentProvider.CreateDataContent(m_viewName);
+            m_data.ProgessCompleted += M_data_FillTableCompleted;
+            m_data.Load(true);    //load full table
 #endif
-            dt.TableName = m_viewName;
-#if crt_xml
-                dt.WriteXml(m_xmlPath);
-#endif
-            return dt;
+            //return dt;
+        }
+
+        private void M_data_FillTableCompleted(object sender, EventArgs e)
+        {
+            runAfterLoadDataComplete();
         }
 
         private List<Stream> m_streams;
@@ -153,9 +158,23 @@ namespace test_binding
 
         public void Run()
         {
+            loadData();
+
+            //after load data complete
+        }
+        void runAfterLoadDataComplete()
+        {
+#if !runAfterLoadDataComplete
+            DataTable dt = m_dt;
+#else
+            DataTable dt = m_data.m_dataTable;
+#endif
+            dt.TableName = m_viewName;
+#if crt_xml
+                dt.WriteXml(m_xmlPath);
+#endif
             LocalReport report = new LocalReport();
             report.ReportPath = m_rdlcPath;
-            DataTable dt = loadData();
             report.DataSources.Add(new ReportDataSource(m_rcName, dt));
 
             //add report params
