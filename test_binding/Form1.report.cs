@@ -192,7 +192,7 @@ namespace test_binding
 
             var t = d.BeginInvoke(null, null);
             m_iWork = 0;
-            prg.m_maxRowid = 100;
+            prg.m_endPos = 100;
             prg.m_cursor = this;
             prg.m_param = t;
             prg.ShowDialog();

@@ -778,18 +778,13 @@ namespace test_binding
         protected virtual void fillTable() { throw new NotImplementedException(); }
         void invokeFetchLargeData()
         {
-            var task = m_form.BeginInvoke(new noParamDelegate(fetchLargeData));
-            //if (m_isView) { return; }
-            //lPrgDlg prg = new lPrgDlg();
+            Int64 maxId = getMaxRowId();
             ProgressDlg prg = new ProgressDlg();
             prg.TopMost = true;
-            prg.m_param = task;
-            if (!m_isView)
-            {
-                prg.m_cursor = this;
-                prg.m_maxRowid = getMaxRowId();
-                prg.m_scale = 1000;
-            }
+            Debug.Assert(!m_isView);
+            prg.m_cursor = this;
+            prg.m_endPos = maxId;
+            prg.m_scale = 1000;
             prg.m_descr = "Getting data ...";
             Task tMor = Task.Run(() =>
             {
@@ -797,9 +792,13 @@ namespace test_binding
                 prg.Dispose();
                 OnProgessCompleted(EventArgs.Empty);
             });
+
+            fetchLargeData();
+            m_lastId = maxId;
         }
         void fetchLargeData()
         {
+            Debug.Assert(!m_isView);
             using (new myElapsed())
             {
                 DataTable tbl = m_dataTable;
@@ -807,16 +806,12 @@ namespace test_binding
                 tbl.Clear();
                 tbl.Locale = System.Globalization.CultureInfo.InvariantCulture;
 
-                if (!m_isView) {
-                    tbl.RowChanged += M_tbl_RowChanged; //udpate last row id
-                    m_lastId = 0;
-                }
+                tbl.RowChanged += M_tbl_RowChanged; //udpate last row id
+                m_lastId = 0;
 
                 fillTable();
 
-                if (!m_isView) { 
-                    tbl.RowChanged -= M_tbl_RowChanged;
-                }
+                tbl.RowChanged -= M_tbl_RowChanged;
             }
 
             OnFillTableCompleted(new FillTableCompletedEventArgs());
@@ -840,7 +835,8 @@ namespace test_binding
         delegate void noParamDelegate();
         protected virtual void fetchData()
         {
-            if (m_isView || (getMaxRowId() > 1000))
+            Debug.Assert(!m_isView);
+            if (getMaxRowId() > 1000)
                 invokeFetchLargeData();
             else
                 fetchSmallData();

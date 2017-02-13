@@ -189,7 +189,7 @@ namespace test_binding
         private System.Windows.Forms.ProgressBar m_prg;
 
         public object m_param;
-        public Int64 m_maxRowid;
+        public Int64 m_endPos;
         public Int64 m_scale;
         public string m_descr;
         public myCursor m_cursor;
@@ -241,7 +241,7 @@ namespace test_binding
 #endif
 
             this.Load += ProgressDlg_Load;
-            m_maxRowid = 1000;
+            m_endPos = 1000;
             m_scale = 1;
 
             m_timeOut = 100;        //100 ms
@@ -279,16 +279,15 @@ namespace test_binding
 
         void start()
         {
-            m_nStep = m_maxRowid / m_scale;
+            m_nStep = m_endPos / m_scale;
             m_prg.Maximum = (int)m_nStep;
             m_prg.Value = 0;
-            IAsyncResult t = (IAsyncResult)m_param;
             m_task = new Thread(new ThreadStart(() =>
             {
-                Int64 cur = 0;
                 for (int i = 1; ; i++)
                 {
-                    if (t.IsCompleted)
+                    Int64 curPos = m_cursor.getPos();
+                    if (curPos == m_endPos)
                     {
                         m_state = state.completed;
                         break;
@@ -298,16 +297,7 @@ namespace test_binding
                         m_state = state.canceled;
                         break;
                     }
-                    if (m_cursor == null) {
-                        if (cur < (m_nStep - 1)) {
-                            cur++;
-                        }
-                    }
-                    else
-                    {
-                        cur = m_cursor.getPos() / m_scale;
-                    }
-                    incPrgCallback((int)cur, i / 10);
+                    incPrgCallback((int)(curPos/m_scale), i / 10);
                     Thread.Sleep(m_timeOut);
                     Debug.WriteLine("{0}.m_task cur thread {1} elapsed {2} s",
                         this,
