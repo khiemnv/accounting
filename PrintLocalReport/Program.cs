@@ -261,6 +261,21 @@ public class Demo : IDisposable
             m_pdfPath = @"..\..\report.pdf";
         }
     }
+    class lMonthReport : lBaseReport
+    {
+        public lMonthReport()
+        {
+            m_rcName = "DataSet1";
+            m_viewName = "v_receipts";
+            m_rdlcPath = @"..\..\receipts.rdlc";
+            m_dsName = "DataSet1";
+            m_pdfPath = @"..\..\report.pdf";
+        }
+        public override List<ReportParameter> getReportParam()
+        {
+            return new List<ReportParameter>();
+        }
+    }
 #if false
     private DataTable LoadSalesData()
     {

@@ -48,6 +48,7 @@ tableinfo
   + fix get report params
   + fix receipts report - details param
   + release view data
+  + report by month
 6. showing edit control - auto complete
   + search by content - auto complete
 7. refine table - unicode
@@ -87,8 +88,11 @@ tableinfo
   + load tbl data
   + load view data
   + on top most
+  + simplify
 19 generate test data
   + test 1000*1000 rows
+  + gen data 4 tbls
+  
 20 error handing
   + dgv data error
   + insert new row - udpate rowid

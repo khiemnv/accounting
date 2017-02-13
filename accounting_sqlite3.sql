@@ -128,3 +128,11 @@ insert into group_name(name) values('Ban tri khách');
 insert into group_name(name) values('Ban tri Khố');
 
 
+select *, (receipt - inter_pay - exter_pay - salary) as remain from 
+(select date, sum(actually_spent) as inter_pay from internal_payment where date between '2016-12-01' and '2016-12-02' group by date) as t1
+NATURAL JOIN
+(select date, sum(spent) as exter_pay from external_payment where date between '2016-12-01' and '2016-12-02' group by date) as t2
+NATURAL JOIN
+(select date, sum(salary) as salary from salary where date between '2016-12-01' and '2016-12-02' group by date) as t3
+NATURAL JOIN
+(select date, sum(amount) as receipt from receipts where date between '2016-12-01' and '2016-12-02' group by date) as t4

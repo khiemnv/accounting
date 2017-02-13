@@ -875,15 +875,18 @@ namespace test_data
         static void Main(string[] args)
         {
             //crtDict();
-            //gen_data();
+            //gen_receipts_data();
+            //gen_interPay_data();
+            //gen_exterPay_data();
+            gen_salary_data();
             //test_page();
-            lDataDlg dlg = new lDataDlg();
-            dlg.ShowDialog();
+            //lDataDlg dlg = new lDataDlg();
+            //dlg.ShowDialog();
         }
 
         private static void crtDict()
         {
-            string val = contents[1];
+            string val = receiptsContents[1];
             string lower = val.ToLower();
             Encoding ascii = new ASCIIEncoding();
             Encoding unicode = new UnicodeEncoding();
@@ -905,7 +908,7 @@ namespace test_data
             cnn.Open();
             return cnn;
         }
-        static void gen_data()
+        static void gen_receipts_data()
         {
             SQLiteConnection cnn = get_cnn();
 
@@ -921,6 +924,73 @@ namespace test_data
             }
             transaction.Commit();
         }
+        static void gen_interPay_data()
+        {
+            SQLiteConnection cnn = get_cnn();
+
+            var cmd = new SQLiteCommand();
+            cmd.Connection = cnn;
+            var transaction = cnn.BeginTransaction();
+            for (int i = 0; i < 1000 * 1000; i++)
+            {
+                var rec = createInterPayRec();
+                cmd.CommandText = string.Format("insert into internal_payment( "
+                    + " date, payment_number, name, content, group_name, "
+                    + " advance_payment, reimbursement, actually_spent, note) "
+                    + "values('{0}','{1}','{2}','{3}','{4}','{5}', "
+                    + "'{6}', '{7}', '{8}')",
+                    rec[0], rec[1], rec[2], rec[3], rec[4], rec[5], 
+                    rec[6], rec[7], rec[8]);
+                var ret = cmd.ExecuteNonQuery();
+            }
+            transaction.Commit();
+        }
+
+        static void gen_exterPay_data()
+        {
+            SQLiteConnection cnn = get_cnn();
+
+            var cmd = new SQLiteCommand();
+            cmd.Connection = cnn;
+            var transaction = cnn.BeginTransaction();
+            for (int i = 0; i < 1000 * 1000; i++)
+            {
+                var rec = createExterPayRec();
+                cmd.CommandText = string.Format("insert into external_payment( "
+                    + " date, payment_number, name, content, "
+                    + " building, group_name, spent, note) "
+                    + "values('{0}','{1}','{2}','{3}',"
+                    + "'{4}','{5}', '{6}', '{7}')",
+                    rec[0], rec[1], rec[2], rec[3],
+                    rec[4], rec[5], rec[6], rec[7]);
+                var ret = cmd.ExecuteNonQuery();
+            }
+            transaction.Commit();
+        }
+
+
+        static void gen_salary_data()
+        {
+            SQLiteConnection cnn = get_cnn();
+
+            var cmd = new SQLiteCommand();
+            cmd.Connection = cnn;
+            var transaction = cnn.BeginTransaction();
+            for (int i = 0; i < 1000 * 1000; i++)
+            {
+                var rec = createSalaryRec();
+                cmd.CommandText = string.Format("insert into salary( "
+                    + " month, date, payment_number, name, group_name, "
+                    + " content, salary, note) "
+                    + "values('{0}','{1}','{2}','{3}',"
+                    + "'{4}','{5}', '{6}', '{7}')",
+                    rec[0], rec[1], rec[2], rec[3],
+                    rec[4], rec[5], rec[6], rec[7]);
+                var ret = cmd.ExecuteNonQuery();
+            }
+            transaction.Commit();
+        }
+
 
         static void test_page()
         {
@@ -954,9 +1024,59 @@ namespace test_data
             rec[0] = genDate();
             rec[1] = genRcptNum();
             rec[2] = genName();
-            rec[3] = genContent();
+            rec[3] = genReciptsContent();
             rec[4] = genAmount();
             rec[5] = getNote();
+            return rec;
+        }
+
+        static string[] createInterPayRec()
+        {
+            int nFields = 9;
+            var rec = new string[nFields];
+            rec[0] = genDate();
+            rec[1] = genIntePayNum();
+            rec[2] = genName();
+            rec[3] = genInterPayContent();
+            rec[4] = genGroupName();
+            int reimbursement = genInt()/2 * 1000;
+            int actually_spent = genInt()/2 * 1000;
+            rec[5] = (reimbursement + actually_spent).ToString();
+            rec[6] = reimbursement.ToString();
+            rec[7] = actually_spent.ToString();
+            rec[8] = getNote();
+            return rec;
+        }
+
+        static string[] createExterPayRec()
+        {
+            int nFields = 8;
+            var rec = new string[nFields];
+            rec[0] = genDate();
+            rec[1] = genExtePayNum();
+            rec[2] = genName();
+            rec[3] = genExterPayContent();
+            rec[4] = genBuilding();
+            rec[5] = genGroupName();
+            int spent = genInt() / 4 * 1000;
+            rec[6] = spent.ToString();
+            rec[7] = getNote();
+            return rec;
+        }
+
+        static string[] createSalaryRec()
+        {
+            int nFields = 8;
+            var rec = new string[nFields];
+            rec[1] = genDate();
+            rec[0] = rec[1].Substring(5,2);
+            rec[2] = genSalaryNum();
+            rec[3] = genName();
+            rec[4] = genGroupName();
+            rec[5] = gensalaryContent();
+            int spent = genInt() / 4 * 1000;
+            rec[6] = spent.ToString();
+            rec[7] = getNote();
             return rec;
         }
 
@@ -970,11 +1090,85 @@ namespace test_data
         {
             return (rnd.Next() % Math.Pow(10, 6)).ToString() + "000";
         }
-
-        static string[] contents = new string[] { "Sư Phụ giao", "Đổ hòm công đức", "Nguồn thu khác" };
-        static private string genContent()
+        static private int genInt()
         {
-            return contents[rnd.Next() % contents.Length];
+            return (int)(rnd.Next() % Math.Pow(10, 6));
+        }
+
+        static string[] receiptsContents = new string[] { "Sư Phụ giao", "Đổ hòm công đức", "Nguồn thu khác" };
+        static private string genReciptsContent()
+        {
+            return receiptsContents[rnd.Next() % receiptsContents.Length];
+        }
+
+        static string[] interPayContents = new string[] {
+            "tiền công nhân",
+            "chuyển khoản qua ngân hàng",
+            "đóng đồ thờ",
+            "Đi làm từ thiện",
+            "Ủng hộ các đạo tràng",
+        };
+        static private string genInterPayContent()
+        {
+            return interPayContents[rnd.Next() % interPayContents.Length];
+        }
+        static string[] exterPayContents = new string[] {
+            "tiền công nhân",
+            "chuyển khoản qua ngân hàng",
+            "đóng đồ thờ",
+            "Đi làm từ thiện",
+            "Ủng hộ các đạo tràng",
+        };
+        static private string genExterPayContent()
+        {
+            return exterPayContents[rnd.Next() % exterPayContents.Length];
+        }
+
+        static string[] buildings = new string[] {
+            "xây chánh điện",
+            "xây bảo tháp",
+            "xây tăng viện",
+            "xây ni viện",
+        };
+        static private string genBuilding()
+        {
+            return buildings[rnd.Next() % buildings.Length];
+        }
+
+        static string[] groupNames = new string[] {
+            "Ban tri sự",
+            "Ban tri khách",
+            "Ban tri Khố",
+            "Ban hương đăng",
+            "Ban đời sống",
+            "Ban thị giả",
+            "Ban văn hoá",
+            "Ban nghi lễ",
+            "Ban cây cảnh",
+            "Ban vườn",
+            "Ban xây dựng",
+            "Ban cơ điện và ánh sáng",
+            "Ban âm thanh ",
+            "Ban nước",
+            "Ban y tế",
+            "Ban may",
+            "Ban hộ thất ",
+            "Ban vệ sinh",
+            "Ban vận tải và san lấp mặt bằng",
+            "Ban an ninh"
+        };
+        static private string genGroupName()
+        {
+            return groupNames[rnd.Next() % groupNames.Length];
+        }
+
+        static string[] salaryContents = new string[] {
+            "tiền lương",
+            "tạm ứng",
+        };
+        static private string gensalaryContent()
+        {
+            return salaryContents[rnd.Next() % salaryContents.Length];
         }
 
         static string[] first = new string[] { "Nguyễn", "Đào", "Ngô", "Phạm" };
@@ -990,9 +1184,21 @@ namespace test_data
         }
 
         static int m_baseNum = 0;
+        static private string genIntePayNum()
+        {
+            return string.Format("ipay_num_{0}", m_baseNum++.ToString("000000"));
+        }
         static private string genRcptNum()
         {
             return string.Format("rcpt_num_{0}", m_baseNum++.ToString("000000"));
+        }
+        static private string genExtePayNum()
+        {
+            return string.Format("epay_num_{0}", m_baseNum++.ToString("000000"));
+        }
+        static private string genSalaryNum()
+        {
+            return string.Format("salary_num_{0}", m_baseNum++.ToString("000000"));
         }
 
         static Random rnd = new Random(Environment.TickCount);
