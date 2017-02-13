@@ -17,7 +17,7 @@ namespace test_data
     public partial class ProgressDlg : Form
     {
         public object m_param;
-        public Int64 m_maxRowid;
+        public Int64 m_endPos;
         public Int64 m_scale;
         public string m_descr;
         public myCursor m_cursor;
@@ -101,7 +101,7 @@ namespace test_data
 
         void start()
         {
-            m_nStep = m_maxRowid / m_scale;
+            m_nStep = m_endPos / m_scale;
             m_prg.Maximum = (int)m_nStep;
             m_prg.Value = 0;
             IAsyncResult t = (IAsyncResult)m_param;
@@ -109,7 +109,8 @@ namespace test_data
             {
                 for (int i = 1; ; i++)
                 {
-                    if (t.IsCompleted)
+                    Int64 curPos = m_cursor.getPos();
+                    if (curPos == m_endPos)
                     {
                         m_state = state.completed;
                         break;
@@ -119,8 +120,7 @@ namespace test_data
                         m_state = state.canceled;
                         break;
                     }
-                    Int64 cur = m_cursor.getPos() / m_scale;
-                    incPrgCallback((int)cur, i / 10);
+                    incPrgCallback((int)(curPos/m_scale), i / 10);
                     Thread.Sleep(100);
                     Debug.WriteLine("{0}.m_task cur thread {1} elapsed {2} s",
                         this,

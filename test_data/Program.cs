@@ -484,25 +484,28 @@ namespace test_data
                 //m_task = new Task(monitorGetData);
                 //m_task.Start();
                 {
+                    Int64 maxId = getMaxRowId();
                     m_cancel = false;
                     //var t = m_dataGridView.BeginInvoke(new noParamDelegate(fetchData));
-                    var t = this.BeginInvoke(new noParamDelegate(fetchData));
+                    //var t = this.BeginInvoke(new noParamDelegate(fetchData));
                     //lPrgDlg prg = new lPrgDlg();
                     ProgressDlg prg = new ProgressDlg();
-                    prg.m_param = t;
+                    //prg.m_param = t;
                     prg.m_cursor = this;
-                    prg.m_maxRowid = getMaxRowId();
+                    prg.m_endPos = maxId;
                     prg.m_scale = 1000;
                     prg.m_descr = "Getting data ...";
                     Task tMor = Task.Run(() =>
                     {
                         prg.ShowDialog();
-                        if (prg.m_isCancel)
-                        {
-                            m_cancel = true;
-                        }
                         prg.Dispose();
                     });
+
+                    fetchData();
+                    m_lastId = maxId;
+                    using(new myElapsed("wait for monitor thread")) { 
+                        tMor.Wait();
+                    }
                 }
 #endif
 #if !use_progress_dlg
