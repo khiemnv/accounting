@@ -58,7 +58,15 @@ public class Demo : IDisposable
         public void init(SQLiteConnection cnn) { m_cnn = cnn; }
         private DataTable loadData()
         {
-            string qry = string.Format("SELECT * FROM {0} limit 100", m_viewName);
+            string qry = "select group_name, date, name, actually_spent as inter_pay, 0 as exter_pay, 0 as salary"
+                + " from internal_payment where date between '2016-12-01' and '2016-12-02'"
+                + " union"
+                + " select group_name, date, name, 0 as inter_pay, spent as exter_pay, 0 as salary"
+                + " from external_payment where date between '2016-12-01' and '2016-12-02'"
+                + " union"
+                + " select group_name, date, name, 0 as inter_pay, 0 as exter_pay, salary"
+                + " from salary where date between '2016-12-01' and '2016-12-02'"
+                + " limit 100";
             SQLiteDataAdapter cmd = new SQLiteDataAdapter(qry, m_cnn);
 
             // Create and fill a DataSet.
@@ -73,7 +81,16 @@ public class Demo : IDisposable
         }
         private DataTable loadData2()
         {
-            string qry = string.Format("SELECT * FROM {0} limit 100", "v_salary");
+            string qry = "select *, (receipt - inter_pay - exter_pay - salary) as remain "
+                + " from "
+                + " (select date, sum(actually_spent) as inter_pay from internal_payment where date between '2016-12-01' and '2016-12-02' group by date) as t1"
+                + " NATURAL JOIN"
+                + " (select date, sum(spent) as exter_pay from external_payment where date between '2016-12-01' and '2016-12-02' group by date) as t2"
+                + " NATURAL JOIN"
+                + " (select date, sum(salary) as salary from salary where date between '2016-12-01' and '2016-12-02' group by date) as t3"
+                + " NATURAL JOIN"
+                + " (select date, sum(amount) as receipt from receipts where date between '2016-12-01' and '2016-12-02' group by date) as t4"
+                ;
             SQLiteDataAdapter cmd = new SQLiteDataAdapter(qry, m_cnn);
 
             // Create and fill a DataSet.
