@@ -58,7 +58,7 @@ public class Demo : IDisposable
         public void init(SQLiteConnection cnn) { m_cnn = cnn; }
         private DataTable loadData()
         {
-            string qry = string.Format("SELECT * FROM {0}", m_viewName);
+            string qry = string.Format("SELECT * FROM {0} limit 100", m_viewName);
             SQLiteDataAdapter cmd = new SQLiteDataAdapter(qry, m_cnn);
 
             // Create and fill a DataSet.
@@ -70,6 +70,21 @@ public class Demo : IDisposable
             m_ds.WriteXml(m_xmlPath);
 #endif
             return m_ds.Tables[0];
+        }
+        private DataTable loadData2()
+        {
+            string qry = string.Format("SELECT * FROM {0} limit 100", "v_salary");
+            SQLiteDataAdapter cmd = new SQLiteDataAdapter(qry, m_cnn);
+
+            // Create and fill a DataSet.
+            //m_ds.Clear();
+            //m_ds.DataSetName = "DataSet2";
+            cmd.Fill(m_ds);
+            m_ds.Tables[1].TableName = "v_salary";
+#if crt_xml
+            m_ds.WriteXml(m_xmlPath);
+#endif
+            return m_ds.Tables[1];
         }
 #endif
 
@@ -186,13 +201,28 @@ public class Demo : IDisposable
             DataTable dt = loadData();
             report.DataSources.Add(new ReportDataSource(m_rcName, dt));
 
+            DataTable dt2 = loadData2();
+            report.DataSources.Add(new ReportDataSource("DataSet2", dt2));
+
             //add report params
             List<ReportParameter> rpParams = getReportParam();
             report.SetParameters(rpParams);
 
             report.Refresh();
 #if true
-            byte[] bytes = report.Render("PDF");
+            PrintDialog pdlg = new PrintDialog();
+            pdlg.ShowDialog();
+            string deviceInfo =
+              @"<DeviceInfo>
+                <OutputFormat>EMF</OutputFormat>
+                <PageWidth>8.5in</PageWidth>
+                <PageHeight>11in</PageHeight>
+                <MarginTop>0.25in</MarginTop>
+                <MarginLeft>0.25in</MarginLeft>
+                <MarginRight>0.25in</MarginRight>
+                <MarginBottom>0.25in</MarginBottom>
+            </DeviceInfo>";
+            byte[] bytes = report.Render("PDF", deviceInfo);
             FileStream fs = new FileStream(m_pdfPath, FileMode.Create);
             fs.Seek(0, SeekOrigin.Begin);
             fs.Write(bytes, 0, bytes.Length);
@@ -225,7 +255,10 @@ public class Demo : IDisposable
         }
         public override List<ReportParameter> getReportParam()
         {
-            return new List<ReportParameter>();
+            return new List<ReportParameter>() {
+                new ReportParameter("startDate","2016-01-01"),
+                new ReportParameter("endDate","2016-01-02"),
+            };
         }
     }
     class lInternalPaymentReport : lBaseReport
@@ -337,6 +370,8 @@ public class Demo : IDisposable
     // Export the given report as an EMF (Enhanced Metafile) file.
     private void Export(LocalReport report)
     {
+        PrintDialog pdlg = new PrintDialog();
+        pdlg.ShowDialog();
 #if true
         string deviceInfo =
           @"<DeviceInfo>
@@ -433,7 +468,7 @@ public class Demo : IDisposable
     {
         using (lBaseReport demo = new lReceiptsReport())
         {
-            string dbPath = @"E:\tmp\accounting\test_binding\appData.db";
+            string dbPath = @"..\..\..\test_binding\appData.db";
             SQLiteConnection cnn = new SQLiteConnection(string.Format("Data Source={0};Version=3;", dbPath));
 #if sql_server
             string cnnStr = "Data Source=localhost\\SQLEXPRESS;Initial Catalog=accounting;Integrated Security=True;Pooling=False";
