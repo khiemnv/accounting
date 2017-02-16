@@ -1679,8 +1679,6 @@ namespace PrintLocalReport {
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
         public partial class v_monthsDataTable : global::System.Data.TypedTableBase<v_monthsRow> {
             
-            private global::System.Data.DataColumn columndate;
-            
             private global::System.Data.DataColumn columnreceipt;
             
             private global::System.Data.DataColumn columninter_pay;
@@ -1690,6 +1688,8 @@ namespace PrintLocalReport {
             private global::System.Data.DataColumn columnsalary;
             
             private global::System.Data.DataColumn columnremain;
+            
+            private global::System.Data.DataColumn columnmonth;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
@@ -1722,14 +1722,6 @@ namespace PrintLocalReport {
             protected v_monthsDataTable(global::System.Runtime.Serialization.SerializationInfo info, global::System.Runtime.Serialization.StreamingContext context) : 
                     base(info, context) {
                 this.InitVars();
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn dateColumn {
-                get {
-                    return this.columndate;
-                }
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1774,6 +1766,14 @@ namespace PrintLocalReport {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn monthColumn {
+                get {
+                    return this.columnmonth;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -1809,15 +1809,15 @@ namespace PrintLocalReport {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public v_monthsRow Addv_monthsRow(System.DateTime date, int receipt, int inter_pay, int exter_pay, int salary, int remain) {
+            public v_monthsRow Addv_monthsRow(int receipt, int inter_pay, int exter_pay, int salary, int remain, System.DateTime month) {
                 v_monthsRow rowv_monthsRow = ((v_monthsRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
-                        date,
                         receipt,
                         inter_pay,
                         exter_pay,
                         salary,
-                        remain};
+                        remain,
+                        month};
                 rowv_monthsRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowv_monthsRow);
                 return rowv_monthsRow;
@@ -1840,19 +1840,17 @@ namespace PrintLocalReport {
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             internal void InitVars() {
-                this.columndate = base.Columns["date"];
                 this.columnreceipt = base.Columns["receipt"];
                 this.columninter_pay = base.Columns["inter_pay"];
                 this.columnexter_pay = base.Columns["exter_pay"];
                 this.columnsalary = base.Columns["salary"];
                 this.columnremain = base.Columns["remain"];
+                this.columnmonth = base.Columns["month"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             private void InitClass() {
-                this.columndate = new global::System.Data.DataColumn("date", typeof(global::System.DateTime), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columndate);
                 this.columnreceipt = new global::System.Data.DataColumn("receipt", typeof(int), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnreceipt);
                 this.columninter_pay = new global::System.Data.DataColumn("inter_pay", typeof(int), null, global::System.Data.MappingType.Element);
@@ -1863,6 +1861,8 @@ namespace PrintLocalReport {
                 base.Columns.Add(this.columnsalary);
                 this.columnremain = new global::System.Data.DataColumn("remain", typeof(int), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnremain);
+                this.columnmonth = new global::System.Data.DataColumn("month", typeof(global::System.DateTime), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnmonth);
                 this.columnremain.ReadOnly = true;
             }
             
@@ -2842,22 +2842,6 @@ namespace PrintLocalReport {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public System.DateTime date {
-                get {
-                    try {
-                        return ((global::System.DateTime)(this[this.tablev_months.dateColumn]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'date\' in table \'v_months\' is DBNull.", e);
-                    }
-                }
-                set {
-                    this[this.tablev_months.dateColumn] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public int receipt {
                 get {
                     try {
@@ -2938,14 +2922,18 @@ namespace PrintLocalReport {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsdateNull() {
-                return this.IsNull(this.tablev_months.dateColumn);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetdateNull() {
-                this[this.tablev_months.dateColumn] = global::System.Convert.DBNull;
+            public System.DateTime month {
+                get {
+                    try {
+                        return ((global::System.DateTime)(this[this.tablev_months.monthColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'month\' in table \'v_months\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablev_months.monthColumn] = value;
+                }
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -3006,6 +2994,18 @@ namespace PrintLocalReport {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetremainNull() {
                 this[this.tablev_months.remainColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsmonthNull() {
+                return this.IsNull(this.tablev_months.monthColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetmonthNull() {
+                this[this.tablev_months.monthColumn] = global::System.Convert.DBNull;
             }
         }
         
@@ -4038,12 +4038,12 @@ namespace PrintLocalReport.accountingDataSetTableAdapters {
             global::System.Data.Common.DataTableMapping tableMapping = new global::System.Data.Common.DataTableMapping();
             tableMapping.SourceTable = "Table";
             tableMapping.DataSetTable = "v_months";
-            tableMapping.ColumnMappings.Add("date", "date");
             tableMapping.ColumnMappings.Add("receipt", "receipt");
             tableMapping.ColumnMappings.Add("inter_pay", "inter_pay");
             tableMapping.ColumnMappings.Add("exter_pay", "exter_pay");
             tableMapping.ColumnMappings.Add("salary", "salary");
             tableMapping.ColumnMappings.Add("remain", "remain");
+            tableMapping.ColumnMappings.Add("month", "month");
             this._adapter.TableMappings.Add(tableMapping);
         }
         
@@ -4060,7 +4060,7 @@ namespace PrintLocalReport.accountingDataSetTableAdapters {
             this._commandCollection = new global::System.Data.SqlClient.SqlCommand[1];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
-            this._commandCollection[0].CommandText = "SELECT date, receipt, inter_pay, exter_pay, salary, remain FROM dbo.v_months";
+            this._commandCollection[0].CommandText = "SELECT receipt, inter_pay, exter_pay, salary, remain, month FROM v_months";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
         }
         

@@ -58,15 +58,18 @@ public class Demo : IDisposable
         public void init(SQLiteConnection cnn) { m_cnn = cnn; }
         private DataTable loadData()
         {
-            string qry = "select group_name, date, name, actually_spent as inter_pay, 0 as exter_pay, 0 as salary"
+            string qry = "select group_name, date, name,"
+                + " sum(inter_pay) as inter_pay, sum(exter_pay) as exter_pay, sum(salary) as salary"
+                + " from"
+                + " (select group_name, date, name, actually_spent as inter_pay, 0 as exter_pay, 0 as salary"
                 + " from internal_payment where date between '2016-12-01' and '2016-12-02'"
                 + " union"
                 + " select group_name, date, name, 0 as inter_pay, spent as exter_pay, 0 as salary"
                 + " from external_payment where date between '2016-12-01' and '2016-12-02'"
                 + " union"
                 + " select group_name, date, name, 0 as inter_pay, 0 as exter_pay, salary"
-                + " from salary where date between '2016-12-01' and '2016-12-02'"
-                + " limit 100";
+                + " from salary where date between '2016-12-01' and '2016-12-02')"
+                + " group by group_name, date, name";
             SQLiteDataAdapter cmd = new SQLiteDataAdapter(qry, m_cnn);
 
             // Create and fill a DataSet.
@@ -83,13 +86,13 @@ public class Demo : IDisposable
         {
             string qry = "select *, (receipt - inter_pay - exter_pay - salary) as remain "
                 + " from "
-                + " (select date, sum(actually_spent) as inter_pay from internal_payment where date between '2016-12-01' and '2016-12-02' group by date) as t1"
+                + " (select strftime('%Y-%m',date) as month, sum(actually_spent) as inter_pay from internal_payment where date between '2016-12-01' and '2016-12-02' group by month) as t1"
                 + " NATURAL JOIN"
-                + " (select date, sum(spent) as exter_pay from external_payment where date between '2016-12-01' and '2016-12-02' group by date) as t2"
+                + " (select strftime('%Y-%m',date) as month, sum(spent) as exter_pay from external_payment where date between '2016-12-01' and '2016-12-02' group by month) as t2"
                 + " NATURAL JOIN"
-                + " (select date, sum(salary) as salary from salary where date between '2016-12-01' and '2016-12-02' group by date) as t3"
+                + " (select strftime('%Y-%m',date) as month, sum(salary) as salary from salary where date between '2016-12-01' and '2016-12-02' group by month) as t3"
                 + " NATURAL JOIN"
-                + " (select date, sum(amount) as receipt from receipts where date between '2016-12-01' and '2016-12-02' group by date) as t4"
+                + " (select strftime('%Y-%m',date) as month, sum(amount) as receipt from receipts where date between '2016-12-01' and '2016-12-02' group by month) as t4"
                 ;
             SQLiteDataAdapter cmd = new SQLiteDataAdapter(qry, m_cnn);
 
