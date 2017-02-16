@@ -52,7 +52,18 @@ namespace test_binding
             miBuilding.Click += MiBuilding_Click;
             miEdit.MenuItems.Add(miBuilding);
 
-            mainMenu.MenuItems.AddRange(new MenuItem[] { miFile, miEdit, miHelp });
+            //Report
+            MenuItem miReport = new MenuItem("&Report");
+            miReport.Click += MiReport_Click;
+
+            mainMenu.MenuItems.AddRange(new MenuItem[] { miFile, miEdit, miReport, miHelp });
+        }
+
+        private void MiReport_Click(object sender, EventArgs e)
+        {
+            lReportDlg dlg = new lReportDlg();
+            dlg.ShowDialog();
+            dlg.Dispose();
         }
 
         private void MiBuilding_Click(object sender, EventArgs e)

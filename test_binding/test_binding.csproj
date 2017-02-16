@@ -133,6 +133,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="rpt_days.rdlc" />
     <EmbeddedResource Include="rpt_exterpayment.rdlc" />
     <EmbeddedResource Include="rpt_interpayment.rdlc" />
     <EmbeddedResource Include="rpt_receipts.rdlc" />

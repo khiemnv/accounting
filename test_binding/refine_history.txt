@@ -49,6 +49,12 @@ tableinfo
   + fix receipts report - details param
   + release view data
   + report by month
+  + sql qry
+  + refine design src file
+  + report menu
+  + report dlg
+  + days report
+  + week report
 6. showing edit control - auto complete
   + search by content - auto complete
 7. refine table - unicode

@@ -30,6 +30,7 @@ namespace test_binding
         public string m_xmlPath;    //xml path
 #endif
         public string m_pdfPath;    //print to pdf file
+        public Dictionary<string, string> m_sqls;
 
         protected lBaseReport()
         {
@@ -46,7 +47,13 @@ namespace test_binding
             return newRpt;
         }
 
-        private DataTable loadData()
+        protected DataTable loadData(string qry)
+        {
+            DataTable dt = appConfig.s_contentProvider.GetData(qry);
+            return dt;
+        }
+
+        protected DataTable loadData()
         {
             string qry = string.Format("SELECT * FROM {0}", m_viewName);
             DataTable dt = appConfig.s_contentProvider.GetData(qry);
@@ -152,7 +159,69 @@ namespace test_binding
             return m_iWork;
         }
 
-        public void Run()
+        public void Run2()
+        {
+            ProgressDlg prg = new ProgressDlg();
+            var d = new voidCaller(() => {
+                //display wait msg
+                prg.m_descr = "Load view data ...";
+
+                LocalReport report = new LocalReport();
+
+                //long time work
+                DataSet ds = new DataSet();
+                int step = 50 / m_sqls.Count;
+                foreach (var pair in m_sqls)
+                {
+                    DataTable dt = loadData(pair.Value);
+                    //after load data complete
+                    m_iWork += step;
+
+                    dt.TableName = pair.Key;
+                    ds.Tables.Add(dt);
+
+                    report.ReportPath = m_rdlcPath;
+                    report.DataSources.Add(new ReportDataSource(pair.Key, dt));
+                }
+
+                //add report params
+                List<ReportParameter> rpParams = getReportParam();
+                report.SetParameters(rpParams);
+
+                report.Refresh();
+
+                //display wait msg
+                prg.m_descr = "Exporting ...";
+
+                //long time work
+                Export(report);
+                m_iWork = 100;
+
+                ds.Clear();
+                ds.Dispose();
+                report.Dispose();
+            });
+
+            var t = d.BeginInvoke(null, null);
+            m_iWork = 0;
+            prg.m_endPos = 100;
+            prg.m_cursor = this;
+            prg.m_param = t;
+            prg.ShowDialog();
+            prg.Dispose();
+
+            //print
+#if false
+            byte[] bytes = report.Render("PDF");
+            FileStream fs = new FileStream(m_pdfPath, FileMode.Create);
+            fs.Seek(0, SeekOrigin.Begin);
+            fs.Write(bytes, 0, bytes.Length);
+            fs.Close();
+#else
+            Print();
+#endif
+        }
+        public virtual void Run()
         {
             ProgressDlg prg = new ProgressDlg();
             var d = new voidCaller(()=> {
