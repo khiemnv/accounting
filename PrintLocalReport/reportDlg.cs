@@ -795,9 +795,17 @@ namespace PrintLocalReport
             lBaseReport rpt = null;
             if (paymentRadio.Checked)
             {
-                if (paymentRptType.SelectedIndex == (int)receiptsRptType.byDays)
+                switch (paymentRptType.SelectedIndex)
                 {
-                    rpt = new lDaysReport(startDate.Value, endDate.Value);
+                    case (int)receiptsRptType.byDays:
+                        rpt = new lDaysReport(startDate.Value, endDate.Value);
+                        break;
+                    case (int)receiptsRptType.byWeek:
+                        rpt = new lWeekReport(startDate.Value, endDate.Value);
+                        break;
+                    case (int)receiptsRptType.byMonth:
+                        rpt = new lMonthReport(startDate.Value, endDate.Value);
+                        break;
                 }
             }
             if (rpt != null) { 
@@ -812,19 +820,25 @@ namespace PrintLocalReport
         }
     }
 
+    public class config {
+        static SQLiteConnection m_cnn;
+        public static SQLiteConnection get_cnn()
+        {
+            string dbPath = @"..\..\..\test_binding\appData.db";
+            if (m_cnn == null) { 
+                m_cnn = new SQLiteConnection(string.Format("Data Source={0};Version=3;", dbPath));
+                m_cnn.Open();
+            }
+            return m_cnn;
+        }
+    }
+
     public class lDaysReport : lBaseReport
     {
         protected SQLiteConnection m_cnn;
         List<ReportParameter> m_rptParams;
-        public lDaysReport(DateTime endDate, DateTime startDate)
+        protected virtual string getDateQry(string zStartDate, string zEndDate)
         {
-            string zStartDate = startDate.ToString("yyyy-MM-dd");
-            string zEndDate = endDate.ToString("yyyy-MM-dd");
-            m_rptParams = new List<ReportParameter>()
-            {
-                new ReportParameter("startDate",zStartDate),
-                new ReportParameter("endDate",zEndDate),
-            };
             string qryDaysData = string.Format("select group_name, date, name,"
                 + " sum(inter_pay) as inter_pay, sum(exter_pay) as exter_pay, sum(salary) as salary"
                 + " from"
@@ -838,7 +852,10 @@ namespace PrintLocalReport
                 + " from salary where date between '{0} 00:00:00' and '{1} 00:00:00')"
                 + " group by group_name, date, name",
                 zStartDate, zEndDate);
+            return qryDaysData;
+        }
 
+        protected string getMonthQry(string zStartDate, string zEndDate) { 
             string qryMonthData = string.Format("select *, (receipt - inter_pay - exter_pay - salary) as remain "
                 + " from "
                 + " (select strftime('%Y-%m',date) as month, sum(actually_spent) as inter_pay from internal_payment where date between '{0} 00:00:00' and '{1} 00:00:00' group by month) as t1"
@@ -849,18 +866,30 @@ namespace PrintLocalReport
                 + " NATURAL JOIN"
                 + " (select strftime('%Y-%m',date) as month, sum(amount) as receipt from receipts where date between '{0} 00:00:00' and '{1} 00:00:00' group by month) as t4",
                 zStartDate, zEndDate);
+            return qryMonthData;
+        }
+        protected virtual string getType()
+        {
+            return "Ngày";
+        }
+        public lDaysReport(DateTime endDate, DateTime startDate)
+        {
+            string zStartDate = startDate.ToString("yyyy-MM-dd");
+            string zEndDate = endDate.ToString("yyyy-MM-dd");
+            m_rptParams = new List<ReportParameter>()
+            {
+                new ReportParameter("startDate",zStartDate),
+                new ReportParameter("endDate",zEndDate),
+                new ReportParameter( "type", getType())
+            };
 
             m_sqls = new Dictionary<string, string>
             {
-                { "DataSet1", qryDaysData},
-                { "DataSet2", qryMonthData}
+                { "DataSet1", getDateQry(zStartDate, zEndDate)},
+                { "DataSet2", getMonthQry(zStartDate, zEndDate)}
             };
 
             m_rdlcPath = @"..\..\receipts.rdlc";
-
-            string dbPath = @"..\..\..\test_binding\appData.db";
-            m_cnn = new SQLiteConnection(string.Format("Data Source={0};Version=3;", dbPath));
-            m_cnn.Open();
         }
         protected override void Dispose(bool disposing)
         {
@@ -871,7 +900,7 @@ namespace PrintLocalReport
         }
         protected override DataTable loadData(string qry)
         {
-            SQLiteDataAdapter cmd = new SQLiteDataAdapter(qry, m_cnn);
+            SQLiteDataAdapter cmd = new SQLiteDataAdapter(qry, config.get_cnn());
             DataTable dt = new DataTable();
             cmd.Fill(dt);
             return dt;
@@ -881,5 +910,59 @@ namespace PrintLocalReport
             return m_rptParams;
         }
     }
-    
+
+    public class lWeekReport : lDaysReport
+    {
+        protected override string getDateQry(string zStartDate, string zEndDate)
+        {
+            string qryWeeksData = string.Format("select group_name, week as date, '' as name,"
+               + " sum(inter_pay) as inter_pay, sum(exter_pay) as exter_pay, sum(salary) as salary"
+               + " from"
+               + " (select group_name, strftime('%Y-%W', date) as week, actually_spent as inter_pay, 0 as exter_pay, 0 as salary"
+               + " from internal_payment where date between '{0} 00:00:00' and '{1} 00:00:00'"
+               + " union"
+               + " select group_name, strftime('%Y-%W', date) as week, 0 as inter_pay, spent as exter_pay, 0 as salary"
+               + " from external_payment where date between '{0} 00:00:00' and '{1} 00:00:00'"
+               + " union"
+               + " select group_name, strftime('%Y-%W', date) as week, 0 as inter_pay, 0 as exter_pay, salary"
+               + " from salary where date between '{0} 00:00:00' and '{1} 00:00:00')"
+               + " group by group_name, week",
+               zStartDate, zEndDate);
+            return qryWeeksData;
+        }
+        protected override string getType()
+        {
+            return "Tuần";
+        }
+        public lWeekReport(DateTime endDate, DateTime startDate) : base(endDate, startDate)
+        {
+        }
+    }
+    public class lMonthReport : lDaysReport
+    {
+        protected override string getDateQry(string zStartDate, string zEndDate)
+        {
+            string qryMonthsData = string.Format("select group_name, month as date, '' as name,"
+               + " sum(inter_pay) as inter_pay, sum(exter_pay) as exter_pay, sum(salary) as salary"
+               + " from"
+               + " (select group_name, strftime('%Y-%m', date) as month, actually_spent as inter_pay, 0 as exter_pay, 0 as salary"
+               + " from internal_payment where date between '{0} 00:00:00' and '{1} 00:00:00'"
+               + " union"
+               + " select group_name, strftime('%Y-%m', date) as month, 0 as inter_pay, spent as exter_pay, 0 as salary"
+               + " from external_payment where date between '{0} 00:00:00' and '{1} 00:00:00'"
+               + " union"
+               + " select group_name, strftime('%Y-%m', date) as month, 0 as inter_pay, 0 as exter_pay, salary"
+               + " from salary where date between '{0} 00:00:00' and '{1} 00:00:00')"
+               + " group by group_name, month",
+               zStartDate, zEndDate);
+            return qryMonthsData;
+        }
+        protected override string getType()
+        {
+            return "Tháng";
+        }
+        public lMonthReport(DateTime endDate, DateTime startDate) : base(endDate, startDate)
+        {
+        }
+    }
 }
