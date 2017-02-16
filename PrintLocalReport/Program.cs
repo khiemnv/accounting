@@ -11,6 +11,7 @@ using System.Drawing;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Data.SQLite;
+using PrintLocalReport;
 
 public class Demo : IDisposable
 {
@@ -74,9 +75,9 @@ public class Demo : IDisposable
 
             // Create and fill a DataSet.
             m_ds.Clear();
-            m_ds.DataSetName = m_dsName;
+            //m_ds.DataSetName = m_dsName;
             cmd.Fill(m_ds);
-            m_ds.Tables[0].TableName = m_viewName;
+            m_ds.Tables[0].TableName = m_dsName;
 #if crt_xml
             m_ds.WriteXml(m_xmlPath);
 #endif
@@ -100,7 +101,7 @@ public class Demo : IDisposable
             //m_ds.Clear();
             //m_ds.DataSetName = "DataSet2";
             cmd.Fill(m_ds);
-            m_ds.Tables[1].TableName = "v_salary";
+            m_ds.Tables[1].TableName = "DataSet2";
 #if crt_xml
             m_ds.WriteXml(m_xmlPath);
 #endif
@@ -486,18 +487,20 @@ public class Demo : IDisposable
 
     public static void Main(string[] args)
     {
-        using (lBaseReport demo = new lReceiptsReport())
-        {
-            string dbPath = @"..\..\..\test_binding\appData.db";
-            SQLiteConnection cnn = new SQLiteConnection(string.Format("Data Source={0};Version=3;", dbPath));
-#if sql_server
-            string cnnStr = "Data Source=localhost\\SQLEXPRESS;Initial Catalog=accounting;Integrated Security=True;Pooling=False";
-            SqlConnection conn = new SqlConnection(cnnStr);
-#endif
-            cnn.Open();
-            demo.init(cnn);
-            demo.Run();
-            demo.Dispose();
-        }
+        lReportDlg dlg = new lReportDlg();
+        dlg.ShowDialog();
+        //        using (lBaseReport demo = new lReceiptsReport())
+        //        {
+        //            string dbPath = @"..\..\..\test_binding\appData.db";
+        //            SQLiteConnection cnn = new SQLiteConnection(string.Format("Data Source={0};Version=3;", dbPath));
+        //#if sql_server
+        //            string cnnStr = "Data Source=localhost\\SQLEXPRESS;Initial Catalog=accounting;Integrated Security=True;Pooling=False";
+        //            SqlConnection conn = new SqlConnection(cnnStr);
+        //#endif
+        //            cnn.Open();
+        //            demo.init(cnn);
+        //            demo.Run();
+        //            demo.Dispose();
+        //        }
     }
-}
+    }

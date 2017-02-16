@@ -63,6 +63,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -77,22 +78,15 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>accountingDataSet.xsd</DependentUpon>
     </Compile>
-    <Compile Include="accountingDataSet11.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>accountingDataSet11.xsd</DependentUpon>
-    </Compile>
-    <Compile Include="accountingDataSet2.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>accountingDataSet2.xsd</DependentUpon>
-    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="reportDlg.cs">
+      <SubType>Form</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -106,28 +100,6 @@
     </None>
     <None Include="accountingDataSet.xss">
       <DependentUpon>accountingDataSet.xsd</DependentUpon>
-    </None>
-    <None Include="accountingDataSet11.xsc">
-      <DependentUpon>accountingDataSet11.xsd</DependentUpon>
-    </None>
-    <None Include="accountingDataSet11.xsd">
-      <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>accountingDataSet11.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="accountingDataSet11.xss">
-      <DependentUpon>accountingDataSet11.xsd</DependentUpon>
-    </None>
-    <None Include="accountingDataSet2.xsc">
-      <DependentUpon>accountingDataSet2.xsd</DependentUpon>
-    </None>
-    <None Include="accountingDataSet2.xsd">
-      <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>accountingDataSet2.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="accountingDataSet2.xss">
-      <DependentUpon>accountingDataSet2.xsd</DependentUpon>
     </None>
     <None Include="App.config" />
     <None Include="packages.config" />
@@ -143,6 +115,9 @@
     <EmbeddedResource Include="receipts.rdlc" />
     <EmbeddedResource Include="internal_payment.rdlc" />
     <EmbeddedResource Include="external_payment.rdlc" />
+    <EmbeddedResource Include="reportDlg.resx">
+      <DependentUpon>reportDlg.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="salary.rdlc" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -857,19 +857,22 @@
         <TablixBody>
           <TablixColumns>
             <TablixColumn>
-              <Width>1.12847in</Width>
+              <Width>0.77459in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>1.90972in</Width>
+              <Width>1.60778in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>1.12847in</Width>
+              <Width>1.02431in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>1.12847in</Width>
+              <Width>1.06597in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>1.12847in</Width>
+              <Width>0.97179in</Width>
+            </TablixColumn>
+            <TablixColumn>
+              <Width>1.05932in</Width>
             </TablixColumn>
           </TablixColumns>
           <TablixRows>
@@ -1017,6 +1020,37 @@
                         </Paragraph>
                       </Paragraphs>
                       <rd:DefaultName>Textbox24</rd:DefaultName>
+                      <Style>
+                        <Border>
+                          <Color>LightGrey</Color>
+                          <Style>Solid</Style>
+                        </Border>
+                        <BackgroundColor>CornflowerBlue</BackgroundColor>
+                        <PaddingLeft>2pt</PaddingLeft>
+                        <PaddingRight>2pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                    </Textbox>
+                  </CellContents>
+                </TablixCell>
+                <TablixCell>
+                  <CellContents>
+                    <Textbox Name="Textbox59">
+                      <CanGrow>true</CanGrow>
+                      <KeepTogether>true</KeepTogether>
+                      <Paragraphs>
+                        <Paragraph>
+                          <TextRuns>
+                            <TextRun>
+                              <Value />
+                              <Style />
+                            </TextRun>
+                          </TextRuns>
+                          <Style />
+                        </Paragraph>
+                      </Paragraphs>
+                      <rd:DefaultName>Textbox59</rd:DefaultName>
                       <Style>
                         <Border>
                           <Color>LightGrey</Color>
@@ -1181,6 +1215,36 @@
                         </Paragraph>
                       </Paragraphs>
                       <rd:DefaultName>salary1</rd:DefaultName>
+                      <Style>
+                        <Border>
+                          <Color>LightGrey</Color>
+                          <Style>Solid</Style>
+                        </Border>
+                        <PaddingLeft>2pt</PaddingLeft>
+                        <PaddingRight>2pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                    </Textbox>
+                  </CellContents>
+                </TablixCell>
+                <TablixCell>
+                  <CellContents>
+                    <Textbox Name="Textbox60">
+                      <CanGrow>true</CanGrow>
+                      <KeepTogether>true</KeepTogether>
+                      <Paragraphs>
+                        <Paragraph>
+                          <TextRuns>
+                            <TextRun>
+                              <Value />
+                              <Style />
+                            </TextRun>
+                          </TextRuns>
+                          <Style />
+                        </Paragraph>
+                      </Paragraphs>
+                      <rd:DefaultName>Textbox60</rd:DefaultName>
                       <Style>
                         <Border>
                           <Color>LightGrey</Color>
@@ -1360,6 +1424,40 @@
                     </Textbox>
                   </CellContents>
                 </TablixCell>
+                <TablixCell>
+                  <CellContents>
+                    <Textbox Name="Textbox61">
+                      <CanGrow>true</CanGrow>
+                      <KeepTogether>true</KeepTogether>
+                      <Paragraphs>
+                        <Paragraph>
+                          <TextRuns>
+                            <TextRun>
+                              <Value>=Sum(Fields!inter_pay.Value, "DataSet1")+Sum(Fields!exter_pay.Value, "DataSet1")+Sum(Fields!salary.Value, "DataSet1")</Value>
+                              <Style>
+                                <Format>#,0,;(#,0,);'-'</Format>
+                              </Style>
+                            </TextRun>
+                          </TextRuns>
+                          <Style />
+                        </Paragraph>
+                      </Paragraphs>
+                      <rd:DefaultName>Textbox61</rd:DefaultName>
+                      <Style>
+                        <Border>
+                          <Color>LightGrey</Color>
+                          <Style>Solid</Style>
+                        </Border>
+                        <BackgroundColor>LightSteelBlue</BackgroundColor>
+                        <PaddingLeft>2pt</PaddingLeft>
+                        <PaddingRight>2pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                    </Textbox>
+                    <rd:Selected>true</rd:Selected>
+                  </CellContents>
+                </TablixCell>
               </TablixCells>
             </TablixRow>
           </TablixRows>
@@ -1371,13 +1469,14 @@
             <TablixMember />
             <TablixMember />
             <TablixMember />
+            <TablixMember />
           </TablixMembers>
         </TablixColumnHierarchy>
         <TablixRowHierarchy>
           <TablixMembers>
             <TablixMember>
               <TablixHeader>
-                <Size>1.12847in</Size>
+                <Size>1.04832in</Size>
                 <CellContents>
                   <Textbox Name="Textbox29">
                     <CanGrow>true</CanGrow>
@@ -1425,7 +1524,7 @@
                 </SortExpression>
               </SortExpressions>
               <TablixHeader>
-                <Size>1.12847in</Size>
+                <Size>1.04832in</Size>
                 <CellContents>
                   <Textbox Name="group_name1">
                     <CanGrow>true</CanGrow>
