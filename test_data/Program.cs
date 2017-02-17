@@ -878,10 +878,72 @@ namespace test_data
             //gen_receipts_data();
             //gen_interPay_data();
             //gen_exterPay_data();
-            gen_salary_data();
+            //gen_salary_data();
             //test_page();
             //lDataDlg dlg = new lDataDlg();
             //dlg.ShowDialog();
+            test_perf();
+        }
+
+        private static void test_perf()
+        {
+            string zStartDate = "2016-01-30";
+            string zEndDate = "2016-02-01";
+
+            DataTable dt = new DataTable();
+            SQLiteCommand cmd = new SQLiteCommand();
+            cmd.Connection = get_cnn();
+            SQLiteDataAdapter da = new SQLiteDataAdapter(cmd);
+            string qryWeeksData = string.Format("select group_name, week as date, '' as name,"
+              + " sum(inter_pay) as inter_pay, sum(exter_pay) as exter_pay, sum(salary) as salary"
+              + " from"
+              + " (select group_name, strftime('%Y-%W', date) as week, sum(actually_spent) as inter_pay, 0 as exter_pay, 0 as salary"
+              + " from internal_payment where date between '{0} 00:00:00' and '{1} 00:00:00' group by group_name, week"
+              + " union"
+              + " select group_name, strftime('%Y-%W', date) as week, 0 as inter_pay, sum(spent) as exter_pay, 0 as salary"
+              + " from external_payment where date between '{0} 00:00:00' and '{1} 00:00:00' group by group_name, week"
+              + " union"
+              + " select group_name, strftime('%Y-%W', date) as week, 0 as inter_pay, 0 as exter_pay, sum(salary) as salary"
+              + " from salary where date between '{0} 00:00:00' and '{1} 00:00:00' group by group_name, week)"
+              + " group by group_name, week",
+              zStartDate, zEndDate);
+            string qryWeeksData1 = string.Format("select group_name, week as date, '' as name,"
+               + " sum(inter_pay) as inter_pay, sum(exter_pay) as exter_pay, sum(salary) as salary"
+               + " from"
+               + " (select group_name, strftime('%Y-%W', date) as week, actually_spent as inter_pay, 0 as exter_pay, 0 as salary"
+               + " from internal_payment where date between '{0} 00:00:00' and '{1} 00:00:00'"
+               + " union"
+               + " select group_name, strftime('%Y-%W', date) as week, 0 as inter_pay, spent as exter_pay, 0 as salary"
+               + " from external_payment where date between '{0} 00:00:00' and '{1} 00:00:00'"
+               + " union"
+               + " select group_name, strftime('%Y-%W', date) as week, 0 as inter_pay, 0 as exter_pay, salary"
+               + " from salary where date between '{0} 00:00:00' and '{1} 00:00:00')"
+               + " group by group_name, week",
+               zStartDate, zEndDate);
+            string qryMonthsData = string.Format("select group_name, month as date, '' as name,"
+              + " sum(inter_pay) as inter_pay, sum(exter_pay) as exter_pay, sum(salary) as salary"
+              + " from"
+              + " (select group_name, strftime('%Y-%m', date) as month, actually_spent as inter_pay, 0 as exter_pay, 0 as salary"
+              + " from internal_payment where date between '{0} 00:00:00' and '{1} 00:00:00'"
+              + " union"
+              + " select group_name, strftime('%Y-%m', date) as month, 0 as inter_pay, spent as exter_pay, 0 as salary"
+              + " from external_payment where date between '{0} 00:00:00' and '{1} 00:00:00'"
+              + " union"
+              + " select group_name, strftime('%Y-%m', date) as month, 0 as inter_pay, 0 as exter_pay, salary"
+              + " from salary where date between '{0} 00:00:00' and '{1} 00:00:00')"
+              + " group by group_name, month",
+              zStartDate, zEndDate);
+            using (new myElapsed("month no group"))
+            {
+                da.SelectCommand.CommandText = qryMonthsData;
+                da.Fill(dt);
+            }
+            dt.Clear();
+            //using (new myElapsed("week group"))
+            //{
+            //    da.SelectCommand.CommandText = qryWeeksData;
+            //    da.Fill(dt);
+            //}
         }
 
         private static void crtDict()
