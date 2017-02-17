@@ -353,4 +353,137 @@ namespace test_binding
             m_pdfPath = @"..\..\report.pdf";
         }
     }
+
+
+    public class lDaysReport : lBaseReport
+    {
+        List<ReportParameter> m_rptParams;
+        protected virtual string getDateQry(string zStartDate, string zEndDate)
+        {
+            string qryDaysData = string.Format("select group_name, date, name,"
+                + " sum(inter_pay) as inter_pay, sum(exter_pay) as exter_pay, sum(salary) as salary"
+                + " from"
+                + " (select group_name, date, name, actually_spent as inter_pay, 0 as exter_pay, 0 as salary"
+                + " from internal_payment where date between '{0} 00:00:00' and '{1} 00:00:00'"
+                + " union"
+                + " select group_name, date, name, 0 as inter_pay, spent as exter_pay, 0 as salary"
+                + " from external_payment where date between '{0} 00:00:00' and '{1} 00:00:00'"
+                + " union"
+                + " select group_name, date, name, 0 as inter_pay, 0 as exter_pay, salary"
+                + " from salary where date between '{0} 00:00:00' and '{1} 00:00:00')"
+                + " group by group_name, date, name",
+                zStartDate, zEndDate);
+            return qryDaysData;
+        }
+
+        protected string getMonthQry(string zStartDate, string zEndDate)
+        {
+            string qryMonthData = string.Format("select month, sum(receipt) as receipt, sum(inter_pay) as inter_pay, sum(exter_pay) as exter_pay, sum(salary) as salary, 0 as remain "
+                + " from("
+                + "   select strftime('%Y-%m', date) as month, 0 as receipt, sum(actually_spent) as inter_pay, 0 as exter_pay, 0 as salary"
+                + "   from internal_payment where date between '{0} 00:00:00' and '{1} 00:00:00' group by month"
+                + "   union"
+                + "   select strftime('%Y-%m', date) as month, 0 as receipt, 0 as inter_pay, sum(spent) as exter_pay, 0 as salary"
+                + "   from external_payment where date between '{0} 00:00:00' and '{1} 00:00:00' group by month"
+                + "   union"
+                + "   select strftime('%Y-%m', date) as month, 0 as receipt, 0 as inter_pay, 0 as exter_pay, sum(salary) as salary"
+                + "   from salary where date between '{0} 00:00:00' and '{1} 00:00:00' group by month"
+                + "   union"
+                + "   select strftime('%Y-%m', date) as month, sum(amount) as receipt, 0 as inter_pay, 0 as exter_pay, 0 as salary"
+                + "   from receipts where date between '{0} 00:00:00' and '{1} 00:00:00' group by month"
+                + " ) group by month",
+                zStartDate, zEndDate);
+            return qryMonthData;
+        }
+        protected virtual string getType()
+        {
+            return "Ngày";
+        }
+        public lDaysReport(DateTime endDate, DateTime startDate)
+        {
+            string zStartDate = startDate.ToString("yyyy-MM-dd");
+            string zEndDate = endDate.ToString("yyyy-MM-dd");
+            m_rptParams = new List<ReportParameter>()
+            {
+                new ReportParameter("startDate",zStartDate),
+                new ReportParameter("endDate",zEndDate),
+                new ReportParameter( "type", getType())
+            };
+
+            m_sqls = new Dictionary<string, string>
+            {
+                { "DataSet1", getDateQry(zStartDate, zEndDate)},
+                { "DataSet2", getMonthQry(zStartDate, zEndDate)}
+            };
+
+            m_rdlcPath = @"..\..\rpt_days.rdlc";
+        }
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                m_sqls.Clear();
+            }
+            base.Dispose(disposing);
+        }
+
+        public override List<ReportParameter> getReportParam()
+        {
+            return m_rptParams;
+        }
+    }
+    public class lWeekReport : lDaysReport
+    {
+        protected override string getDateQry(string zStartDate, string zEndDate)
+        {
+            string qryWeeksData = string.Format("select group_name, week as date, '' as name,"
+               + " sum(inter_pay) as inter_pay, sum(exter_pay) as exter_pay, sum(salary) as salary"
+               + " from"
+               + " (select group_name, strftime('%Y-%W', date) as week, actually_spent as inter_pay, 0 as exter_pay, 0 as salary"
+               + " from internal_payment where date between '{0} 00:00:00' and '{1} 00:00:00'"
+               + " union"
+               + " select group_name, strftime('%Y-%W', date) as week, 0 as inter_pay, spent as exter_pay, 0 as salary"
+               + " from external_payment where date between '{0} 00:00:00' and '{1} 00:00:00'"
+               + " union"
+               + " select group_name, strftime('%Y-%W', date) as week, 0 as inter_pay, 0 as exter_pay, salary"
+               + " from salary where date between '{0} 00:00:00' and '{1} 00:00:00')"
+               + " group by group_name, week",
+               zStartDate, zEndDate);
+            return qryWeeksData;
+        }
+        protected override string getType()
+        {
+            return "Tuần";
+        }
+        public lWeekReport(DateTime endDate, DateTime startDate) : base(endDate, startDate)
+        {
+        }
+    }
+    public class lMonthReport : lDaysReport
+    {
+        protected override string getDateQry(string zStartDate, string zEndDate)
+        {
+            string qryMonthsData = string.Format("select group_name, month as date, '' as name,"
+               + " sum(inter_pay) as inter_pay, sum(exter_pay) as exter_pay, sum(salary) as salary"
+               + " from"
+               + " (select group_name, strftime('%Y-%m', date) as month, actually_spent as inter_pay, 0 as exter_pay, 0 as salary"
+               + " from internal_payment where date between '{0} 00:00:00' and '{1} 00:00:00'"
+               + " union"
+               + " select group_name, strftime('%Y-%m', date) as month, 0 as inter_pay, spent as exter_pay, 0 as salary"
+               + " from external_payment where date between '{0} 00:00:00' and '{1} 00:00:00'"
+               + " union"
+               + " select group_name, strftime('%Y-%m', date) as month, 0 as inter_pay, 0 as exter_pay, salary"
+               + " from salary where date between '{0} 00:00:00' and '{1} 00:00:00')"
+               + " group by group_name, month",
+               zStartDate, zEndDate);
+            return qryMonthsData;
+        }
+        protected override string getType()
+        {
+            return "Tháng";
+        }
+        public lMonthReport(DateTime endDate, DateTime startDate) : base(endDate, startDate)
+        {
+        }
+    }
 }

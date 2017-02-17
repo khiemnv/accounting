@@ -55,6 +55,9 @@ tableinfo
   + report dlg
   + days report
   + week report
+  + improve qry - no group ~ group
+  + fix qry month data - use union
+  
 6. showing edit control - auto complete
   + search by content - auto complete
 7. refine table - unicode

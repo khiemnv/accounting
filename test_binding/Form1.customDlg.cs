@@ -308,6 +308,7 @@ namespace test_binding
             {
                 paymentRptType.Items.Add(val);
             }
+            paymentRptType.SelectedIndex = 0;
 
             printBtn.Click += PrintBtn_Click;
             Load += LReportDlg_Load;
@@ -318,9 +319,17 @@ namespace test_binding
             lBaseReport rpt = null;
             if (paymentRadio.Checked)
             {
-                if (paymentRptType.SelectedIndex == (int)receiptsRptType.byDays)
+                switch (paymentRptType.SelectedIndex)
                 {
-                    rpt = new lDaysReport(startDate.Value, endDate.Value);
+                    case (int)receiptsRptType.byDays:
+                        rpt = new lDaysReport(startDate.Value, endDate.Value);
+                        break;
+                    case (int)receiptsRptType.byWeek:
+                        rpt = new lWeekReport(startDate.Value, endDate.Value);
+                        break;
+                    case (int)receiptsRptType.byMonth:
+                        rpt = new lMonthReport(startDate.Value, endDate.Value);
+                        break;
                 }
             }
             if (rpt != null)
@@ -333,65 +342,6 @@ namespace test_binding
         private void LReportDlg_Load(object sender, EventArgs e)
         {
             //
-        }
-    }
-
-    public class lDaysReport : lBaseReport
-    {
-        List<ReportParameter> m_rptParams;
-        public lDaysReport(DateTime endDate, DateTime startDate)
-        {
-            string zStartDate = startDate.ToString("yyyy-MM-dd");
-            string zEndDate = endDate.ToString("yyyy-MM-dd");
-            m_rptParams = new List<ReportParameter>()
-            {
-                new ReportParameter("startDate",zStartDate),
-                new ReportParameter("endDate",zEndDate),
-            };
-            string qryDaysData = string.Format("select group_name, date, name,"
-                + " sum(inter_pay) as inter_pay, sum(exter_pay) as exter_pay, sum(salary) as salary"
-                + " from"
-                + " (select group_name, date, name, actually_spent as inter_pay, 0 as exter_pay, 0 as salary"
-                + " from internal_payment where date between '{0} 00:00:00' and '{1} 00:00:00'"
-                + " union"
-                + " select group_name, date, name, 0 as inter_pay, spent as exter_pay, 0 as salary"
-                + " from external_payment where date between '{0} 00:00:00' and '{1} 00:00:00'"
-                + " union"
-                + " select group_name, date, name, 0 as inter_pay, 0 as exter_pay, salary"
-                + " from salary where date between '{0} 00:00:00' and '{1} 00:00:00')"
-                + " group by group_name, date, name",
-                zStartDate, zEndDate);
-
-            string qryMonthData = string.Format("select *, (receipt - inter_pay - exter_pay - salary) as remain "
-                + " from "
-                + " (select strftime('%Y-%m',date) as month, sum(actually_spent) as inter_pay from internal_payment where date between '{0} 00:00:00' and '{1} 00:00:00' group by month) as t1"
-                + " NATURAL JOIN"
-                + " (select strftime('%Y-%m',date) as month, sum(spent) as exter_pay from external_payment where date between '{0} 00:00:00' and '{1} 00:00:00' group by month) as t2"
-                + " NATURAL JOIN"
-                + " (select strftime('%Y-%m',date) as month, sum(salary) as salary from salary where date between '{0} 00:00:00' and '{1} 00:00:00' group by month) as t3"
-                + " NATURAL JOIN"
-                + " (select strftime('%Y-%m',date) as month, sum(amount) as receipt from receipts where date between '{0} 00:00:00' and '{1} 00:00:00' group by month) as t4",
-                zStartDate, zEndDate);
-
-            m_sqls = new Dictionary<string, string>
-            {
-                { "DataSet1", qryDaysData},
-                { "DataSet2", qryMonthData}
-            };
-
-            m_rdlcPath = @"..\..\rpt_days.rdlc";
-        }
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                m_sqls.Clear();
-            }
-            base.Dispose(disposing);
-        }
-        public override List<ReportParameter> getReportParam()
-        {
-            return m_rptParams;
         }
     }
 }
