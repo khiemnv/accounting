@@ -591,7 +591,7 @@
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=Fields!remain.Value</Value>
+                              <Value>=Fields!receipt.Value-Fields!inter_pay.Value-Fields!exter_pay.Value-Fields!salary.Value</Value>
                               <Style>
                                 <Format>#,0,;(#,0,);'-'</Format>
                               </Style>
@@ -784,14 +784,14 @@
                 </TablixCell>
                 <TablixCell>
                   <CellContents>
-                    <Textbox Name="Textbox41">
+                    <Textbox Name="Textbox1">
                       <CanGrow>true</CanGrow>
                       <KeepTogether>true</KeepTogether>
                       <Paragraphs>
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=Sum(Fields!remain.Value)</Value>
+                              <Value>=Sum(Fields!receipt.Value, "DataSet2")-Sum(Fields!inter_pay.Value, "DataSet1")-Sum(Fields!exter_pay.Value, "DataSet1")-Sum(Fields!salary.Value, "DataSet1")</Value>
                               <Style>
                                 <Format>#,0,;(#,0,);'-'</Format>
                               </Style>
@@ -800,7 +800,7 @@
                           <Style />
                         </Paragraph>
                       </Paragraphs>
-                      <rd:DefaultName>Textbox41</rd:DefaultName>
+                      <rd:DefaultName>Textbox1</rd:DefaultName>
                       <Style>
                         <Border>
                           <Color>LightGrey</Color>
@@ -813,6 +813,7 @@
                         <PaddingBottom>2pt</PaddingBottom>
                       </Style>
                     </Textbox>
+                    <rd:Selected>true</rd:Selected>
                   </CellContents>
                 </TablixCell>
               </TablixCells>

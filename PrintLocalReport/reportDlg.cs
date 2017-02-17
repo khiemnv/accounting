@@ -473,7 +473,8 @@ namespace PrintLocalReport
                 int step = 50 / m_sqls.Count;
                 foreach (var pair in m_sqls)
                 {
-                    DataTable dt = loadData(pair.Value);
+                    DataTable dt;
+                    dt = loadData(pair.Value);
                     //after load data complete
                     m_iWork += step;
 
@@ -785,6 +786,7 @@ namespace PrintLocalReport
             foreach (var val in m_receiptRptTypes.Values) { 
                 paymentRptType.Items.Add(val);
             }
+            paymentRptType.SelectedIndex = 0;
 
             printBtn.Click += PrintBtn_Click;
             Load += LReportDlg_Load;
@@ -855,16 +857,22 @@ namespace PrintLocalReport
             return qryDaysData;
         }
 
-        protected string getMonthQry(string zStartDate, string zEndDate) { 
-            string qryMonthData = string.Format("select *, (receipt - inter_pay - exter_pay - salary) as remain "
-                + " from "
-                + " (select strftime('%Y-%m',date) as month, sum(actually_spent) as inter_pay from internal_payment where date between '{0} 00:00:00' and '{1} 00:00:00' group by month) as t1"
-                + " NATURAL JOIN"
-                + " (select strftime('%Y-%m',date) as month, sum(spent) as exter_pay from external_payment where date between '{0} 00:00:00' and '{1} 00:00:00' group by month) as t2"
-                + " NATURAL JOIN"
-                + " (select strftime('%Y-%m',date) as month, sum(salary) as salary from salary where date between '{0} 00:00:00' and '{1} 00:00:00' group by month) as t3"
-                + " NATURAL JOIN"
-                + " (select strftime('%Y-%m',date) as month, sum(amount) as receipt from receipts where date between '{0} 00:00:00' and '{1} 00:00:00' group by month) as t4",
+        protected string getMonthQry(string zStartDate, string zEndDate)
+        {
+            string qryMonthData = string.Format("select month, sum(receipt) as receipt, sum(inter_pay) as inter_pay, sum(exter_pay) as exter_pay, sum(salary) as salary, 0 as remain "
+                + " from("
+                + "   select strftime('%Y-%m', date) as month, 0 as receipt, sum(actually_spent) as inter_pay, 0 as exter_pay, 0 as salary"
+                + "   from internal_payment where date between '{0} 00:00:00' and '{1} 00:00:00' group by month"
+                + "   union"
+                + "   select strftime('%Y-%m', date) as month, 0 as receipt, 0 as inter_pay, sum(spent) as exter_pay, 0 as salary"
+                + "   from external_payment where date between '{0} 00:00:00' and '{1} 00:00:00' group by month"
+                + "   union"
+                + "   select strftime('%Y-%m', date) as month, 0 as receipt, 0 as inter_pay, 0 as exter_pay, sum(salary) as salary"
+                + "   from salary where date between '{0} 00:00:00' and '{1} 00:00:00' group by month"
+                + "   union"
+                + "   select strftime('%Y-%m', date) as month, sum(amount) as receipt, 0 as inter_pay, 0 as exter_pay, 0 as salary"
+                + "   from receipts where date between '{0} 00:00:00' and '{1} 00:00:00' group by month"
+                + " ) group by month",
                 zStartDate, zEndDate);
             return qryMonthData;
         }
