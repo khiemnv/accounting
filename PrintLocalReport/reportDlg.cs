@@ -781,7 +781,6 @@ namespace PrintLocalReport
                 {receiptsRptType.byDays, "Báo cáo theo ngày" },
                 {receiptsRptType.byWeek, "Báo cáo theo tuần" },
                 {receiptsRptType.byMonth, "Báo cáo theo tháng" },
-                {receiptsRptType.byYear, "Báo cáo theo năm" },
             };
             foreach (var val in m_receiptRptTypes.Values) { 
                 paymentRptType.Items.Add(val);
@@ -810,6 +809,11 @@ namespace PrintLocalReport
                         break;
                 }
             }
+            else if (buildingRadio.Checked) {
+                string buildingName = "xây chánh điện";
+                rpt = new lBuildingReport(buildingName, startDate.Value, endDate.Value);
+            }
+
             if (rpt != null) { 
                 rpt.Run();
                 rpt.Dispose();
@@ -971,6 +975,38 @@ namespace PrintLocalReport
         }
         public lMonthReport(DateTime endDate, DateTime startDate) : base(endDate, startDate)
         {
+        }
+    }
+
+    public class lBuildingReport:lBaseReport
+    {
+        public string m_buildingName;
+        public DateTime m_startDate;
+        public DateTime m_endDate;
+
+        public lBuildingReport(string building, DateTime startDate, DateTime endDate)
+        {
+            m_buildingName = building;
+            string qry = string.Format("select * from external_payment where building like '%{0}%' limit 10", building);
+            m_rdlcPath = @"..\..\Report2.rdlc";
+            m_sqls = new Dictionary<string, string>
+            {
+                { "DataSet1", qry }
+            };
+        }
+        public override List<ReportParameter> getReportParam()
+        {
+            List<ReportParameter> ret = new List<ReportParameter> {
+                new ReportParameter("buildingName", m_buildingName)
+            };
+            return ret;
+        }
+        protected override DataTable loadData(string qry)
+        {
+            SQLiteDataAdapter cmd = new SQLiteDataAdapter(qry, config.get_cnn());
+            DataTable dt = new DataTable();
+            cmd.Fill(dt);
+            return dt;
         }
     }
 }

@@ -302,7 +302,6 @@ namespace test_binding
                 {receiptsRptType.byDays, "Báo cáo theo ngày" },
                 {receiptsRptType.byWeek, "Báo cáo theo tuần" },
                 {receiptsRptType.byMonth, "Báo cáo theo tháng" },
-                {receiptsRptType.byYear, "Báo cáo theo năm" },
             };
             foreach (var val in m_receiptRptTypes.Values)
             {
@@ -341,7 +340,12 @@ namespace test_binding
 
         private void LReportDlg_Load(object sender, EventArgs e)
         {
-            //
+            //load data for building combo box
+            BindingSource bs = new BindingSource();
+            lDataContent dc = appConfig.s_contentProvider.CreateDataContent("building");
+            bs.DataSource = dc.m_dataTable;
+            buildingCmb.DataSource = bs;
+            buildingCmb.DisplayMember = dc.m_dataTable.Columns[1].ColumnName;
         }
     }
 }

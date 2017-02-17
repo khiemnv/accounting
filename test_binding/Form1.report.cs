@@ -164,7 +164,7 @@ namespace test_binding
             ProgressDlg prg = new ProgressDlg();
             var d = new voidCaller(() => {
                 //display wait msg
-                prg.m_descr = "Load view data ...";
+                prg.m_descr = "Loading data ...";
 
                 LocalReport report = new LocalReport();
 
