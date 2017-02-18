@@ -698,8 +698,8 @@ namespace PrintLocalReport
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.Controls.Add(this.label1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.buildingCmb, 1, 2);
-            this.tableLayoutPanel1.Controls.Add(this.startDate, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.endDate, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.startDate, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.endDate, 2, 0);
             this.tableLayoutPanel1.Controls.Add(this.yearRadio, 0, 4);
             this.tableLayoutPanel1.Controls.Add(this.paymentRadio, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.remainRadio, 0, 3);
@@ -884,7 +884,7 @@ namespace PrintLocalReport
         {
             return "Ngày";
         }
-        public lDaysReport(DateTime endDate, DateTime startDate)
+        public lDaysReport(DateTime startDate, DateTime endDate)
         {
             string zStartDate = startDate.ToString("yyyy-MM-dd");
             string zEndDate = endDate.ToString("yyyy-MM-dd");
@@ -946,7 +946,7 @@ namespace PrintLocalReport
         {
             return "Tuần";
         }
-        public lWeekReport(DateTime endDate, DateTime startDate) : base(endDate, startDate)
+        public lWeekReport(DateTime startDate, DateTime endDate) : base(endDate, startDate)
         {
         }
     }
@@ -973,7 +973,7 @@ namespace PrintLocalReport
         {
             return "Tháng";
         }
-        public lMonthReport(DateTime endDate, DateTime startDate) : base(endDate, startDate)
+        public lMonthReport(DateTime startDate, DateTime endDate) : base(endDate, startDate)
         {
         }
     }
@@ -996,7 +996,8 @@ namespace PrintLocalReport
                 new ReportParameter("buildingName", m_buildingName)
             };
             string qry = string.Format("select * from external_payment"
-                + " where building like '%{0}%' and date between '{1} 00:00:00' and '{2} 00:00:00'",
+                + " where building like '%{0}%' and date between '{1} 00:00:00' and '{2} 00:00:00'"
+                + " order by date",
                 building, zStartDate, zEndDate);
             m_sqls = new Dictionary<string, string>
             {

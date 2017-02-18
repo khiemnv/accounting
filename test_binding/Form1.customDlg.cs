@@ -219,8 +219,8 @@ namespace test_binding
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.Controls.Add(this.label1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.buildingCmb, 1, 2);
-            this.tableLayoutPanel1.Controls.Add(this.startDate, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.endDate, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.startDate, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.endDate, 2, 0);
             this.tableLayoutPanel1.Controls.Add(this.yearRadio, 0, 4);
             this.tableLayoutPanel1.Controls.Add(this.paymentRadio, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.remainRadio, 0, 3);
@@ -330,6 +330,10 @@ namespace test_binding
                         rpt = new lMonthReport(startDate.Value, endDate.Value);
                         break;
                 }
+            }
+            else if (buildingRadio.Checked)
+            {
+                rpt = new lBuildingReport(buildingCmb.Text, startDate.Value, endDate.Value);
             }
             if (rpt != null)
             {

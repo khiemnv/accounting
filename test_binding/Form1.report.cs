@@ -31,6 +31,7 @@ namespace test_binding
 #endif
         public string m_pdfPath;    //print to pdf file
         public Dictionary<string, string> m_sqls;
+        public static string s_dateFormat = "yyyy-MM-dd";
 
         protected lBaseReport()
         {
@@ -399,10 +400,10 @@ namespace test_binding
         {
             return "Ngày";
         }
-        public lDaysReport(DateTime endDate, DateTime startDate)
+        public lDaysReport(DateTime startDate, DateTime endDate)
         {
-            string zStartDate = startDate.ToString("yyyy-MM-dd");
-            string zEndDate = endDate.ToString("yyyy-MM-dd");
+            string zStartDate = startDate.ToString(s_dateFormat);
+            string zEndDate = endDate.ToString(s_dateFormat);
             m_rptParams = new List<ReportParameter>()
             {
                 new ReportParameter("startDate",zStartDate),
@@ -455,7 +456,7 @@ namespace test_binding
         {
             return "Tuần";
         }
-        public lWeekReport(DateTime endDate, DateTime startDate) : base(endDate, startDate)
+        public lWeekReport(DateTime startDate, DateTime endDate) : base(endDate, startDate)
         {
         }
     }
@@ -482,8 +483,41 @@ namespace test_binding
         {
             return "Tháng";
         }
-        public lMonthReport(DateTime endDate, DateTime startDate) : base(endDate, startDate)
+        public lMonthReport(DateTime startDate, DateTime endDate) : base(endDate, startDate)
         {
+        }
+    }
+
+    public class lBuildingReport : lBaseReport
+    {
+        public string m_buildingName;
+        public DateTime m_startDate;
+        public DateTime m_endDate;
+        List<ReportParameter> m_rptParams;
+        public lBuildingReport(string building, DateTime startDate, DateTime endDate)
+        {
+            string zStartDate = startDate.ToString(s_dateFormat);
+            string zEndDate = endDate.ToString(s_dateFormat);
+            m_buildingName = building;
+            m_rptParams = new List<ReportParameter>()
+            {
+                new ReportParameter("startDate",zStartDate),
+                new ReportParameter("endDate",zEndDate),
+                new ReportParameter("buildingName", m_buildingName)
+            };
+            string qry = string.Format("select * from external_payment"
+                + " where building like '%{0}%' and date between '{1} 00:00:00' and '{2} 00:00:00'"
+                + " order by date",
+                building, zStartDate, zEndDate);
+            m_sqls = new Dictionary<string, string>
+            {
+                { "DataSet1", qry }
+            };
+            m_rdlcPath = @"..\..\rpt_building.rdlc";
+        }
+        public override List<ReportParameter> getReportParam()
+        {
+            return m_rptParams;
         }
     }
 }
