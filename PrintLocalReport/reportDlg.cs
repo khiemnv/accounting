@@ -794,6 +794,8 @@ namespace PrintLocalReport
         private void PrintBtn_Click(object sender, EventArgs e)
         {
             lBaseReport rpt = null;
+            rpt = new lCurInterPaymentReport();
+#if false
             if (paymentRadio.Checked)
             {
                 switch (paymentRptType.SelectedIndex)
@@ -813,7 +815,7 @@ namespace PrintLocalReport
                 string buildingName = "xây chánh điện";
                 rpt = new lBuildingReport(buildingName, startDate.Value, endDate.Value);
             }
-
+#endif
             if (rpt != null) { 
                 rpt.Run();
                 rpt.Dispose();
@@ -1004,6 +1006,37 @@ namespace PrintLocalReport
                 { "DataSet1", qry }
             };
             m_rdlcPath = @"..\..\Report2.rdlc";
+        }
+        public override List<ReportParameter> getReportParam()
+        {
+            return m_rptParams;
+        }
+        protected override DataTable loadData(string qry)
+        {
+            SQLiteDataAdapter cmd = new SQLiteDataAdapter(qry, config.get_cnn());
+            DataTable dt = new DataTable();
+            cmd.Fill(dt);
+            return dt;
+        }
+    }
+
+    public class lCurInterPaymentReport : lBaseReport
+    {
+        public string m_buildingName;
+        public DateTime m_startDate;
+        public DateTime m_endDate;
+        List<ReportParameter> m_rptParams;
+        public lCurInterPaymentReport()
+        {
+            m_rptParams = new List<ReportParameter>();
+            string qry = "select * from internal_payment"
+                + " where date between '{2016-01-01 00:00:00' and '2016-01-01 00:00:00'"
+                + " order by date";
+            m_sqls = new Dictionary<string, string>
+            {
+                { "DataSet1", qry }
+            };
+            m_rdlcPath = @"..\..\c_inter_pay.rdlc";
         }
         public override List<ReportParameter> getReportParam()
         {

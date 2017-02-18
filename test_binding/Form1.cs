@@ -146,7 +146,7 @@ namespace test_binding
         {
             m_dataPanel = new lInterPaymentDataPanel();
             m_searchPanel = new lInterPaymentSearchPanel(m_dataPanel);
-            m_report = new lInternalPaymentReport();
+            m_report = new lCurInterPaymentReport();
             base.init();
         }
     }
@@ -158,7 +158,7 @@ namespace test_binding
         {
             m_dataPanel = new lReceiptsDataPanel();
             m_searchPanel = new lReceiptsSearchPanel(m_dataPanel);
-            m_report = new lReceiptsReport();
+            m_report = new lCurReceiptsReport();
         }
     }
 

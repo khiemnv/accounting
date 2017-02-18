@@ -46,7 +46,9 @@ namespace test_binding
                     typeof(lSalaryDataPanel),
 
                     typeof(lReceiptsReport),
+                    typeof(lCurReceiptsReport),
                     typeof(lInternalPaymentReport),
+                    typeof(lCurInterPaymentReport),
                     typeof(lExternalPaymentReport),
                     typeof(lSalaryReport),
 

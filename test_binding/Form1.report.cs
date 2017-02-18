@@ -54,7 +54,7 @@ namespace test_binding
             return dt;
         }
 
-        protected DataTable loadData()
+        protected virtual DataTable loadData()
         {
             string qry = string.Format("SELECT * FROM {0}", m_viewName);
             DataTable dt = appConfig.s_contentProvider.GetData(qry);
@@ -518,6 +518,36 @@ namespace test_binding
         public override List<ReportParameter> getReportParam()
         {
             return m_rptParams;
+        }
+    }
+
+    public class lCurReceiptsReport : lBaseReport
+    {
+        public lCurReceiptsReport()
+        {
+            m_rdlcPath = @"..\..\c_receipts.rdlc";
+            m_viewName = "receipts";
+        }
+        public override List<ReportParameter> getReportParam()
+        {
+            return new List<ReportParameter>();
+        }
+        protected override DataTable loadData()
+        {
+            //lDataContent dc = appConfig.s_contentProvider.CreateDataContent(m_viewName);
+            //dc.Load();
+            //return dc.m_dataTable.Copy();
+            string qry = string.Format("select * from {0} limit 100", m_viewName);
+            return appConfig.s_contentProvider.GetData(qry);
+        }
+    }
+
+    public class lCurInterPaymentReport : lCurReceiptsReport
+    {
+        public lCurInterPaymentReport()
+        {
+            m_rdlcPath = @"..\..\c_interpayment.rdlc";
+            m_viewName = "internal_payment";
         }
     }
 }

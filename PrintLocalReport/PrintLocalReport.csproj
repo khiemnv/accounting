@@ -144,6 +144,8 @@
     <Content Include="receiptsData.xml" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="c_inter_pay.rdlc" />
+    <EmbeddedResource Include="c_receipts.rdlc" />
     <EmbeddedResource Include="receipts.rdlc" />
     <EmbeddedResource Include="internal_payment.rdlc" />
     <EmbeddedResource Include="external_payment.rdlc" />
