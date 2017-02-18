@@ -983,23 +983,30 @@ namespace PrintLocalReport
         public string m_buildingName;
         public DateTime m_startDate;
         public DateTime m_endDate;
-
+        List<ReportParameter> m_rptParams;
         public lBuildingReport(string building, DateTime startDate, DateTime endDate)
         {
+            string zStartDate = startDate.ToString("yyyy-MM-dd");
+            string zEndDate = endDate.ToString("yyyy-MM-dd");
             m_buildingName = building;
-            string qry = string.Format("select * from external_payment where building like '%{0}%' limit 10", building);
-            m_rdlcPath = @"..\..\Report2.rdlc";
+            m_rptParams = new List<ReportParameter>()
+            {
+                new ReportParameter("startDate",zStartDate),
+                new ReportParameter("endDate",zEndDate),
+                new ReportParameter("buildingName", m_buildingName)
+            };
+            string qry = string.Format("select * from external_payment"
+                + " where building like '%{0}%' and date between '{1} 00:00:00' and '{2} 00:00:00'",
+                building, zStartDate, zEndDate);
             m_sqls = new Dictionary<string, string>
             {
                 { "DataSet1", qry }
             };
+            m_rdlcPath = @"..\..\Report2.rdlc";
         }
         public override List<ReportParameter> getReportParam()
         {
-            List<ReportParameter> ret = new List<ReportParameter> {
-                new ReportParameter("buildingName", m_buildingName)
-            };
-            return ret;
+            return m_rptParams;
         }
         protected override DataTable loadData(string qry)
         {
