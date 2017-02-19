@@ -60,6 +60,10 @@ namespace test_binding
             DataTable dt = appConfig.s_contentProvider.GetData(qry);
             return dt;
         }
+        protected virtual void releaseData(DataTable dt)
+        {
+            dt.Dispose();
+        }
 
         private List<Stream> m_streams;
         private Stream CreateStream(string name,
@@ -115,7 +119,7 @@ namespace test_binding
             ev.HasMorePages = (m_currentPageIndex < m_streams.Count);
         }
 
-        private void Print()
+        protected void Print()
         {
             if (m_streams == null || m_streams.Count == 0)
                 throw new Exception("Error: no stream to print.");
@@ -152,18 +156,23 @@ namespace test_binding
             return rpParams;
         }
 
-        private delegate void voidCaller();
+        protected delegate void voidCaller();
 
-        long m_iWork;
+        protected long m_iWork;
         public long getPos()
         {
             return m_iWork;
+        }
+        public void setPos(long pos)
+        {
+            m_iWork = pos;
         }
 
         public void Run2()
         {
             ProgressDlg prg = new ProgressDlg();
-            var d = new voidCaller(() => {
+            var d = new voidCaller(() =>
+            {
                 //display wait msg
                 prg.m_descr = "Loading data ...";
 
@@ -225,39 +234,47 @@ namespace test_binding
         public virtual void Run()
         {
             ProgressDlg prg = new ProgressDlg();
-            var d = new voidCaller(()=> {
+            bool isErr = false;
+            var d = new voidCaller(() =>
+            {
+                try
+                {
+                    //display wait msg
+                    prg.m_descr = "Load view data ...";
 
-                //display wait msg
-                prg.m_descr = "Load view data ...";
+                    //long time work
+                    DataTable dt = loadData();
+                    m_iWork = 50;
 
-                //long time work
-                DataTable dt = loadData();
-                m_iWork = 50;
+                    //after load data complete
+                    dt.TableName = m_viewName;
 
-                //after load data complete
-                dt.TableName = m_viewName;
-#if crt_xml
-                dt.WriteXml(m_xmlPath);
-#endif
-                LocalReport report = new LocalReport();
-                report.ReportPath = m_rdlcPath;
-                report.DataSources.Add(new ReportDataSource(m_rcName, dt));
+                    LocalReport report = new LocalReport();
+                    report.ReportPath = m_rdlcPath;
+                    report.DataSources.Add(new ReportDataSource(m_rcName, dt));
 
-                //add report params
-                List<ReportParameter> rpParams = getReportParam();
-                report.SetParameters(rpParams);
+                    //add report params
+                    List<ReportParameter> rpParams = getReportParam();
+                    report.SetParameters(rpParams);
 
-                report.Refresh();
+                    report.Refresh();
 
-                //display wait msg
-                prg.m_descr = "Exporting ...";
+                    //display wait msg
+                    prg.m_descr = "Exporting ...";
 
-                //long time work
-                Export(report);
-                m_iWork = 100;
+                    //long time work
+                    Export(report);
+                    m_iWork = 100;
 
-                dt.Dispose();
-                report.Dispose();
+                    releaseData(dt);
+                    report.Dispose();
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("{0}\n  {1}", e.Message, e.InnerException.Message);
+                    m_iWork = 100;
+                    isErr = true;
+                }
             });
 
             var t = d.BeginInvoke(null, null);
@@ -276,7 +293,7 @@ namespace test_binding
             fs.Write(bytes, 0, bytes.Length);
             fs.Close();
 #else
-            Print();
+            if (!isErr) Print();
 #endif
         }
         #region dispose
@@ -527,6 +544,7 @@ namespace test_binding
         {
             m_rdlcPath = @"..\..\c_receipts.rdlc";
             m_viewName = "receipts";
+            m_rcName = "DataSet1";
         }
         public override List<ReportParameter> getReportParam()
         {
@@ -534,11 +552,12 @@ namespace test_binding
         }
         protected override DataTable loadData()
         {
-            //lDataContent dc = appConfig.s_contentProvider.CreateDataContent(m_viewName);
-            //dc.Load();
-            //return dc.m_dataTable.Copy();
-            string qry = string.Format("select * from {0} limit 100", m_viewName);
-            return appConfig.s_contentProvider.GetData(qry);
+            lDataContent dc = appConfig.s_contentProvider.CreateDataContent(m_viewName);
+            //dc.Load();    //if current is no data
+            return dc.m_dataTable;
+        }
+        protected override void releaseData(DataTable dt) {
+            //do nothing
         }
     }
 
@@ -548,6 +567,24 @@ namespace test_binding
         {
             m_rdlcPath = @"..\..\c_interpayment.rdlc";
             m_viewName = "internal_payment";
+        }
+    }
+
+    public class lCurExterPaymentReport : lCurReceiptsReport
+    {
+        public lCurExterPaymentReport()
+        {
+            m_rdlcPath = @"..\..\c_exterpayment.rdlc";
+            m_viewName = "external_payment";
+        }
+    }
+
+    public class lCurSalaryReport : lCurReceiptsReport
+    {
+        public lCurSalaryReport()
+        {
+            m_rdlcPath = @"..\..\c_salary.rdlc";
+            m_viewName = "salary";
         }
     }
 }

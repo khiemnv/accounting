@@ -50,7 +50,9 @@ namespace test_binding
                     typeof(lInternalPaymentReport),
                     typeof(lCurInterPaymentReport),
                     typeof(lExternalPaymentReport),
+                    typeof(lCurExterPaymentReport),
                     typeof(lSalaryReport),
+                    typeof(lCurSalaryReport),
 
                     typeof(lSearchCtrlText),
                     typeof(lSearchCtrlDate),

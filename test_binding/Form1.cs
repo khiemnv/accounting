@@ -169,7 +169,7 @@ namespace test_binding
         {
             m_dataPanel = new lExternalPaymentDataPanel();
             m_searchPanel = new lExternalPaymentSearchPanel(m_dataPanel);
-            m_report = new lExternalPaymentReport();
+            m_report = new lCurExterPaymentReport();
             base.init();
         }
     }
@@ -181,7 +181,7 @@ namespace test_binding
         {
             m_dataPanel = new lSalaryDataPanel();
             m_searchPanel = new lSalarySearchPanel(m_dataPanel);
-            m_report = new lSalaryReport();
+            m_report = new lCurSalaryReport();
             base.init();
         }
     }

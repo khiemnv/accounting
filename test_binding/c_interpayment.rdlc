@@ -6,10 +6,10 @@
         <TablixBody>
           <TablixColumns>
             <TablixColumn>
-              <Width>0.61468in</Width>
+              <Width>0.95843in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>0.73013in</Width>
+              <Width>0.97571in</Width>
             </TablixColumn>
             <TablixColumn>
               <Width>0.94801in</Width>
@@ -445,21 +445,21 @@
                 </TablixCell>
                 <TablixCell>
                   <CellContents>
-                    <Textbox Name="goup_name">
+                    <Textbox Name="group_name">
                       <CanGrow>true</CanGrow>
                       <KeepTogether>true</KeepTogether>
                       <Paragraphs>
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=Fields!goup_name.Value</Value>
+                              <Value>=Fields!group_name.Value</Value>
                               <Style />
                             </TextRun>
                           </TextRuns>
                           <Style />
                         </Paragraph>
                       </Paragraphs>
-                      <rd:DefaultName>goup_name</rd:DefaultName>
+                      <rd:DefaultName>group_name</rd:DefaultName>
                       <Style>
                         <Border>
                           <Color>LightGrey</Color>
@@ -920,9 +920,9 @@
           </TablixMembers>
         </TablixRowHierarchy>
         <DataSetName>DataSet1</DataSetName>
-        <Top>0.85292in</Top>
+        <Top>0.97792in</Top>
         <Height>0.71874in</Height>
-        <Width>7.30729in</Width>
+        <Width>7.89661in</Width>
         <Style>
           <Border>
             <Style>None</Style>
@@ -986,7 +986,7 @@
           </Paragraph>
         </Paragraphs>
         <rd:DefaultName>Textbox39</rd:DefaultName>
-        <Top>1.75521in</Top>
+        <Top>1.88021in</Top>
         <Left>5.76562in</Left>
         <Height>0.23958in</Height>
         <Width>1.54167in</Width>
@@ -1001,11 +1001,43 @@
           <PaddingBottom>2pt</PaddingBottom>
         </Style>
       </Textbox>
+      <Textbox Name="Textbox40">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Báo cáo Chi nội chúng (đơn vị: 1,000 VND)</Value>
+                <Style>
+                  <FontWeight>Bold</FontWeight>
+                  <Color>Blue</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox36</rd:DefaultName>
+        <Top>0.65848in</Top>
+        <Height>0.25in</Height>
+        <Width>3.36334in</Width>
+        <ZIndex>3</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
     </ReportItems>
-    <Height>2in</Height>
+    <Height>2.11979in</Height>
     <Style />
   </Body>
-  <Width>7.30903in</Width>
+  <Width>7.89661in</Width>
   <Page>
     <LeftMargin>1in</LeftMargin>
     <RightMargin>1in</RightMargin>
@@ -1050,10 +1082,6 @@
           <DataField>content</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="goup_name">
-          <DataField>goup_name</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
         <Field Name="advance_payment">
           <DataField>advance_payment</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
@@ -1068,6 +1096,10 @@
         </Field>
         <Field Name="note">
           <DataField>note</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="group_name">
+          <DataField>group_name</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
       </Fields>
