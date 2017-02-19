@@ -1030,7 +1030,7 @@ namespace PrintLocalReport
         {
             m_rptParams = new List<ReportParameter>();
             string qry = "select * from internal_payment"
-                + " where date between '{2016-01-01 00:00:00' and '2016-01-01 00:00:00'"
+                + " where date between '2016-01-01 00:00:00' and '2016-01-01 00:00:00'"
                 + " order by date";
             m_sqls = new Dictionary<string, string>
             {

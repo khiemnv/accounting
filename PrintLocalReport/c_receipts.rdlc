@@ -12,13 +12,13 @@
               <Width>1.21788in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>1.21788in</Width>
+              <Width>1.49913in</Width>
             </TablixColumn>
             <TablixColumn>
               <Width>1.21788in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>1.21788in</Width>
+              <Width>0.93663in</Width>
             </TablixColumn>
             <TablixColumn>
               <Width>1.55122in</Width>
@@ -229,7 +229,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value>=Fields!date.Value</Value>
-                              <Style />
+                              <Style>
+                                <Format>yyyy-MM-dd</Format>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style />
@@ -349,7 +351,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value>=Fields!amount.Value</Value>
-                              <Style />
+                              <Style>
+                                <Format>#,0,;(#,0,);'-'</Format>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style />
@@ -538,7 +542,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value>=Sum(Fields!amount.Value)</Value>
-                              <Style />
+                              <Style>
+                                <Format>#,0,;(#,0,);'-'</Format>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style />
@@ -618,8 +624,8 @@
           </TablixMembers>
         </TablixRowHierarchy>
         <DataSetName>DataSet1</DataSetName>
-        <Top>0.85292in</Top>
-        <Height>0.71875in</Height>
+        <Top>0.97792in</Top>
+        <Height>0.71874in</Height>
         <Width>7.30729in</Width>
         <Style>
           <Border>
@@ -684,7 +690,7 @@
           </Paragraph>
         </Paragraphs>
         <rd:DefaultName>Textbox39</rd:DefaultName>
-        <Top>1.75521in</Top>
+        <Top>1.88021in</Top>
         <Left>5.76562in</Left>
         <Height>0.23958in</Height>
         <Width>1.54167in</Width>
@@ -699,11 +705,43 @@
           <PaddingBottom>2pt</PaddingBottom>
         </Style>
       </Textbox>
+      <Textbox Name="Textbox40">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Báo cáo Thu (đơn vị: 1,000 VND)</Value>
+                <Style>
+                  <FontWeight>Bold</FontWeight>
+                  <Color>Blue</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox36</rd:DefaultName>
+        <Top>0.65848in</Top>
+        <Height>0.25in</Height>
+        <Width>3.36334in</Width>
+        <ZIndex>3</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
     </ReportItems>
-    <Height>2in</Height>
+    <Height>2.11979in</Height>
     <Style />
   </Body>
-  <Width>7.32292in</Width>
+  <Width>7.30729in</Width>
   <Page>
     <LeftMargin>1in</LeftMargin>
     <RightMargin>1in</RightMargin>
