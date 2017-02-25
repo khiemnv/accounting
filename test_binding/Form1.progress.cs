@@ -15,9 +15,12 @@ using System.Diagnostics;
 
 namespace test_binding
 {
-    public interface myCursor
+    public interface ICursor
     {
         Int64 getPos();
+        void setPos(Int64 pos);
+        void setStatus(string msg);
+        string getStatus();
     }
     public class myElapsed : IDisposable
     {
@@ -192,7 +195,7 @@ namespace test_binding
         public Int64 m_endPos;
         public Int64 m_scale;
         public string m_descr;
-        public myCursor m_cursor;
+        public ICursor m_cursor;
         public bool m_isCancel = false;
         int m_timeOut;
         enum state
@@ -287,6 +290,7 @@ namespace test_binding
                 for (int i = 1; ; i++)
                 {
                     Int64 curPos = m_cursor.getPos();
+                    m_descr = m_cursor.getStatus();
                     if (curPos == m_endPos)
                     {
                         m_state = state.completed;

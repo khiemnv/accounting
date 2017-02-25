@@ -741,7 +741,7 @@ namespace test_binding
     /// + reload()
     /// + submit()
     /// </summary>
-    public class lDataContent : myCursor, IDisposable
+    public class lDataContent : ICursor, IDisposable
     {
         #region fetch_data
         public Form m_form;
@@ -826,11 +826,22 @@ namespace test_binding
             //Debug.WriteLine("{0}.M_tbl_RowChanged {1}", this, e.Row[0]);
             m_lastId = (Int64)e.Row[0];
         }
-        Int64 myCursor.getPos() { return getPos(); }
-        protected Int64 getPos()
+        #region cursor
+        public Int64 getPos()
         {
             return m_lastId;
         }
+        public void setPos(Int64 pos) { }
+        string m_msgStatus;
+        public void setStatus(string msg)
+        {
+            m_msgStatus = msg;
+        }
+        public string getStatus()
+        {
+            return m_msgStatus;
+        }
+        #endregion
 #endif
         delegate void noParamDelegate();
         protected virtual void fetchData()

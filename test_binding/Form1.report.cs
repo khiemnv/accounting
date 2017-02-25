@@ -1,4 +1,4 @@
-﻿#define use_progress
+﻿//#define use_progress
 
 using Microsoft.Reporting.WinForms;
 using System;
@@ -16,7 +16,7 @@ using System.Windows.Forms;
 namespace test_binding
 {
     [DataContract(Name = "Report")]
-    public class lBaseReport : IDisposable, myCursor
+    public class lBaseReport : ICursor, IDisposable
     {
         [DataMember(Name = "rcName")]
         public string m_rcName;     //data set
@@ -75,7 +75,7 @@ namespace test_binding
             return stream;
         }
 
-        private void Export(LocalReport report)
+        protected void Export(LocalReport report)
         {
             string deviceInfo =
               @"<DeviceInfo>
@@ -158,7 +158,9 @@ namespace test_binding
 
         protected delegate void voidCaller();
 
+        #region cursor
         protected long m_iWork;
+        protected string m_statusMsg;
         public long getPos()
         {
             return m_iWork;
@@ -167,32 +169,33 @@ namespace test_binding
         {
             m_iWork = pos;
         }
-
-        public void Run2()
+        public void setStatus(string msg)
         {
-            ProgressDlg prg = new ProgressDlg();
-            var d = new voidCaller(() =>
+            m_statusMsg = msg;
+        }
+        public string getStatus()
+        {
+            return m_statusMsg;
+        }
+        #endregion
+        //render to streams
+        protected virtual void prepare()
+        {
+            try
             {
                 //display wait msg
-                prg.m_descr = "Loading data ...";
-
-                LocalReport report = new LocalReport();
+                setStatus("Load view data ...");
 
                 //long time work
-                DataSet ds = new DataSet();
-                int step = 50 / m_sqls.Count;
-                foreach (var pair in m_sqls)
-                {
-                    DataTable dt = loadData(pair.Value);
-                    //after load data complete
-                    m_iWork += step;
+                DataTable dt = loadData();
+                setPos(50);
 
-                    dt.TableName = pair.Key;
-                    ds.Tables.Add(dt);
+                //after load data complete
+                dt.TableName = m_viewName;
 
-                    report.ReportPath = m_rdlcPath;
-                    report.DataSources.Add(new ReportDataSource(pair.Key, dt));
-                }
+                LocalReport report = new LocalReport();
+                report.ReportPath = m_rdlcPath;
+                report.DataSources.Add(new ReportDataSource(m_rcName, dt));
 
                 //add report params
                 List<ReportParameter> rpParams = getReportParam();
@@ -201,16 +204,26 @@ namespace test_binding
                 report.Refresh();
 
                 //display wait msg
-                prg.m_descr = "Exporting ...";
+                setStatus("Exporting ...");
 
                 //long time work
                 Export(report);
-                m_iWork = 100;
+                setPos(100);
 
-                ds.Clear();
-                ds.Dispose();
+                releaseData(dt);
                 report.Dispose();
-            });
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("{0}\n  {1}", e.Message, e.InnerException.Message);
+                setPos(100);
+            }
+        }
+        public virtual void Run()
+        {
+#if use_progress
+            ProgressDlg prg = new ProgressDlg();
+            var d = new voidCaller(prepare);
 
             var t = d.BeginInvoke(null, null);
             m_iWork = 0;
@@ -219,7 +232,9 @@ namespace test_binding
             prg.m_param = t;
             prg.ShowDialog();
             prg.Dispose();
-
+#else
+            prepare();
+#endif
             //print
 #if false
             byte[] bytes = report.Render("PDF");
@@ -229,71 +244,6 @@ namespace test_binding
             fs.Close();
 #else
             Print();
-#endif
-        }
-        public virtual void Run()
-        {
-            ProgressDlg prg = new ProgressDlg();
-            bool isErr = false;
-            var d = new voidCaller(() =>
-            {
-                try
-                {
-                    //display wait msg
-                    prg.m_descr = "Load view data ...";
-
-                    //long time work
-                    DataTable dt = loadData();
-                    m_iWork = 50;
-
-                    //after load data complete
-                    dt.TableName = m_viewName;
-
-                    LocalReport report = new LocalReport();
-                    report.ReportPath = m_rdlcPath;
-                    report.DataSources.Add(new ReportDataSource(m_rcName, dt));
-
-                    //add report params
-                    List<ReportParameter> rpParams = getReportParam();
-                    report.SetParameters(rpParams);
-
-                    report.Refresh();
-
-                    //display wait msg
-                    prg.m_descr = "Exporting ...";
-
-                    //long time work
-                    Export(report);
-                    m_iWork = 100;
-
-                    releaseData(dt);
-                    report.Dispose();
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine("{0}\n  {1}", e.Message, e.InnerException.Message);
-                    m_iWork = 100;
-                    isErr = true;
-                }
-            });
-
-            var t = d.BeginInvoke(null, null);
-            m_iWork = 0;
-            prg.m_endPos = 100;
-            prg.m_cursor = this;
-            prg.m_param = t;
-            prg.ShowDialog();
-            prg.Dispose();
-
-            //print
-#if false
-            byte[] bytes = report.Render("PDF");
-            FileStream fs = new FileStream(m_pdfPath, FileMode.Create);
-            fs.Seek(0, SeekOrigin.Begin);
-            fs.Write(bytes, 0, bytes.Length);
-            fs.Close();
-#else
-            if (!isErr) Print();
 #endif
         }
         #region dispose
@@ -436,6 +386,50 @@ namespace test_binding
 
             m_rdlcPath = @"..\..\rpt_days.rdlc";
         }
+
+        protected override void prepare()
+        {
+            //display wait msg
+            setStatus("Loading data ...");
+
+            LocalReport report = new LocalReport();
+
+            //long time work
+            DataSet ds = new DataSet();
+            int step = 50 / m_sqls.Count;
+            Int64 pos = 0;
+            foreach (var pair in m_sqls)
+            {
+                DataTable dt = loadData(pair.Value);
+                //after load data complete
+                pos += step;
+                setPos(pos);
+
+                dt.TableName = pair.Key;
+                ds.Tables.Add(dt);
+
+                report.ReportPath = m_rdlcPath;
+                report.DataSources.Add(new ReportDataSource(pair.Key, dt));
+            }
+
+            //add report params
+            List<ReportParameter> rpParams = getReportParam();
+            report.SetParameters(rpParams);
+
+            report.Refresh();
+
+            //display wait msg
+            setStatus("Exporting ...");
+
+            //long time work
+            Export(report);
+            setPos(100);
+
+            ds.Clear();
+            ds.Dispose();
+            report.Dispose();
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

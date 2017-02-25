@@ -337,9 +337,10 @@ namespace test_binding
             }
             if (rpt != null)
             {
-                rpt.Run2();
+                rpt.Run();
                 rpt.Dispose();
             }
+            Close();
         }
 
         private void LReportDlg_Load(object sender, EventArgs e)
