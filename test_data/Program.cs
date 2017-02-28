@@ -767,7 +767,7 @@ namespace test_data
             }
             private void LDataDlg_Load(object sender, EventArgs e)
             {
-                m_cnn = get_cnn();
+                //m_cnn = get_cnn();
 
                 m_cmd = new SQLiteCommand();
                 m_cmd.Connection = m_cnn;
@@ -875,14 +875,14 @@ namespace test_data
         static void Main(string[] args)
         {
             //crtDict();
-            //gen_receipts_data();
+            gen_receipts_data();
             //gen_interPay_data();
             //gen_exterPay_data();
             //gen_salary_data();
             //test_page();
             //lDataDlg dlg = new lDataDlg();
             //dlg.ShowDialog();
-            test_perf();
+            //test_perf();
         }
 
         private static void test_perf()
@@ -892,7 +892,7 @@ namespace test_data
 
             DataTable dt = new DataTable();
             SQLiteCommand cmd = new SQLiteCommand();
-            cmd.Connection = get_cnn();
+            //cmd.Connection = get_cnn();
             SQLiteDataAdapter da = new SQLiteDataAdapter(cmd);
             string qryWeeksData = string.Format("select group_name, week as date, '' as name,"
               + " sum(inter_pay) as inter_pay, sum(exter_pay) as exter_pay, sum(salary) as salary"
@@ -962,22 +962,37 @@ namespace test_data
         {
 
         }
-        static string dbPath = @"..\..\..\test_binding\appData.db";
 
+        static string dbPath = @"..\..\..\test_binding\appData.db";
+        static int max_records = 1000;
+
+#if use_sqlite
         static SQLiteConnection get_cnn()
         {
             SQLiteConnection cnn = new SQLiteConnection(string.Format("Data Source={0};Version=3;", dbPath));
             cnn.Open();
             return cnn;
         }
+#else
+        static SqlConnection get_cnn()
+        {
+            SqlConnection cnn = new SqlConnection(@"Data Source=DESKTOP-GOEF1DS\SQLEXPRESS;Initial Catalog=accounting;Integrated Security=true");
+            cnn.Open();
+            return cnn;
+        }
+#endif
         static void gen_receipts_data()
         {
-            SQLiteConnection cnn = get_cnn();
-
+            var cnn = get_cnn();
+#if use_sqlite
             var cmd = new SQLiteCommand();
+#else
+            var cmd = new SqlCommand();
+#endif
             cmd.Connection = cnn;
-            var transaction  = cnn.BeginTransaction();
-            for (int i = 0; i < 1000*1000; i++)
+            var transaction = cnn.BeginTransaction();
+            cmd.Transaction = transaction;
+            for (int i = 0; i < max_records; i++)
             {
                 var rec = createReceiptsRec();
                 cmd.CommandText = string.Format("insert into receipts(date, receipt_number, name, content, amount, note) "
@@ -988,12 +1003,16 @@ namespace test_data
         }
         static void gen_interPay_data()
         {
-            SQLiteConnection cnn = get_cnn();
-
+            var cnn = get_cnn();
+#if use_sqlite
             var cmd = new SQLiteCommand();
+#else
+            var cmd = new SqlCommand();
+#endif
             cmd.Connection = cnn;
             var transaction = cnn.BeginTransaction();
-            for (int i = 0; i < 1000 * 1000; i++)
+            cmd.Transaction = transaction;
+            for (int i = 0; i < max_records; i++)
             {
                 var rec = createInterPayRec();
                 cmd.CommandText = string.Format("insert into internal_payment( "
@@ -1010,12 +1029,16 @@ namespace test_data
 
         static void gen_exterPay_data()
         {
-            SQLiteConnection cnn = get_cnn();
-
+            var cnn = get_cnn();
+#if use_sqlite
             var cmd = new SQLiteCommand();
+#else
+            var cmd = new SqlCommand();
+#endif
             cmd.Connection = cnn;
             var transaction = cnn.BeginTransaction();
-            for (int i = 0; i < 1000 * 1000; i++)
+            cmd.Transaction = transaction;
+            for (int i = 0; i < max_records; i++)
             {
                 var rec = createExterPayRec();
                 cmd.CommandText = string.Format("insert into external_payment( "
@@ -1033,12 +1056,16 @@ namespace test_data
 
         static void gen_salary_data()
         {
-            SQLiteConnection cnn = get_cnn();
-
+            var cnn = get_cnn();
+#if use_sqlite
             var cmd = new SQLiteCommand();
+#else
+            var cmd = new SqlCommand();
+#endif
             cmd.Connection = cnn;
             var transaction = cnn.BeginTransaction();
-            for (int i = 0; i < 1000 * 1000; i++)
+            cmd.Transaction = transaction;
+            for (int i = 0; i < max_records; i++)
             {
                 var rec = createSalaryRec();
                 cmd.CommandText = string.Format("insert into salary( "
@@ -1056,13 +1083,18 @@ namespace test_data
 
         static void test_page()
         {
-            SQLiteConnection cnn = get_cnn();
             string qry = "select max(rowid) from receipts;";
-            SQLiteCommand cmd = new SQLiteCommand(qry, cnn);
+            DataTable tbl = new DataTable();
+            var cnn = get_cnn();
+#if use_sqlite
+            var cmd = new SQLiteCommand(qry, cnn);
+            var da = new SQLiteDataAdapter(cmd);
+#else
+            var cmd = new SqlCommand(qry, cnn);
+            var da = new SqlDataAdapter(cmd);
+#endif
             var ret = cmd.ExecuteScalar();
 
-            DataTable tbl = new DataTable();
-            SQLiteDataAdapter da = new SQLiteDataAdapter(cmd);
             string tmp = "select * from receipts "
                 + " where (rowid between {0} and {1}) "
                 + " and (strftime('%Y', date) = '2016')";
