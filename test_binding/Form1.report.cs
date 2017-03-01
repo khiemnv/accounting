@@ -4,6 +4,7 @@ using Microsoft.Reporting.WinForms;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -30,7 +31,6 @@ namespace test_binding
         public string m_xmlPath;    //xml path
 #endif
         public string m_pdfPath;    //print to pdf file
-        public Dictionary<string, string> m_sqls;
         public static string s_dateFormat = "yyyy-MM-dd";
 
         protected lBaseReport()
@@ -325,6 +325,10 @@ namespace test_binding
 
     public class lDaysReport : lBaseReport
     {
+        protected Dictionary<string, string> m_sqls;
+        protected DateTime m_startDate;
+        protected DateTime m_endDate;
+
         List<ReportParameter> m_rptParams;
         protected virtual string getDateQry(string zStartDate, string zEndDate)
         {
@@ -369,6 +373,8 @@ namespace test_binding
         }
         public lDaysReport(DateTime startDate, DateTime endDate)
         {
+            m_startDate = startDate;
+            m_endDate = endDate;
             string zStartDate = startDate.ToString(s_dateFormat);
             string zEndDate = endDate.ToString(s_dateFormat);
             m_rptParams = new List<ReportParameter>()
@@ -400,7 +406,7 @@ namespace test_binding
             Int64 pos = 0;
             foreach (var pair in m_sqls)
             {
-                DataTable dt = loadData(pair.Value);
+                DataTable dt = getData(pair.Key);
                 //after load data complete
                 pos += step;
                 setPos(pos);
@@ -443,6 +449,33 @@ namespace test_binding
         {
             return m_rptParams;
         }
+
+        protected virtual DataTable getData(string key)
+        {
+            return loadData(m_sqls[key]);
+        }
+    }
+    public class lSqlDaysReport : lDaysReport
+    {
+        public lSqlDaysReport(DateTime startDate, DateTime endDate) : base(startDate, endDate)
+        {
+            m_sqls["DataSet1"] = "rpt_days";
+            m_sqls["DataSet2"] = "sta_month";
+        }
+        protected override DataTable getData(string key)
+        {
+            DataTable dt = new DataTable();
+            var cmd = new SqlCommand();
+            cmd.CommandText = m_sqls[key];
+            cmd.Connection = (SqlConnection)appConfig.s_contentProvider.GetCnn();
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Add(new SqlParameter("@startDate", m_startDate));
+            cmd.Parameters.Add(new SqlParameter("@endDate", m_endDate));
+
+            var adapter = new SqlDataAdapter(cmd);
+            adapter.Fill(dt);
+            return dt;
+        }
     }
     public class lWeekReport : lDaysReport
     {
@@ -469,6 +502,18 @@ namespace test_binding
         }
         public lWeekReport(DateTime startDate, DateTime endDate) : base(endDate, startDate)
         {
+        }
+    }
+    public class lSqlWeekReport : lSqlDaysReport
+    {
+        public lSqlWeekReport(DateTime startDate, DateTime endDate) : base(startDate, endDate)
+        {
+            m_sqls["DataSet1"] = "rpt_weeks";
+            m_sqls["DataSet2"] = "sta_month";
+        }
+        protected override string getType()
+        {
+            return "Tuần";
         }
     }
     public class lMonthReport : lDaysReport
@@ -498,14 +543,23 @@ namespace test_binding
         {
         }
     }
-
-    public class lBuildingReport : lBaseReport
+    public class lSqlMonthReport : lSqlDaysReport
+    {
+        public lSqlMonthReport(DateTime startDate, DateTime endDate) : base(startDate, endDate)
+        {
+            m_sqls["DataSet1"] = "rpt_months";
+            m_sqls["DataSet2"] = "sta_month";
+        }
+        protected override string getType()
+        {
+            return "Tháng";
+        }
+    }
+    public class lBuildingReport : lDaysReport
     {
         public string m_buildingName;
-        public DateTime m_startDate;
-        public DateTime m_endDate;
         List<ReportParameter> m_rptParams;
-        public lBuildingReport(string building, DateTime startDate, DateTime endDate)
+        public lBuildingReport(string building, DateTime startDate, DateTime endDate):base(startDate, endDate)
         {
             string zStartDate = startDate.ToString(s_dateFormat);
             string zEndDate = endDate.ToString(s_dateFormat);

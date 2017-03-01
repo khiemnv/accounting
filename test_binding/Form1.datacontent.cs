@@ -451,6 +451,8 @@ namespace test_binding
             }
         }
 
+        public virtual object GetCnn() { throw new NotImplementedException(); }
+
         #region dispose
         // Dispose() calls Dispose(true)  
         public void Dispose()
@@ -525,6 +527,11 @@ namespace test_binding
             table.Locale = System.Globalization.CultureInfo.InvariantCulture;
             dataAdapter.Fill(table);
             return table;
+        }
+
+        public override object GetCnn()
+        {
+            return m_cnn;
         }
 
         #region dispose
@@ -1185,6 +1192,10 @@ namespace test_binding
             m_dataAdapter.SelectCommand = selectCommand;
             // Populate a new data table and bind it to the BindingSource.
             fetchData();
+        }
+        protected override void fillTable()
+        {
+            m_dataAdapter.Fill(m_dataTable);
         }
     }
 

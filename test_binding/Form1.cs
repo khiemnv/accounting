@@ -1,5 +1,6 @@
 ﻿//#define DEBUG_DRAWING
 #define use_sqlite
+#define save_config
 
 using System;
 using System.Collections.Generic;
@@ -216,14 +217,16 @@ namespace test_binding
                     new lExternalPaymentPanel(),
                     new lSalaryPanel(),
                 };
+#if save_config
                 appConfig.s_config.UpdateConfig();
+#endif
             }
 
             //init content provider
 #if use_sqlite
             appConfig.s_contentProvider = lSQLiteContentProvider.getInstance(this);
 #else
-            s_contentProvider = lSqlContentProvider.getInstance();
+            appConfig.s_contentProvider = lSqlContentProvider.getInstance(this);
 #endif  //use_sqlite
 
             //menu

@@ -114,3 +114,9 @@ tableinfo
 24 thread delegate event
   + invokeFetchLargeData
 25 index - not yet
+26 ms sql db
+  + gen data
+  + use nchar instead of nvarchar
+  + trim - not yet
+  + use bigint instead of int
+  

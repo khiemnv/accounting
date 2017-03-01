@@ -875,16 +875,31 @@ namespace test_data
         static void Main(string[] args)
         {
             //crtDict();
-            gen_receipts_data();
-            //gen_interPay_data();
-            //gen_exterPay_data();
-            //gen_salary_data();
+            //gen_receipts_data();
+            gen_interPay_data();
+            gen_exterPay_data();
+            gen_salary_data();
             //test_page();
             //lDataDlg dlg = new lDataDlg();
             //dlg.ShowDialog();
             //test_perf();
+            //test_mssql();
         }
+        private static void test_mssql()
+        {
+            string zStartDate = "2016-01-30";
+            string zEndDate = "2016-02-01";
+            DataTable dt = new DataTable();
+            var cmd = new SqlCommand();
+            cmd.CommandText = "rpt_days";
+            cmd.Connection = get_cnn();
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Add(new SqlParameter("@startDate", zStartDate));
+            cmd.Parameters.Add(new SqlParameter("@endDate", zEndDate));
 
+            var adapter = new SqlDataAdapter(cmd);
+            adapter.Fill(dt);
+        }
         private static void test_perf()
         {
             string zStartDate = "2016-01-30";
@@ -988,96 +1003,97 @@ namespace test_data
             var cmd = new SQLiteCommand();
 #else
             var cmd = new SqlCommand();
+            List<string> fields = new List<string> { "date", "receipt_number", "name", "content", "amount", "note" };
+            cmd.CommandText = "insert into receipts(date, receipt_number, name, content, amount, note) "
+                + " values(@date, @receipt_number, @name, @content, @amount, @note)";
+            for (int j = 0; j < fields.Count; j++)
+            {
+                cmd.Parameters.Add(new SqlParameter(fields[j], ""));
+            }
 #endif
             cmd.Connection = cnn;
+            cmd.CommandType = CommandType.Text;
             var transaction = cnn.BeginTransaction();
             cmd.Transaction = transaction;
             for (int i = 0; i < max_records; i++)
             {
                 var rec = createReceiptsRec();
+#if use_sqlite
                 cmd.CommandText = string.Format("insert into receipts(date, receipt_number, name, content, amount, note) "
                     + "values('{0}','{1}','{2}','{3}','{4}','{5}')", rec[0], rec[1], rec[2], rec[3], rec[4], rec[5]);
+#else
+                for (int j = 0; j<fields.Count;j++) { 
+                    cmd.Parameters[j].Value = rec[j];
+                }
+#endif
+                var ret = cmd.ExecuteNonQuery();
+            }
+            transaction.Commit();
+        }
+        delegate string[] genRecord();
+        static void gen_data(string tblName, string[] fields, genRecord d)
+        {
+            var cnn = get_cnn();
+#if use_sqlite
+            var cmd = new SQLiteCommand();
+#else
+            var cmd = new SqlCommand();
+            string zFields = "";
+            string zParams = "";
+            for (int j = 0; j < fields.Length; j++)
+            {
+                zFields = zFields + fields[j] + ',';
+                zParams = zParams + "@" + fields[j] + ',';
+                cmd.Parameters.Add(new SqlParameter(fields[j], ""));
+            }
+            cmd.CommandText = string.Format("insert into {0}({1}) values({2})",
+                tblName, zFields.TrimEnd(','), zParams.TrimEnd(','));
+#endif
+            cmd.Connection = cnn;
+            cmd.CommandType = CommandType.Text;
+            var transaction = cnn.BeginTransaction();
+            cmd.Transaction = transaction;
+            for (int i = 0; i < max_records; i++)
+            {
+                var rec = d();
+#if use_sqlite
+                cmd.CommandText = string.Format("insert into receipts(date, receipt_number, name, content, amount, note) "
+                    + "values('{0}','{1}','{2}','{3}','{4}','{5}')", rec[0], rec[1], rec[2], rec[3], rec[4], rec[5]);
+#else
+                for (int j = 0; j < fields.Length; j++)
+                {
+                    cmd.Parameters[j].Value = rec[j];
+                }
+#endif
                 var ret = cmd.ExecuteNonQuery();
             }
             transaction.Commit();
         }
         static void gen_interPay_data()
         {
-            var cnn = get_cnn();
-#if use_sqlite
-            var cmd = new SQLiteCommand();
-#else
-            var cmd = new SqlCommand();
-#endif
-            cmd.Connection = cnn;
-            var transaction = cnn.BeginTransaction();
-            cmd.Transaction = transaction;
-            for (int i = 0; i < max_records; i++)
-            {
-                var rec = createInterPayRec();
-                cmd.CommandText = string.Format("insert into internal_payment( "
-                    + " date, payment_number, name, content, group_name, "
-                    + " advance_payment, reimbursement, actually_spent, note) "
-                    + "values('{0}','{1}','{2}','{3}','{4}','{5}', "
-                    + "'{6}', '{7}', '{8}')",
-                    rec[0], rec[1], rec[2], rec[3], rec[4], rec[5], 
-                    rec[6], rec[7], rec[8]);
-                var ret = cmd.ExecuteNonQuery();
-            }
-            transaction.Commit();
+            string[] fields = new string[] { "date", "payment_number", "name", "content",
+                "group_name", "advance_payment", "reimbursement", "actually_spent", "note" };
+            gen_data("internal_payment", fields, createInterPayRec);
         }
 
         static void gen_exterPay_data()
         {
-            var cnn = get_cnn();
-#if use_sqlite
-            var cmd = new SQLiteCommand();
-#else
-            var cmd = new SqlCommand();
-#endif
-            cmd.Connection = cnn;
-            var transaction = cnn.BeginTransaction();
-            cmd.Transaction = transaction;
-            for (int i = 0; i < max_records; i++)
+            string[] fields = new string[]
             {
-                var rec = createExterPayRec();
-                cmd.CommandText = string.Format("insert into external_payment( "
-                    + " date, payment_number, name, content, "
-                    + " building, group_name, spent, note) "
-                    + "values('{0}','{1}','{2}','{3}',"
-                    + "'{4}','{5}', '{6}', '{7}')",
-                    rec[0], rec[1], rec[2], rec[3],
-                    rec[4], rec[5], rec[6], rec[7]);
-                var ret = cmd.ExecuteNonQuery();
-            }
-            transaction.Commit();
+                "date", "payment_number", "name", "content",
+                    "building", "group_name", "spent", "note"
+            };
+            gen_data("external_payment", fields, createExterPayRec);
         }
-
 
         static void gen_salary_data()
         {
-            var cnn = get_cnn();
-#if use_sqlite
-            var cmd = new SQLiteCommand();
-#else
-            var cmd = new SqlCommand();
-#endif
-            cmd.Connection = cnn;
-            var transaction = cnn.BeginTransaction();
-            cmd.Transaction = transaction;
-            for (int i = 0; i < max_records; i++)
-            {
-                var rec = createSalaryRec();
-                cmd.CommandText = string.Format("insert into salary( "
-                    + " month, date, payment_number, name, group_name, "
-                    + " content, salary, note) "
-                    + "values('{0}','{1}','{2}','{3}',"
-                    + "'{4}','{5}', '{6}', '{7}')",
-                    rec[0], rec[1], rec[2], rec[3],
-                    rec[4], rec[5], rec[6], rec[7]);
-                var ret = cmd.ExecuteNonQuery();
-            }
-            transaction.Commit();
+            string[] fields = new string[]
+               {
+                    "month", "date", "payment_number", "name", "group_name",
+                    "content", "salary", "note"
+               };
+            gen_data("salary", fields, createSalaryRec);
         }
 
 
