@@ -4,6 +4,7 @@
 #define use_progress_dlg
 #define use_single_qry
 //#define use_page_select
+#define use_sqlite
 
 using System;
 using System.Collections.Generic;
@@ -876,15 +877,16 @@ namespace test_data
         {
             //crtDict();
             //gen_receipts_data();
-            gen_interPay_data();
-            gen_exterPay_data();
-            gen_salary_data();
+            //gen_interPay_data();
+            //gen_exterPay_data();
+            //gen_salary_data();
             //test_page();
             //lDataDlg dlg = new lDataDlg();
             //dlg.ShowDialog();
-            //test_perf();
+            test_perf();
             //test_mssql();
         }
+#if !use_sqlite
         private static void test_mssql()
         {
             string zStartDate = "2016-01-30";
@@ -900,6 +902,7 @@ namespace test_data
             var adapter = new SqlDataAdapter(cmd);
             adapter.Fill(dt);
         }
+#endif
         private static void test_perf()
         {
             string zStartDate = "2016-01-30";
@@ -907,7 +910,7 @@ namespace test_data
 
             DataTable dt = new DataTable();
             SQLiteCommand cmd = new SQLiteCommand();
-            //cmd.Connection = get_cnn();
+            cmd.Connection = get_cnn();
             SQLiteDataAdapter da = new SQLiteDataAdapter(cmd);
             string qryWeeksData = string.Format("select group_name, week as date, '' as name,"
               + " sum(inter_pay) as inter_pay, sum(exter_pay) as exter_pay, sum(salary) as salary"
@@ -948,12 +951,16 @@ namespace test_data
               + " from salary where date between '{0} 00:00:00' and '{1} 00:00:00')"
               + " group by group_name, month",
               zStartDate, zEndDate);
-            using (new myElapsed("month no group"))
+            string qryRange = "select * from {0} where date between '{1} 00:00:00' and '{2} 00:00:00'";
+            for (int i = 0; i < 5; i++)
             {
-                da.SelectCommand.CommandText = qryMonthsData;
-                da.Fill(dt);
+                using (new myElapsed("1 month of salary"))
+                {
+                    da.SelectCommand.CommandText = string.Format(qryRange, "salary", "2016-01-01", "2016-02-01");
+                    da.Fill(dt);
+                }
+                dt.Clear();
             }
-            dt.Clear();
             //using (new myElapsed("week group"))
             //{
             //    da.SelectCommand.CommandText = qryWeeksData;
