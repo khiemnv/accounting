@@ -120,4 +120,6 @@ tableinfo
   + trim - not yet
   + use bigint instead of int
 27 qry performance improve
-  + index
+  + index on receipts, payment, salary: date, group name, receipts content
+  + display search time, update time
+28 expert search edt - not yet

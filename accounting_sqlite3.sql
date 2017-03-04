@@ -38,6 +38,12 @@ where strftime('%Y','now') - strftime('%Y',date) between 0 and 4;
 
 CREATE INDEX IF NOT EXISTS idx_receipts_date ON receipts(date);
 CREATE INDEX IF NOT EXISTS idx_receipts_content ON receipts(content);
+CREATE INDEX IF NOT EXISTS idx_internalpayment_date ON internal_payment(date);
+CREATE INDEX IF NOT EXISTS idx_internalpayment_group ON internal_payment(group_name); 
+CREATE INDEX IF NOT EXISTS idx_externalpayment_date ON external_payment(date);
+CREATE INDEX IF NOT EXISTS idx_externalpayment_group ON external_payment(group_name); 
+CREATE INDEX IF NOT EXISTS idx_salary_date ON salary(date);
+CREATE INDEX IF NOT EXISTS idx_salary_group ON salary(group_name); 
 
 insert into receipts(date, content, amount) values('2015-01-12','content 1', 10000000);
 insert into receipts(date, content, amount) values('2015-04-12','content 1', 10000000);
