@@ -309,8 +309,8 @@ namespace test_binding
         private void submitButton_Click(object sender, System.EventArgs e)
         {
             m_status.Text = "Saving";
+            m_startTime = DateTime.Now;
             m_dataContent.Submit();
-            m_status.Text = "Saving completed!";
         }
 
         public virtual Int64 getSum()
@@ -349,7 +349,8 @@ namespace test_binding
                 crtColumns();
 #endif
             m_dataContent = appConfig.s_contentProvider.CreateDataContent(m_tblInfo.m_tblName);
-            m_dataContent.FillTableCompleted += M_dataContent_FillTableCompleted; ;
+            m_dataContent.FillTableCompleted += M_dataContent_FillTableCompleted;
+            m_dataContent.UpdateTableCompleted += M_dataContent_FillTableCompleted;
 #if !init_datatable_cols
                 m_dataContent.Load();
 #endif

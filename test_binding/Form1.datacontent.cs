@@ -755,6 +755,7 @@ namespace test_binding
         public Form m_form;
         public DataTable m_dataTable { get; private set; }
 
+        #region event
         public class FillTableCompletedEventArgs : EventArgs
         {
             public Int64 Sum { get; set; }
@@ -771,6 +772,16 @@ namespace test_binding
         }
         public event EventHandler<FillTableCompletedEventArgs> FillTableCompleted;
 
+        protected virtual void OnUpdateTableCompleted(FillTableCompletedEventArgs e)
+        {
+            EventHandler<FillTableCompletedEventArgs> handler = UpdateTableCompleted;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+        public event EventHandler<FillTableCompletedEventArgs> UpdateTableCompleted;
+
         protected virtual void OnProgessCompleted(EventArgs e)
         {
             EventHandler handler = ProgessCompleted;
@@ -780,6 +791,7 @@ namespace test_binding
             }
         }
         public event EventHandler ProgessCompleted;
+        #endregion
 
         protected virtual Int64 getMaxRowId() { return 0; }
         protected virtual Int64 getRowCount() { return 0; } //not used
@@ -943,7 +955,16 @@ namespace test_binding
         public virtual void Load(bool isView) { throw new NotFiniteNumberException(); }
         public virtual void Load() { if (m_changed) { Reload(); } }
         public virtual void Reload() { m_changed = false; }
-        public virtual void Submit() { m_changed = false; }
+        public virtual void Submit() {
+            m_changed = false;
+            Task delayUpdate = Task.Run(() => {
+                Thread.Sleep(100);
+                this.m_form.Invoke(new noParamDelegate(()=> {
+                    updateTable();
+                    OnUpdateTableCompleted(new FillTableCompletedEventArgs() { TimeComplete = DateTime.Now });
+                }));
+            });
+        }
         protected virtual void GetData(string sql) { throw new NotImplementedException(); }
 
         #region dispose
@@ -1051,9 +1072,8 @@ namespace test_binding
             base.Reload();
             GetData(m_dataAdapter.SelectCommand);
         }
-        public override void Submit()
+        protected override void updateTable()
         {
-            base.Submit();
             using (SQLiteCommandBuilder builder = new SQLiteCommandBuilder(m_dataAdapter))
             {
                 DataTable dt = m_dataTable;
@@ -1185,9 +1205,8 @@ namespace test_binding
             base.Reload();
             GetData(m_dataAdapter.SelectCommand);
         }
-        public override void Submit()
+        protected override void updateTable()
         {
-            base.Submit();
             using (SqlCommandBuilder builder = new SqlCommandBuilder(m_dataAdapter))
             {
                 DataTable dt = (DataTable)m_bindingSource.DataSource;
