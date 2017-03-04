@@ -12,6 +12,7 @@ using System.Drawing;
 using System.Runtime.Serialization;
 using System.Data;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace test_binding
 {
@@ -289,7 +290,8 @@ namespace test_binding
 #if use_cmd_params
         public void search(List<string> exprs, List<lSearchParam> srchParams)
         {
-            m_status.Text = "";
+            m_status.Text = "Searching";
+            m_startTime = DateTime.Now;
             m_dataContent.Search(exprs, srchParams);
             //update();
         }
@@ -298,13 +300,15 @@ namespace test_binding
 
         private void reloadButton_Click(object sender, System.EventArgs e)
         {
-            m_status.Text = "";
+            m_status.Text = "Reloading";
+            m_startTime = DateTime.Now;
             m_dataContent.Reload();
             //update();
             //m_status.Text = "Reloading completed!";
         }
         private void submitButton_Click(object sender, System.EventArgs e)
         {
+            m_status.Text = "Saving";
             m_dataContent.Submit();
             m_status.Text = "Saving completed!";
         }
@@ -349,14 +353,19 @@ namespace test_binding
 #if !init_datatable_cols
                 m_dataContent.Load();
 #endif
+
             m_dataGridView.DataSource = m_dataContent.m_bindingSource;
             DataTable tbl = (DataTable)m_dataContent.m_bindingSource.DataSource;
             if (tbl != null) { update(); }
         }
 
+        private DateTime m_startTime;
         private void M_dataContent_FillTableCompleted(object sender, lDataContent.FillTableCompletedEventArgs e)
         {
             update();
+            string preTxt = m_status.Text;
+            var elapsed = e.TimeComplete - m_startTime;
+            m_status.Text = string.Format("{0} completed in {1:0.00} ms", preTxt, elapsed.TotalSeconds);
         }
 
         #region dispose

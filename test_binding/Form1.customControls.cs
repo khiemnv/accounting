@@ -305,6 +305,16 @@ namespace test_binding
         public virtual void showCustomCtrl(int col, int row)
         {
             Debug.WriteLine("showDtp");
+
+            //fix error control not hide
+            if (m_customCtrl != null)
+            {
+                Debug.Assert(false, "previous ctrl should be disposed");
+                m_customCtrl.Dispose();
+                m_customCtrl = null;
+                return; 
+            }
+
             if (m_tblInfo.m_cols[col].m_type == lTableInfo.lColInfo.lColType.dateTime)
             {
                 m_customCtrl = new myDateTimePicker(this);

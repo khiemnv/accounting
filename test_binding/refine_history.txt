@@ -119,4 +119,5 @@ tableinfo
   + use nchar instead of nvarchar
   + trim - not yet
   + use bigint instead of int
-  
+27 qry performance improve
+  + index

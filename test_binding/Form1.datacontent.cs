@@ -18,6 +18,7 @@ using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Data.Common;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace test_binding
 {
@@ -783,8 +784,14 @@ namespace test_binding
         protected virtual Int64 getMaxRowId() { return 0; }
         protected virtual Int64 getRowCount() { return 0; } //not used
         protected virtual void fillTable() { throw new NotImplementedException(); }
+        protected virtual void updateTable() { throw new NotImplementedException(); }
+        //delegate noParamDelegate
         void invokeFetchLargeData()
         {
+            //fix reload not display progress
+            //  set cursor pos to begin
+            setPos(0);
+
             Int64 maxId = getMaxRowId();
             ProgressDlg prg = new ProgressDlg();
             prg.TopMost = true;
@@ -800,13 +807,23 @@ namespace test_binding
                 OnProgessCompleted(EventArgs.Empty);
             });
 
-            fetchLargeData();
-            m_lastId = maxId;
+            //delay fetch data - GUI update status in spare time
+            Task delayFetchData = Task.Run(() =>
+            {
+                Thread.Sleep(100);
+                this.m_form.Invoke(new noParamDelegate(() =>
+                {
+                    fetchLargeData();
+                    m_lastId = maxId;
+                }));
+            });
         }
+
+        //require execute in form's thread
         void fetchLargeData()
         {
             Debug.Assert(!m_isView);
-            using (new myElapsed())
+            using (new myElapsed("fetchLargeData"))
             {
                 DataTable tbl = m_dataTable;
 
@@ -821,7 +838,7 @@ namespace test_binding
                 tbl.RowChanged -= M_tbl_RowChanged;
             }
 
-            OnFillTableCompleted(new FillTableCompletedEventArgs());
+            OnFillTableCompleted(new FillTableCompletedEventArgs() { TimeComplete = DateTime.Now });
 
             if (m_refresher != null)
                 m_refresher.Refresh();
@@ -831,14 +848,14 @@ namespace test_binding
         private void M_tbl_RowChanged(object sender, DataRowChangeEventArgs e)
         {
             //Debug.WriteLine("{0}.M_tbl_RowChanged {1}", this, e.Row[0]);
-            m_lastId = (Int64)e.Row[0];
+            m_lastId = Math.Max(m_lastId, (Int64)e.Row[0]);
         }
         #region cursor
         public Int64 getPos()
         {
             return m_lastId;
         }
-        public void setPos(Int64 pos) { }
+        public void setPos(Int64 pos) { m_lastId = pos; }
         string m_msgStatus;
         public void setStatus(string msg)
         {
@@ -866,7 +883,7 @@ namespace test_binding
             table.Locale = System.Globalization.CultureInfo.InvariantCulture;
             fillTable();
 
-            OnFillTableCompleted(new FillTableCompletedEventArgs());
+            OnFillTableCompleted(new FillTableCompletedEventArgs() { TimeComplete = DateTime.Now });
 
             if (m_refresher != null)
                 m_refresher.Refresh();
