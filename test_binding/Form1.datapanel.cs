@@ -366,7 +366,7 @@ namespace test_binding
             update();
             string preTxt = m_status.Text;
             var elapsed = e.TimeComplete - m_startTime;
-            m_status.Text = string.Format("{0} completed in {1:0.00} ms", preTxt, elapsed.TotalSeconds);
+            m_status.Text = string.Format("{0} completed in {1:0.00} s", preTxt, elapsed.TotalSeconds);
         }
 
         #region dispose

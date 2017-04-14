@@ -1,4 +1,4 @@
-﻿//#define use_progress
+﻿#define use_progress
 
 using Microsoft.Reporting.WinForms;
 using System;
@@ -219,6 +219,7 @@ namespace test_binding
                 setPos(100);
             }
         }
+
         public virtual void Run()
         {
 #if use_progress
