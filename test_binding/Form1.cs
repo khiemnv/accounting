@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Runtime.Serialization;
+using System.Drawing;
 
 namespace test_binding
 {
@@ -261,6 +262,31 @@ namespace test_binding
 
             Load += new System.EventHandler(Form1_Load);
             Text = "CBV Kế Toán";
+
+            //set tab header blue
+            m_tabCtrl.DrawMode = TabDrawMode.OwnerDrawFixed;
+            m_tabCtrl.DrawItem += tabControl1_DrawItem;
+        }
+
+        private void tabControl1_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            //e.DrawBackground();
+            Color cl = Color.Transparent;
+            //TabColors[tabControl1.TabPages[e.Index]])
+            TabControl tabControl1 = m_tabCtrl;
+            if (e.Index == tabControl1.SelectedIndex) cl = Color.Blue;
+            using (Brush br = new SolidBrush(cl))
+            {
+                e.Graphics.FillRectangle(br, e.Bounds);
+                SizeF sz = e.Graphics.MeasureString(tabControl1.TabPages[e.Index].Text, e.Font);
+                e.Graphics.DrawString(tabControl1.TabPages[e.Index].Text, e.Font, Brushes.Black, e.Bounds.Left + (e.Bounds.Width - sz.Width) / 2, e.Bounds.Top + (e.Bounds.Height - sz.Height) / 2 + 1);
+
+                Rectangle rect = e.Bounds;
+                rect.Offset(0, 1);
+                rect.Inflate(0, -1);
+                e.Graphics.DrawRectangle(Pens.DarkGray, rect);
+                e.DrawFocusRectangle();
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
