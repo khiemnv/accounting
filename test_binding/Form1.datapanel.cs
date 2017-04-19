@@ -200,6 +200,9 @@ namespace test_binding
             {
                 m_dataGridView.Columns[i].HeaderText = tblInfo.m_cols[i].m_alias;
 
+                //header color blue
+                m_dataGridView.Columns[i].HeaderCell.Style.BackColor = Color.Blue;
+
                 switch (tblInfo.m_cols[i].m_type)
                 {
                     case lTableInfo.lColInfo.lColType.currency:
