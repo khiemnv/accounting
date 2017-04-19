@@ -40,15 +40,15 @@ namespace test_binding
             //  Building
             MenuItem miEdit = new MenuItem("&Edit");
 
-            MenuItem miEditGroupName = new MenuItem("GroupName");
+            MenuItem miEditGroupName = new MenuItem("Danh Sách Các Ban");
             miEditGroupName.Click += MiEditGroupName_Click;
             miEdit.MenuItems.Add(miEditGroupName);
 
-            MenuItem miEditReceiptsContent = new MenuItem("ReceiptsContent");
+            MenuItem miEditReceiptsContent = new MenuItem("Nguồn Thu");
             miEditReceiptsContent.Click += MiEditReceiptsContent_Click;
             miEdit.MenuItems.Add(miEditReceiptsContent);
 
-            MenuItem miBuilding = new MenuItem("Building");
+            MenuItem miBuilding = new MenuItem("Công Trình");
             miBuilding.Click += MiBuilding_Click;
             miEdit.MenuItems.Add(miBuilding);
 
