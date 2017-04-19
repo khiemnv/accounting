@@ -406,8 +406,8 @@ namespace test_binding
             }
 
             //  add search button to last row
-            m_tbl.Controls.Add(m_searchBtn, 0, lastRow + 1);
-            m_searchBtn.Anchor = AnchorStyles.None;
+            m_tbl.Controls.Add(m_searchBtn, 1, lastRow+1);
+            m_searchBtn.Anchor = AnchorStyles.Right;
         }
 
         private void searchButton_Click(object sender, System.EventArgs e)
