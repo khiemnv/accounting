@@ -132,6 +132,13 @@ namespace test_binding
 
             m_dataGridView.Anchor = AnchorStyles.Top & AnchorStyles.Left;
             m_dataGridView.Dock = DockStyle.Fill;
+
+            //set font
+            List<Control> ctrls = new List<Control> { m_dataGridView,
+            m_sumLabel, m_sumTxt, m_reloadBtn, m_submitBtn, m_status};
+            foreach (var c in ctrls) {
+                c.Font = lConfigMng.getFont();
+            }
         }
 
         private void crtColumns()

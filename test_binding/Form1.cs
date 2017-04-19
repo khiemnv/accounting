@@ -101,6 +101,9 @@ namespace test_binding
             m_panel.Controls.Add(m_dataPanel.m_sumPanel, 1, 1);
             m_panel.Controls.Add(m_dataPanel.m_dataGridView, 0, 2);
             m_panel.SetColumnSpan(m_dataPanel.m_dataGridView, 2);
+
+            //set font
+            m_printBtn.Font = lConfigMng.getFont();
         }
 
         public virtual void LoadData()
@@ -205,6 +208,8 @@ namespace test_binding
 
         public Form1()
         {
+            //this.Font = lConfigMng.getFont();
+
             InitializeComponent();
 
             //init config & load config
@@ -266,6 +271,9 @@ namespace test_binding
             //set tab header blue
             m_tabCtrl.DrawMode = TabDrawMode.OwnerDrawFixed;
             m_tabCtrl.DrawItem += tabControl1_DrawItem;
+
+            //set font
+            m_tabCtrl.Font = lConfigMng.getFont();
         }
 
         private void tabControl1_DrawItem(object sender, DrawItemEventArgs e)

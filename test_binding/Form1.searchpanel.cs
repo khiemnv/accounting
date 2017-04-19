@@ -64,6 +64,9 @@ namespace test_binding
 #if true
             m_panel.BorderStyle = BorderStyle.FixedSingle;
 #endif
+
+            //set font
+            m_label.Font = lConfigMng.getFont();
         }
 
         public virtual void updateSearchParams(List<string> exprs, List<lSearchParam> srchParams) { }
@@ -123,6 +126,9 @@ namespace test_binding
             m_text.Width = 200;
             m_text.TextChanged += valueChanged;
             m_panel.Controls.AddRange(new Control[] { m_label, m_text });
+
+            //set font
+            m_text.Font = lConfigMng.getFont();
         }
 
         public override string getSearchParams()
@@ -207,6 +213,9 @@ namespace test_binding
 
                 m_text.Dispose();
                 m_text = null;
+
+                //set font
+                m_combo.Font = lConfigMng.getFont();
             }
         }
 
@@ -256,6 +265,11 @@ namespace test_binding
 
             m_startdate.TextChanged += valueChanged;
             m_enddate.TextChanged += M_enddate_TextChanged;
+
+            //set font
+            m_startdate.Font = lConfigMng.getFont();
+            m_enddate.Font = lConfigMng.getFont();
+            m_to.Font = lConfigMng.getFont();
         }
 
         private void M_enddate_TextChanged(object sender, EventArgs e)
@@ -408,6 +422,9 @@ namespace test_binding
             //  add search button to last row
             m_tbl.Controls.Add(m_searchBtn, 1, lastRow+1);
             m_searchBtn.Anchor = AnchorStyles.Right;
+
+            //set font
+            m_searchBtn.Font = lConfigMng.getFont();
         }
 
         private void searchButton_Click(object sender, System.EventArgs e)

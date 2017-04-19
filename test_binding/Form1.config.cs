@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using System.Xml;
 using System.IO;
 using System.Runtime.Serialization.Json;
+using System.Drawing;
 
 namespace test_binding
 {
@@ -109,6 +110,7 @@ namespace test_binding
             return m_instance;
         }
 
+        public static Font getFont() { return new Font("Arial", 10); }
         lConfigMng()
         {
         }
