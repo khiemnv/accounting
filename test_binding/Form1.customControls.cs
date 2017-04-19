@@ -321,7 +321,7 @@ namespace test_binding
             }
             else if (m_tblInfo.m_cols[col].m_lookupData != null)
             {
-                //m_customCtrl = new myComboBox(this, m_tblInfo.m_cols[col].m_lookupData);
+                m_customCtrl = new myComboBox(this, m_tblInfo.m_cols[col].m_lookupData);
             }
             if (m_customCtrl != null)
             {

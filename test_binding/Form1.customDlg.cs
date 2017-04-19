@@ -313,6 +313,10 @@ namespace test_binding
 
             printBtn.Click += PrintBtn_Click;
             Load += LReportDlg_Load;
+
+            //bao cao kiem ke & bao cao nam
+            remainRadio.Hide();
+            yearRadio.Hide();
         }
 
         private void PrintBtn_Click(object sender, EventArgs e)
