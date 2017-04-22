@@ -46,7 +46,9 @@ namespace test_binding
                 [EnumMember]
                 num,
                 [EnumMember]
-                currency
+                currency,
+                [EnumMember]
+                uniqueText,
             };
             [DataMember(Name = "field", EmitDefaultValue = false)]
             public string m_field;
@@ -145,7 +147,7 @@ namespace test_binding
             m_cols = new lColInfo[] {
                    new lColInfo( "ID","ID", lColInfo.lColType.num),
                    new lColInfo( "date","Ngày Tháng", lColInfo.lColType.dateTime),
-                   new lColInfo( "receipt_number","Mã Phiếu Thu", lColInfo.lColType.text),
+                   new lColInfo( "receipt_number","Mã Phiếu Thu", lColInfo.lColType.uniqueText),
                    new lColInfo( "name","Họ tên", lColInfo.lColType.text),
                    new lColInfo( "content","Nội dung", lColInfo.lColType.text, "receipts_content"),
                    new lColInfo( "amount","Số tiền", lColInfo.lColType.currency),
@@ -185,7 +187,7 @@ namespace test_binding
             m_cols = new lColInfo[] {
                    new lColInfo( "ID","ID", lColInfo.lColType.num),
                    new lColInfo( "date","Ngày Tháng", lColInfo.lColType.dateTime),
-                   new lColInfo( "payment_number","Mã Phiếu Chi", lColInfo.lColType.text),
+                   new lColInfo( "payment_number","Mã Phiếu Chi", lColInfo.lColType.uniqueText),
                    new lColInfo( "name","Họ Tên", lColInfo.lColType.text),
                    new lColInfo( "content","Nội dung", lColInfo.lColType.text),
                    new lColInfo( "group_name","Thuộc ban", lColInfo.lColType.text, "group_name"),
@@ -217,7 +219,7 @@ namespace test_binding
             m_cols = new lColInfo[] {
                    new lColInfo( "ID","ID", lColInfo.lColType.num),
                    new lColInfo( "date","Ngày Tháng", lColInfo.lColType.dateTime),
-                   new lColInfo( "payment_number","Mã Phiếu Chi", lColInfo.lColType.text),
+                   new lColInfo( "payment_number","Mã Phiếu Chi", lColInfo.lColType.uniqueText),
                    new lColInfo( "name","Họ Tên", lColInfo.lColType.text),
                    new lColInfo( "content","Nội dung", lColInfo.lColType.text),
                    new lColInfo( "building","Công trình", lColInfo.lColType.text, "building"),
@@ -249,7 +251,7 @@ namespace test_binding
                    new lColInfo( "ID","ID", lColInfo.lColType.num),
                    new lColInfo( "month","Tháng(1...12)", lColInfo.lColType.num),
                    new lColInfo( "date","Ngày Tháng", lColInfo.lColType.dateTime),
-                   new lColInfo( "payment_number","Mã Phiếu Chi", lColInfo.lColType.text),
+                   new lColInfo( "payment_number","Mã Phiếu Chi", lColInfo.lColType.uniqueText),
                    new lColInfo( "name","Họ Tên", lColInfo.lColType.text),
                    new lColInfo( "group_name","Thuộc ban", lColInfo.lColType.text, "group_name"),
                    new lColInfo( "content","Nội dung", lColInfo.lColType.text),

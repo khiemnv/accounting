@@ -485,6 +485,7 @@ namespace test_binding
             switch (col.m_type)
             {
                 case lTableInfo.lColInfo.lColType.text:
+                case lTableInfo.lColInfo.lColType.uniqueText:
                     lSearchCtrlText textCtrl = new lSearchCtrlText(col.m_field, col.m_alias, lSearchCtrl.ctrlType.text, pos, size);
                     textCtrl.m_mode = mode;
                     textCtrl.m_colInfo = col;

@@ -234,6 +234,27 @@ namespace test_binding
             //do nothing
         }
 #if !use_custom_cols
+        protected override void OnCellValidating(DataGridViewCellValidatingEventArgs e)
+        {
+            base.OnCellValidating(e);
+            //check unique value
+            var colInfo = m_tblInfo.m_cols[e.ColumnIndex];
+            if (colInfo.m_type == lTableInfo.lColInfo.lColType.uniqueText)
+            {
+                var val = e.FormattedValue;
+                string rowid = Rows[e.RowIndex].Cells[0].Value.ToString();
+                string sql = string.Format("select rowid, {0} from {1} where {0} = '{2}'",
+                    colInfo.m_field, m_tblInfo.m_tblName, val);
+                var tbl = appConfig.s_contentProvider.GetData(sql);
+                if ((tbl.Rows.Count > 0) && (rowid != tbl.Rows[0][0].ToString()))
+                {
+                    Debug.WriteLine("{0} {1} not unique value {2}", this, "OnCellValidating() check unique", val);
+                    MessageBox.Show("This field must be unique!", "Input error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    //CurrentCell.Value = "";
+                    e.Cancel = true;
+                }
+            }
+        }
         protected override void OnCellEndEdit(DataGridViewCellEventArgs e)
         {
             base.OnCellEndEdit(e);
@@ -356,7 +377,8 @@ namespace test_binding
                 m_customCtrl = null;
             }
         }
-#endif
+#endif  //use_custom_cols
+
         protected override void Dispose(bool disposing)
         {
             if (disposing) {
