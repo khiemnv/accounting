@@ -878,12 +878,12 @@ namespace test_data
             //crtDict();
             //gen_receipts_data();
             //gen_interPay_data();
-            //gen_exterPay_data();
+            gen_exterPay_data();
             //gen_salary_data();
             //test_page();
             //lDataDlg dlg = new lDataDlg();
             //dlg.ShowDialog();
-            test_perf();
+            //test_perf();
             //test_mssql();
         }
 #if !use_sqlite
@@ -986,7 +986,7 @@ namespace test_data
         }
 
         static string dbPath = @"..\..\..\test_binding\appData.db";
-        static int max_records = 1000;
+        static int max_records = 100;
 
 #if use_sqlite
         static SQLiteConnection get_cnn()
@@ -1045,17 +1045,22 @@ namespace test_data
             var cmd = new SQLiteCommand();
 #else
             var cmd = new SqlCommand();
+#endif
             string zFields = "";
             string zParams = "";
             for (int j = 0; j < fields.Length; j++)
             {
                 zFields = zFields + fields[j] + ',';
                 zParams = zParams + "@" + fields[j] + ',';
+#if use_sqlite
+                cmd.Parameters.Add(new SQLiteParameter(fields[j], ""));
+#else
                 cmd.Parameters.Add(new SqlParameter(fields[j], ""));
+#endif
             }
             cmd.CommandText = string.Format("insert into {0}({1}) values({2})",
                 tblName, zFields.TrimEnd(','), zParams.TrimEnd(','));
-#endif
+
             cmd.Connection = cnn;
             cmd.CommandType = CommandType.Text;
             var transaction = cnn.BeginTransaction();
@@ -1063,7 +1068,7 @@ namespace test_data
             for (int i = 0; i < max_records; i++)
             {
                 var rec = d();
-#if use_sqlite
+#if false
                 cmd.CommandText = string.Format("insert into receipts(date, receipt_number, name, content, amount, note) "
                     + "values('{0}','{1}','{2}','{3}','{4}','{5}')", rec[0], rec[1], rec[2], rec[3], rec[4], rec[5]);
 #else
@@ -1265,11 +1270,11 @@ namespace test_data
             "Ban vườn",
             "Ban xây dựng",
             "Ban cơ điện và ánh sáng",
-            "Ban âm thanh ",
+            "Ban âm thanh",
             "Ban nước",
             "Ban y tế",
             "Ban may",
-            "Ban hộ thất ",
+            "Ban hộ thất",
             "Ban vệ sinh",
             "Ban vận tải và san lấp mặt bằng",
             "Ban an ninh"
