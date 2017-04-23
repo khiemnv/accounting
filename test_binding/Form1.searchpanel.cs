@@ -330,12 +330,86 @@ namespace test_binding
         }
     }
     [DataContract(Name = "SearchCtrlCurrency")]
-    public class lSearchCtrlCurrency : lSearchCtrlText
+    public class lSearchCtrlCurrency : lSearchCtrl
     {
+        private TextBox m_endVal = new TextBox();
+        private TextBox m_startVal = new TextBox();
+        private CheckBox m_to = new CheckBox();
+
         public lSearchCtrlCurrency(string fieldName, string alias, ctrlType type, Point pos, Size size)
             : base(fieldName, alias, type, pos, size)
         {
-            m_mode = SearchMode.match;
+            m_to.Text = "to";
+            m_to.AutoSize = true;
+
+            m_startVal.Width = 80;
+            m_endVal.Width = 80;
+
+            FlowLayoutPanel datePanel = new FlowLayoutPanel();
+            datePanel.BorderStyle = BorderStyle.FixedSingle;
+            datePanel.Dock = DockStyle.Top;
+            datePanel.AutoSize = true;
+            datePanel.Controls.AddRange(new Control[] { m_startVal, m_to, m_endVal });
+
+            m_panel.Controls.AddRange(new Control[] { m_label, datePanel });
+
+            m_startVal.TextChanged += valueChanged;
+            m_endVal.TextChanged += M_endVal_TextChanged;
+
+            //set font
+            m_startVal.Font = lConfigMng.getFont();
+            m_endVal.Font = lConfigMng.getFont();
+            m_to.Font = lConfigMng.getFont();
+        }
+
+        private void M_endVal_TextChanged(object sender, EventArgs e)
+        {
+            m_to.Checked = true;
+        }
+
+        public override string getSearchParams()
+        {
+            string srchParams = null;
+            if (m_label.Checked)
+            {
+                if (m_to.Checked)
+                    srchParams = string.Format("({0} between '{1}' and '{2}')",
+                        m_fieldName, m_startVal.Text.Replace(",", ""), m_endVal.Text.Replace(",", ""));
+                else
+                    srchParams = string.Format("({0}='{1}')",
+                        m_fieldName, m_startVal.Text.Replace(",", ""));
+            }
+            return srchParams;
+        }
+        public override void updateSearchParams(List<string> exprs, List<lSearchParam> srchParams)
+        {
+            if (m_label.Checked)
+            {
+                srchParams.Add(
+                    new lSearchParam()
+                    {
+                        key = "@startVal",
+                        val = string.Format("{0}", m_startVal.Text.Replace(",","")),
+                        type = DbType.UInt64
+                    }
+                );
+                if (m_to.Checked)
+                {
+                    exprs.Add(string.Format("({0} between @startVal and @endVal)", m_fieldName));
+                    srchParams.Add(
+                        new lSearchParam()
+                        {
+                            key = "@endVal",
+                            val = string.Format("{0}", m_endVal.Text.Replace(",", "")),
+                            type = DbType.UInt64
+                        }
+                    );
+                }
+                else
+                {
+                    exprs.Add(string.Format("({0}=@startVal)", m_fieldName));
+                }
+            }
         }
     }
 
@@ -561,6 +635,8 @@ namespace test_binding
                     crtSearchCtrl(m_tblInfo, "payment_number", new Point(0, 1), new Size(1, 1)),
                     crtSearchCtrl(m_tblInfo, "name", new Point(1, 0), new Size(1, 1), lSearchCtrl.SearchMode.match),
                     crtSearchCtrl(m_tblInfo, "group_name", new Point(1, 1), new Size(1, 1), lSearchCtrl.SearchMode.match),
+                    crtSearchCtrl(m_tblInfo, "advance_payment", new Point(0, 2), new Size(1, 1)),
+                    crtSearchCtrl(m_tblInfo, "reimbursement", new Point(1, 2), new Size(1, 1)),
                 };
         }
     }
