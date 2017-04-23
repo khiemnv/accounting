@@ -876,10 +876,10 @@ namespace test_data
         static void Main(string[] args)
         {
             //crtDict();
-            //gen_receipts_data();
-            //gen_interPay_data();
+            gen_receipts_data();
+            gen_interPay_data();
             gen_exterPay_data();
-            //gen_salary_data();
+            gen_salary_data();
             //test_page();
             //lDataDlg dlg = new lDataDlg();
             //dlg.ShowDialog();
@@ -986,7 +986,7 @@ namespace test_data
         }
 
         static string dbPath = @"..\..\..\test_binding\appData.db";
-        static int max_records = 100;
+        static int max_records = 300;
 
 #if use_sqlite
         static SQLiteConnection get_cnn()
@@ -1040,6 +1040,8 @@ namespace test_data
         delegate string[] genRecord();
         static void gen_data(string tblName, string[] fields, genRecord d)
         {
+            resetBaseNum();
+
             var cnn = get_cnn();
 #if use_sqlite
             var cmd = new SQLiteCommand();
@@ -1305,7 +1307,8 @@ namespace test_data
                 );
         }
 
-        static int m_baseNum = 0;
+        static int m_baseNum = 100;
+        static void resetBaseNum() { m_baseNum = 100; }
         static private string genIntePayNum()
         {
             return string.Format("ipay_num_{0}", m_baseNum++.ToString("000000"));
