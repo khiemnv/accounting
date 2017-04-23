@@ -501,7 +501,7 @@ namespace test_binding
         {
             return "Tuần";
         }
-        public lWeekReport(DateTime startDate, DateTime endDate) : base(endDate, startDate)
+        public lWeekReport(DateTime startDate, DateTime endDate) : base(startDate, endDate)
         {
         }
     }
@@ -540,7 +540,7 @@ namespace test_binding
         {
             return "Tháng";
         }
-        public lMonthReport(DateTime startDate, DateTime endDate) : base(endDate, startDate)
+        public lMonthReport(DateTime startDate, DateTime endDate) : base(startDate, endDate)
         {
         }
     }

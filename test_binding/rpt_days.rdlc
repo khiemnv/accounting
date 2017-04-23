@@ -1237,8 +1237,10 @@
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value />
-                              <Style />
+                              <Value>=Fields!inter_pay.Value+Fields!exter_pay.Value+Fields!salary.Value</Value>
+                              <Style>
+                                <Format>#,0,;(#,0,);'-'</Format>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style />
@@ -1256,6 +1258,7 @@
                         <PaddingBottom>2pt</PaddingBottom>
                       </Style>
                     </Textbox>
+                    <rd:Selected>true</rd:Selected>
                   </CellContents>
                 </TablixCell>
               </TablixCells>
@@ -1426,14 +1429,14 @@
                 </TablixCell>
                 <TablixCell>
                   <CellContents>
-                    <Textbox Name="Textbox61">
+                    <Textbox Name="Textbox42">
                       <CanGrow>true</CanGrow>
                       <KeepTogether>true</KeepTogether>
                       <Paragraphs>
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=Sum(Fields!inter_pay.Value, "DataSet1")+Sum(Fields!exter_pay.Value, "DataSet1")+Sum(Fields!salary.Value, "DataSet1")</Value>
+                              <Value>=Sum(Fields!inter_pay.Value)+Sum(Fields!exter_pay.Value)+Sum(Fields!salary.Value)</Value>
                               <Style>
                                 <Format>#,0,;(#,0,);'-'</Format>
                               </Style>
@@ -1442,7 +1445,7 @@
                           <Style />
                         </Paragraph>
                       </Paragraphs>
-                      <rd:DefaultName>Textbox61</rd:DefaultName>
+                      <rd:DefaultName>Textbox42</rd:DefaultName>
                       <Style>
                         <Border>
                           <Color>LightGrey</Color>
