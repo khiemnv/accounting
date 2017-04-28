@@ -31,7 +31,7 @@ namespace test_binding
         public string m_xmlPath;    //xml path
 #endif
         public string m_pdfPath;    //print to pdf file
-        public static string s_dateFormat = "yyyy-MM-dd";
+        public static string s_dateFormat = lConfigMng.getDateFormat();
 
         protected lBaseReport()
         {
