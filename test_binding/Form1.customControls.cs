@@ -1,5 +1,6 @@
 ﻿//#define use_custom_cols
 #define format_currency
+//#define check_number_input
 
 using System.Windows.Forms;
 using System;
@@ -114,7 +115,7 @@ namespace test_binding
         {
             m_dtp = new DateTimePicker();
             m_dtp.Format = DateTimePickerFormat.Custom;
-            m_dtp.CustomFormat = "yyyy-MM-dd";
+            m_dtp.CustomFormat = lConfigMng.getDateFormat();
             m_dtp.ValueChanged += ctrl_ValueChanged;
         }
         public override Control getControl()
@@ -123,7 +124,7 @@ namespace test_binding
         }
         public override string getValue()
         {
-            return m_dtp.Value.ToString("yyyy-MM-dd");
+            return m_dtp.Value.ToString(lConfigMng.getDateFormat());
         }
         public override void setValue(string text)
         {
@@ -234,27 +235,51 @@ namespace test_binding
             //do nothing
         }
 #if !use_custom_cols
+
+        void showInputError(string msg)
+        {
+            MessageBox.Show(msg, "Input error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
         protected override void OnCellValidating(DataGridViewCellValidatingEventArgs e)
         {
             base.OnCellValidating(e);
             //check unique value
             var colInfo = m_tblInfo.m_cols[e.ColumnIndex];
-            if (colInfo.m_type == lTableInfo.lColInfo.lColType.uniqueText)
+            string val = e.FormattedValue.ToString();
+            switch (colInfo.m_type)
             {
-                var val = e.FormattedValue;
-                string rowid = Rows[e.RowIndex].Cells[0].Value.ToString();
-                string sql = string.Format("select rowid, {0} from {1} where {0} = '{2}'",
-                    colInfo.m_field, m_tblInfo.m_tblName, val);
-                var tbl = appConfig.s_contentProvider.GetData(sql);
-                if ((tbl.Rows.Count > 0) && (rowid != tbl.Rows[0][0].ToString()))
-                {
-                    Debug.WriteLine("{0} {1} not unique value {2}", this, "OnCellValidating() check unique", val);
-                    MessageBox.Show("This field must be unique!", "Input error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    //CurrentCell.Value = "";
-                    e.Cancel = true;
-                }
+                case lTableInfo.lColInfo.lColType.uniqueText:
+                    {
+                        string rowid = Rows[e.RowIndex].Cells[0].Value.ToString();
+                        string sql = string.Format("select rowid, {0} from {1} where {0} = '{2}'",
+                            colInfo.m_field, m_tblInfo.m_tblName, val);
+                        var tbl = appConfig.s_contentProvider.GetData(sql);
+                        if ((tbl.Rows.Count > 0) && (rowid != tbl.Rows[0][0].ToString()))
+                        {
+                            Debug.WriteLine("{0} {1} not unique value {2}", this, "OnCellValidating() check unique", val);
+                            showInputError("Mã này đã tồn tại!");
+                            e.Cancel = true;
+                        }
+                    }
+                    break;
+#if check_number_input
+                case lTableInfo.lColInfo.lColType.currency:
+                case lTableInfo.lColInfo.lColType.num:
+                    {
+                        UInt64 tmp;
+                        if (!UInt64.TryParse(val.Replace(",","") , out tmp))
+                        {
+                            Debug.WriteLine("{0} {1} not numberic value {2}", this, "OnCellValidating() check unique", val);
+                            MessageBox.Show("This field must be numberic!", "Input error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            e.Cancel = true;
+                        }
+                    }
+                    break;
+#endif
             }
         }
+
         protected override void OnCellEndEdit(DataGridViewCellEventArgs e)
         {
             base.OnCellEndEdit(e);
@@ -399,9 +424,15 @@ namespace test_binding
             base.OnCellEndEdit(e);
             if (m_tblInfo.m_cols[e.ColumnIndex].m_field == "reimbursement")
             {
+                try { 
                 Int64 advance = (Int64)Rows[e.RowIndex].Cells["advance_payment"].Value;
                 Int64 remain = (Int64)Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
                 this.Rows[e.RowIndex].Cells["actually_spent"].Value = advance - remain;
+                } catch
+                {
+                    //if cannot covert advance & remain => not auto fill actually_spent
+                    Debug.WriteLine("{0} {1} cannot auto fill actually_spent", this, "OnCellEndEdit");
+                }
             }
         }
     }

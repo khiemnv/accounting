@@ -251,10 +251,10 @@ namespace test_binding
 
             m_startdate.Width = 80;
             m_startdate.Format = DateTimePickerFormat.Custom;
-            m_startdate.CustomFormat = "yyyy-MM-dd";
+            m_startdate.CustomFormat = lConfigMng.getDateFormat();
             m_enddate.Width = 80;
             m_enddate.Format = DateTimePickerFormat.Custom;
-            m_enddate.CustomFormat = "yyyy-MM-dd";
+            m_enddate.CustomFormat = lConfigMng.getDateFormat();
             FlowLayoutPanel datePanel = new FlowLayoutPanel();
             datePanel.BorderStyle = BorderStyle.FixedSingle;
             datePanel.Dock = DockStyle.Top;
@@ -367,29 +367,47 @@ namespace test_binding
             m_to.Checked = true;
         }
 
+        void getInputRange(out string startVal, out string endVal)
+        {
+            startVal = m_startVal.Text.Replace(",", "");
+            endVal = m_endVal.Text.Replace(",", "");
+            if (startVal == "") startVal = "0";
+            if (endVal == "") endVal = UInt64.MaxValue.ToString();
+        }
         public override string getSearchParams()
         {
+            string startVal;
+            string endVal;
             string srchParams = null;
+
+            getInputRange(out startVal, out endVal);
             if (m_label.Checked)
             {
-                if (m_to.Checked)
+                if (m_to.Checked) {
                     srchParams = string.Format("({0} between '{1}' and '{2}')",
-                        m_fieldName, m_startVal.Text.Replace(",", ""), m_endVal.Text.Replace(",", ""));
-                else
+                        m_fieldName, startVal, endVal);
+                }
+                else { 
                     srchParams = string.Format("({0}='{1}')",
-                        m_fieldName, m_startVal.Text.Replace(",", ""));
+                        m_fieldName, startVal);
+                }
             }
             return srchParams;
         }
+
         public override void updateSearchParams(List<string> exprs, List<lSearchParam> srchParams)
         {
+            string startVal;
+            string endVal;
+
+            getInputRange(out startVal, out endVal);
             if (m_label.Checked)
             {
                 srchParams.Add(
                     new lSearchParam()
                     {
                         key = "@startVal",
-                        val = string.Format("{0}", m_startVal.Text.Replace(",","")),
+                        val = string.Format("{0}", startVal),
                         type = DbType.UInt64
                     }
                 );
@@ -400,7 +418,7 @@ namespace test_binding
                         new lSearchParam()
                         {
                             key = "@endVal",
-                            val = string.Format("{0}", m_endVal.Text.Replace(",", "")),
+                            val = string.Format("{0}", endVal),
                             type = DbType.UInt64
                         }
                     );

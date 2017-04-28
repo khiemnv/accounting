@@ -111,6 +111,8 @@ namespace test_binding
         }
 
         public static Font getFont() { return new Font("Arial", 10); }
+        public static string getCurrencyFormat() { return "#,0"; }
+        public static string getDateFormat() { return "yyyy-MM-dd"; }
         lConfigMng()
         {
         }

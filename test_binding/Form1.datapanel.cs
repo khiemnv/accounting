@@ -5,6 +5,7 @@
 #define init_datatable_cols
 #define format_currency
 #define use_cmd_params
+#define header_blue
 
 using System.Windows.Forms;
 using System;
@@ -183,11 +184,11 @@ namespace test_binding
                 {
 #if format_currency
                     case lTableInfo.lColInfo.lColType.currency:
-                        dgvcol.DefaultCellStyle.Format = "#0,0";
+                        dgvcol.DefaultCellStyle.Format = lConfigMng.getCurrencyFormat();
                         break;
 #endif
                     case lTableInfo.lColInfo.lColType.dateTime:
-                        dgvcol.DefaultCellStyle.Format = "yyyy-MM-dd";
+                        dgvcol.DefaultCellStyle.Format = lConfigMng.getDateFormat();
                         break;
                 }
             }
@@ -207,16 +208,19 @@ namespace test_binding
             {
                 m_dataGridView.Columns[i].HeaderText = tblInfo.m_cols[i].m_alias;
 
+#if header_blue
                 //header color blue
                 m_dataGridView.Columns[i].HeaderCell.Style.BackColor = Color.Blue;
+                m_dataGridView.Columns[i].HeaderCell.Style.ForeColor = Color.White;
+#endif
 
                 switch (tblInfo.m_cols[i].m_type)
                 {
                     case lTableInfo.lColInfo.lColType.currency:
-                        m_dataGridView.Columns[i].DefaultCellStyle.Format = "#0,0";
+                        m_dataGridView.Columns[i].DefaultCellStyle.Format = lConfigMng.getCurrencyFormat();
                         break;
                     case lTableInfo.lColInfo.lColType.dateTime:
-                        m_dataGridView.Columns[i].DefaultCellStyle.Format = "yyyy-MM-dd";
+                        m_dataGridView.Columns[i].DefaultCellStyle.Format = lConfigMng.getDateFormat();
                         break;
                 }
 #if false
@@ -346,7 +350,7 @@ namespace test_binding
             }
 #endif
             Int64 sum = getSum();
-            m_sumTxt.Text = sum.ToString("#0,0");
+            m_sumTxt.Text = sum.ToString(lConfigMng.getCurrencyFormat());
         }
 
         public virtual void LoadData()
@@ -379,7 +383,7 @@ namespace test_binding
             m_status.Text = string.Format("{0} completed in {1:0.00} s", preTxt, elapsed.TotalSeconds);
         }
 
-        #region dispose
+#region dispose
         // Dispose() calls Dispose(true)  
         public void Dispose()
         {
@@ -415,7 +419,7 @@ namespace test_binding
             }
             // free native resources if there are any.  
         }
-        #endregion
+#endregion
     }
 
     [DataContract(Name = "InterPaymentDataPanel")]
