@@ -17,6 +17,9 @@ namespace test_binding
         //string m_sqliteDbPath = @"..\..\appData.db";
         //string m_cnnStr = @"Data Source=DESKTOP-GOEF1DS\SQLEXPRESS;Initial Catalog=accounting;Integrated Security=true";
 
+        [DataMember(Name = "printToPdf")]
+        public bool m_printToPdf = true;
+
         [DataMember(Name = "dbSchema")]
         public lDbSchema m_dbSchema;
         [DataMember(Name = "panels")]

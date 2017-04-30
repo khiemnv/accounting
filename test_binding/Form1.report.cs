@@ -30,7 +30,7 @@ namespace test_binding
 #if crt_xml
         public string m_xmlPath;    //xml path
 #endif
-        public string m_pdfPath;    //print to pdf file
+        public string m_pdfPath = "lastReport.pdf";    //print to pdf file
         public static string s_dateFormat = lConfigMng.getDateFormat();
 
         protected lBaseReport()
@@ -87,12 +87,23 @@ namespace test_binding
                     <MarginRight>0.25in</MarginRight>
                     <MarginBottom>0.25in</MarginBottom>
                 </DeviceInfo>";
-            Warning[] warnings;
-            m_streams = new List<Stream>();
-            report.Render("Image", deviceInfo, CreateStream, out warnings);
-            foreach (Stream stream in m_streams)
+            if (appConfig.s_config.m_printToPdf)
             {
-                stream.Position = 0;
+                byte[] bytes = report.Render("PDF", deviceInfo);
+                FileStream fs = new FileStream(m_pdfPath, FileMode.Create);
+                fs.Seek(0, SeekOrigin.Begin);
+                fs.Write(bytes, 0, bytes.Length);
+                fs.Close();
+            }
+            else
+            {
+                Warning[] warnings;
+                m_streams = new List<Stream>();
+                report.Render("Image", deviceInfo, CreateStream, out warnings);
+                foreach (Stream stream in m_streams)
+                {
+                    stream.Position = 0;
+                }
             }
         }
 
@@ -158,7 +169,7 @@ namespace test_binding
 
         protected delegate void voidCaller();
 
-        #region cursor
+#region cursor
         protected long m_iWork;
         protected string m_statusMsg;
         public long getPos()
@@ -177,7 +188,7 @@ namespace test_binding
         {
             return m_statusMsg;
         }
-        #endregion
+#endregion
         //render to streams
         protected virtual void prepare()
         {
@@ -220,8 +231,34 @@ namespace test_binding
             }
         }
 
+        //select where to save report file.pdf
+        bool selectPdfPath()
+        {
+            bool ret = false;
+            //select output path
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+
+            saveFileDialog1.Filter = "pdf files (*.pdf)|*.pdf|All files (*.*)|*.*";
+            saveFileDialog1.FilterIndex = 1;
+            saveFileDialog1.RestoreDirectory = true;
+
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                m_pdfPath = saveFileDialog1.FileName;
+                ret = true;
+            }
+            saveFileDialog1.Dispose();
+            return ret;
+        }
+
         public virtual void Run()
         {
+            if (appConfig.s_config.m_printToPdf)
+            {
+                bool ret = selectPdfPath();
+                if (!ret) return;
+            }
+
 #if use_progress
             ProgressDlg prg = new ProgressDlg();
             var d = new voidCaller(prepare);
@@ -237,17 +274,12 @@ namespace test_binding
             prepare();
 #endif
             //print
-#if false
-            byte[] bytes = report.Render("PDF");
-            FileStream fs = new FileStream(m_pdfPath, FileMode.Create);
-            fs.Seek(0, SeekOrigin.Begin);
-            fs.Write(bytes, 0, bytes.Length);
-            fs.Close();
-#else
-            Print();
-#endif
+            if (!appConfig.s_config.m_printToPdf)
+            {
+                Print();
+            }
         }
-        #region dispose
+#region dispose
         public void Dispose()
         {
             Dispose(true);
@@ -271,7 +303,7 @@ namespace test_binding
                 }
             }
         }
-        #endregion
+#endregion
     }
 
     [DataContract(Name = "ReceiptsReport")]
