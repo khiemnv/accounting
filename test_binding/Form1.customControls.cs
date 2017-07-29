@@ -455,4 +455,87 @@ namespace test_binding
             }
         }
     }
+
+   public class myMenuItem : MenuItem
+    {
+        private Font _font;
+        public Font Font
+        {
+            get
+            {
+                return _font;
+            }
+            set
+            {
+                _font = value;
+            }
+        }
+
+        public myMenuItem()
+        {
+            OwnerDraw = true;
+            Font = lConfigMng.getFont();
+        }
+
+        public myMenuItem(string text)
+            : this()
+        {
+            Text = text;
+        }
+
+        // ... Add other constructor overrides as needed
+
+        protected override void OnMeasureItem(MeasureItemEventArgs e)
+        {
+            // I would've used a Graphics.FromHwnd(this.Handle) here instead,
+            // but for some reason I always get an OutOfMemoryException,
+            // so I've fallen back to TextRenderer
+
+            var size = TextRenderer.MeasureText(Text, Font);
+            e.ItemWidth = size.Width;
+            e.ItemHeight = size.Height;
+        }
+        
+        protected override void OnDrawItem(DrawItemEventArgs e)
+        {
+            Debug.WriteLine(string.Format("OnDrawItem {0}", e.State));
+
+            //e.DrawBackground();
+            Color cl = Color.Transparent;
+            var brush = Brushes.Black;
+            Brush br = new SolidBrush(cl);
+
+            if ((e.State & DrawItemState.Selected) == DrawItemState.Selected)
+            {
+                br = new SolidBrush(Color.Blue);
+            }
+            else if ((e.State & DrawItemState.HotLight) == DrawItemState.HotLight)
+            {
+                br = new SolidBrush(Color.Blue);
+            }
+            else if ((e.State & DrawItemState.Inactive) == DrawItemState.Inactive)
+            {
+                br = new SolidBrush(Color.Silver);
+            }
+            else if ((e.State & DrawItemState.NoAccelerator) == DrawItemState.NoAccelerator)
+            {
+                br = new SolidBrush(Color.Silver);
+            }
+            e.Graphics.FillRectangle(br, e.Bounds);
+
+            SolidBrush fontColor = new SolidBrush(e.ForeColor);
+            e.Graphics.DrawString(Text, Font, fontColor, e.Bounds);
+
+#if false
+            SizeF sz = e.Graphics.MeasureString(Text, Font);
+            e.Graphics.DrawString(Text, Font, brush, e.Bounds);
+
+            Rectangle rect = e.Bounds;
+            rect.Offset(0, 1);
+            rect.Inflate(0, -1);
+            e.Graphics.DrawRectangle(Pens.DarkGray, rect);
+            e.DrawFocusRectangle();
+#endif
+        }
+    }
 }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define use_custom_mi
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,6 +17,14 @@ namespace test_binding
 {
     public partial class Form1 : Form
     {
+        private MenuItem crtMenuItem(string text)
+        {
+#if use_custom_mi
+            return new myMenuItem(text.Replace("&", ""));
+#else
+            return new MenuItem(text);
+#endif
+        }
 		private void crtMenu()
         {
             MainMenu mainMenu = new MainMenu();
@@ -22,15 +32,15 @@ namespace test_binding
 
             //File
             //  Close
-            MenuItem miFile = new MenuItem("&File");
-            MenuItem miClose = new MenuItem("&Close");
+            MenuItem miFile = crtMenuItem("&File");
+            MenuItem miClose = crtMenuItem("&Close");
             miFile.MenuItems.Add(miClose);
             miClose.Click += MiClose_Click;
 
             //Help
             //  About
-            MenuItem miHelp = new MenuItem("&Help");
-            MenuItem miAbout = new MenuItem("&About");
+            MenuItem miHelp = crtMenuItem("&Help");
+            MenuItem miAbout = crtMenuItem("&About");
             miHelp.MenuItems.Add(miAbout);
             miAbout.Click += MiAbout_Click;
 
@@ -38,22 +48,22 @@ namespace test_binding
             //  GroupName
             //  ReceiptsContent
             //  Building
-            MenuItem miEdit = new MenuItem("&Edit");
+            MenuItem miEdit = crtMenuItem("&Edit");
 
-            MenuItem miEditGroupName = new MenuItem("Danh Sách Các Ban");
+            MenuItem miEditGroupName = crtMenuItem("Danh Sách Các Ban");
             miEditGroupName.Click += MiEditGroupName_Click;
             miEdit.MenuItems.Add(miEditGroupName);
 
-            MenuItem miEditReceiptsContent = new MenuItem("Nguồn Thu");
+            MenuItem miEditReceiptsContent = crtMenuItem("Nguồn Thu");
             miEditReceiptsContent.Click += MiEditReceiptsContent_Click;
             miEdit.MenuItems.Add(miEditReceiptsContent);
 
-            MenuItem miBuilding = new MenuItem("Công Trình");
+            MenuItem miBuilding = crtMenuItem("Công Trình");
             miBuilding.Click += MiBuilding_Click;
             miEdit.MenuItems.Add(miBuilding);
 
             //Report
-            MenuItem miReport = new MenuItem("&Report");
+            MenuItem miReport = crtMenuItem("&Report");
             miReport.Click += MiReport_Click;
 
             mainMenu.MenuItems.AddRange(new MenuItem[] { miFile, miEdit, miReport, miHelp });
