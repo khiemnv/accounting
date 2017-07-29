@@ -1,4 +1,4 @@
-﻿#define use_progress
+﻿//#define show_report_progress
 
 using Microsoft.Reporting.WinForms;
 using System;
@@ -192,7 +192,9 @@ namespace test_binding
         //render to streams
         protected virtual void prepare()
         {
+#if show_report_progress
             try
+#endif
             {
                 //display wait msg
                 setStatus("Load view data ...");
@@ -224,11 +226,13 @@ namespace test_binding
                 releaseData(dt);
                 report.Dispose();
             }
+#if show_report_progress
             catch (Exception e)
             {
                 Debug.WriteLine("{0}\n  {1}", e.Message, e.InnerException.Message);
                 setPos(100);
             }
+#endif
         }
 
         //select where to save report file.pdf
@@ -259,7 +263,7 @@ namespace test_binding
                 if (!ret) return;
             }
 
-#if use_progress
+#if show_report_progress
             ProgressDlg prg = new ProgressDlg();
             var d = new voidCaller(prepare);
 

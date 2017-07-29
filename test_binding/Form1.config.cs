@@ -7,6 +7,7 @@ using System.Xml;
 using System.IO;
 using System.Runtime.Serialization.Json;
 using System.Drawing;
+using System.Text.RegularExpressions;
 
 namespace test_binding
 {
@@ -19,6 +20,8 @@ namespace test_binding
 
         [DataMember(Name = "printToPdf")]
         public bool m_printToPdf = true;
+        [DataMember(Name = "font")]
+        public string m_zFont = "";       //Arial,10
 
         [DataMember(Name = "dbSchema")]
         public lDbSchema m_dbSchema;
@@ -103,6 +106,8 @@ namespace test_binding
                     var obj = sz.ReadObject(xrd, false);
                     xrd.Close();
                     m_instance = (lConfigMng)obj;
+
+                    m_instance.loadFont();
                 }
                 else
                 {
@@ -113,7 +118,38 @@ namespace test_binding
             return m_instance;
         }
 
-        public static Font getFont() { return new Font("Arial", 10); }
+        private Font m_font;
+        public static Font getFont() {
+            return (m_instance!=null)?m_instance.m_font: new Font("Arial", 10);
+        }
+
+        private void loadFont() {
+            do
+            {
+                if (m_zFont == null) break;
+
+                var arr = m_zFont.Split(',');
+                if (arr.Length < 2) break;
+
+                float fontSize;
+                if (!float.TryParse(arr[1], out fontSize)) break;
+
+                var tFont = new Font(arr[0], fontSize);
+                if (tFont.Name != arr[0]) break;
+
+                m_font = tFont;
+                return;
+            } while (false);
+            m_font = new Font("Arial", 10);
+        }
+        public static void setFont(Font newFont) {
+            if (m_instance != null)
+            {
+                m_instance.m_zFont = string.Format("{0},{1}", newFont.Name, newFont.Size);
+                m_instance.m_font = newFont;
+                m_instance.UpdateConfig();
+            }
+        }
         public static string getCurrencyFormat() { return "#,0"; }
         public static string getDateFormat() { return "yyyy-MM-dd"; }
         lConfigMng()

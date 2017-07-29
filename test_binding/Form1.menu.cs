@@ -66,7 +66,29 @@ namespace test_binding
             MenuItem miReport = crtMenuItem("&Report");
             miReport.Click += MiReport_Click;
 
-            mainMenu.MenuItems.AddRange(new MenuItem[] { miFile, miEdit, miReport, miHelp });
+            //Config
+            MenuItem miConfig = crtMenuItem("&Config");
+            MenuItem miFont = crtMenuItem("&Font");
+            miFont.Click += MiFont_Click;
+            miConfig.MenuItems.Add(miFont);
+
+            mainMenu.MenuItems.AddRange(new MenuItem[] { miFile, miEdit, miReport, miConfig, miHelp });
+        }
+
+        private void MiFont_Click(object sender, EventArgs e)
+        {
+            FontDialog fontDialog1 = new FontDialog();
+
+            fontDialog1.Font = lConfigMng.getFont();
+
+            if (fontDialog1.ShowDialog() != DialogResult.Cancel)
+            {
+                lConfigMng.setFont(fontDialog1.Font);
+                string msg = string.Format("Selected font {0} size {1} will be applied after restart application",
+                    fontDialog1.Font.Name, fontDialog1.Font.Size);
+                MessageBox.Show(msg, "Font changed!",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private void MiReport_Click(object sender, EventArgs e)
