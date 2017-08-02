@@ -358,7 +358,7 @@ namespace test_binding
                 Debug.Assert(false, "previous ctrl should be disposed");
                 m_customCtrl.Dispose();
                 m_customCtrl = null;
-                return; 
+                return;
             }
 
             if (m_tblInfo.m_cols[col].m_type == lTableInfo.lColInfo.lColType.dateTime)
@@ -406,7 +406,8 @@ namespace test_binding
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing) {
+            if (disposing)
+            {
                 m_dataTable.TableNewRow -= Dt_TableNewRow;
                 if (m_customCtrl != null)
                     m_customCtrl.Dispose();
@@ -424,11 +425,13 @@ namespace test_binding
             base.OnCellEndEdit(e);
             if (m_tblInfo.m_cols[e.ColumnIndex].m_field == "reimbursement")
             {
-                try { 
-                Int64 advance = (Int64)Rows[e.RowIndex].Cells["advance_payment"].Value;
-                Int64 remain = (Int64)Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
-                this.Rows[e.RowIndex].Cells["actually_spent"].Value = advance - remain;
-                } catch
+                try
+                {
+                    Int64 advance = (Int64)Rows[e.RowIndex].Cells["advance_payment"].Value;
+                    Int64 remain = (Int64)Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
+                    this.Rows[e.RowIndex].Cells["actually_spent"].Value = advance - remain;
+                }
+                catch
                 {
                     //if cannot covert advance & remain => not auto fill actually_spent
                     Debug.WriteLine("{0} {1} cannot auto fill actually_spent", this, "OnCellEndEdit");
@@ -447,16 +450,17 @@ namespace test_binding
             if (m_tblInfo.m_cols[e.ColumnIndex].m_field == "date")
             {
                 var val = Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
-                if (val != DBNull.Value) { 
-                DateTime cur = (DateTime)val;
-                if (Rows[e.RowIndex].Cells["month"].Value == DBNull.Value)
-                    this.Rows[e.RowIndex].Cells["month"].Value = cur.Month;
+                if (val != DBNull.Value)
+                {
+                    DateTime cur = (DateTime)val;
+                    if (Rows[e.RowIndex].Cells["month"].Value == DBNull.Value)
+                        this.Rows[e.RowIndex].Cells["month"].Value = cur.Month;
                 }
             }
         }
     }
 
-   public class myMenuItem : MenuItem
+    public class myMenuItem : MenuItem
     {
         private Font _font;
         public Font Font
@@ -495,7 +499,7 @@ namespace test_binding
             e.ItemWidth = size.Width;
             e.ItemHeight = size.Height;
         }
-        
+
         protected override void OnDrawItem(DrawItemEventArgs e)
         {
             Debug.WriteLine(string.Format("OnDrawItem {0}", e.State));
