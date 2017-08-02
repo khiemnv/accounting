@@ -6,6 +6,7 @@
 #define format_currency
 #define use_cmd_params
 #define header_blue
+//#define fit_txt_size
 
 using System.Windows.Forms;
 using System;
@@ -129,15 +130,19 @@ namespace test_binding
             m_sumLabel.TextAlign = ContentAlignment.MiddleRight;
             m_sumLabel.AutoSize = true;
 
+#if fit_txt_size
+            m_sumTxt.Width = lConfigMng.getWidth("000,000,000,000");
+#else
             m_sumTxt.Width = 100;
-
+#endif
             m_dataGridView.Anchor = AnchorStyles.Top & AnchorStyles.Left;
             m_dataGridView.Dock = DockStyle.Fill;
 
             //set font
             List<Control> ctrls = new List<Control> { m_dataGridView,
             m_sumLabel, m_sumTxt, m_reloadBtn, m_submitBtn, m_status};
-            foreach (var c in ctrls) {
+            foreach (var c in ctrls)
+            {
                 c.Font = lConfigMng.getFont();
             }
         }
@@ -350,7 +355,12 @@ namespace test_binding
             }
 #endif
             Int64 sum = getSum();
-            m_sumTxt.Text = sum.ToString(lConfigMng.getCurrencyFormat());
+            string txt = sum.ToString(lConfigMng.getCurrencyFormat());
+#if fit_txt_size
+            int w = lConfigMng.getWidth(txt) + 10;
+            m_sumTxt.Width = w;
+#endif
+            m_sumTxt.Text = txt;
         }
 
         public virtual void LoadData()
@@ -383,7 +393,7 @@ namespace test_binding
             m_status.Text = string.Format("{0} completed in {1:0.00} s", preTxt, elapsed.TotalSeconds);
         }
 
-#region dispose
+        #region dispose
         // Dispose() calls Dispose(true)  
         public void Dispose()
         {
@@ -419,7 +429,7 @@ namespace test_binding
             }
             // free native resources if there are any.  
         }
-#endregion
+        #endregion
     }
 
     [DataContract(Name = "InterPaymentDataPanel")]

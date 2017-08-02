@@ -1,6 +1,7 @@
 ﻿//#define DEBUG_DRAWING
 #define use_cmd_params
 #define use_sqlite
+//#define fit_txt_size
 
 using System.Drawing;
 using System.Windows.Forms;
@@ -46,7 +47,7 @@ namespace test_binding
         public SearchMode m_mode = SearchMode.like;
 
         public FlowLayoutPanel m_panel = new FlowLayoutPanel();
-        public CheckBox m_label = new CheckBox();
+        public CheckBox m_label = lConfigMng.crtCheckBox();
 
         public lSearchCtrl() { }
         public lSearchCtrl(string fieldName, string alias, ctrlType type, Point pos, Size size)
@@ -58,15 +59,16 @@ namespace test_binding
             m_size = size;
 
             m_label.Text = alias;
+#if fit_txt_size
+            m_label.AutoSize = true;
+#else
             m_label.Width = 100;
+#endif
             m_label.TextAlign = ContentAlignment.MiddleLeft;
             m_panel.AutoSize = true;
 #if true
             m_panel.BorderStyle = BorderStyle.FixedSingle;
 #endif
-
-            //set font
-            m_label.Font = lConfigMng.getFont();
         }
 
         public virtual void updateSearchParams(List<string> exprs, List<lSearchParam> srchParams) { }
@@ -122,13 +124,10 @@ namespace test_binding
         public lSearchCtrlText(string fieldName, string alias, ctrlType type, Point pos, Size size)
             : base(fieldName, alias, type, pos, size)
         {
-            m_text = new TextBox();
+            m_text = lConfigMng.crtTextBox();
             m_text.Width = 200;
             m_text.TextChanged += valueChanged;
             m_panel.Controls.AddRange(new Control[] { m_label, m_text });
-
-            //set font
-            m_text.Font = lConfigMng.getFont();
         }
 
         public override string getSearchParams()
@@ -189,7 +188,7 @@ namespace test_binding
         {
             if (m_colInfo != null && m_colInfo.m_lookupData != null)
             {
-                m_combo = new ComboBox();
+                m_combo = lConfigMng.crtComboBox();
                 m_text.Hide();
 
                 m_combo.Size = m_text.Size;
@@ -213,9 +212,6 @@ namespace test_binding
 
                 m_text.Dispose();
                 m_text = null;
-
-                //set font
-                m_combo.Font = lConfigMng.getFont();
             }
         }
 
@@ -246,13 +242,17 @@ namespace test_binding
         public lSearchCtrlDate(string fieldName, string alias, ctrlType type, Point pos, Size size)
             : base(fieldName, alias, type, pos, size)
         {
+#if fit_txt_size
+            int w = lConfigMng.getWidth(lConfigMng.getDateFormat()) + 20;
+#else
+            int w = 100;
+#endif
             m_to.Text = "to";
             m_to.AutoSize = true;
-
-            m_startdate.Width = 80;
+            m_startdate.Width = w;
             m_startdate.Format = DateTimePickerFormat.Custom;
             m_startdate.CustomFormat = lConfigMng.getDateFormat();
-            m_enddate.Width = 80;
+            m_enddate.Width = w;
             m_enddate.Format = DateTimePickerFormat.Custom;
             m_enddate.CustomFormat = lConfigMng.getDateFormat();
             FlowLayoutPanel datePanel = new FlowLayoutPanel();
@@ -332,18 +332,22 @@ namespace test_binding
     [DataContract(Name = "SearchCtrlCurrency")]
     public class lSearchCtrlCurrency : lSearchCtrl
     {
-        private TextBox m_endVal = new TextBox();
-        private TextBox m_startVal = new TextBox();
-        private CheckBox m_to = new CheckBox();
+        private TextBox m_endVal = lConfigMng.crtTextBox();
+        private TextBox m_startVal = lConfigMng.crtTextBox();
+        private CheckBox m_to = lConfigMng.crtCheckBox();
 
         public lSearchCtrlCurrency(string fieldName, string alias, ctrlType type, Point pos, Size size)
             : base(fieldName, alias, type, pos, size)
         {
             m_to.Text = "to";
             m_to.AutoSize = true;
-
-            m_startVal.Width = 80;
-            m_endVal.Width = 80;
+#if fit_txt_size
+            int w = lConfigMng.getWidth("000,000,000,000");
+#else
+            int w = 100;
+#endif
+            m_startVal.Width = w;
+            m_endVal.Width = w;
 
             FlowLayoutPanel datePanel = new FlowLayoutPanel();
             datePanel.BorderStyle = BorderStyle.FixedSingle;
@@ -355,11 +359,6 @@ namespace test_binding
 
             m_startVal.TextChanged += valueChanged;
             m_endVal.TextChanged += M_endVal_TextChanged;
-
-            //set font
-            m_startVal.Font = lConfigMng.getFont();
-            m_endVal.Font = lConfigMng.getFont();
-            m_to.Font = lConfigMng.getFont();
         }
 
         private void M_endVal_TextChanged(object sender, EventArgs e)
@@ -383,11 +382,13 @@ namespace test_binding
             getInputRange(out startVal, out endVal);
             if (m_label.Checked)
             {
-                if (m_to.Checked) {
+                if (m_to.Checked)
+                {
                     srchParams = string.Format("({0} between '{1}' and '{2}')",
                         m_fieldName, startVal, endVal);
                 }
-                else { 
+                else
+                {
                     srchParams = string.Format("({0}='{1}')",
                         m_fieldName, startVal);
                 }
@@ -467,7 +468,7 @@ namespace test_binding
         public virtual void initCtrls()
         {
             //crt search btn
-            m_searchBtn = new Button();
+            m_searchBtn = lConfigMng.crtButton();
             m_searchBtn.Text = "Search";
             m_searchBtn.Click += new System.EventHandler(searchButton_Click);
 
@@ -512,11 +513,8 @@ namespace test_binding
             }
 
             //  add search button to last row
-            m_tbl.Controls.Add(m_searchBtn, 1, lastRow+1);
+            m_tbl.Controls.Add(m_searchBtn, 1, lastRow + 1);
             m_searchBtn.Anchor = AnchorStyles.Right;
-
-            //set font
-            m_searchBtn.Font = lConfigMng.getFont();
         }
 
         private void searchButton_Click(object sender, System.EventArgs e)

@@ -1,4 +1,5 @@
-﻿
+﻿#define use_custom_font
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,6 +9,7 @@ using System.IO;
 using System.Runtime.Serialization.Json;
 using System.Drawing;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace test_binding
 {
@@ -119,11 +121,17 @@ namespace test_binding
         }
 
         private Font m_font;
-        public static Font getFont() {
-            return (m_instance!=null)?m_instance.m_font: new Font("Arial", 10);
+        public static Font getFont()
+        {
+#if use_custom_font
+            return (m_instance != null) ? m_instance.m_font : new Font("Arial", 10);
+#else
+            return SystemFonts.DefaultFont;
+#endif
         }
 
-        private void loadFont() {
+        private void loadFont()
+        {
             do
             {
                 if (m_zFont == null) break;
@@ -142,7 +150,8 @@ namespace test_binding
             } while (false);
             m_font = new Font("Arial", 10);
         }
-        public static void setFont(Font newFont) {
+        public static void setFont(Font newFont)
+        {
             if (m_instance != null)
             {
                 m_instance.m_zFont = string.Format("{0},{1}", newFont.Name, newFont.Size);
@@ -220,6 +229,47 @@ namespace test_binding
                     typeof(lReceiptsPanel)
                 });
             sz.WriteObject(Console.OpenStandardOutput(), receiptsPanel);
+        }
+
+        public static Button crtButton()
+        {
+            var btn = new Button();
+            btn.Font = getFont();
+            return btn;
+        }
+        public static Label crtLabel()
+        {
+            var ctrl = new Label();
+            ctrl.Font = getFont();
+            return ctrl;
+        }
+        public static TextBox crtTextBox()
+        {
+            var ctrl = new TextBox();
+            ctrl.Font = getFont();
+            return ctrl;
+        }
+        public static CheckBox crtCheckBox()
+        {
+            var ctrl = new CheckBox();
+            ctrl.Font = getFont();
+            return ctrl;
+        }
+        public static ComboBox crtComboBox()
+        {
+            var ctrl = new ComboBox();
+            ctrl.Font = getFont();
+            return ctrl;
+        }
+        private static Size getSize(string txt)
+        {
+            var size = TextRenderer.MeasureText(txt, getFont());
+            return size;
+        }
+        public static int getWidth(string txt)
+        {
+            var w = getSize(txt).Width;
+            return w;
         }
     }
 }

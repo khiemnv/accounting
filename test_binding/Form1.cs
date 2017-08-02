@@ -84,7 +84,7 @@ namespace test_binding
 #if DEBUG_DRAWING
                 m_panel.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
 #endif
-            m_printBtn = new Button();
+            m_printBtn = lConfigMng.crtButton();
             m_printBtn.Text = "Print";
             m_printBtn.Click += new System.EventHandler(printBtn_Click);
 
@@ -102,9 +102,6 @@ namespace test_binding
             m_panel.Controls.Add(m_dataPanel.m_sumPanel, 1, 1);
             m_panel.Controls.Add(m_dataPanel.m_dataGridView, 0, 2);
             m_panel.SetColumnSpan(m_dataPanel.m_dataGridView, 2);
-
-            //set font
-            m_printBtn.Font = lConfigMng.getFont();
         }
 
         public virtual void LoadData()

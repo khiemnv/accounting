@@ -1,4 +1,4 @@
-﻿#define use_custom_mi
+﻿#define use_custom_font
 
 using System;
 using System.Collections.Generic;
@@ -19,13 +19,13 @@ namespace test_binding
     {
         private MenuItem crtMenuItem(string text)
         {
-#if use_custom_mi
+#if use_custom_font
             return new myMenuItem(text.Replace("&", ""));
 #else
             return new MenuItem(text);
 #endif
         }
-		private void crtMenu()
+        private void crtMenu()
         {
             MainMenu mainMenu = new MainMenu();
             this.Menu = mainMenu;
@@ -145,13 +145,13 @@ namespace test_binding
                 tblPanel.ColumnCount = 1;
                 tblPanel.Dock = DockStyle.Fill;
 
-                Label txt = new Label();
+                Label txt = lConfigMng.crtLabel();
                 txt.Text = "About this app";
                 //txt.AutoSize = true;
                 txt.Dock = DockStyle.Fill;
                 //txt.Dock = DockStyle.Fill;
 
-                Button btn = new Button();
+                Button btn = lConfigMng.crtButton();
                 btn.Text = "OK";
                 btn.TextAlign = ContentAlignment.MiddleCenter;
                 btn.Anchor = AnchorStyles.None;
