@@ -1,4 +1,4 @@
-﻿//#define show_report_progress
+﻿#define show_report_progress
 
 using Microsoft.Reporting.WinForms;
 using System;

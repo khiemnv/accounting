@@ -399,7 +399,7 @@ namespace test_binding
             m_dataContents = new Dictionary<string, lDataContent>();
         }
 
-        protected Form m_form;
+        protected Form1 m_form;
         private Dictionary<string, lDataSync> m_dataSyncs;
         private Dictionary<string, lDataContent> m_dataContents;
 
@@ -494,7 +494,7 @@ namespace test_binding
     public class lSqlContentProvider : lContentProvider
     {
         static lSqlContentProvider m_instance;
-        public static lContentProvider getInstance(Form parent)
+        public static lContentProvider getInstance(Form1 parent)
         {
             if (m_instance == null)
             {
@@ -552,7 +552,7 @@ namespace test_binding
     public class lSQLiteContentProvider : lContentProvider
     {
         static lSQLiteContentProvider m_instance;
-        public static lContentProvider getInstance(Form parent)
+        public static lContentProvider getInstance(Form1 parent)
         {
             if (m_instance == null)
             {
@@ -754,7 +754,7 @@ namespace test_binding
     public class lDataContent : ICursor, IDisposable
     {
         #region fetch_data
-        public Form m_form;
+        public Form1 m_form;
         public DataTable m_dataTable { get; private set; }
 
         #region event
@@ -806,31 +806,40 @@ namespace test_binding
             //  set cursor pos to begin
             setPos(0);
 
-            Int64 maxId = getMaxRowId();
-            ProgressDlg prg = new ProgressDlg();
-            prg.TopMost = true;
-            Debug.Assert(!m_isView);
-            prg.m_cursor = this;
-            prg.m_endPos = maxId;
-            prg.m_scale = 1000;
-            prg.m_descr = "Getting data ...";
-            Task tMor = Task.Run(() =>
+            taskCallback0 showProgress = () =>
             {
+                Int64 maxId = getMaxRowId();
+                ProgressDlg prg = new ProgressDlg();
+                prg.TopMost = true;
+                Debug.Assert(!m_isView);
+                prg.m_cursor = this;
+                prg.m_endPos = maxId;
+                prg.m_scale = 1000;
+                prg.m_descr = "Getting data ...";
                 prg.ShowDialog();
                 prg.Dispose();
                 OnProgessCompleted(EventArgs.Empty);
+            };
+
+            taskCallback0 getData = () =>
+            {
+                Int64 maxId = getMaxRowId();
+                fetchLargeData();
+                m_lastId = maxId;
+            };
+
+            m_form.m_bgwork.qryBgTask(new BgTask
+            {
+                eType = BgTask.bgTaskType.bgExec,
+                data = showProgress
             });
 
-            //delay fetch data - GUI update status in spare time
-            Task delayFetchData = Task.Run(() =>
-            {
-                Thread.Sleep(100);
-                this.m_form.Invoke(new noParamDelegate(() =>
-                {
-                    fetchLargeData();
-                    m_lastId = maxId;
-                }));
-            });
+            //m_form.Invoke(getData);
+            m_form.m_bgwork.qryFgTask(new FgTask {
+                eType =FgTask.fgTaskType.fgExec,
+                data = getData
+            }
+            );
         }
 
         //require execute in form's thread

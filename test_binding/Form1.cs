@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Runtime.Serialization;
 using System.Drawing;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace test_binding
 {
@@ -204,6 +206,9 @@ namespace test_binding
 
         private TabControl m_tabCtrl;
 
+        //bg process
+        public myWorker m_bgwork;
+
         public Form1()
         {
             //this.Font = lConfigMng.getFont();
@@ -274,6 +279,34 @@ namespace test_binding
 
             //set font
             m_tabCtrl.Font = lConfigMng.getFont();
+
+            //background work
+            m_bgwork = new myWorker();
+            m_bgwork.BgProcess += bg_process;
+            m_bgwork.FgProcess += fg_process;
+        }
+
+        private void bg_process(object sender, BgTask e)
+        {
+            Debug.WriteLine(string.Format("bg_process {0}", e.eType));
+            switch (e.eType)
+            {
+                case BgTask.bgTaskType.bgExec:
+                    taskCallback0 t = (taskCallback0)e.data;
+                    t.Invoke();
+                    break;
+            }
+        }
+
+        private void fg_process(object sender, FgTask e)
+        {
+            Debug.WriteLine(string.Format("fg_process {0}", e.eType));
+            switch(e.eType)
+            {
+                case FgTask.fgTaskType.fgExec:
+                    Invoke((taskCallback0)e.data);
+                    break;
+            }
         }
 
 #if tab_header_blue

@@ -103,6 +103,7 @@
     <Reference Include="System.Xml.Serialization" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Form1.bgTask.cs" />
     <Compile Include="Form1.config.cs" />
     <Compile Include="Form1.customColumn.cs" />
     <Compile Include="Form1.customControls.cs" />
