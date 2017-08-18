@@ -108,13 +108,12 @@ namespace test_binding
                     var obj = sz.ReadObject(xrd, false);
                     xrd.Close();
                     m_instance = (lConfigMng)obj;
-
-                    m_instance.loadFont();
                 }
                 else
                 {
                     m_instance = new lConfigMng();
                 }
+                m_instance.loadFont();
                 m_instance.m_Serializer = sz;
             }
             return m_instance;

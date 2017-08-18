@@ -2,6 +2,7 @@
 #define use_sqlite
 #define save_config
 #define tab_header_blue
+//#define use_bg_work
 
 using System;
 using System.Collections.Generic;
@@ -206,8 +207,10 @@ namespace test_binding
 
         private TabControl m_tabCtrl;
 
+#if use_bg_work
         //bg process
         public myWorker m_bgwork;
+#endif
 
         public Form1()
         {
@@ -280,12 +283,15 @@ namespace test_binding
             //set font
             m_tabCtrl.Font = lConfigMng.getFont();
 
+#if use_bg_work
             //background work
             m_bgwork = new myWorker();
             m_bgwork.BgProcess += bg_process;
             m_bgwork.FgProcess += fg_process;
+#endif
         }
 
+#if use_bg_work
         private void bg_process(object sender, BgTask e)
         {
             Debug.WriteLine(string.Format("bg_process {0}", e.eType));
@@ -308,6 +314,7 @@ namespace test_binding
                     break;
             }
         }
+#endif
 
 #if tab_header_blue
         private void tabControl1_DrawItem(object sender, DrawItemEventArgs e)

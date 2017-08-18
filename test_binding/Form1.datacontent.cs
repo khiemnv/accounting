@@ -391,7 +391,7 @@ namespace test_binding
         }
     };
 
-    public class lContentProvider:IDisposable
+    public class lContentProvider : IDisposable
     {
         protected lContentProvider()
         {
@@ -621,7 +621,8 @@ namespace test_binding
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing) {
+            if (disposing)
+            {
                 m_cnn.Close();
                 m_cnn.Dispose();
             }
@@ -766,7 +767,7 @@ namespace test_binding
 
         protected virtual void OnFillTableCompleted(FillTableCompletedEventArgs e)
         {
-            EventHandler< FillTableCompletedEventArgs> handler = FillTableCompleted;
+            EventHandler<FillTableCompletedEventArgs> handler = FillTableCompleted;
             if (handler != null)
             {
                 handler(this, e);
@@ -828,6 +829,9 @@ namespace test_binding
                 m_lastId = maxId;
             };
 
+            Task t = Task.Run(() => showProgress());
+            m_form.Invoke(getData);
+#if use_bg_work
             m_form.m_bgwork.qryBgTask(new BgTask
             {
                 eType = BgTask.bgTaskType.bgExec,
@@ -840,6 +844,7 @@ namespace test_binding
                 data = getData
             }
             );
+#endif
         }
 
         //require execute in form's thread
@@ -966,11 +971,14 @@ namespace test_binding
         public virtual void Load(bool isView) { throw new NotFiniteNumberException(); }
         public virtual void Load() { if (m_changed) { Reload(); } }
         public virtual void Reload() { m_changed = false; }
-        public virtual void Submit() {
+        public virtual void Submit()
+        {
             m_changed = false;
-            Task delayUpdate = Task.Run(() => {
+            Task delayUpdate = Task.Run(() =>
+            {
                 Thread.Sleep(100);
-                this.m_form.Invoke(new noParamDelegate(()=> {
+                this.m_form.Invoke(new noParamDelegate(() =>
+                {
                     updateTable();
                     OnUpdateTableCompleted(new FillTableCompletedEventArgs() { TimeComplete = DateTime.Now });
                 }));
