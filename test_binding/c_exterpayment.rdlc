@@ -24,10 +24,10 @@
               <Width>0.84488in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>0.78151in</Width>
+              <Width>1.12006in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>1.3961in</Width>
+              <Width>1.75027in</Width>
             </TablixColumn>
           </TablixColumns>
           <TablixRows>
@@ -298,11 +298,13 @@
                             <TextRun>
                               <Value>=Fields!date.Value</Value>
                               <Style>
-                                <Format>yyyy-MM-dd</Format>
+                                <Format>dd/MM/yyyy</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
-                          <Style />
+                          <Style>
+                            <TextAlign>Left</TextAlign>
+                          </Style>
                         </Paragraph>
                       </Paragraphs>
                       <rd:DefaultName>date</rd:DefaultName>
@@ -317,6 +319,7 @@
                         <PaddingBottom>2pt</PaddingBottom>
                       </Style>
                     </Textbox>
+                    <rd:Selected>true</rd:Selected>
                   </CellContents>
                 </TablixCell>
                 <TablixCell>
@@ -467,7 +470,6 @@
                         <PaddingBottom>2pt</PaddingBottom>
                       </Style>
                     </Textbox>
-                    <rd:Selected>true</rd:Selected>
                   </CellContents>
                 </TablixCell>
                 <TablixCell>
@@ -819,7 +821,7 @@
         <DataSetName>DataSet1</DataSetName>
         <Top>0.97792in</Top>
         <Height>0.71874in</Height>
-        <Width>7.30729in</Width>
+        <Width>8in</Width>
         <Style>
           <Border>
             <Style>None</Style>
@@ -847,7 +849,7 @@
         </Paragraphs>
         <rd:DefaultName>Textbox13</rd:DefaultName>
         <Top>0.125in</Top>
-        <Left>1.655in</Left>
+        <Left>2.08208in</Left>
         <Height>0.32292in</Height>
         <Width>3.63542in</Width>
         <ZIndex>1</ZIndex>
@@ -886,7 +888,7 @@
         <Top>1.88021in</Top>
         <Left>5.76562in</Left>
         <Height>0.23958in</Height>
-        <Width>1.54167in</Width>
+        <Width>2.23438in</Width>
         <ZIndex>2</ZIndex>
         <Style>
           <Border>
@@ -934,7 +936,7 @@
     <Height>2.11979in</Height>
     <Style />
   </Body>
-  <Width>7.30729in</Width>
+  <Width>8in</Width>
   <Page>
     <LeftMargin>1in</LeftMargin>
     <RightMargin>1in</RightMargin>

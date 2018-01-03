@@ -1,6 +1,6 @@
 ﻿//#define DEBUG_DRAWING
 #define use_cmd_params
-//#define use_sqlite
+#define use_sqlite
 //#define fit_txt_size
 
 using System.Drawing;
@@ -257,10 +257,10 @@ namespace test_binding
             m_to.AutoSize = true;
             m_startdate.Width = w;
             m_startdate.Format = DateTimePickerFormat.Custom;
-            m_startdate.CustomFormat = lConfigMng.getDateFormat();
+            m_startdate.CustomFormat = lConfigMng.getDisplayDateFormat();
             m_enddate.Width = w;
             m_enddate.Format = DateTimePickerFormat.Custom;
-            m_enddate.CustomFormat = lConfigMng.getDateFormat();
+            m_enddate.CustomFormat = lConfigMng.getDisplayDateFormat();
             FlowLayoutPanel datePanel = new FlowLayoutPanel();
             datePanel.BorderStyle = BorderStyle.FixedSingle;
             datePanel.Dock = DockStyle.Top;
@@ -288,10 +288,12 @@ namespace test_binding
             string srchParams = null;
             if (m_label.Checked)
             {
+                string zStartDate = m_startdate.Value.ToString(lConfigMng.getDateFormat());
+                string zEndDate = m_enddate.Value.ToString(lConfigMng.getDateFormat());
                 if (m_to.Checked)
-                    srchParams = string.Format("({0} between '{1}  00:00:00' and '{2} 00:00:00')", m_fieldName, m_startdate.Text, m_enddate.Text);
+                    srchParams = string.Format("({0} between '{1}  00:00:00' and '{2} 00:00:00')", m_fieldName, zStartDate, zEndDate);
                 else
-                    srchParams = string.Format("({0}='{1} 00:00:00')", m_fieldName, m_startdate.Text);
+                    srchParams = string.Format("({0}='{1} 00:00:00')", m_fieldName, zStartDate);
             }
             return srchParams;
         }
@@ -299,22 +301,24 @@ namespace test_binding
         {
             if (m_label.Checked)
             {
+                string zStartDate = m_startdate.Value.ToString(lConfigMng.getDateFormat());
                 srchParams.Add(
                     new lSearchParam()
                     {
                         key = "@startDate",
-                        val = string.Format("{0} 00:00:00", m_startdate.Text),
+                        val = string.Format("{0} 00:00:00", zStartDate),
                         type = DbType.Date
                     }
                 );
                 if (m_to.Checked)
                 {
                     exprs.Add("(date between @startDate and @endDate)");
+                    string zEndDate = m_enddate.Value.ToString(lConfigMng.getDateFormat());
                     srchParams.Add(
                         new lSearchParam()
                         {
                             key = "@endDate",
-                            val = string.Format("{0} 00:00:00", m_enddate.Text),
+                            val = string.Format("{0} 00:00:00", zEndDate),
                             type = DbType.Date
                         }
                     );

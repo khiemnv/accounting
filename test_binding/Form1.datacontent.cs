@@ -4,6 +4,7 @@
 #define use_cmd_params
 #define use_single_qry
 #define use_progress_dlg
+#define use_sqlite
 
 using System.Windows.Forms;
 using System.Data.SqlClient;

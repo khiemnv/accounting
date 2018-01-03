@@ -23,7 +23,7 @@
         </Paragraphs>
         <rd:DefaultName>Textbox1</rd:DefaultName>
         <Top>0.14458in</Top>
-        <Left>1.22792in</Left>
+        <Left>1.97792in</Left>
         <Height>0.34375in</Height>
         <Width>2.13542in</Width>
         <Style>
@@ -40,16 +40,19 @@
         <TablixBody>
           <TablixColumns>
             <TablixColumn>
-              <Width>0.94531in</Width>
+              <Width>1.04948in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>1.67062in</Width>
+              <Width>1.44704in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>3.02209in</Width>
+              <Width>1.37722in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>1.45573in</Width>
+              <Width>2.80594in</Width>
+            </TablixColumn>
+            <TablixColumn>
+              <Width>1.32031in</Width>
             </TablixColumn>
           </TablixColumns>
           <TablixRows>
@@ -73,6 +76,37 @@
                         </Paragraph>
                       </Paragraphs>
                       <rd:DefaultName>Textbox2</rd:DefaultName>
+                      <Style>
+                        <Border>
+                          <Color>LightGrey</Color>
+                          <Style>Solid</Style>
+                        </Border>
+                        <BackgroundColor>CornflowerBlue</BackgroundColor>
+                        <PaddingLeft>2pt</PaddingLeft>
+                        <PaddingRight>2pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                    </Textbox>
+                  </CellContents>
+                </TablixCell>
+                <TablixCell>
+                  <CellContents>
+                    <Textbox Name="Textbox5">
+                      <CanGrow>true</CanGrow>
+                      <KeepTogether>true</KeepTogether>
+                      <Paragraphs>
+                        <Paragraph>
+                          <TextRuns>
+                            <TextRun>
+                              <Value>Mã phiếu chi</Value>
+                              <Style />
+                            </TextRun>
+                          </TextRuns>
+                          <Style />
+                        </Paragraph>
+                      </Paragraphs>
+                      <rd:DefaultName>Textbox5</rd:DefaultName>
                       <Style>
                         <Border>
                           <Color>LightGrey</Color>
@@ -196,14 +230,46 @@
                             <TextRun>
                               <Value>=Fields!date.Value</Value>
                               <Style>
-                                <Format>yyyy-MM-dd</Format>
+                                <Format>dd/MM/yyyy</Format>
                               </Style>
+                            </TextRun>
+                          </TextRuns>
+                          <Style>
+                            <TextAlign>Left</TextAlign>
+                          </Style>
+                        </Paragraph>
+                      </Paragraphs>
+                      <rd:DefaultName>date</rd:DefaultName>
+                      <Style>
+                        <Border>
+                          <Color>LightGrey</Color>
+                          <Style>Solid</Style>
+                        </Border>
+                        <PaddingLeft>2pt</PaddingLeft>
+                        <PaddingRight>2pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                    </Textbox>
+                  </CellContents>
+                </TablixCell>
+                <TablixCell>
+                  <CellContents>
+                    <Textbox Name="payment_number">
+                      <CanGrow>true</CanGrow>
+                      <KeepTogether>true</KeepTogether>
+                      <Paragraphs>
+                        <Paragraph>
+                          <TextRuns>
+                            <TextRun>
+                              <Value>=Fields!payment_number.Value</Value>
+                              <Style />
                             </TextRun>
                           </TextRuns>
                           <Style />
                         </Paragraph>
                       </Paragraphs>
-                      <rd:DefaultName>date</rd:DefaultName>
+                      <rd:DefaultName>payment_number</rd:DefaultName>
                       <Style>
                         <Border>
                           <Color>LightGrey</Color>
@@ -346,6 +412,36 @@
                 </TablixCell>
                 <TablixCell>
                   <CellContents>
+                    <Textbox Name="Textbox9">
+                      <CanGrow>true</CanGrow>
+                      <KeepTogether>true</KeepTogether>
+                      <Paragraphs>
+                        <Paragraph>
+                          <TextRuns>
+                            <TextRun>
+                              <Value />
+                              <Style />
+                            </TextRun>
+                          </TextRuns>
+                          <Style />
+                        </Paragraph>
+                      </Paragraphs>
+                      <rd:DefaultName>Textbox9</rd:DefaultName>
+                      <Style>
+                        <Border>
+                          <Color>LightGrey</Color>
+                          <Style>Solid</Style>
+                        </Border>
+                        <PaddingLeft>2pt</PaddingLeft>
+                        <PaddingRight>2pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                    </Textbox>
+                  </CellContents>
+                </TablixCell>
+                <TablixCell>
+                  <CellContents>
                     <Textbox Name="Textbox12">
                       <CanGrow>true</CanGrow>
                       <KeepTogether>true</KeepTogether>
@@ -447,6 +543,7 @@
             <TablixMember />
             <TablixMember />
             <TablixMember />
+            <TablixMember />
           </TablixMembers>
         </TablixColumnHierarchy>
         <TablixRowHierarchy>
@@ -465,7 +562,7 @@
         <DataSetName>DataSet1</DataSetName>
         <Top>1.405in</Top>
         <Height>0.88542in</Height>
-        <Width>7.09375in</Width>
+        <Width>8in</Width>
         <ZIndex>1</ZIndex>
         <Style>
           <Border>
@@ -487,12 +584,14 @@
                 </Style>
               </TextRun>
             </TextRuns>
-            <Style />
+            <Style>
+              <TextAlign>Left</TextAlign>
+            </Style>
           </Paragraph>
         </Paragraphs>
         <rd:DefaultName>Textbox1</rd:DefaultName>
         <Top>0.14458in</Top>
-        <Left>3.36333in</Left>
+        <Left>4.11333in</Left>
         <Height>0.34375in</Height>
         <Width>1.75in</Width>
         <ZIndex>2</ZIndex>
@@ -697,9 +796,9 @@
         </Paragraphs>
         <rd:DefaultName>Textbox39</rd:DefaultName>
         <Top>2.44792in</Top>
-        <Left>5.55208in</Left>
+        <Left>5.98958in</Left>
         <Height>0.23958in</Height>
-        <Width>1.54167in</Width>
+        <Width>2.01042in</Width>
         <ZIndex>8</ZIndex>
         <Style>
           <Border>
@@ -715,7 +814,7 @@
     <Height>2.6875in</Height>
     <Style />
   </Body>
-  <Width>7.09375in</Width>
+  <Width>8in</Width>
   <Page>
     <LeftMargin>1in</LeftMargin>
     <RightMargin>1in</RightMargin>
@@ -747,9 +846,17 @@
         <CommandText>/* Local Query */</CommandText>
       </Query>
       <Fields>
+        <Field Name="id">
+          <DataField>id</DataField>
+          <rd:TypeName>System.Int64</rd:TypeName>
+        </Field>
         <Field Name="date">
           <DataField>date</DataField>
           <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="payment_number">
+          <DataField>payment_number</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="name">
           <DataField>name</DataField>
@@ -759,18 +866,30 @@
           <DataField>content</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
+        <Field Name="building">
+          <DataField>building</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="group_name">
+          <DataField>group_name</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
         <Field Name="spent">
           <DataField>spent</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
+          <rd:TypeName>System.Int64</rd:TypeName>
+        </Field>
+        <Field Name="note">
+          <DataField>note</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
         </Field>
       </Fields>
       <rd:DataSetInfo>
-        <rd:DataSetName>Database1DataSet1</rd:DataSetName>
-        <rd:SchemaPath>E:\tmp\accounting\PrintLocalReport\Database1DataSet1.xsd</rd:SchemaPath>
-        <rd:TableName>v_building</rd:TableName>
+        <rd:DataSetName>QL_THUCHIDataSet</rd:DataSetName>
+        <rd:SchemaPath>G:\srccode\accounting\test_binding\QL_THUCHIDataSet.xsd</rd:SchemaPath>
+        <rd:TableName>external_payment</rd:TableName>
         <rd:TableAdapterFillMethod>Fill</rd:TableAdapterFillMethod>
         <rd:TableAdapterGetDataMethod>GetData</rd:TableAdapterGetDataMethod>
-        <rd:TableAdapterName>v_buildingTableAdapter</rd:TableAdapterName>
+        <rd:TableAdapterName>external_paymentTableAdapter</rd:TableAdapterName>
       </rd:DataSetInfo>
     </DataSet>
   </DataSets>

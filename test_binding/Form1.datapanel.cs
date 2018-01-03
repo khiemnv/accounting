@@ -193,7 +193,7 @@ namespace test_binding
                         break;
 #endif
                     case lTableInfo.lColInfo.lColType.dateTime:
-                        dgvcol.DefaultCellStyle.Format = lConfigMng.getDateFormat();
+                        dgvcol.DefaultCellStyle.Format = lConfigMng.getDisplayDateFormat();
                         break;
                 }
             }
@@ -225,7 +225,7 @@ namespace test_binding
                         m_dataGridView.Columns[i].DefaultCellStyle.Format = lConfigMng.getCurrencyFormat();
                         break;
                     case lTableInfo.lColInfo.lColType.dateTime:
-                        m_dataGridView.Columns[i].DefaultCellStyle.Format = lConfigMng.getDateFormat();
+                        m_dataGridView.Columns[i].DefaultCellStyle.Format = lConfigMng.getDisplayDateFormat();
                         break;
                 }
 #if false

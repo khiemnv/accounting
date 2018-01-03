@@ -3,7 +3,7 @@
 using System.Windows.Forms;
 using System;
 using System.Drawing;
-using Microsoft.Reporting.WinForms;
+//using Microsoft.Reporting.WinForms;
 using System.Collections.Generic;
 
 namespace test_binding
@@ -304,8 +304,8 @@ namespace test_binding
         {
             InitializeComponent();
 
-            startDate.CustomFormat = lConfigMng.getDateFormat();
-            endDate.CustomFormat = lConfigMng.getDateFormat();
+            startDate.CustomFormat = lConfigMng.getDisplayDateFormat();
+            endDate.CustomFormat = lConfigMng.getDisplayDateFormat();
 
             m_receiptRptTypes = new Dictionary<receiptsRptType, string> {
                 {receiptsRptType.byDays, "Báo cáo theo ngày" },

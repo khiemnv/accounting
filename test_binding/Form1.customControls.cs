@@ -1,5 +1,6 @@
 ﻿//#define use_custom_cols
 #define format_currency
+#define use_sqlite
 //#define check_number_input
 
 using System.Windows.Forms;
@@ -115,7 +116,7 @@ namespace test_binding
         {
             m_dtp = new DateTimePicker();
             m_dtp.Format = DateTimePickerFormat.Custom;
-            m_dtp.CustomFormat = lConfigMng.getDateFormat();
+            m_dtp.CustomFormat = lConfigMng.getDisplayDateFormat();
             m_dtp.ValueChanged += ctrl_ValueChanged;
         }
         public override Control getControl()
@@ -124,7 +125,7 @@ namespace test_binding
         }
         public override string getValue()
         {
-            return m_dtp.Value.ToString(lConfigMng.getDateFormat());
+            return m_dtp.Value.ToString(lConfigMng.getDisplayDateFormat());
         }
         public override void setValue(string text)
         {

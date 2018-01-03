@@ -1,6 +1,8 @@
 ﻿#define show_report_progress
+#define use_sqlite
 
-using Microsoft.Reporting.WinForms;
+using Microsoft.Reporting.WebForms;
+//using Microsoft.Reporting.WinForms;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -31,7 +33,7 @@ namespace test_binding
         public string m_xmlPath;    //xml path
 #endif
         public string m_pdfPath = "lastReport.pdf";    //print to pdf file
-        public static string s_dateFormat = lConfigMng.getDateFormat();
+        public static string s_dateFormat = lConfigMng.getDisplayDateFormat();
 
         protected lBaseReport()
         {
@@ -369,6 +371,7 @@ namespace test_binding
         List<ReportParameter> m_rptParams;
         protected virtual string getDateQry(string zStartDate, string zEndDate)
         {
+#if use_sqlite
             string qryDaysData = string.Format("select group_name, date, name,"
                 + " sum(inter_pay) as inter_pay, sum(exter_pay) as exter_pay, sum(salary) as salary"
                 + " from"
@@ -382,12 +385,45 @@ namespace test_binding
                 + " from salary where date between '{0} 00:00:00' and '{1} 00:00:00')"
                 + " group by group_name, date, name",
                 zStartDate, zEndDate);
+#else
+            string qryDaysData = string.Format("select t1.group_name, t1.date, t1.name,"
+                + " sum(t1.inter_pay) as inter_pay, sum(t1.exter_pay) as exter_pay, sum(t1.salary) as salary"
+                + " from "
+                + " (select group_name, date, name, actually_spent as inter_pay, 0 as exter_pay, 0 as salary"
+                + " from internal_payment where date between '{0} 00:00:00' and '{1} 00:00:00'"
+                + " union"
+                + " select group_name, date, name, 0 as inter_pay, spent as exter_pay, 0 as salary"
+                + " from external_payment where date between '{0} 00:00:00' and '{1} 00:00:00'"
+                + " union"
+                + " select group_name, date, name, 0 as inter_pay, 0 as exter_pay, salary"
+                + " from salary where date between '{0} 00:00:00' and '{1} 00:00:00')"
+                + " as t1"
+                + " group by group_name, date, name",
+                zStartDate, zEndDate);
+#endif
             return qryDaysData;
         }
 
         protected string getMonthQry(string zStartDate, string zEndDate)
         {
+#if use_sqlite
             string qryMonthData = string.Format("select month, sum(receipt) as receipt, sum(inter_pay) as inter_pay, sum(exter_pay) as exter_pay, sum(salary) as salary, 0 as remain "
+                + " from("
+                + "   select strftime('%m-%Y', date) as month, 0 as receipt, sum(actually_spent) as inter_pay, 0 as exter_pay, 0 as salary"
+                + "   from internal_payment where date between '{0} 00:00:00' and '{1} 00:00:00' group by month"
+                + "   union"
+                + "   select strftime('%m-%Y', date) as month, 0 as receipt, 0 as inter_pay, sum(spent) as exter_pay, 0 as salary"
+                + "   from external_payment where date between '{0} 00:00:00' and '{1} 00:00:00' group by month"
+                + "   union"
+                + "   select strftime('%m-%Y', date) as month, 0 as receipt, 0 as inter_pay, 0 as exter_pay, sum(salary) as salary"
+                + "   from salary where date between '{0} 00:00:00' and '{1} 00:00:00' group by month"
+                + "   union"
+                + "   select strftime('%m-%Y', date) as month, sum(amount) as receipt, 0 as inter_pay, 0 as exter_pay, 0 as salary"
+                + "   from receipts where date between '{0} 00:00:00' and '{1} 00:00:00' group by month"
+                + " ) group by month",
+                zStartDate, zEndDate);
+#else
+            string qryMonthData = string.Format("select t1.month, sum(t1.receipt) as receipt, sum(t1.inter_pay) as inter_pay, sum(t1.exter_pay) as exter_pay, sum(t1.salary) as salary, 0 as remain "
                 + " from("
                 + "   select strftime('%Y-%m', date) as month, 0 as receipt, sum(actually_spent) as inter_pay, 0 as exter_pay, 0 as salary"
                 + "   from internal_payment where date between '{0} 00:00:00' and '{1} 00:00:00' group by month"
@@ -400,8 +436,9 @@ namespace test_binding
                 + "   union"
                 + "   select strftime('%Y-%m', date) as month, sum(amount) as receipt, 0 as inter_pay, 0 as exter_pay, 0 as salary"
                 + "   from receipts where date between '{0} 00:00:00' and '{1} 00:00:00' group by month"
-                + " ) group by month",
+                + " ) as t1 group by month",
                 zStartDate, zEndDate);
+#endif
             return qryMonthData;
         }
         protected virtual string getType()

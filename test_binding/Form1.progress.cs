@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define use_sqlite
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;

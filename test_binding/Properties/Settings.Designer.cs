@@ -22,5 +22,16 @@ namespace test_binding.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=ASUS-PC\\SQLEXPRESS;Initial Catalog=QL_THUCHI;Integrated Security=True" +
+            "")]
+        public string QL_THUCHIConnectionString {
+            get {
+                return ((string)(this["QL_THUCHIConnectionString"]));
+            }
+        }
     }
 }
