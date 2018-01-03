@@ -35,8 +35,11 @@ namespace test_binding
         static XmlObjectSerializer createSerializer()
         {
             Type[] knownTypes = new Type[] {
+#if use_sqlite
                     typeof(lSQLiteDbSchema),
-
+#else
+                    typeof(lSqlDbSchema),
+#endif
                     typeof(lReceiptsTblInfo),
                     typeof(lInternalPaymentTblInfo),
                     typeof(lExternalPaymentTblInfo),

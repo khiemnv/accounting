@@ -1,5 +1,5 @@
 ﻿//#define DEBUG_DRAWING
-#define use_sqlite
+//#define use_sqlite
 #define save_config
 #define tab_header_blue
 //#define use_bg_work
@@ -222,7 +222,11 @@ namespace test_binding
             appConfig.s_config = lConfigMng.crtInstance();
             if (appConfig.s_config.m_dbSchema == null)
             {
+#if use_sqlite
                 appConfig.s_config.m_dbSchema = new lSQLiteDbSchema();
+#else
+                appConfig.s_config.m_dbSchema = new lSqlDbSchema();
+#endif  //use_sqlite
                 appConfig.s_config.m_panels = new List<lBasePanel> {
                     new lReceiptsPanel(),
                     new lInterPaymentPanel(),

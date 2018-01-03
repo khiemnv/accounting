@@ -252,8 +252,13 @@ namespace test_binding
                 case lTableInfo.lColInfo.lColType.uniqueText:
                     {
                         string rowid = Rows[e.RowIndex].Cells[0].Value.ToString();
+#if use_sqlite
                         string sql = string.Format("select rowid, {0} from {1} where {0} = '{2}'",
                             colInfo.m_field, m_tblInfo.m_tblName, val);
+#else
+                        string sql = string.Format("select id, {0} from {1} where {0} = '{2}'",
+                            colInfo.m_field, m_tblInfo.m_tblName, val);
+#endif //use_sqlite
                         var tbl = appConfig.s_contentProvider.GetData(sql);
                         if ((tbl.Rows.Count > 0) && (rowid != tbl.Rows[0][0].ToString()))
                         {

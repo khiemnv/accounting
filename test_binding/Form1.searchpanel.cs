@@ -1,6 +1,6 @@
 ﻿//#define DEBUG_DRAWING
 #define use_cmd_params
-#define use_sqlite
+//#define use_sqlite
 //#define fit_txt_size
 
 using System.Drawing;
@@ -138,7 +138,13 @@ namespace test_binding
                 if (m_mode == SearchMode.like)
                     srchParam = string.Format("({0} like '%{1}%')", m_fieldName, m_value);
                 else
+                {
+#if use_sqlite
                     srchParam = string.Format("({0} = '{1}')", m_fieldName, m_value);
+#else
+                    srchParam = string.Format("({0} like N'{1}')", m_fieldName, m_value);
+#endif
+                }
             }
             return srchParam;
         }
@@ -649,10 +655,11 @@ namespace test_binding
             m_searchCtrls = new List<lSearchCtrl> {
                     crtSearchCtrl(m_tblInfo, "date", new Point(0, 0), new Size(1, 1)),
                     crtSearchCtrl(m_tblInfo, "payment_number", new Point(0, 1), new Size(1, 1)),
-                    crtSearchCtrl(m_tblInfo, "name", new Point(1, 0), new Size(1, 1), lSearchCtrl.SearchMode.match),
+                    crtSearchCtrl(m_tblInfo, "name", new Point(1, 0), new Size(1, 1), lSearchCtrl.SearchMode.like),
                     crtSearchCtrl(m_tblInfo, "group_name", new Point(1, 1), new Size(1, 1), lSearchCtrl.SearchMode.match),
-                    crtSearchCtrl(m_tblInfo, "advance_payment", new Point(0, 2), new Size(1, 1)),
-                    crtSearchCtrl(m_tblInfo, "reimbursement", new Point(1, 2), new Size(1, 1)),
+                    //crtSearchCtrl(m_tblInfo, "advance_payment", new Point(0, 2), new Size(1, 1)),
+                    //crtSearchCtrl(m_tblInfo, "reimbursement", new Point(1, 2), new Size(1, 1)),
+                    crtSearchCtrl(m_tblInfo, "content", new Point(0, 2), new Size(1, 1), lSearchCtrl.SearchMode.like),
                 };
         }
     }

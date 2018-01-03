@@ -97,11 +97,13 @@ namespace test_binding
         public event EventHandler<FgTask> FgProcess;
         protected virtual void OnBgProcess(BgTask task)
         {
-            BgProcess?.Invoke(this, task);
+            //BgProcess?.Invoke(this, task);
+            if (BgProcess != null) BgProcess.Invoke(this, task);
         }
         protected virtual void OnFgProcess(FgTask task)
         {
-            FgProcess?.Invoke(this, task);
+            //FgProcess?.Invoke(this, task);
+            if (FgProcess != null) FgProcess.Invoke(this, task);
         }
 
         //sleep ?ms

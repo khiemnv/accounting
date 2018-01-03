@@ -10,7 +10,9 @@ using System.Data.SqlClient;
 using System.Collections.Generic;
 using System.Data;
 using System;
+#if use_sqlite
 using System.Data.SQLite;
+#endif
 using System.Xml;
 using System.Xml.Serialization;
 using System.Runtime.Serialization;
@@ -506,7 +508,7 @@ namespace test_binding
 
         lSqlContentProvider() : base()
         {
-            string cnnStr = "Data Source=DESKTOP-GOEF1DS\\SQLEXPRESS;Initial Catalog=accounting;Integrated Security=true";
+            string cnnStr = appConfig.s_config.m_dbSchema.m_cnnStr;
             //string cnnStr = s_config.m_dbSchema.m_cnnStr;
             m_cnn = new SqlConnection(cnnStr);
             m_cnn.Open();
@@ -517,6 +519,7 @@ namespace test_binding
         protected override lDataContent newDataContent(string tblName)
         {
             lSqlDataContent data = new lSqlDataContent(tblName, m_cnn);
+            data.m_form = m_form;
             return data;
         }
 
@@ -549,6 +552,8 @@ namespace test_binding
         }
         #endregion
     }
+    
+#if use_sqlite
     public class lSQLiteContentProvider : lContentProvider
     {
         static lSQLiteContentProvider m_instance;
@@ -629,7 +634,7 @@ namespace test_binding
             base.Dispose(disposing);
         }
     }
-
+#endif //use_sqlite
     [DataContract(Name = "DbSchema")]
     public class lDbSchema
     {
@@ -650,6 +655,7 @@ namespace test_binding
         {
         }
     }
+#if use_sqlite
     [DataContract(Name = "SQLiteDbSchema")]
     public class lSQLiteDbSchema : lDbSchema
     {
@@ -744,7 +750,102 @@ namespace test_binding
                 };
         }
     }
+#endif //use_sqlite
 
+    [DataContract(Name = "SqlDbSchema")]
+    public class lSqlDbSchema : lDbSchema
+    {
+        public lSqlDbSchema()
+        {
+            m_cnnStr = @"Data Source=.\SQLEXPRESS;Initial Catalog=QL_THUCHI;Integrated Security=True;MultipleActiveResultSets=True";
+#if crt_qry
+                m_crtTableSqls = new List<string> {
+                    "CREATE TABLE if not exists  receipts("
+                    + "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + "date datetime,"
+                    + "receipt_number char(31),"
+                    + "name char(31),"
+                    + "content text,"
+                    + "amount INTEGER,"
+                    + "note text"
+                    + ")",
+                    "CREATE TABLE if not exists internal_payment("
+                    + "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + "date datetime,"
+                    + "payment_number char(31),"
+                    + "name char(31),"
+                    + "content text,"
+                    + "group_name char(31),"
+                    + "advance_payment INTEGER,"
+                    + "reimbursement INTEGER,"
+                    + "actually_spent INTEGER,"
+                    + "note text"
+                    + ")",
+                    "CREATE TABLE if not exists external_payment("
+                    + "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + "date datetime,"
+                    + "payment_number char(31),"
+                    + "name char(31),"
+                    + "content text,"
+                    + "group_name char(31),"
+                    + "spent INTEGER,"
+                    + "note text"
+                    + ")",
+                    "CREATE TABLE if not exists salary("
+                    + "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + "month INTEGER,"
+                    + "date datetime,"
+                    + "payment_number char(31),"
+                    + "name char(31),"
+                    + "group_name char(31),"
+                    + "content text,"
+                    + "salary INTEGER,"
+                    + "note text"
+                    + ")",
+                    "CREATE TABLE if not exists receipts_content(ID INTEGER PRIMARY KEY AUTOINCREMENT, content nchar(31));",
+                    "CREATE TABLE if not exists group_name(ID INTEGER PRIMARY KEY AUTOINCREMENT, name nchar(31));",
+            };
+                m_crtViewSqls = new List<string> {
+                    "CREATE VIEW if not exists v_receipts "
+                    + " as "
+                    + " select content, amount, cast(strftime('%Y', date) as integer) as year, (strftime('%m', date) + 2) / 3 as qtr "
+                    + " from receipts"
+                    + " where strftime('%Y', 'now') - strftime('%Y', date) between 0 and 4;" ,
+                    " CREATE VIEW if not exists v_internal_payment"
+                    + " as"
+                    + " select group_name, actually_spent, cast(strftime('%Y', date) as integer) as year, (strftime('%m', date) + 2) / 3 as qtr"
+                    + " from internal_payment"
+                    + " where strftime('%Y', 'now') - strftime('%Y', date) between 0 and 4;",
+
+                    "CREATE VIEW if not exists v_external_payment"
+                    + " as"
+                    + " select group_name, spent, cast(strftime('%Y', date) as integer) as year, (strftime('%m', date) + 2) / 3 as qtr"
+                    + " from external_payment"
+                    + " where strftime('%Y', 'now') - strftime('%Y', date) between 0 and 4;",
+                    "CREATE VIEW if not exists v_salary"
+                    + " as"
+                    + " select group_name, salary, cast(strftime('%Y', date) as integer) as year, (strftime('%m', date) + 2) / 3 as qtr"
+                    + " from salary"
+                    + " where strftime('%Y', 'now') - strftime('%Y', date) between 0 and 4;",
+                };
+#endif  //crt_qry
+            m_tables = new List<lTableInfo>() {
+                    new lReceiptsTblInfo(),
+                    new lInternalPaymentTblInfo(),
+                    new lExternalPaymentTblInfo(),
+                    new lSalaryTblInfo(),
+                    new lReceiptsContentTblInfo(),
+                    new lGroupNameTblInfo(),
+                    new lBuildingTblInfo()
+                };
+            m_views = new List<lTableInfo>() {
+                    new lReceiptsViewInfo(),
+                    new lInterPaymentViewInfo(),
+                    new lExterPaymentViewInfo(),
+                    new lSalaryViewInfo()
+                };
+        }
+    }
     /// <summary>
     /// data content
     /// + getdata()
@@ -1013,6 +1114,7 @@ namespace test_binding
         }
         #endregion
     }
+#if use_sqlite
     public class lSQLiteDataContent : lDataContent
     {
         private readonly SQLiteConnection m_cnn;
@@ -1167,6 +1269,7 @@ namespace test_binding
         }
         #endregion
     }
+#endif //use_sqlite
     public class lSqlDataContent : lDataContent
     {
         private SqlConnection m_cnn;

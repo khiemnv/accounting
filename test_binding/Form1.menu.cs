@@ -9,7 +9,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+#if use_sqlite
 using System.Data.SQLite;
+#endif
 using System.Data.SqlClient;
 using System.Runtime.Serialization;
 
