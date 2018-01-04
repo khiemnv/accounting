@@ -1,4 +1,4 @@
-﻿//#define use_sqlite
+﻿#define use_sqlite
 
 using System.Windows.Forms;
 using System;

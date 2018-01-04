@@ -1,5 +1,5 @@
 ﻿#define show_report_progress
-//#define use_sqlite
+#define use_sqlite
 
 using Microsoft.Reporting.WebForms;
 //using Microsoft.Reporting.WinForms;

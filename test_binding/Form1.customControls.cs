@@ -1,6 +1,6 @@
 ﻿//#define use_custom_cols
 #define format_currency
-//#define use_sqlite
+#define use_sqlite
 //#define check_number_input
 
 using System.Windows.Forms;

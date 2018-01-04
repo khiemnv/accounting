@@ -1,5 +1,5 @@
 ﻿#define use_custom_font
-//#define use_sqlite
+#define use_sqlite
 
 using System;
 using System.Collections.Generic;
