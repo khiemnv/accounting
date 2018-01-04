@@ -1,6 +1,6 @@
 ﻿//#define DEBUG_DRAWING
 #define use_cmd_params
-#define use_sqlite
+//#define use_sqlite
 //#define fit_txt_size
 
 using System.Drawing;

@@ -1,5 +1,5 @@
 ﻿#define use_custom_font
-#define use_sqlite
+//#define use_sqlite
 
 using System;
 using System.Collections.Generic;
@@ -163,6 +163,11 @@ namespace test_binding
             }
         }
         public static string getCurrencyFormat() { return "#,0"; }
+        public static bool checkDateString(string zDate)
+        {
+            Regex reg = new Regex(@"\d{4}-\d{2}-\d{2}");
+            return reg.IsMatch(zDate);
+        }
 #if true
         public static string getDateFormat() { return "yyyy-MM-dd"; }
         public static string getDisplayDateFormat() { return "dd/MM/yyyy"; }

@@ -1,5 +1,5 @@
 ﻿#define show_report_progress
-#define use_sqlite
+//#define use_sqlite
 
 using Microsoft.Reporting.WebForms;
 //using Microsoft.Reporting.WinForms;
@@ -14,6 +14,7 @@ using System.Drawing.Printing;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace test_binding
@@ -171,7 +172,7 @@ namespace test_binding
 
         protected delegate void voidCaller();
 
-#region cursor
+        #region cursor
         protected long m_iWork;
         protected string m_statusMsg;
         public long getPos()
@@ -190,7 +191,7 @@ namespace test_binding
         {
             return m_statusMsg;
         }
-#endregion
+        #endregion
         //render to streams
         protected virtual void prepare()
         {
@@ -285,7 +286,7 @@ namespace test_binding
                 Print();
             }
         }
-#region dispose
+        #region dispose
         public void Dispose()
         {
             Dispose(true);
@@ -309,7 +310,7 @@ namespace test_binding
                 }
             }
         }
-#endregion
+        #endregion
     }
 
     [DataContract(Name = "ReceiptsReport")]
@@ -369,8 +370,11 @@ namespace test_binding
         protected DateTime m_endDate;
 
         List<ReportParameter> m_rptParams;
+
         protected virtual string getDateQry(string zStartDate, string zEndDate)
         {
+            Debug.Assert(lConfigMng.checkDateString(zStartDate));
+            Debug.Assert(lConfigMng.checkDateString(zEndDate));
 #if use_sqlite
             string qryDaysData = string.Format("select group_name, date, name,"
                 + " sum(inter_pay) as inter_pay, sum(exter_pay) as exter_pay, sum(salary) as salary"
@@ -406,6 +410,8 @@ namespace test_binding
 
         protected string getMonthQry(string zStartDate, string zEndDate)
         {
+            Debug.Assert(lConfigMng.checkDateString(zStartDate));
+            Debug.Assert(lConfigMng.checkDateString(zEndDate));
 #if use_sqlite
             string qryMonthData = string.Format("select month, sum(receipt) as receipt, sum(inter_pay) as inter_pay, sum(exter_pay) as exter_pay, sum(salary) as salary, 0 as remain "
                 + " from("
@@ -423,20 +429,20 @@ namespace test_binding
                 + " ) group by month",
                 zStartDate, zEndDate);
 #else
-            string qryMonthData = string.Format("select t1.month, sum(t1.receipt) as receipt, sum(t1.inter_pay) as inter_pay, sum(t1.exter_pay) as exter_pay, sum(t1.salary) as salary, 0 as remain "
-                + " from("
-                + "   select strftime('%Y-%m', date) as month, 0 as receipt, sum(actually_spent) as inter_pay, 0 as exter_pay, 0 as salary"
-                + "   from internal_payment where date between '{0} 00:00:00' and '{1} 00:00:00' group by month"
-                + "   union"
-                + "   select strftime('%Y-%m', date) as month, 0 as receipt, 0 as inter_pay, sum(spent) as exter_pay, 0 as salary"
-                + "   from external_payment where date between '{0} 00:00:00' and '{1} 00:00:00' group by month"
-                + "   union"
-                + "   select strftime('%Y-%m', date) as month, 0 as receipt, 0 as inter_pay, 0 as exter_pay, sum(salary) as salary"
-                + "   from salary where date between '{0} 00:00:00' and '{1} 00:00:00' group by month"
-                + "   union"
-                + "   select strftime('%Y-%m', date) as month, sum(amount) as receipt, 0 as inter_pay, 0 as exter_pay, 0 as salary"
-                + "   from receipts where date between '{0} 00:00:00' and '{1} 00:00:00' group by month"
-                + " ) as t1 group by month",
+            string qryMonthData = string.Format(" select t1.month, sum(t1.receipt) as receipt, sum(t1.inter_pay) as inter_pay, sum(t1.exter_pay) as exter_pay, sum(t1.salary) as salary, 0 as remain "
+            + " from( "
+            + "   select right(CONVERT(VARCHAR(10), date, 105),7) as month, 0 as receipt, sum(actually_spent) as inter_pay, 0 as exter_pay, 0 as salary "
+            + "   from internal_payment where date between '{0} 00:00:00' and '{1} 00:00:00' group by right(CONVERT(VARCHAR(10), date, 105),7) "
+            + "   union "
+            + "   select right(CONVERT(VARCHAR(10), date, 105),7) as month, 0 as receipt, 0 as inter_pay, sum(spent) as exter_pay, 0 as salary "
+            + "   from external_payment where date between '{0} 00:00:00' and '{1} 00:00:00' group by right(CONVERT(VARCHAR(10), date, 105),7) "
+            + "   union "
+            + "   select right(CONVERT(VARCHAR(10), date, 105),7) as month, 0 as receipt, 0 as inter_pay, 0 as exter_pay, sum(salary) as salary "
+            + "   from salary where date between '{0} 00:00:00' and '{1} 00:00:00' group by right(CONVERT(VARCHAR(10), date, 105),7) "
+            + "   union "
+            + "   select right(CONVERT(VARCHAR(10), date, 105),7) as month, sum(amount) as receipt, 0 as inter_pay, 0 as exter_pay, 0 as salary "
+            + "   from receipts where date between '{0} 00:00:00' and '{1} 00:00:00' group by right(CONVERT(VARCHAR(10), date, 105),7) "
+            + " ) as t1 group by month ",
                 zStartDate, zEndDate);
 #endif
             return qryMonthData;
@@ -449,15 +455,15 @@ namespace test_binding
         {
             m_startDate = startDate;
             m_endDate = endDate;
-            string zStartDate = startDate.ToString(s_dateFormat);
-            string zEndDate = endDate.ToString(s_dateFormat);
             m_rptParams = new List<ReportParameter>()
             {
-                new ReportParameter("startDate",zStartDate),
-                new ReportParameter("endDate",zEndDate),
+                new ReportParameter("startDate", startDate.ToString(lConfigMng.getDisplayDateFormat())),
+                new ReportParameter("endDate", endDate.ToString(lConfigMng.getDisplayDateFormat())),
                 new ReportParameter( "type", getType())
             };
 
+            string zStartDate = startDate.ToString(lConfigMng.getDateFormat());
+            string zEndDate = endDate.ToString(lConfigMng.getDateFormat());
             m_sqls = new Dictionary<string, string>
             {
                 { "DataSet1", getDateQry(zStartDate, zEndDate)},
@@ -555,19 +561,37 @@ namespace test_binding
     {
         protected override string getDateQry(string zStartDate, string zEndDate)
         {
+            Debug.Assert(lConfigMng.checkDateString(zStartDate));
+            Debug.Assert(lConfigMng.checkDateString(zEndDate));
+#if use_sqlite
             string qryWeeksData = string.Format("select group_name, week as date, '' as name,"
                + " sum(inter_pay) as inter_pay, sum(exter_pay) as exter_pay, sum(salary) as salary"
                + " from"
-               + " (select group_name, strftime('%Y-%W', date) as week, actually_spent as inter_pay, 0 as exter_pay, 0 as salary"
+               + " (select group_name, strftime('%W-%Y', date) as week, actually_spent as inter_pay, 0 as exter_pay, 0 as salary"
                + " from internal_payment where date between '{0} 00:00:00' and '{1} 00:00:00'"
                + " union"
-               + " select group_name, strftime('%Y-%W', date) as week, 0 as inter_pay, spent as exter_pay, 0 as salary"
+               + " select group_name, strftime('%W-%Y', date) as week, 0 as inter_pay, spent as exter_pay, 0 as salary"
                + " from external_payment where date between '{0} 00:00:00' and '{1} 00:00:00'"
                + " union"
-               + " select group_name, strftime('%Y-%W', date) as week, 0 as inter_pay, 0 as exter_pay, salary"
+               + " select group_name, strftime('%W-%Y', date) as week, 0 as inter_pay, 0 as exter_pay, salary"
                + " from salary where date between '{0} 00:00:00' and '{1} 00:00:00')"
                + " group by group_name, week",
                zStartDate, zEndDate);
+#else
+            string qryWeeksData = string.Format(" select group_name, week as date, '' as name,"
+            + " sum(inter_pay) as inter_pay, sum(exter_pay) as exter_pay, sum(salary) as salary"
+            + " from"
+            + " (select group_name, (cast(DATEPART(ww,date) as char(2))+'-'+cast(DATEPART(yyyy,date) as CHAR(4))) as week, actually_spent as inter_pay, 0 as exter_pay, 0 as salary"
+            + " from internal_payment where date between '{0} 00:00:00' and '{1} 00:00:00'"
+            + " union"
+            + " select group_name, (cast(DATEPART(ww,date) as char(2))+'-'+cast(DATEPART(yyyy,date) as CHAR(4))) as week, 0 as inter_pay, spent as exter_pay, 0 as salary"
+            + " from external_payment where date between '{0} 00:00:00' and '{1} 00:00:00'"
+            + " union"
+            + " select group_name, (cast(DATEPART(ww,date) as char(2))+'-'+cast(DATEPART(yyyy,date) as CHAR(4))) as week, 0 as inter_pay, 0 as exter_pay, salary"
+            + " from salary where date between '{0} 00:00:00' and '{1} 00:00:00') as t1"
+            + " group by group_name, week",
+               zStartDate, zEndDate);
+#endif //use_sqlite
             return qryWeeksData;
         }
         protected override string getType()
@@ -578,35 +602,53 @@ namespace test_binding
         {
         }
     }
-    public class lSqlWeekReport : lSqlDaysReport
+#if false
+    public class lSqlWeekReport : lWeekReport
     {
         public lSqlWeekReport(DateTime startDate, DateTime endDate) : base(startDate, endDate)
         {
-            m_sqls["DataSet1"] = "rpt_weeks";
-            m_sqls["DataSet2"] = "sta_month";
         }
         protected override string getType()
         {
             return "Tuần";
         }
     }
+#endif
     public class lMonthReport : lDaysReport
     {
         protected override string getDateQry(string zStartDate, string zEndDate)
         {
+            Debug.Assert(lConfigMng.checkDateString(zStartDate));
+            Debug.Assert(lConfigMng.checkDateString(zEndDate));
+#if use_sqlite
             string qryMonthsData = string.Format("select group_name, month as date, '' as name,"
                + " sum(inter_pay) as inter_pay, sum(exter_pay) as exter_pay, sum(salary) as salary"
                + " from"
-               + " (select group_name, strftime('%Y-%m', date) as month, actually_spent as inter_pay, 0 as exter_pay, 0 as salary"
+               + " (select group_name, strftime('%m-%Y', date) as month, actually_spent as inter_pay, 0 as exter_pay, 0 as salary"
                + " from internal_payment where date between '{0} 00:00:00' and '{1} 00:00:00'"
                + " union"
-               + " select group_name, strftime('%Y-%m', date) as month, 0 as inter_pay, spent as exter_pay, 0 as salary"
+               + " select group_name, strftime('%m-%Y', date) as month, 0 as inter_pay, spent as exter_pay, 0 as salary"
                + " from external_payment where date between '{0} 00:00:00' and '{1} 00:00:00'"
                + " union"
-               + " select group_name, strftime('%Y-%m', date) as month, 0 as inter_pay, 0 as exter_pay, salary"
+               + " select group_name, strftime('%m-%Y', date) as month, 0 as inter_pay, 0 as exter_pay, salary"
                + " from salary where date between '{0} 00:00:00' and '{1} 00:00:00')"
                + " group by group_name, month",
                zStartDate, zEndDate);
+#else
+            string qryMonthsData = string.Format(" select group_name, month as date, '' as name,"
+                + " sum(inter_pay) as inter_pay, sum(exter_pay) as exter_pay, sum(salary) as salary"
+                + " from"
+                + " (select group_name, right(CONVERT(VARCHAR(10), date, 105),7) as month, actually_spent as inter_pay, 0 as exter_pay, 0 as salary"
+                + " from internal_payment where date between '{0} 00:00:00' and '{1} 00:00:00'"
+                + " union"
+                + " select group_name, right(CONVERT(VARCHAR(10), date, 105),7) as month, 0 as inter_pay, spent as exter_pay, 0 as salary"
+                + " from external_payment where date between '{0} 00:00:00' and '{1} 00:00:00'"
+                + " union"
+                + " select group_name, right(CONVERT(VARCHAR(10), date, 105),7) as month, 0 as inter_pay, 0 as exter_pay, salary"
+                + " from salary where date between '{0} 00:00:00' and '{1} 00:00:00')"
+                + " as t1 group by group_name, month",
+               zStartDate, zEndDate);
+#endif
             return qryMonthsData;
         }
         protected override string getType()
@@ -617,26 +659,26 @@ namespace test_binding
         {
         }
     }
-    public class lSqlMonthReport : lSqlDaysReport
+#if false
+    public class lSqlMonthReport : lMonthReport
     {
         public lSqlMonthReport(DateTime startDate, DateTime endDate) : base(startDate, endDate)
         {
-            m_sqls["DataSet1"] = "rpt_months";
-            m_sqls["DataSet2"] = "sta_month";
         }
         protected override string getType()
         {
             return "Tháng";
         }
     }
+#endif
     public class lBuildingReport : lDaysReport
     {
         public string m_buildingName;
         List<ReportParameter> m_rptParams;
-        public lBuildingReport(string building, DateTime startDate, DateTime endDate):base(startDate, endDate)
+        public lBuildingReport(string building, DateTime startDate, DateTime endDate) : base(startDate, endDate)
         {
-            string zStartDate = startDate.ToString(s_dateFormat);
-            string zEndDate = endDate.ToString(s_dateFormat);
+            string zStartDate = startDate.ToString(lConfigMng.getDisplayDateFormat());
+            string zEndDate = endDate.ToString(lConfigMng.getDisplayDateFormat());
             m_buildingName = building;
             m_rptParams = new List<ReportParameter>()
             {
@@ -644,10 +686,19 @@ namespace test_binding
                 new ReportParameter("endDate",zEndDate),
                 new ReportParameter("buildingName", m_buildingName)
             };
+            zStartDate = startDate.ToString(lConfigMng.getDateFormat());
+            zEndDate = endDate.ToString(lConfigMng.getDateFormat());
+#if use_sqlite
             string qry = string.Format("select * from external_payment"
                 + " where building like '%{0}%' and date between '{1} 00:00:00' and '{2} 00:00:00'"
                 + " order by date",
                 building, zStartDate, zEndDate);
+#else
+            string qry = string.Format("select * from external_payment"
+                + " where building like N'%{0}%' and date between '{1} 00:00:00' and '{2} 00:00:00'"
+                + " order by date",
+                building, zStartDate, zEndDate);
+#endif
             m_sqls = new Dictionary<string, string>
             {
                 { "DataSet1", qry }
@@ -678,7 +729,8 @@ namespace test_binding
             //dc.Load();    //if current is no data
             return dc.m_dataTable;
         }
-        protected override void releaseData(DataTable dt) {
+        protected override void releaseData(DataTable dt)
+        {
             //do nothing
         }
     }

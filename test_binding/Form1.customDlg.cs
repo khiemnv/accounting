@@ -1,4 +1,4 @@
-﻿#define use_sqlite
+﻿//#define use_sqlite
 
 using System.Windows.Forms;
 using System;
@@ -340,21 +340,21 @@ namespace test_binding
                 switch (paymentRptType.SelectedIndex)
                 {
                     case (int)receiptsRptType.byDays:
-#if use_sqlite
+#if true
                         rpt = new lDaysReport(startDate.Value, endDate.Value);
 #else
                         rpt = new lSqlDaysReport(startDate.Value, endDate.Value);
 #endif
                         break;
                     case (int)receiptsRptType.byWeek:
-#if use_sqlite
+#if true
                         rpt = new lWeekReport(startDate.Value, endDate.Value);
 #else
                         rpt = new lSqlWeekReport(startDate.Value, endDate.Value);
 #endif
                         break;
                     case (int)receiptsRptType.byMonth:
-#if use_sqlite
+#if true
                         rpt = new lMonthReport(startDate.Value, endDate.Value);
 #else
                         rpt = new lSqlMonthReport(startDate.Value, endDate.Value);

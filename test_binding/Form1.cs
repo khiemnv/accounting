@@ -1,5 +1,5 @@
 ﻿//#define DEBUG_DRAWING
-#define use_sqlite
+//#define use_sqlite
 #define save_config
 #define tab_header_blue
 //#define use_bg_work
