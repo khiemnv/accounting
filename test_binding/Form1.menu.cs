@@ -1,5 +1,6 @@
 ﻿#define use_custom_font
 #define use_sqlite
+//#define use_menuitem
 
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,7 @@ namespace test_binding
 {
     public partial class Form1 : Form
     {
+#if use_menuitem
         private MenuItem crtMenuItem(string text)
         {
 #if use_custom_font
@@ -28,54 +30,80 @@ namespace test_binding
             return new MenuItem(text);
 #endif
         }
-        private void crtMenu()
+        private void addChild(MenuItem parent, MenuItem child)
         {
+            parent.MenuItems.Add(child);
+        }
+#else //ToolStripMenuItem
+        private ToolStripMenuItem crtMenuItem(string text)
+        {
+            ToolStripMenuItem mi = new ToolStripMenuItem();
+            mi.Text = text;
+            return mi;
+        }
+        private void addChild(ToolStripMenuItem parent, ToolStripMenuItem child)
+        {
+            parent.DropDownItems.Add(child);
+        }
+#endif  //use_menuitem
+        private object crtMenu()
+        {
+#if use_menuitem
             MainMenu mainMenu = new MainMenu();
             this.Menu = mainMenu;
-
+#else
+            var mainMenu = new MenuStrip();
+#endif
             //File
             //  Close
-            MenuItem miFile = crtMenuItem("&File");
-            MenuItem miClose = crtMenuItem("&Close");
-            miFile.MenuItems.Add(miClose);
+            var miFile = crtMenuItem("&File");
+            var miClose = crtMenuItem("&Close");
+            addChild(miFile, miClose);
             miClose.Click += MiClose_Click;
 
             //Help
             //  About
-            MenuItem miHelp = crtMenuItem("&Help");
-            MenuItem miAbout = crtMenuItem("&About");
-            miHelp.MenuItems.Add(miAbout);
+            var miHelp = crtMenuItem("&Help");
+            var miAbout = crtMenuItem("&About");
+            addChild(miHelp, miAbout);
             miAbout.Click += MiAbout_Click;
 
             //Edit
             //  GroupName
             //  ReceiptsContent
             //  Building
-            MenuItem miEdit = crtMenuItem("&Edit");
+            var miEdit = crtMenuItem("&Edit");
 
-            MenuItem miEditGroupName = crtMenuItem("Danh Sách Các Ban");
+            var miEditGroupName = crtMenuItem("Danh Sách Các Ban");
             miEditGroupName.Click += MiEditGroupName_Click;
-            miEdit.MenuItems.Add(miEditGroupName);
+            addChild(miEdit, miEditGroupName);
 
-            MenuItem miEditReceiptsContent = crtMenuItem("Nguồn Thu");
+            var miEditReceiptsContent = crtMenuItem("Nguồn Thu");
             miEditReceiptsContent.Click += MiEditReceiptsContent_Click;
-            miEdit.MenuItems.Add(miEditReceiptsContent);
+            addChild(miEdit, miEditReceiptsContent);
 
-            MenuItem miBuilding = crtMenuItem("Công Trình");
+            var miBuilding = crtMenuItem("Công Trình");
             miBuilding.Click += MiBuilding_Click;
-            miEdit.MenuItems.Add(miBuilding);
+            addChild(miEdit, miBuilding);
 
             //Report
-            MenuItem miReport = crtMenuItem("&Report");
+            var miReport = crtMenuItem("&Report");
             miReport.Click += MiReport_Click;
 
             //Config
-            MenuItem miConfig = crtMenuItem("&Config");
-            MenuItem miFont = crtMenuItem("&Font");
+            var miConfig = crtMenuItem("&Config");
+            var miFont = crtMenuItem("&Font");
             miFont.Click += MiFont_Click;
-            miConfig.MenuItems.Add(miFont);
+            addChild(miConfig, miFont);
 
+#if use_menuitem
             mainMenu.MenuItems.AddRange(new MenuItem[] { miFile, miEdit, miReport, miConfig, miHelp });
+            this.Menu = mainMenu;
+            return null;
+#else
+            mainMenu.Items.AddRange(new ToolStripMenuItem[] { miFile, miEdit, miReport, miConfig, miHelp });
+            return mainMenu;
+#endif
         }
 
         private void MiFont_Click(object sender, EventArgs e)

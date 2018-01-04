@@ -5,6 +5,8 @@ using System;
 using System.Drawing;
 //using Microsoft.Reporting.WinForms;
 using System.Collections.Generic;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace test_binding
 {
@@ -382,6 +384,114 @@ namespace test_binding
             bs.DataSource = dc.m_dataTable;
             buildingCmb.DataSource = bs;
             buildingCmb.DisplayMember = dc.m_dataTable.Columns[1].ColumnName;
+        }
+    }
+
+    public class lPasswdDlg : Form
+    {
+        TableLayoutPanel m_tblPanel;
+        TextBox m_passwdTxt;
+        Button m_passwdBtn;
+        Label m_passwdLbl;
+
+        public string m_md5;
+
+        public lPasswdDlg()
+        {
+            InitializeComponent();
+
+        }
+
+        private void M_passwdBtn_Click(object sender, EventArgs e)
+        {
+            string ztxt = m_passwdTxt.Text;
+            MD5 md5Hash = MD5.Create();
+            m_md5 = GetMd5Hash(md5Hash, ztxt);
+            this.Close();
+        }
+
+        private void InitializeComponent()
+        {
+            Form form = this;
+            form.Location = new Point(0, 0);
+            form.Size = new Size(220, 100);
+            form.FormBorderStyle = FormBorderStyle.FixedDialog;
+            form.MinimizeBox = false;
+            form.MaximizeBox = false;
+            form.Text = "Đăng nhập";
+
+            //crt ctrl
+            m_passwdTxt = new TextBox();
+            m_passwdBtn = new Button();
+            m_passwdLbl = new Label();
+            m_tblPanel = new TableLayoutPanel();
+
+            //int label
+            m_passwdLbl.Anchor = AnchorStyles.Right;
+            m_passwdLbl.Text = "Password";
+            m_passwdLbl.TextAlign = ContentAlignment.MiddleCenter;
+
+            //txt
+            m_passwdTxt.Anchor = AnchorStyles.Left;
+            m_passwdTxt.MaxLength = 16;
+            m_passwdTxt.PasswordChar = '●';
+            m_passwdTxt.CharacterCasing = CharacterCasing.Lower;
+            m_passwdTxt.TextAlign = HorizontalAlignment.Center;
+
+            //int btn
+            m_passwdBtn.Anchor = AnchorStyles.None;
+            m_passwdBtn.Text = "OK";
+            m_passwdBtn.Click += M_passwdBtn_Click;
+            this.AcceptButton = m_passwdBtn;
+
+            //tbl
+            m_tblPanel.ColumnCount = 2;
+            m_tblPanel.RowCount = 2;
+            m_tblPanel.Anchor = AnchorStyles.None;
+            m_tblPanel.Dock = DockStyle.None;
+            m_tblPanel.Dock = DockStyle.Fill;
+
+            m_tblPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
+            m_tblPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 70F));
+            m_tblPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 40));
+            m_tblPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 30));
+            m_tblPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 30));
+
+            m_tblPanel.Controls.Add(m_passwdLbl, 0, 0);
+            m_tblPanel.Controls.Add(m_passwdTxt, 1, 0);
+            m_tblPanel.Controls.Add(m_passwdBtn, 0, 1);
+            m_tblPanel.SetColumnSpan(m_passwdBtn, 2);
+
+            Controls.Add(m_tblPanel);
+        }
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+        }
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+        }
+
+        static string GetMd5Hash(MD5 md5Hash, string input)
+        {
+
+            // Convert the input string to a byte array and compute the hash.
+            byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
+
+            // Create a new Stringbuilder to collect the bytes
+            // and create a string.
+            StringBuilder sBuilder = new StringBuilder();
+
+            // Loop through each byte of the hashed data 
+            // and format each one as a hexadecimal string.
+            for (int i = 0; i < data.Length; i++)
+            {
+                sBuilder.Append(data[i].ToString("x2"));
+            }
+
+            // Return the hexadecimal string.
+            return sBuilder.ToString();
         }
     }
 }

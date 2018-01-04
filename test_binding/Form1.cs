@@ -246,11 +246,11 @@ namespace test_binding
 #endif  //use_sqlite
 
             //menu
-            crtMenu();
+            var mn = crtMenu();
 
             //tab control
             m_tabCtrl = new TabControl();
-            Controls.Add(m_tabCtrl);
+            //Controls.Add(m_tabCtrl);
             m_tabCtrl.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             m_tabCtrl.Dock = DockStyle.Fill;
 
@@ -276,7 +276,6 @@ namespace test_binding
             m_tabCtrl.SelectedIndex = 0;
 
             Load += new System.EventHandler(Form1_Load);
-            Text = "CBV Kế Toán";
 
 #if tab_header_blue
             //set tab header blue
@@ -286,6 +285,27 @@ namespace test_binding
 
             //set font
             m_tabCtrl.Font = lConfigMng.getFont();
+
+            Label tmpLbl = new Label();
+            //tmpLbl.BorderStyle = BorderStyle.FixedSingle;
+            tmpLbl.Anchor = AnchorStyles.Right;
+            tmpLbl.Text = "© 2017 BAN TRI KHÁCH CHÙA BA VÀNG";
+            tmpLbl.AutoSize = true;
+            tmpLbl.BackColor = Color.Transparent;
+
+            TableLayoutPanel tmpTbl = new TableLayoutPanel();
+            tmpTbl.Dock = DockStyle.Fill;
+
+            if (mn != null)
+            {
+                tmpTbl.Controls.Add((MenuStrip)mn, 0, 0);
+            }
+
+            tmpTbl.Controls.Add(tmpLbl, 1, 0);
+            tmpTbl.Controls.Add(m_tabCtrl, 0, 1);
+            tmpTbl.SetColumnSpan(m_tabCtrl, 2);
+
+            Controls.Add(tmpTbl);
 
 #if use_bg_work
             //background work
@@ -354,6 +374,21 @@ namespace test_binding
             {
                 panel.LoadData();
             }
+            
+            //get passwd
+            string zMd5 = getPasswd();
+
+            if (appConfig.s_config.m_md5 == "")
+            {
+                //passwd is reseted
+                appConfig.s_config.m_md5 = zMd5;
+                appConfig.s_config.UpdateConfig();
+            }
+            else if (appConfig.s_config.m_md5 != zMd5)
+            {
+                //not match with existing passwd
+                this.Close();
+            }
         }
 
         private TabPage crtTab(lBasePanel newPanel)
@@ -367,6 +402,15 @@ namespace test_binding
 
         private void Form1_Resize(object sender, EventArgs e)
         {
+        }
+
+        string getPasswd()
+        {
+            var passwdDlg = new lPasswdDlg();
+            passwdDlg.ShowDialog();
+            string md5 = passwdDlg.m_md5;
+            passwdDlg.Dispose();
+            return md5;
         }
     }
 }
