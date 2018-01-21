@@ -96,14 +96,26 @@ namespace test_binding
             miFont.Click += MiFont_Click;
             addChild(miConfig, miFont);
 
+            //Input
+            var miInput = crtMenuItem("Input");
+            var miReceipt = crtMenuItem("Receipt");
+            miReceipt.Click += MiReceipt_Click;
+            addChild(miInput, miReceipt);
+
 #if use_menuitem
             mainMenu.MenuItems.AddRange(new MenuItem[] { miFile, miEdit, miReport, miConfig, miHelp });
             this.Menu = mainMenu;
             return null;
 #else
-            mainMenu.Items.AddRange(new ToolStripMenuItem[] { miFile, miEdit, miReport, miConfig, miHelp });
+            mainMenu.Items.AddRange(new ToolStripMenuItem[] { miFile, miInput, miEdit, miReport, miConfig, miHelp });
             return mainMenu;
 #endif
+        }
+
+        private void MiReceipt_Click(object sender, EventArgs e)
+        {
+            var rcptF = new receiptForm();
+            rcptF.ShowDialog();
         }
 
         private void MiFont_Click(object sender, EventArgs e)

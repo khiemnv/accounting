@@ -1,8 +1,8 @@
-﻿#define show_report_progress
+﻿//#define show_report_progress
 #define use_sqlite
 
-using Microsoft.Reporting.WebForms;
-//using Microsoft.Reporting.WinForms;
+//using Microsoft.Reporting.WebForms;
+using Microsoft.Reporting.WinForms;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -80,6 +80,8 @@ namespace test_binding
 
         protected void Export(LocalReport report)
         {
+            mPrintMode.cb(report, m_pdfPath, mPrintMode.format);
+#if false
             string deviceInfo =
               @"<DeviceInfo>
                     <OutputFormat>EMF</OutputFormat>
@@ -108,6 +110,7 @@ namespace test_binding
                     stream.Position = 0;
                 }
             }
+#endif
         }
 
         int m_currentPageIndex;
@@ -172,7 +175,7 @@ namespace test_binding
 
         protected delegate void voidCaller();
 
-        #region cursor
+#region cursor
         protected long m_iWork;
         protected string m_statusMsg;
         public long getPos()
@@ -191,7 +194,7 @@ namespace test_binding
         {
             return m_statusMsg;
         }
-        #endregion
+#endregion
         //render to streams
         protected virtual void prepare()
         {
@@ -258,11 +261,121 @@ namespace test_binding
             return ret;
         }
 
+        // prepare = fill + clean
+        public virtual void Fill(LocalReport report)
+        {
+            //long time work
+            DataTable dt = loadData();
+
+            //after load data complete
+            dt.TableName = m_viewName;
+
+            //LocalReport report = new LocalReport();
+            report.ReportPath = m_rdlcPath;
+            report.DataSources.Add(new ReportDataSource(m_rcName, dt));
+
+            //add report params
+            List<ReportParameter> rpParams = getReportParam();
+            report.SetParameters(rpParams);
+
+            report.Refresh();
+        }
+        public virtual void Clean()
+        {
+            //releaseData(dt);
+        }
+
+        //select path to print
+        class lMapExt
+        {
+            public string ext;
+            public string format;
+            public exportCallback cb;
+        }
+
+        delegate void exportCallback(LocalReport report, string pdfPath, string format);
+        lMapExt mPrintMode;
+
+        bool selectPath(out string path)
+        {
+            bool ret = false;
+            //select output path
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+
+            path = "";
+            saveFileDialog1.Filter = "pdf files (*.pdf)|*.pdf"
+                + "|Excel files (*.xls;*.xlsx)|*.xls;*.xlsx"
+                + "|Word files (*.doc;*.docx)|*.doc;*.docx"
+                + "|Image Files (*.bmp;*.jpg;*.gif)|*.bmp;*.jpg;*.gif"
+                + "|All files (*.*)|*.*";
+            saveFileDialog1.FilterIndex = 1;
+            saveFileDialog1.RestoreDirectory = true;
+
+            var map = new lMapExt[]
+            {
+                new lMapExt { ext = ".pdf" , format = "PDF", cb = Export2PDF },
+                new lMapExt { ext = ".xls" , format = "Excel", cb = Export2 },
+                new lMapExt { ext = ".xlsx" , format = "EXCELOPENXML", cb = Export2},
+                new lMapExt { ext = ".doc" , format = "WORD", cb = Export2 },
+                new lMapExt { ext = ".docx" , format = "WORDOPENXML", cb = Export2 },
+                new lMapExt { ext = ".bmp" , format = "IMAGE", cb = Export2 },
+                new lMapExt { ext = ".jpg" , format = "IMAGE", cb = Export2 },
+                new lMapExt { ext = ".gif" , format = "IMAGE", cb = Export2 },
+            };
+
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                path = saveFileDialog1.FileName;
+                string ext = Path.GetExtension(path).ToLower();
+                foreach (var i in map)
+                {
+                    if (i.ext == ext)
+                    {
+                        mPrintMode = i;
+                        ret = true;
+                        break;
+                    }
+                }
+            }
+            saveFileDialog1.Dispose();
+            return ret;
+        }
+
+        protected void Export2PDF(LocalReport report, string pdfPath, string format)
+        {
+            string deviceInfo =
+              @"<DeviceInfo>
+                    <OutputFormat>EMF</OutputFormat>
+                    <PageWidth>8.5in</PageWidth>
+                    <PageHeight>11in</PageHeight>
+                    <MarginTop>0.25in</MarginTop>
+                    <MarginLeft>0.25in</MarginLeft>
+                    <MarginRight>0.25in</MarginRight>
+                    <MarginBottom>0.25in</MarginBottom>
+                </DeviceInfo>";
+
+            {
+                byte[] bytes = report.Render("PDF", deviceInfo);
+                FileStream fs = new FileStream(pdfPath, FileMode.Create);
+                fs.Seek(0, SeekOrigin.Begin);
+                fs.Write(bytes, 0, bytes.Length);
+                fs.Close();
+            }
+        }
+        protected void Export2(LocalReport report, string pdfPath, string format)
+        {
+            byte[] bytes = report.Render(format);
+            FileStream fs = new FileStream(pdfPath, FileMode.Create);
+            fs.Seek(0, SeekOrigin.Begin);
+            fs.Write(bytes, 0, bytes.Length);
+            fs.Close();
+        }
+
         public virtual void Run()
         {
             if (appConfig.s_config.m_printToPdf)
             {
-                bool ret = selectPdfPath();
+                bool ret = selectPath(out m_pdfPath);
                 if (!ret) return;
             }
 
@@ -286,7 +399,7 @@ namespace test_binding
                 Print();
             }
         }
-        #region dispose
+#region dispose
         public void Dispose()
         {
             Dispose(true);
@@ -310,7 +423,7 @@ namespace test_binding
                 }
             }
         }
-        #endregion
+#endregion
     }
 
     [DataContract(Name = "ReceiptsReport")]
@@ -514,6 +627,31 @@ namespace test_binding
             ds.Clear();
             ds.Dispose();
             report.Dispose();
+        }
+
+        public override void Fill(LocalReport report)
+        {
+            //LocalReport report = new LocalReport();
+
+            //long time work
+            DataSet ds = new DataSet();
+            foreach (var pair in m_sqls)
+            {
+                DataTable dt = getData(pair.Key);
+
+                //after load data complete
+                dt.TableName = pair.Key;
+                ds.Tables.Add(dt);
+
+                report.ReportPath = m_rdlcPath;
+                report.DataSources.Add(new ReportDataSource(pair.Key, dt));
+            }
+
+            //add report params
+            List<ReportParameter> rpParams = getReportParam();
+            report.SetParameters(rpParams);
+
+            report.Refresh();
         }
 
         protected override void Dispose(bool disposing)
@@ -759,6 +897,87 @@ namespace test_binding
         {
             m_rdlcPath = @"..\..\c_salary.rdlc";
             m_viewName = "salary";
+        }
+    }
+
+    public class fileExporter
+    {
+        class lMapExt
+        {
+            public string ext;
+            public string format;
+            public exportCallback cb;
+        }
+
+        delegate void exportCallback(LocalReport report, string pdfPath, string format);
+        lMapExt mPrintMode;
+        string mPath = "";
+        public bool selectPath(out string path)
+        {
+            bool ret = false;
+            //select output path
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+
+            path = "";
+            saveFileDialog1.Filter = "pdf files (*.pdf)|*.pdf"
+                + "|Excel files (*.xls;*.xlsx)|*.xls;*.xlsx"
+                + "|Word files (*.doc;*.docx)|*.doc;*.docx"
+                + "|Image Files (*.bmp;*.jpg;*.gif)|*.bmp;*.jpg;*.gif"
+                + "|All files (*.*)|*.*";
+            saveFileDialog1.FilterIndex = 1;
+            saveFileDialog1.RestoreDirectory = true;
+
+            var map = new lMapExt[]
+            {
+                new lMapExt { ext = ".pdf" , format = "PDF", cb = Export2 },
+                new lMapExt { ext = ".xls" , format = "Excel", cb = Export2 },
+                new lMapExt { ext = ".xlsx" , format = "EXCELOPENXML", cb = Export2},
+                new lMapExt { ext = ".doc" , format = "WORD", cb = Export2 },
+                new lMapExt { ext = ".docx" , format = "WORDOPENXML", cb = Export2 },
+                new lMapExt { ext = ".bmp" , format = "IMAGE", cb = Export2 },
+                new lMapExt { ext = ".jpg" , format = "IMAGE", cb = Export2 },
+                new lMapExt { ext = ".gif" , format = "IMAGE", cb = Export2 },
+            };
+
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                path = saveFileDialog1.FileName;
+                string ext = Path.GetExtension(path).ToLower();
+                foreach (var i in map)
+                {
+                    if (i.ext == ext)
+                    {
+                        mPrintMode = i;
+                        mPath = path;
+                        ret = true;
+                        break;
+                    }
+                }
+            }
+            saveFileDialog1.Dispose();
+            return ret;
+        }
+
+        protected void Export2(LocalReport report, string pdfPath, string format)
+        {
+            byte[] bytes = report.Render(format);
+            FileStream fs = new FileStream(pdfPath, FileMode.Create);
+            fs.Seek(0, SeekOrigin.Begin);
+            fs.Write(bytes, 0, bytes.Length);
+            fs.Close();
+        }
+
+        public void export(LocalReport report)
+        {
+            string path;
+            if (mPath == "")
+            {
+                selectPath(out path);
+            }
+            if (mPath != "")
+            {
+                mPrintMode.cb(report, mPath, mPrintMode.format);
+            }
         }
     }
 }

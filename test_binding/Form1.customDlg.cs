@@ -370,7 +370,11 @@ namespace test_binding
             }
             if (rpt != null)
             {
-                rpt.Run();
+                var previewDlg = new rptPreview();
+                previewDlg.mRpt = rpt;
+                previewDlg.ShowDialog();
+                //rpt.Run();
+                rpt.Clean();
                 rpt.Dispose();
             }
             Close();
