@@ -14,6 +14,13 @@ using System.Windows.Forms;
 
 namespace test_binding
 {
+
+    public class appConfig
+    {
+        public static lContentProvider s_contentProvider;
+        public static lConfigMng s_config;
+    }
+
     [DataContract(Name = "config")]
     public class lConfigMng
     {
@@ -286,6 +293,12 @@ namespace test_binding
         {
             var w = getSize(txt).Width;
             return w;
+        }
+
+        //msg box
+        public static void showInputError(string msg)
+        {
+            MessageBox.Show(msg, "Input error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 }

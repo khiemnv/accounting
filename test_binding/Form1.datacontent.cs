@@ -625,6 +625,11 @@ namespace test_binding
             return data;
         }
 
+        public override object GetCnn()
+        {
+            return m_cnn;
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
