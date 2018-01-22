@@ -1,4 +1,6 @@
-﻿namespace test_reportPreview
+﻿using Microsoft.Reporting.WinForms;
+
+namespace test_reportPreview
 {
     partial class Form1
     {
@@ -28,7 +30,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.reportViewer1 = new Microsoft.Reporting.WinForms.ReportViewer();
+            this.reportViewer1 = new ReportViewer();
             this.SuspendLayout();
             // 
             // reportViewer1
@@ -56,7 +58,7 @@
 
         #endregion
 
-        private Microsoft.Reporting.WinForms.ReportViewer reportViewer1;
+        private ReportViewer reportViewer1;
     }
 }
 

@@ -1,15 +1,11 @@
 ﻿using Microsoft.Reporting.WinForms;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Data.SQLite;
 using System.Drawing;
 using System.Drawing.Printing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace test_reportPreview
@@ -285,8 +281,7 @@ namespace test_reportPreview
 
             var m_sqls = new Dictionary<string, string>
             {
-                { "DataSet1", getDateQry(zStartDate, zEndDate)},
-                { "DataSet2", getMonthQry(zStartDate, zEndDate)}
+                { "DataSet1", "select * from receipts limit 5"},
             };
 
             //if (dt != null && dt.Rows.Count > 0)
@@ -295,7 +290,7 @@ namespace test_reportPreview
 
                 LocalReport localReport = reportViewer1.LocalReport;
 
-                reportViewer1.LocalReport.ReportPath = @"..\..\receipts1.rdlc";
+                reportViewer1.LocalReport.ReportPath = @"..\..\bill_receipts.rdlc";
 
 
                 //ReportDataSource RDS = new ReportDataSource();
@@ -309,7 +304,7 @@ namespace test_reportPreview
                 {
                     DataTable dt;
                     dt = loadData(pair.Value);
-                    dt = new DataTable();
+                    //dt = new DataTable();
 
                     dt.TableName = pair.Key;
                     ds.Tables.Add(dt);
@@ -317,13 +312,14 @@ namespace test_reportPreview
                     reportViewer1.LocalReport.DataSources.Add(new ReportDataSource(pair.Key, dt));
                 }
                 reportViewer1.LocalReport.DataSources.Add(new ReportDataSource());
-                List <ReportParameter> rpParams = new List<ReportParameter>()
-                {
-                    new ReportParameter("startDate", zStartDate),
-                    new ReportParameter("endDate", zEndDate),
-                    new ReportParameter( "type", "Ngày")
-                };
-                reportViewer1.LocalReport.SetParameters(rpParams);
+                //List<ReportParameter> rpParams = new List<ReportParameter>()
+                //{
+                //    new ReportParameter("nameTxt", "nguyen van a")
+                //    //new ReportParameter("startDate", zStartDate),
+                //    //new ReportParameter("endDate", zEndDate),
+                //    //new ReportParameter( "type", "Ngày")
+                //};
+                //reportViewer1.LocalReport.SetParameters(rpParams);
                 reportViewer1.LocalReport.Refresh();
 
                 reportViewer1.SetDisplayMode (DisplayMode.PrintLayout);
@@ -332,7 +328,7 @@ namespace test_reportPreview
                 reportViewer1.ResetPageSettings();
 
                 pg = reportViewer1.GetPageSettings();
-                pg.Landscape = true;
+                //pg.Landscape = true;
                 reportViewer1.SetPageSettings(pg);
 
                 this.reportViewer1.RefreshReport();
