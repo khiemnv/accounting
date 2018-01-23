@@ -143,6 +143,7 @@ namespace test_binding
             + "date datetime,"
             + "receipt_number char(31),"
             + "name char(31),"
+            + "addr char(63),"
             + "content text,"
             + "amount INTEGER,"
             + "note text"
@@ -150,11 +151,12 @@ namespace test_binding
             m_cols = new lColInfo[] {
                    new lColInfo( "ID","ID", lColInfo.lColType.num),
                    new lColInfo( "date","Ngày Tháng", lColInfo.lColType.dateTime),
-                   new lColInfo( "receipt_number","Mã Phiếu Thu", lColInfo.lColType.uniqueText),
+                   new lColInfo( "receipt_number","Mã PT", lColInfo.lColType.uniqueText),
                    new lColInfo( "name","Họ tên", lColInfo.lColType.text),
-                   new lColInfo( "content","Nội dung", lColInfo.lColType.text, "receipts_content"),
+                   new lColInfo( "addr","Địa chỉ", lColInfo.lColType.text),
+                   new lColInfo( "content","Lý do thu", lColInfo.lColType.text, "receipts_content"),
                    new lColInfo( "amount","Số tiền", lColInfo.lColType.currency),
-                   new lColInfo( "note","Ghi chú", lColInfo.lColType.text),
+                   new lColInfo( "note","Kèm theo", lColInfo.lColType.text),
                 };
         }
 #else
@@ -1073,6 +1075,7 @@ namespace test_binding
 #endif
 #if use_cmd_params
         public virtual void Search(List<string> exprs, List<lSearchParam> srchParams) { throw new NotImplementedException(); }
+        public virtual void AddRec(List<string> exprs, List<lSearchParam> srchParams) { throw new NotImplementedException(); }
 #endif
         bool m_changed = true;
         public virtual void Load(bool isView) { throw new NotFiniteNumberException(); }
@@ -1184,6 +1187,25 @@ namespace test_binding
             GetData(selectCommand);
         }
 #endif
+        public override void AddRec(List<string> exprs, List<lSearchParam> srchParams)
+        {
+            SQLiteCommand cmd;
+
+            string cols = string.Join(",", exprs);
+            string vals = "";
+            foreach (var param in srchParams)
+            {
+                vals += ", " + param.key;
+            }
+            string sql = string.Format("insert into {0} ({1}) values ({2}) ", m_table, cols, vals.Substring(1));
+            cmd = new SQLiteCommand(sql, m_cnn);
+            foreach (var param in srchParams)
+            {
+                cmd.Parameters.AddWithValue(param.key, param.val);
+            }
+            int nRet = cmd.ExecuteNonQuery();
+        }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         public override void Load(bool isView)
         {

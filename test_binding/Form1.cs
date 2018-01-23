@@ -213,6 +213,10 @@ namespace test_binding
                 this.Close();
             }
 #endif
+
+            //load input
+            var inputDlg = new lReceiptsInputF();
+            inputDlg.ShowDialog();
         }
 
         private TabPage crtTab(lBasePanel newPanel)

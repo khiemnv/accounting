@@ -114,8 +114,9 @@ namespace test_binding
 
         private void MiReceipt_Click(object sender, EventArgs e)
         {
-            var rcptF = new receiptForm();
-            rcptF.ShowDialog();
+            //load input
+            var inputDlg = new lReceiptsInputF();
+            inputDlg.ShowDialog();
         }
 
         private void MiFont_Click(object sender, EventArgs e)
