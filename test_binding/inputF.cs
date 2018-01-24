@@ -35,24 +35,26 @@ namespace test_binding
         protected virtual void LoadData()
         {
             m_inputPanel.LoadData();
-            //m_inputPanel.OnPreview += previewBill;
-            previewBill(this, new lInputPanel.PreviewEventArgs { tbl = m_inputPanel.m_dataContent.m_dataTable });
-            reportViewer2.RefreshReport();
+            m_inputPanel.RefreshPreview += refreshPreview;
+            {
+                //after load data complete
+                var dt = m_inputPanel.m_dataContent.m_dataTable;
+                //dt.TableName = m_viewName;
+
+                LocalReport report = reportViewer2.LocalReport;
+                report.ReportPath = GetBill();
+                report.DataSources.Add(new ReportDataSource("DataSet1", dt));
+                report.Refresh();
+
+                reportViewer2.SetDisplayMode(DisplayMode.PrintLayout);
+                reportViewer2.ResetPageSettings();
+                reportViewer2.RefreshReport();
+            }
         }
 
-        private void previewBill(object sender, lInputPanel.PreviewEventArgs e)
+        private void refreshPreview(object sender, lInputPanel.PreviewEventArgs e)
         {
-            //after load data complete
-            var dt = e.tbl;
-            //dt.TableName = m_viewName;
-
-            LocalReport report = reportViewer2.LocalReport;
-            report.ReportPath = GetBill();
-            report.DataSources.Add(new ReportDataSource("DataSet1", dt));
-            report.Refresh();
-
-            reportViewer2.SetDisplayMode(DisplayMode.PrintLayout);
-            reportViewer2.ResetPageSettings();
+            reportViewer2.RefreshReport();
         }
 
         protected lInputPanel m_inputPanel;

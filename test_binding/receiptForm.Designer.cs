@@ -82,10 +82,10 @@
             this.label2.TabIndex = 2;
             this.label2.Text = "Địa chỉ";
             // 
-            // txtReason
+            // reasonTxt
             // 
             this.reasonTxt.Location = new System.Drawing.Point(78, 145);
-            this.reasonTxt.Name = "txtReason";
+            this.reasonTxt.Name = "reasonTxt";
             this.reasonTxt.Size = new System.Drawing.Size(291, 20);
             this.reasonTxt.TabIndex = 5;
             // 

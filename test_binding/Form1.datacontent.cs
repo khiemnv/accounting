@@ -144,19 +144,19 @@ namespace test_binding
             + "receipt_number char(31),"
             + "name char(31),"
             + "addr char(63),"
-            + "content text,"
             + "amount INTEGER,"
+            + "content text,"
             + "note text"
             + ")";
             m_cols = new lColInfo[] {
                    new lColInfo( "ID","ID", lColInfo.lColType.num),
-                   new lColInfo( "date","Ngày Tháng", lColInfo.lColType.dateTime),
                    new lColInfo( "receipt_number","Mã PT", lColInfo.lColType.uniqueText),
+                   new lColInfo( "date","Ngày Tháng", lColInfo.lColType.dateTime),
                    new lColInfo( "name","Họ tên", lColInfo.lColType.text),
                    new lColInfo( "addr","Địa chỉ", lColInfo.lColType.text),
                    new lColInfo( "content","Lý do thu", lColInfo.lColType.text, "receipts_content"),
-                   new lColInfo( "amount","Số tiền", lColInfo.lColType.currency),
                    new lColInfo( "note","Kèm theo", lColInfo.lColType.text),
+                   new lColInfo( "amount","Số tiền", lColInfo.lColType.currency),
                 };
         }
 #else

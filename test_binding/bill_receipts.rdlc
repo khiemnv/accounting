@@ -327,7 +327,7 @@
                           <Top>1.33514in</Top>
                           <Left>1.18411in</Left>
                           <Height>0.26861in</Height>
-                          <Width>2.47917in</Width>
+                          <Width>2.59375in</Width>
                           <ZIndex>6</ZIndex>
                           <Style>
                             <Border>
@@ -719,9 +719,9 @@
                           </Paragraphs>
                           <rd:DefaultName>Textbox18</rd:DefaultName>
                           <Top>1.04819in</Top>
-                          <Left>4.86467in</Left>
+                          <Left>4.77546in</Left>
                           <Height>0.1875in</Height>
-                          <Width>1.32747in</Width>
+                          <Width>1.41668in</Width>
                           <ZIndex>14</ZIndex>
                           <Style>
                             <Border>
@@ -739,29 +739,6 @@
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
-                        <Line Name="Line1">
-                          <Top>4.3in</Top>
-                          <Height>0in</Height>
-                          <Width>6.05663in</Width>
-                          <ZIndex>15</ZIndex>
-                          <Style>
-                            <Border>
-                              <Style>Dotted</Style>
-                            </Border>
-                            <TopBorder>
-                              <Style>Dotted</Style>
-                            </TopBorder>
-                            <BottomBorder>
-                              <Style>Dotted</Style>
-                            </BottomBorder>
-                            <LeftBorder>
-                              <Style>Dotted</Style>
-                            </LeftBorder>
-                            <RightBorder>
-                              <Style>Dotted</Style>
-                            </RightBorder>
-                          </Style>
-                        </Line>
                         <Textbox Name="Textbox10">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
@@ -784,7 +761,7 @@
                           <Left>0.10077in</Left>
                           <Height>0.1875in</Height>
                           <Width>1.19096in</Width>
-                          <ZIndex>16</ZIndex>
+                          <ZIndex>15</ZIndex>
                           <Style>
                             <Border>
                               <Style>None</Style>
@@ -827,7 +804,7 @@
                           <Left>1.29521in</Left>
                           <Height>0.1875in</Height>
                           <Width>4.89693in</Width>
-                          <ZIndex>17</ZIndex>
+                          <ZIndex>16</ZIndex>
                           <Style>
                             <Border>
                               <Style>None</Style>
@@ -870,7 +847,7 @@
                           <Left>0.10077in</Left>
                           <Height>0.1875in</Height>
                           <Width>1.19097in</Width>
-                          <ZIndex>18</ZIndex>
+                          <ZIndex>17</ZIndex>
                           <Style>
                             <Border>
                               <Style>None</Style>
@@ -906,7 +883,7 @@
                           <Left>1.29521in</Left>
                           <Height>0.1875in</Height>
                           <Width>4.89693in</Width>
-                          <ZIndex>19</ZIndex>
+                          <ZIndex>18</ZIndex>
                           <Style>
                             <Border>
                               <Style>None</Style>
@@ -945,7 +922,7 @@
                           <Left>0.10077in</Left>
                           <Height>0.1875in</Height>
                           <Width>1.19097in</Width>
-                          <ZIndex>20</ZIndex>
+                          <ZIndex>19</ZIndex>
                           <Style>
                             <Border>
                               <Style>None</Style>
@@ -964,7 +941,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!name.Value</Value>
+                                  <Value>=Fields!addr.Value</Value>
                                   <Style>
                                     <FontFamily>times New Roman</FontFamily>
                                     <FontSize>12pt</FontSize>
@@ -981,7 +958,7 @@
                           <Left>1.29521in</Left>
                           <Height>0.1875in</Height>
                           <Width>4.89692in</Width>
-                          <ZIndex>21</ZIndex>
+                          <ZIndex>20</ZIndex>
                           <Style>
                             <Border>
                               <Style>None</Style>
@@ -1006,6 +983,7 @@
                         </Border>
                       </Style>
                     </Rectangle>
+                    <rd:Selected>true</rd:Selected>
                   </CellContents>
                 </TablixCell>
               </TablixCells>
@@ -1090,10 +1068,14 @@
           <DataField>note</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
+        <Field Name="addr">
+          <DataField>addr</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
       </Fields>
       <rd:DataSetInfo>
         <rd:DataSetName>accountingDataSet</rd:DataSetName>
-        <rd:SchemaPath>D:\tmp\github\accounting\test_reportPreview\accountingDataSet.xsd</rd:SchemaPath>
+        <rd:SchemaPath>D:\tmp\github\accounting\test_binding\accountingDataSet.xsd</rd:SchemaPath>
         <rd:TableName>receipts</rd:TableName>
         <rd:TableAdapterFillMethod>Fill</rd:TableAdapterFillMethod>
         <rd:TableAdapterGetDataMethod>GetData</rd:TableAdapterGetDataMethod>

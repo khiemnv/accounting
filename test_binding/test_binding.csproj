@@ -131,6 +131,11 @@
     <Reference Include="System.Xml.Serialization" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="accountingDataSet.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>accountingDataSet.xsd</DependentUpon>
+    </Compile>
     <Compile Include="Form1.bgTask.cs" />
     <Compile Include="Form1.config.cs" />
     <Compile Include="Form1.customColumn.cs" />
@@ -155,6 +160,7 @@
     <Compile Include="inputF.Designer.cs">
       <DependentUpon>inputF.cs</DependentUpon>
     </Compile>
+    <Compile Include="inputF.inputpanel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="receiptForm.cs">
@@ -170,6 +176,7 @@
       <DependentUpon>rptPreview.cs</DependentUpon>
     </Compile>
     <Compile Include="SqlServerTypes\Loader.cs" />
+    <EmbeddedResource Include="bill_receipts.rdlc" />
     <EmbeddedResource Include="c_exterpayment.rdlc" />
     <EmbeddedResource Include="c_interpayment.rdlc" />
     <EmbeddedResource Include="c_receipts.rdlc" />
@@ -201,11 +208,21 @@
     <EmbeddedResource Include="rpt_exterpayment.rdlc" />
     <EmbeddedResource Include="rpt_interpayment.rdlc" />
     <EmbeddedResource Include="rpt_receipts.rdlc" />
-    <EmbeddedResource Include="rpt_receiptSingle.rdlc" />
     <EmbeddedResource Include="rpt_salary.rdlc" />
     <Compile Include="Form1.menu.cs">
       <SubType>Form</SubType>
     </Compile>
+    <None Include="accountingDataSet.xsc">
+      <DependentUpon>accountingDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="accountingDataSet.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>accountingDataSet.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="accountingDataSet.xss">
+      <DependentUpon>accountingDataSet.xsd</DependentUpon>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

@@ -123,3 +123,21 @@ tableinfo
   + index on receipts, payment, salary: date, group name, receipts content
   + display search time, update time
 28 expert search edt - not yet
+29 config font
+30 + input panel
+  + input ctrl
+    label text center x
+    container         x
+  + clear
+  + edit, delete
+  + column order      x
+  + show all column   x
+  + one receipt/page  x
+  + print guide       ?
+  + number input format ?
+  + currentcy to text ?
+  + gridview position x
+  + auto gen rpt number x
+    inputCtrl.setVal(); getVal
+    on add() -> inckey() ->setVal()
+  + unique text         x
