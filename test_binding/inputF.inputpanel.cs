@@ -192,13 +192,36 @@ namespace test_binding
     public class lInputPanel
     {
         public lDataContent m_dataContent;
+        public virtual List<string> m_amountTxs { get; }
         public List<lInputCtrl> m_inputsCtrls;
 
         public class PreviewEventArgs : EventArgs
         {
             public DataTable tbl;
         }
-        public EventHandler<PreviewEventArgs> RefreshPreview;
+        static Dictionary<string, EventHandler<PreviewEventArgs>> m_dict = new Dictionary<string, EventHandler<PreviewEventArgs>>();
+        private EventHandler<PreviewEventArgs> mRefreshPreview;
+        public event EventHandler<PreviewEventArgs> RefreshPreview
+        {
+            add
+            {
+                string key = value.Target.ToString();
+                if (!m_dict.ContainsKey(key))
+                {
+                    m_dict.Add(key, value);
+                    mRefreshPreview += value;
+                }
+                else
+                {
+                    mRefreshPreview -= m_dict[key];
+                    m_dict[key] = value;
+                    mRefreshPreview += value;
+                }
+            }
+            remove
+            {
+            }
+        }
 
         protected string m_tblName;
         protected lTableInfo m_tblInfo { get { return appConfig.s_config.getTable(m_tblName); } }
@@ -304,10 +327,10 @@ namespace test_binding
             m_dataContent.Submit();
 
             //sync
-            if (RefreshPreview != null)
-            {
-                RefreshPreview(this, new PreviewEventArgs { tbl = tbl });
-            }
+            //if (RefreshPreview != null)
+            //{
+            //    RefreshPreview(this, new PreviewEventArgs { tbl = tbl });
+            //}
             bIncKeyReq = true;
         }
         protected virtual lInputCtrl m_keyCtrl{get;}
@@ -323,10 +346,10 @@ namespace test_binding
         {
             Save();
 
-            if (RefreshPreview != null)
-            {
-                RefreshPreview(this, new PreviewEventArgs { tbl = m_dataContent.m_dataTable });
-            }
+            //if (RefreshPreview != null)
+            //{
+            //    RefreshPreview(this, new PreviewEventArgs { tbl = m_dataContent.m_dataTable });
+            //}
         }
         protected virtual void Save()
         {
@@ -374,6 +397,9 @@ namespace test_binding
                 m_keyCtrl.Text = IncKey();
                 bIncKeyReq = false;
             }
+            //if delete or add complete
+            if (mRefreshPreview != null)
+                mRefreshPreview(this, new PreviewEventArgs { tbl = m_dataContent.m_dataTable });
         }
 
         private void crtColumns()
@@ -593,6 +619,21 @@ namespace test_binding
                 }
             }
             return newKey;
+        }
+        public override List<string> m_amountTxs
+        {
+            get
+            {
+                List<string> amountTxs = new List<string>();
+                foreach (DataRow row in m_dataContent.m_dataTable.Rows)
+                {
+                    if (row.RowState == DataRowState.Deleted) continue;
+                    long amount = (long)row["amount"];
+                    amountTxs.Add(common.amountToTxt(amount));
+                }
+                //amountTxs.Add(" ");
+                return amountTxs;
+            }
         }
     }
     public class lInterPayInputPanel : lInputPanel

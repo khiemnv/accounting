@@ -32,6 +32,15 @@ namespace test_binding
             return new lReceiptsInputPanel();
         }
 
+        List<ReportParameter> crtParams()
+        {
+            List<ReportParameter> rpParams = new List<ReportParameter>()
+            {
+                new ReportParameter("amountTxts", m_inputPanel.m_amountTxs.ToArray())
+            };
+            return rpParams;
+        }
+
         protected virtual void LoadData()
         {
             m_inputPanel.LoadData();
@@ -44,6 +53,7 @@ namespace test_binding
                 LocalReport report = reportViewer2.LocalReport;
                 report.ReportPath = GetBill();
                 report.DataSources.Add(new ReportDataSource("DataSet1", dt));
+                report.SetParameters(crtParams());
                 report.Refresh();
 
                 reportViewer2.SetDisplayMode(DisplayMode.PrintLayout);
@@ -54,6 +64,8 @@ namespace test_binding
 
         private void refreshPreview(object sender, lInputPanel.PreviewEventArgs e)
         {
+            reportViewer2.LocalReport.SetParameters(crtParams());
+            //reportViewer2.LocalReport.Refresh();
             reportViewer2.RefreshReport();
         }
 

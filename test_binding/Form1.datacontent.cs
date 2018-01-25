@@ -882,17 +882,41 @@ namespace test_binding
                 handler(this, e);
             }
         }
+        private EventHandler<FillTableCompletedEventArgs> mUpdateTableCompleted;
         public event EventHandler<FillTableCompletedEventArgs> FillTableCompleted;
 
-        protected virtual void OnUpdateTableCompleted(FillTableCompletedEventArgs e)
+        #region update_complete_event
+        static Dictionary<string, EventHandler<FillTableCompletedEventArgs>> m_dict = 
+            new Dictionary<string, EventHandler<FillTableCompletedEventArgs>>();
+        public event EventHandler<FillTableCompletedEventArgs> UpdateTableCompleted
         {
-            EventHandler<FillTableCompletedEventArgs> handler = UpdateTableCompleted;
-            if (handler != null)
+            add
             {
-                handler(this, e);
+                string key = value.Target.ToString();
+                if (!m_dict.ContainsKey(key))
+                {
+                    m_dict.Add(key, value);
+                    mUpdateTableCompleted += value;
+                }
+                else
+                {
+                    mUpdateTableCompleted -= m_dict[key];
+                    m_dict[key] = value;
+                    mUpdateTableCompleted += value;
+                }
+            }
+            remove
+            {
             }
         }
-        public event EventHandler<FillTableCompletedEventArgs> UpdateTableCompleted;
+        protected virtual void OnUpdateTableCompleted(FillTableCompletedEventArgs e)
+        {
+            if (mUpdateTableCompleted != null)
+            {
+                mUpdateTableCompleted(this, e);
+            }
+        }
+        #endregion //update_complete_event
 
         protected virtual void OnProgessCompleted(EventArgs e)
         {

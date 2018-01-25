@@ -301,4 +301,66 @@ namespace test_binding
             MessageBox.Show(msg, "Input error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
+
+    class common
+    {
+        public static string amountToTxt(long amount)
+        {
+            //n = không, một, ... chín
+            //x = a trăm b mươi c
+            //b = x tỷ x triệu x nghìn x (đồng chẵn)
+            // 10^9  10^6    10^3
+            string arrB = "";
+            const long oneB = (1000 * 1000 * 1000);
+            for (int i = 0; i < 3 && amount > oneB; i++)
+            {
+                arrB += bConvert(amount / oneB) + " tỷ ";
+                amount = amount % oneB;
+            }
+            arrB += bConvert(amount);
+            //upper case 1st char & trim
+            char[] chs = arrB.ToCharArray();
+            chs[0] = char.ToUpper(chs[0]);
+            int len;
+            for (len = chs.Length - 1; chs[len] == ' '; len--) { }
+            return new string(chs, 0, len + 1);
+        }
+
+        private static string bConvert(long v)
+        {
+            string ret = "";
+            var m = v / 1000000;
+            if (m > 0) { ret += tConvert(m) + " triệu "; }
+            v = v % 1000000;
+            var t = v / 1000;
+            if (t > 0) { ret += tConvert(t) + " nghìn "; }
+            v = v % 1000;
+            if (v > 0) { ret += tConvert(v); }
+            return ret;
+        }
+
+        private static string tConvert(long v)
+        {
+            string ret = "";
+            var d = v / 100;
+            List<string> arr = new List<string>();
+            bool reqPadd = false;
+            if (d > 0) { arr.Add(dConvert(d) + " trăm"); reqPadd = true; }
+            v = v % 100;
+            d = v / 10;
+            if (d > 0) { arr.Add(dConvert(d) + " mươi"); reqPadd = false; }
+            d = v % 10;
+            if (d > 0) { if (reqPadd) arr.Add("lẻ"); arr.Add(dConvert(d)); }
+            ret = string.Join(" ", arr);
+            ret = ret.Replace("một mươi", "mười");
+            ret = ret.Replace("mươi một", "mươi mốt");
+            return ret;
+        }
+
+        private static string dConvert(long d)
+        {
+            string[] arr = { "không", "một", "hai", "ba", "bốn", "năm", "sáu", "bảy", "tám", "chín" };
+            return arr[d];
+        }
+    }
 }
