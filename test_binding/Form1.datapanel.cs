@@ -145,6 +145,9 @@ namespace test_binding
             {
                 c.Font = lConfigMng.getFont();
             }
+
+            //update status
+            m_stsMng = new statusMng(UpdateStsTxt);
         }
 
         private void crtColumns()
@@ -309,26 +312,59 @@ namespace test_binding
 #if use_cmd_params
         public void search(List<string> exprs, List<lSearchParam> srchParams)
         {
-            m_status.Text = "Searching";
-            m_startTime = DateTime.Now;
+            m_stsMng.onTaskBegin("Searching");
             m_dataContent.Search(exprs, srchParams);
             //update();
         }
 #endif
+        #region status_txt
+        delegate void callBack_z(string txt);
+        class statusMng {
+            public DateTime m_startTime;
+            public string m_stsTxt;
+            private bool m_isEnable;
+            private callBack_z m_udpateStsCb;
+            public statusMng(callBack_z cb_z)
+            {
+                m_udpateStsCb = cb_z;
+                m_isEnable = false;
+            }
+            public void onTaskBegin(string txt)
+            {
+                m_isEnable = true;
+                m_stsTxt = txt;
+                m_startTime = DateTime.Now;
+                m_udpateStsCb(txt);
+            }
+            public void onTaskEnd(DateTime endTime)
+            {
+                if (!m_isEnable) return;
 
+                string preTxt = m_stsTxt;
+                var elapsed = endTime - m_startTime;
+                m_stsTxt = string.Format("{0} completed in {1:0.00} s", preTxt, elapsed.TotalSeconds);
+                m_udpateStsCb(m_stsTxt);
+                m_isEnable = false;
+            }
+            public event EventHandler UpdateStsTxt;
+        }
+        statusMng m_stsMng;
+        private void UpdateStsTxt(string txt)
+        {
+            m_status.Text = txt;
+        }
+        #endregion  //status_txt
 
         private void reloadButton_Click(object sender, System.EventArgs e)
         {
-            m_status.Text = "Reloading";
-            m_startTime = DateTime.Now;
+            m_stsMng.onTaskBegin("Reloading");
             m_dataContent.Reload();
             //update();
             //m_status.Text = "Reloading completed!";
         }
         private void submitButton_Click(object sender, System.EventArgs e)
         {
-            m_status.Text = "Saving";
-            m_startTime = DateTime.Now;
+            m_stsMng.onTaskBegin("Saving");
             m_dataContent.Submit();
         }
 
@@ -388,9 +424,7 @@ namespace test_binding
         private void M_dataContent_FillTableCompleted(object sender, lDataContent.FillTableCompletedEventArgs e)
         {
             update();
-            string preTxt = m_status.Text;
-            var elapsed = e.TimeComplete - m_startTime;
-            m_status.Text = string.Format("{0} completed in {1:0.00} s", preTxt, elapsed.TotalSeconds);
+            m_stsMng.onTaskEnd(e.TimeComplete);
         }
 
         #region dispose

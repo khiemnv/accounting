@@ -284,6 +284,25 @@ namespace test_binding
             ctrl.Font = getFont();
             return ctrl;
         }
+        public static DataGridView crtDGV()
+        {
+            var ctrl = new DataGridView();
+            ctrl.Font = getFont();
+            return ctrl;
+        }
+        public static MenuStrip CrtMenuStrip()
+        {
+            var ctrl = new MenuStrip();
+            ctrl.Font = getFont();
+            return ctrl;
+        }
+        public static ToolStripMenuItem CrtStripMI()
+        {
+            var ctrl = new ToolStripMenuItem();
+            ctrl.Font = getFont();
+            return ctrl;
+        }
+
         private static Size getSize(string txt)
         {
             var size = TextRenderer.MeasureText(txt, getFont());
@@ -362,5 +381,10 @@ namespace test_binding
             string[] arr = { "không", "một", "hai", "ba", "bốn", "năm", "sáu", "bảy", "tám", "chín" };
             return arr[d];
         }
+    }
+
+    class myCallback
+    {
+
     }
 }

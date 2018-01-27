@@ -37,7 +37,8 @@ namespace test_binding
 #else //ToolStripMenuItem
         private ToolStripMenuItem crtMenuItem(string text)
         {
-            ToolStripMenuItem mi = new ToolStripMenuItem();
+            //ToolStripMenuItem mi = new ToolStripMenuItem();
+            var mi = lConfigMng.CrtStripMI();
             mi.Text = text;
             return mi;
         }
@@ -52,7 +53,7 @@ namespace test_binding
             MainMenu mainMenu = new MainMenu();
             this.Menu = mainMenu;
 #else
-            var mainMenu = new MenuStrip();
+            var mainMenu = lConfigMng.CrtMenuStrip();
 #endif
             //File
             //  Close
@@ -115,8 +116,7 @@ namespace test_binding
         private void MiReceipt_Click(object sender, EventArgs e)
         {
             //load input
-            var inputDlg = new lReceiptsInputF();
-            inputDlg.ShowDialog();
+            openReceiptsInputForm();
         }
 
         private void MiFont_Click(object sender, EventArgs e)

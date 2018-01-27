@@ -215,9 +215,17 @@ namespace test_binding
 #endif
 
             //load input
+            openReceiptsInputForm();
+        }
+        private void openReceiptsInputForm()
+        {
             var inputDlg = new lReceiptsInputF();
+#if fullscreen_onload
+            inputDlg.WindowState = FormWindowState.Maximized;
+#endif
             inputDlg.ShowDialog();
         }
+
 
         private TabPage crtTab(lBasePanel newPanel)
         {
@@ -335,7 +343,7 @@ namespace test_binding
             m_searchPanel.LoadData();
         }
 
-        #region dispose
+#region dispose
         // Dispose() calls Dispose(true)  
         public void Dispose()
         {
@@ -364,7 +372,7 @@ namespace test_binding
             }
             // free native resources if there are any. 
         }
-        #endregion
+#endregion
     }
 
     [DataContract(Name = "InternalPaymentPanel")]

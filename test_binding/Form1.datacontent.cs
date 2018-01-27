@@ -873,57 +873,53 @@ namespace test_binding
             public Int64 Sum { get; set; }
             public DateTime TimeComplete { get; set; }
         }
-
-        protected virtual void OnFillTableCompleted(FillTableCompletedEventArgs e)
-        {
-            EventHandler<FillTableCompletedEventArgs> handler = FillTableCompleted;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
-        }
-        private EventHandler<FillTableCompletedEventArgs> mUpdateTableCompleted;
-        public event EventHandler<FillTableCompletedEventArgs> FillTableCompleted;
-
-        #region update_complete_event
         static Dictionary<string, EventHandler<FillTableCompletedEventArgs>> m_dict = 
             new Dictionary<string, EventHandler<FillTableCompletedEventArgs>>();
+        private void addEvent(string zType, ref EventHandler<FillTableCompletedEventArgs> handler, EventHandler<FillTableCompletedEventArgs> value)
+        {
+            string key = zType + value.Target.ToString();
+            if (!m_dict.ContainsKey(key))
+            {
+                m_dict.Add(key, value);
+                handler += value;
+            }
+            else
+            {
+                handler -= m_dict[key];
+                m_dict[key] = value;
+                handler += value;
+            }
+        }
+
+        
+        #region update_complete_event
+        private EventHandler<FillTableCompletedEventArgs> mFillTableCompleted;
+        public event EventHandler<FillTableCompletedEventArgs> FillTableCompleted
+        {
+            add{addEvent("FillTableCompleted", ref mFillTableCompleted, value);}
+            remove{}
+        }
+        protected virtual void OnFillTableCompleted(FillTableCompletedEventArgs e)
+        {
+            if (mFillTableCompleted != null){mFillTableCompleted(this, e);}
+        }
+        private EventHandler<FillTableCompletedEventArgs> mUpdateTableCompleted;
         public event EventHandler<FillTableCompletedEventArgs> UpdateTableCompleted
         {
-            add
-            {
-                string key = value.Target.ToString();
-                if (!m_dict.ContainsKey(key))
-                {
-                    m_dict.Add(key, value);
-                    mUpdateTableCompleted += value;
-                }
-                else
-                {
-                    mUpdateTableCompleted -= m_dict[key];
-                    m_dict[key] = value;
-                    mUpdateTableCompleted += value;
-                }
-            }
-            remove
-            {
-            }
+            add{addEvent("UpdateTableCompleted", ref mUpdateTableCompleted, value);}
+            remove{}
         }
         protected virtual void OnUpdateTableCompleted(FillTableCompletedEventArgs e)
         {
-            if (mUpdateTableCompleted != null)
-            {
-                mUpdateTableCompleted(this, e);
-            }
+            if (mUpdateTableCompleted != null){mUpdateTableCompleted(this, e);}
         }
         #endregion //update_complete_event
 
         protected virtual void OnProgessCompleted(EventArgs e)
         {
-            EventHandler handler = ProgessCompleted;
-            if (handler != null)
+            if (ProgessCompleted != null)
             {
-                handler(this, e);
+                ProgessCompleted(this, e);
             }
         }
         public event EventHandler ProgessCompleted;

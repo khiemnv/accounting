@@ -155,6 +155,7 @@ namespace test_binding
     public class lInputCtrlCurrency : lInputCtrl
     {
         private TextBox m_val = lConfigMng.crtTextBox();
+        //private Label m_lab = lConfigMng.crtLabel();
         public lInputCtrlCurrency(string fieldName, string alias, ctrlType type, Point pos, Size size)
             : base(fieldName, alias, type, pos, size)
         {
@@ -164,7 +165,77 @@ namespace test_binding
             int w = 100;
 #endif
             m_val.Width = w;
+            m_val.RightToLeft = RightToLeft.Yes;
+            m_val.TextChanged += M_val_TextChanged;
+            //m_val.KeyPress += textBox1_KeyPress;
+
+            //m_lab.AutoSize = true;
+
+            //FlowLayoutPanel group = new FlowLayoutPanel();
+            //group.FlowDirection = FlowDirection.LeftToRight;
+            //group.AutoSize = true;
+
+            //group.Controls.AddRange(new Control[] { m_label, m_val});
             m_panel.Controls.AddRange(new Control[] { m_label, m_val });
+            //m_panel.FlowDirection = FlowDirection.TopDown;
+        }
+
+        private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) &&
+                (e.KeyChar != ','))
+            {
+                e.Handled = true;
+            }
+
+            //// only allow one decimal point
+            //if ((e.KeyChar == ',') && ((sender as TextBox).Text.IndexOf(',') > -1))
+            //{
+            //    e.Handled = true;
+            //}
+        }
+
+        //ToolTip tt = new ToolTip();
+        private void M_val_TextChanged(object sender, EventArgs e)
+        {
+            string val;
+            Int64 amount = 0;
+            val = m_val.Text;
+            //display in 000,000
+            char[] buff = new char[64];
+            Debug.Assert(val.Length < 48);
+            int j = 63;
+            for (int i = val.Length; i > 0; i--)
+            {
+                char ch = val[i - 1];
+                if (ch >= '0' && ch <= '9')
+                {
+                    amount = amount * 10 + (ch - '0');
+                    if (j % 4 == 0)
+                    {
+                        buff[j] = ',';
+                        j--;
+                    }
+                    buff[j] = ch;
+                    j--;
+                }
+            }
+            val = new string(buff, j + 1, 63 - j);
+            m_val.Text = val;
+            m_val.Select(val.Length, 0);
+
+            //update size
+            int w = lConfigMng.getWidth(val);
+            if (w > 100) m_val.Width = w;
+#if display_amount_tooltip
+            if (amount > 0)
+            {
+                tt.IsBalloon = true;
+                tt.InitialDelay = 0;
+                tt.ShowAlways = true;
+                tt.SetToolTip(m_val, common.amountToTxt(amount));
+            }
+#endif
         }
 
         void getInputRange(out string val)
@@ -205,21 +276,25 @@ namespace test_binding
         {
             add
             {
-                string key = value.Target.ToString();
-                if (!m_dict.ContainsKey(key))
-                {
-                    m_dict.Add(key, value);
-                    mRefreshPreview += value;
-                }
-                else
-                {
-                    mRefreshPreview -= m_dict[key];
-                    m_dict[key] = value;
-                    mRefreshPreview += value;
-                }
+                addEvent("RefreshPreview",ref mRefreshPreview, value);
             }
             remove
             {
+            }
+        }
+        private void addEvent(string zType, ref EventHandler<PreviewEventArgs> handler, EventHandler<PreviewEventArgs> value)
+        {
+            string key = zType + value.Target.ToString();
+            if (!m_dict.ContainsKey(key))
+            {
+                m_dict.Add(key, value);
+                handler += value;
+            }
+            else
+            {
+                handler -= m_dict[key];
+                m_dict[key] = value;
+                handler += value;
             }
         }
 
@@ -280,7 +355,7 @@ namespace test_binding
             m_tbl.Controls.Add(tflow, 0, ++lastRow);
 
             // add data grid view
-            m_dataGridView = new DataGridView();
+            m_dataGridView = lConfigMng.crtDGV();
             m_dataGridView.EnableHeadersVisualStyles = false;
             m_dataGridView.Dock = DockStyle.Fill;
 
@@ -293,6 +368,7 @@ namespace test_binding
         {
             m_dataGridView.CancelEdit();
             m_dataContent.m_dataTable.Clear();
+            if (mRefreshPreview != null) { mRefreshPreview(this, null); }
         }
 
         private void M_editBtn_Click(object sender, EventArgs e)
@@ -628,10 +704,18 @@ namespace test_binding
                 foreach (DataRow row in m_dataContent.m_dataTable.Rows)
                 {
                     if (row.RowState == DataRowState.Deleted) continue;
-                    long amount = (long)row["amount"];
-                    amountTxs.Add(common.amountToTxt(amount));
+                    //[TODO] db null
+                    try
+                    {
+                        long amount = (long)row["amount"];
+                        amountTxs.Add(common.amountToTxt(amount));
+                    }
+                    catch
+                    {
+                        Debug.Assert(false);
+                        amountTxs.Add("   ");
+                    }
                 }
-                //amountTxs.Add(" ");
                 return amountTxs;
             }
         }

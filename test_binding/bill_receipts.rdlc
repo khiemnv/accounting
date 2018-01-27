@@ -1092,6 +1092,11 @@
   <ReportParameters>
     <ReportParameter Name="amountTxts">
       <DataType>String</DataType>
+      <DefaultValue>
+        <Values>
+          <Value xml:space="preserve">   </Value>
+        </Values>
+      </DefaultValue>
       <Prompt>ReportParameter1</Prompt>
       <MultiValue>true</MultiValue>
     </ReportParameter>

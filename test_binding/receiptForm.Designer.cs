@@ -48,6 +48,9 @@
             this.label9 = new System.Windows.Forms.Label();
             this.saveBtn = new System.Windows.Forms.Button();
             this.cancelBtn = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -116,17 +119,18 @@
             // 
             // amountTxt
             // 
-            this.amountTxt.Location = new System.Drawing.Point(78, 196);
+            this.amountTxt.Dock = System.Windows.Forms.DockStyle.Top;
+            this.amountTxt.Location = new System.Drawing.Point(3, 29);
             this.amountTxt.Name = "amountTxt";
-            this.amountTxt.Size = new System.Drawing.Size(291, 20);
+            this.amountTxt.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.amountTxt.Size = new System.Drawing.Size(344, 20);
             this.amountTxt.TabIndex = 9;
             // 
             // label5
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(13, 200);
+            this.label5.Location = new System.Drawing.Point(3, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(40, 13);
+            this.label5.Size = new System.Drawing.Size(50, 13);
             this.label5.TabIndex = 8;
             this.label5.Text = "Số tiền";
             // 
@@ -200,7 +204,7 @@
             // 
             // saveBtn
             // 
-            this.saveBtn.Location = new System.Drawing.Point(209, 222);
+            this.saveBtn.Location = new System.Drawing.Point(209, 287);
             this.saveBtn.Name = "saveBtn";
             this.saveBtn.Size = new System.Drawing.Size(75, 23);
             this.saveBtn.TabIndex = 18;
@@ -210,18 +214,37 @@
             // 
             // cancelBtn
             // 
-            this.cancelBtn.Location = new System.Drawing.Point(293, 222);
+            this.cancelBtn.Location = new System.Drawing.Point(293, 287);
             this.cancelBtn.Name = "cancelBtn";
             this.cancelBtn.Size = new System.Drawing.Size(75, 23);
             this.cancelBtn.TabIndex = 19;
             this.cancelBtn.Text = "Cancel";
             this.cancelBtn.UseVisualStyleBackColor = true;
             // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(59, 3);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.textBox1.Size = new System.Drawing.Size(288, 20);
+            this.textBox1.TabIndex = 20;
+            // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Controls.Add(this.label5);
+            this.flowLayoutPanel1.Controls.Add(this.textBox1);
+            this.flowLayoutPanel1.Controls.Add(this.amountTxt);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(16, 197);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(353, 71);
+            this.flowLayoutPanel1.TabIndex = 21;
+            // 
             // receiptForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(468, 253);
+            this.ClientSize = new System.Drawing.Size(468, 332);
+            this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.cancelBtn);
             this.Controls.Add(this.saveBtn);
             this.Controls.Add(this.pcNoTxt);
@@ -232,8 +255,6 @@
             this.Controls.Add(this.label7);
             this.Controls.Add(this.printBtn);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.amountTxt);
-            this.Controls.Add(this.label5);
             this.Controls.Add(this.noteTxt);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.reasonTxt);
@@ -244,6 +265,8 @@
             this.Controls.Add(this.label1);
             this.Name = "receiptForm";
             this.Text = "Phiếu Thu";
+            this.flowLayoutPanel1.ResumeLayout(false);
+            this.flowLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -271,5 +294,7 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Button saveBtn;
         private System.Windows.Forms.Button cancelBtn;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }
 }
