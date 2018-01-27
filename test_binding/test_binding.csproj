@@ -136,6 +136,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>accountingDataSet.xsd</DependentUpon>
     </Compile>
+    <Compile Include="accountingDataSet1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>accountingDataSet1.xsd</DependentUpon>
+    </Compile>
     <Compile Include="Form1.bgTask.cs" />
     <Compile Include="Form1.config.cs" />
     <Compile Include="Form1.customColumn.cs" />
@@ -176,6 +181,7 @@
       <DependentUpon>rptPreview.cs</DependentUpon>
     </Compile>
     <Compile Include="SqlServerTypes\Loader.cs" />
+    <EmbeddedResource Include="bill_exterpay.rdlc" />
     <EmbeddedResource Include="bill_receipts.rdlc" />
     <EmbeddedResource Include="c_exterpayment.rdlc" />
     <EmbeddedResource Include="c_interpayment.rdlc" />
@@ -222,6 +228,17 @@
     </None>
     <None Include="accountingDataSet.xss">
       <DependentUpon>accountingDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="accountingDataSet1.xsc">
+      <DependentUpon>accountingDataSet1.xsd</DependentUpon>
+    </None>
+    <None Include="accountingDataSet1.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>accountingDataSet1.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="accountingDataSet1.xss">
+      <DependentUpon>accountingDataSet1.xsd</DependentUpon>
     </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

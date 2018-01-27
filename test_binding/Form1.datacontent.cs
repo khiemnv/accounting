@@ -215,6 +215,7 @@ namespace test_binding
             + "date datetime,"
             + "payment_number char(31),"
             + "name char(31),"
+            + "addr char(63),"
             + "content text,"
             + "building char(31),"
             + "group_name char(31),"
@@ -226,11 +227,12 @@ namespace test_binding
                    new lColInfo( "date","Ngày Tháng", lColInfo.lColType.dateTime),
                    new lColInfo( "payment_number","Mã Phiếu Chi", lColInfo.lColType.uniqueText),
                    new lColInfo( "name","Họ Tên", lColInfo.lColType.text),
-                   new lColInfo( "content","Nội dung", lColInfo.lColType.text),
-                   new lColInfo( "building","Công trình", lColInfo.lColType.text, "building"),
+                   new lColInfo( "addr","Địa chỉ", lColInfo.lColType.text),
                    new lColInfo( "group_name","Thuộc ban", lColInfo.lColType.text, "group_name"),
-                   new lColInfo( "spent","Số tiền", lColInfo.lColType.currency),
+                   new lColInfo( "building","Công trình", lColInfo.lColType.text, "building"),
+                   new lColInfo( "content","Nội dung", lColInfo.lColType.text),
                    new lColInfo( "note","Ghi Chú", lColInfo.lColType.text),
+                   new lColInfo( "spent","Số tiền", lColInfo.lColType.currency),
                 };
         }
     };

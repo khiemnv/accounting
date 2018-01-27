@@ -116,7 +116,7 @@ namespace test_binding
         private void MiReceipt_Click(object sender, EventArgs e)
         {
             //load input
-            openReceiptsInputForm();
+            openInputForm(inputFormType.receiptIF);
         }
 
         private void MiFont_Click(object sender, EventArgs e)

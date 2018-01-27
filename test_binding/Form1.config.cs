@@ -323,7 +323,7 @@ namespace test_binding
 
     class common
     {
-        public static string amountToTxt(long amount)
+        public static string CurrencyToTxt(long amount)
         {
             //n = không, một, ... chín
             //x = a trăm b mươi c

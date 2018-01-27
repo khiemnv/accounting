@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Reporting.WinForms;
 
 namespace test_binding
 {
@@ -263,7 +264,7 @@ namespace test_binding
     public class lInputPanel
     {
         public lDataContent m_dataContent;
-        public virtual List<string> m_amountTxs { get; }
+        public virtual List<ReportParameter> billRptParams { get; }
         public List<lInputCtrl> m_inputsCtrls;
 
         public class PreviewEventArgs : EventArgs
@@ -410,13 +411,15 @@ namespace test_binding
             bIncKeyReq = true;
         }
         protected virtual lInputCtrl m_keyCtrl{get;}
+
+        protected virtual keyMng m_keyMng { get; }
         protected virtual string InitKey()
         {
-            throw new NotImplementedException();
+            return m_keyMng.InitKey();
         }
         protected virtual string IncKey()
         {
-            throw new NotImplementedException();
+            return m_keyMng.IncKey();
         }
         private void M_saveBtn_Click(object sender, EventArgs e)
         {
@@ -618,48 +621,37 @@ namespace test_binding
             return null;
         }
     }
-    public class lReceiptsInputPanel : lInputPanel
+    public class keyMng
     {
-        protected override lInputCtrl m_keyCtrl { get { return m_inputsCtrls[0]; } }
+        string m_preFix;
+        string m_tblName;
+        string m_keyField;
+        string m_dateField;
         Regex m_reg;
-        public lReceiptsInputPanel()
+        string m_preKey;
+        public keyMng(string preFix, string tblName, string keyField, string dateField = "date")
         {
-            {
-                m_tblName = "receipts";
-
-                m_inputsCtrls = new List<lInputCtrl> {
-                    crtInputCtrl(m_tblInfo, "receipt_number", new Point(0, 0), new Size(1, 1)),
-                    crtInputCtrl(m_tblInfo, "date", new Point(0, 1), new Size(1, 1)),
-                    crtInputCtrl(m_tblInfo, "name", new Point(0, 2), new Size(1, 1)),
-                    crtInputCtrl(m_tblInfo, "addr", new Point(0, 3), new Size(1, 1)),
-                    crtInputCtrl(m_tblInfo, "content", new Point(0, 4), new Size(1, 1)),
-                    crtInputCtrl(m_tblInfo, "note", new Point(0, 5), new Size(1, 1)),
-                    crtInputCtrl(m_tblInfo, "amount", new Point(0, 6), new Size(1, 1)),
-                };
-                m_reg = new Regex(@"(PT\d{8})(\d{3})");
-            }
+            m_preFix = preFix;
+            m_tblName = tblName;
+            m_keyField = keyField;
+            m_dateField = dateField;
+            //@"(PT\d{8})(\d{3})"
+            m_reg = new Regex(@"(\d{8})(\d{3})");
         }
-        bool checkUniqKey(string val)
+        private string genKey(DateTime date, int n)
         {
-            var bRet = true;
-            string sql = string.Format("select id, {0} from {1} where {0} = '{2}'",
-                "receipt_number", "receipts", val);
-            var tbl = appConfig.s_contentProvider.GetData(sql);
-            if (tbl.Rows.Count > 0)
-            {
-                Debug.WriteLine("{0} {1} not unique value {2}", this, "OnCellValidating() check unique", val);
-                bRet = false;
-            }
-            return bRet;
+            string zKey = m_preFix +  date.ToString("yyyyMMdd") + n.ToString("D3");
+            m_preKey = zKey;
+            return zKey;
         }
-
-        protected override string InitKey()
+        public string InitKey()
         {
             DateTime curDate = DateTime.Now.Date;
-            string zKey = curDate.ToString("PTyyyyMMdd001");
+            //PTyyyyMMdd001
+            string zKey = genKey(curDate, 1);
             string zDate = curDate.ToString(lConfigMng.getDateFormat());
             string sql = string.Format("select {0} from {1} where {2} = '{3} 00:00:00' order by {0}",
-                "receipt_number", "receipts", "date", zDate);
+                m_keyField, m_tblName, m_dateField, zDate);
             DataTable tbl = appConfig.s_contentProvider.GetData(sql);
             if (tbl.Rows.Count > 0)
             {
@@ -669,18 +661,30 @@ namespace test_binding
                 {
                     string curKey = tbl.Rows[i][0].ToString();
                     Match m = m_reg.Match(curKey);
-                    no = int.Parse(m.Groups[2].Value);                    
+                    no = int.Parse(m.Groups[2].Value);
                 }
-                zKey = curDate.ToString("PTyyyyMMdd") + i.ToString("D3");
+                zKey = genKey(curDate, 1);
             }
             return zKey;
         }
-
-        protected override string IncKey()
+        bool checkUniqKey(string val)
+        {
+            var bRet = true;
+            string sql = string.Format("select id, {0} from {1} where {0} = '{2}'",
+                m_keyField, m_tblName, val);
+            var tbl = appConfig.s_contentProvider.GetData(sql);
+            if (tbl.Rows.Count > 0)
+            {
+                Debug.WriteLine("{0} {1} not unique value {2}", this, "checkUniqKey() check unique", val);
+                bRet = false;
+            }
+            return bRet;
+        }
+        public string IncKey()
         {
             //PTyyyyMMdd000
             string newKey = "";
-            string curKey = m_keyCtrl.Text;
+            string curKey = m_preKey;
             Match m = m_reg.Match(curKey);
             if (m.Success)
             {
@@ -696,7 +700,28 @@ namespace test_binding
             }
             return newKey;
         }
-        public override List<string> m_amountTxs
+    }
+    public class lReceiptsInputPanel : lInputPanel
+    {
+        protected override lInputCtrl m_keyCtrl { get { return m_inputsCtrls[0]; } }
+        private keyMng m_key;
+        protected override keyMng m_keyMng { get { return m_key; } }
+        public lReceiptsInputPanel()
+        {
+            m_tblName = "receipts";
+
+            m_inputsCtrls = new List<lInputCtrl> {
+                crtInputCtrl(m_tblInfo, "receipt_number", new Point(0, 0), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "date", new Point(0, 1), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "name", new Point(0, 2), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "addr", new Point(0, 3), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "content", new Point(0, 4), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "note", new Point(0, 5), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "amount", new Point(0, 6), new Size(1, 1)),
+            };
+            m_key = new keyMng("PT", m_tblName, "receipt_number");
+        }
+        public override List<ReportParameter> billRptParams
         {
             get
             {
@@ -708,7 +733,7 @@ namespace test_binding
                     try
                     {
                         long amount = (long)row["amount"];
-                        amountTxs.Add(common.amountToTxt(amount));
+                        amountTxs.Add(common.CurrencyToTxt(amount));
                     }
                     catch
                     {
@@ -716,12 +741,17 @@ namespace test_binding
                         amountTxs.Add("   ");
                     }
                 }
-                return amountTxs;
+                return new List<ReportParameter>()
+                {
+                    new ReportParameter("amountTxts", amountTxs.ToArray())
+                };
             }
         }
     }
     public class lInterPayInputPanel : lInputPanel
     {
+        private keyMng m_key;
+        protected override keyMng m_keyMng { get { return m_key; } }
         public lInterPayInputPanel()
         {
             m_tblName = "internal_payment";
@@ -735,22 +765,78 @@ namespace test_binding
                 crtInputCtrl(m_tblInfo, "reimbursement", new Point(1, 2), new Size(1, 1)),
                 crtInputCtrl(m_tblInfo, "content", new Point(0, 2), new Size(1, 1)),
             };
+            m_key = new keyMng("PCN", m_tblName, "payment_number");
         }
     }
     public class lExterPayInputPanel : lInputPanel
     {
+        protected override lInputCtrl m_keyCtrl { get { return m_inputsCtrls[0]; } }
+        private keyMng m_key;
+        protected override keyMng m_keyMng { get { return m_key; } }
         public lExterPayInputPanel()
         {
-            m_tblName = "internal_payment";
+            m_tblName = "external_payment";
             m_inputsCtrls = new List<lInputCtrl>
             {
-                crtInputCtrl(m_tblInfo, "date", new Point(0, 0), new Size(1, 1)),
                 crtInputCtrl(m_tblInfo, "payment_number", new Point(0, 1), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "date", new Point(0, 0), new Size(1, 1)),
                 crtInputCtrl(m_tblInfo, "name", new Point(0, 2), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "group_name", new Point(1, 0), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "content", new Point(1, 1), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "building", new Point(1, 2), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "addr", new Point(0, 3), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "group_name", new Point(0, 4), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "building", new Point(0, 5), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "content", new Point(0, 6), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "note", new Point(0, 7), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "spent", new Point(0, 8), new Size(1, 1)),
             };
+            m_key = new keyMng("PCG", m_tblName, "payment_number");
+        }
+        public override List<ReportParameter> billRptParams
+        {
+            get
+            {
+                List<string> spentTxs = new List<string>();
+                foreach (DataRow row in m_dataContent.m_dataTable.Rows)
+                {
+                    if (row.RowState == DataRowState.Deleted) continue;
+                    //[TODO] db null
+                    try
+                    {
+                        long amount = (long)row["spent"];
+                        spentTxs.Add(common.CurrencyToTxt(amount));
+                    }
+                    catch
+                    {
+                        Debug.Assert(false);
+                        spentTxs.Add("   ");
+                    }
+                }
+                return new List<ReportParameter>()
+                {
+                    new ReportParameter("spentTxts", spentTxs.ToArray())
+                };
+            }
         }
     }
+    public class lSalaryInputPanel : lInputPanel
+    {
+        protected override lInputCtrl m_keyCtrl { get { return m_inputsCtrls[0]; } }
+        private keyMng m_key;
+        protected override keyMng m_keyMng { get { return m_key; } }
+        public lSalaryInputPanel()
+        {
+            m_tblName = "receipts";
+
+            m_inputsCtrls = new List<lInputCtrl> {
+                crtInputCtrl(m_tblInfo, "receipt_number", new Point(0, 0), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "date", new Point(0, 1), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "name", new Point(0, 2), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "addr", new Point(0, 3), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "content", new Point(0, 4), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "note", new Point(0, 5), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "amount", new Point(0, 6), new Size(1, 1)),
+            };
+            m_key = new keyMng("PT", m_tblName, "receipt_number");
+        }
+    }
+
 }

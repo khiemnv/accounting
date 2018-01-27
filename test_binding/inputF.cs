@@ -34,11 +34,12 @@ namespace test_binding
 
         List<ReportParameter> crtParams()
         {
-            List<ReportParameter> rpParams = new List<ReportParameter>()
-            {
-                new ReportParameter("amountTxts", m_inputPanel.m_amountTxs.ToArray())
-            };
-            return rpParams;
+            //List<ReportParameter> rpParams = new List<ReportParameter>()
+            //{
+            //    new ReportParameter("amountTxts", m_inputPanel.m_amountTxs.ToArray())
+            //};
+            //return rpParams;
+            return m_inputPanel.billRptParams;
         }
 
         protected virtual void LoadData()
@@ -100,7 +101,22 @@ namespace test_binding
             return new lReceiptsInputPanel();
         }
     }
-
+    public class lExterPayInputF : inputF
+    {
+        protected override void initCtrls()
+        {
+            this.Text = "Phiếu Chi";
+            base.initCtrls();
+        }
+        protected override string GetBill()
+        {
+            return @"..\..\bill_exterpay.rdlc";
+        }
+        protected override lInputPanel CrtInputPanel()
+        {
+            return new lExterPayInputPanel();
+        }
+    }
     public class lInterPayInputF : inputF
     {
         protected override string GetBill()

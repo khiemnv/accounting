@@ -215,11 +215,26 @@ namespace test_binding
 #endif
 
             //load input
-            openReceiptsInputForm();
+            openInputForm(inputFormType.exPaymentIF);
         }
-        private void openReceiptsInputForm()
+        enum inputFormType
         {
-            var inputDlg = new lReceiptsInputF();
+            receiptIF,
+            exPaymentIF,
+        }
+        private void openInputForm(inputFormType type)
+        {
+            inputF inputDlg = null;
+            switch (type)
+            {
+                case inputFormType.receiptIF:
+                    inputDlg = new lReceiptsInputF();
+                    break;
+                case inputFormType.exPaymentIF:
+                    inputDlg = new lExterPayInputF();
+                    break;
+            }
+
 #if fullscreen_onload
             inputDlg.WindowState = FormWindowState.Maximized;
 #endif
