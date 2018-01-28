@@ -199,6 +199,9 @@
     <EmbeddedResource Include="c_interpayment.rdlc" />
     <EmbeddedResource Include="c_receipts.rdlc" />
     <EmbeddedResource Include="c_salary.rdlc" />
+    <EmbeddedResource Include="Form1.customDlg.resx">
+      <DependentUpon>Form1.customDlg.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -222,6 +225,7 @@
       <DependentUpon>rptPreview.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="rpt_building.rdlc" />
+    <EmbeddedResource Include="rpt_constrorg.rdlc" />
     <EmbeddedResource Include="rpt_days.rdlc" />
     <EmbeddedResource Include="rpt_exterpayment.rdlc" />
     <EmbeddedResource Include="rpt_interpayment.rdlc" />

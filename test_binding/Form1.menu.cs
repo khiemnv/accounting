@@ -1,21 +1,9 @@
 ﻿#define use_custom_font
-#define use_sqlite
 //#define use_menuitem
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-#if use_sqlite
-using System.Data.SQLite;
-#endif
-using System.Data.SqlClient;
-using System.Runtime.Serialization;
 
 namespace test_binding
 {

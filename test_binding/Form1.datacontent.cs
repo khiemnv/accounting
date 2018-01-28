@@ -773,7 +773,7 @@ namespace test_binding
     {
         public lSqlDbSchema()
         {
-            m_cnnStr = @"Data Source=.\SQLEXPRESS;Initial Catalog=QL_THUCHI;Integrated Security=True;MultipleActiveResultSets=True";
+            m_cnnStr = @"Data Source=.\SQLEXPRESS;Initial Catalog=accounting;Integrated Security=True;MultipleActiveResultSets=True";
 #if crt_qry
                 m_crtTableSqls = new List<string> {
                     "CREATE TABLE if not exists  receipts("

@@ -849,6 +849,46 @@ namespace test_binding
         }
     }
 
+    public class lConstrorgReport : lDaysReport
+    {
+        public string m_constrorg;
+        List<ReportParameter> m_rptParams;
+        public lConstrorgReport(string constrorg, DateTime startDate, DateTime endDate) : base(startDate, endDate)
+        {
+            string zStartDate = startDate.ToString(lConfigMng.getDisplayDateFormat());
+            string zEndDate = endDate.ToString(lConfigMng.getDisplayDateFormat());
+            m_constrorg = constrorg;
+            m_rptParams = new List<ReportParameter>()
+            {
+                new ReportParameter("startDate",zStartDate),
+                new ReportParameter("endDate",zEndDate),
+                new ReportParameter("constrorg", m_constrorg)
+            };
+            zStartDate = startDate.ToString(lConfigMng.getDateFormat());
+            zEndDate = endDate.ToString(lConfigMng.getDateFormat());
+#if use_sqlite
+            string qry = string.Format("select * from external_payment"
+                + " where constr_org like '%{0}%' and date between '{1} 00:00:00' and '{2} 00:00:00'"
+                + " order by date",
+                constrorg, zStartDate, zEndDate);
+#else
+            string qry = string.Format("select * from external_payment"
+                + " where constr_org like N'%{0}%' and date between '{1} 00:00:00' and '{2} 00:00:00'"
+                + " order by date",
+                constrorg, zStartDate, zEndDate);
+#endif
+            m_sqls = new Dictionary<string, string>
+            {
+                { "DataSet1", qry }
+            };
+            m_rdlcPath = @"..\..\rpt_constrorg.rdlc";
+        }
+        public override List<ReportParameter> getReportParam()
+        {
+            return m_rptParams;
+        }
+    }
+
     public class lCurReceiptsReport : lBaseReport
     {
         public lCurReceiptsReport()

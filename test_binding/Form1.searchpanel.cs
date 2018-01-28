@@ -9,8 +9,6 @@ using System.Collections.Generic;
 using System;
 using System.Data;
 using System.Runtime.Serialization;
-using System.Diagnostics;
-using System.Data.Common;
 
 namespace test_binding
 {

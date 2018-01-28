@@ -378,6 +378,9 @@ namespace test_binding
         }
         protected virtual void Add()
         {
+            //check key is unique
+            Debug.Assert(m_keyMng.IsUniqKey(m_keyCtrl.Text));
+
             List<string> exprs = new List<string>();
             List<lSearchParam> srchParams = new List<lSearchParam>();
             foreach (lSearchCtrl ctrl in m_inputsCtrls)
@@ -651,19 +654,20 @@ namespace test_binding
             DataTable tbl = appConfig.s_contentProvider.GetData(sql);
             if (tbl.Rows.Count > 0)
             {
-                int no = 0;
-                int i = 0;
-                for (; i < tbl.Rows.Count && i == no; i++)
+                int no = 1;
+                int i = 1;
+                for (; i <= tbl.Rows.Count; i++)
                 {
-                    string curKey = tbl.Rows[i][0].ToString();
+                    string curKey = tbl.Rows[i-1][0].ToString();
                     Match m = m_reg.Match(curKey);
                     no = int.Parse(m.Groups[2].Value);
+                    if (i != no) break;
                 }
-                zKey = genKey(curDate, 1);
+                zKey = genKey(curDate, i);
             }
             return zKey;
         }
-        bool checkUniqKey(string val)
+        public bool IsUniqKey(string val)
         {
             var bRet = true;
             string sql = string.Format("select id, {0} from {1} where {0} = '{2}'",
@@ -688,7 +692,7 @@ namespace test_binding
                 for (no++; no < 999; no++)
                 {
                     newKey = m.Groups[1].Value + no.ToString("D3");
-                    if (checkUniqKey(newKey))
+                    if (IsUniqKey(newKey))
                     {
                         break;
                     }
