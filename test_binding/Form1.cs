@@ -5,7 +5,9 @@
 #if !DEBUG
 #define chck_pass
 #define save_config
-#endif
+#else   //DEBUG
+#define load_input
+#endif  //DEBUG
 
 using System;
 using System.Collections.Generic;
@@ -216,8 +218,10 @@ namespace test_binding
             }
 #endif
 
+#if load_input
             //load input
             openInputForm(inputFormType.exterPayIF);
+#endif  //load_input
         }
         enum inputFormType
         {

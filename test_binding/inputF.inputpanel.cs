@@ -25,6 +25,11 @@ namespace test_binding
             m_panel.BorderStyle = BorderStyle.None;
         }
         public virtual string Text { get; set; }
+        public event EventHandler<string> EditingCompleted;
+        protected virtual void onEditingCompleted()
+        {
+            if (EditingCompleted != null) { EditingCompleted(this, Text); }
+        }
     }
 
     [DataContract(Name = "lInputCtrlText")]
@@ -150,6 +155,14 @@ namespace test_binding
         public lInputCtrlNum(string fieldName, string alias, ctrlType type, Point pos, Size size)
             : base(fieldName, alias, type, pos, size)
         {
+            m_text.KeyPress += onKeyPress;
+        }
+        private void onKeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true;
+            }
         }
     }
     [DataContract(Name = "InputCtrlCurrency")]
@@ -168,20 +181,16 @@ namespace test_binding
             m_val.Width = w;
             m_val.RightToLeft = RightToLeft.Yes;
             m_val.TextChanged += M_val_TextChanged;
-            //m_val.KeyPress += textBox1_KeyPress;
-
-            //m_lab.AutoSize = true;
-
-            //FlowLayoutPanel group = new FlowLayoutPanel();
-            //group.FlowDirection = FlowDirection.LeftToRight;
-            //group.AutoSize = true;
-
-            //group.Controls.AddRange(new Control[] { m_label, m_val});
+            m_val.Validated += M_val_Validated;
             m_panel.Controls.AddRange(new Control[] { m_label, m_val });
-            //m_panel.FlowDirection = FlowDirection.TopDown;
         }
 
-        private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
+        private void M_val_Validated(object sender, EventArgs e)
+        {
+            onEditingCompleted();
+        }
+
+        private void M_val_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) &&
                 (e.KeyChar != ','))
@@ -245,6 +254,18 @@ namespace test_binding
             if (val == "") val = "0";
         }
 
+        public override string Text
+        {
+            get
+            {
+                return m_val.Text;
+            }
+
+            set
+            {
+                m_val.Text = value;
+            }
+        }
         public override void updateInsertParams(List<string> exprs, List<lSearchParam> srchParams)
         {
             string val;
@@ -271,34 +292,7 @@ namespace test_binding
         {
             public DataTable tbl;
         }
-        static Dictionary<string, EventHandler<PreviewEventArgs>> m_dict = new Dictionary<string, EventHandler<PreviewEventArgs>>();
-        private EventHandler<PreviewEventArgs> mRefreshPreview;
-        public event EventHandler<PreviewEventArgs> RefreshPreview
-        {
-            add
-            {
-                addEvent("RefreshPreview",ref mRefreshPreview, value);
-            }
-            remove
-            {
-            }
-        }
-        private void addEvent(string zType, ref EventHandler<PreviewEventArgs> handler, EventHandler<PreviewEventArgs> value)
-        {
-            string key = zType + value.Target.ToString();
-            if (!m_dict.ContainsKey(key))
-            {
-                m_dict.Add(key, value);
-                handler += value;
-            }
-            else
-            {
-                handler -= m_dict[key];
-                m_dict[key] = value;
-                handler += value;
-            }
-        }
-
+        public event EventHandler<PreviewEventArgs> RefreshPreview;
         protected string m_tblName;
         protected lTableInfo m_tblInfo { get { return appConfig.s_config.getTable(m_tblName); } }
 
@@ -369,7 +363,7 @@ namespace test_binding
         {
             m_dataGridView.CancelEdit();
             m_dataContent.m_dataTable.Clear();
-            if (mRefreshPreview != null) { mRefreshPreview(this, null); }
+            if (RefreshPreview != null) { RefreshPreview(this, null); }
         }
 
         private void M_editBtn_Click(object sender, EventArgs e)
@@ -477,8 +471,10 @@ namespace test_binding
                 bIncKeyReq = false;
             }
             //if delete or add complete
-            if (mRefreshPreview != null)
-                mRefreshPreview(this, new PreviewEventArgs { tbl = m_dataContent.m_dataTable });
+            if (RefreshPreview != null)
+            {
+                RefreshPreview(this, new PreviewEventArgs { tbl = m_dataContent.m_dataTable });
+            }
         }
 
         private void crtColumns()
@@ -756,6 +752,9 @@ namespace test_binding
         public lInterPayInputPanel()
         {
             m_tblName = "internal_payment";
+            lInputCtrl advance_payment = crtInputCtrl(m_tblInfo, "advance_payment", new Point(0, 7), new Size(1, 1));
+            lInputCtrl reimbursement = crtInputCtrl(m_tblInfo, "reimbursement", new Point(0, 8), new Size(1, 1));
+            lInputCtrl actually_spent = crtInputCtrl(m_tblInfo, "actually_spent", new Point(0, 9), new Size(1, 1));
             m_inputsCtrls = new List<lInputCtrl>
             {
                 crtInputCtrl(m_tblInfo, "payment_number"    , new Point(0, 0), new Size(1, 1)),
@@ -765,12 +764,24 @@ namespace test_binding
                 crtInputCtrl(m_tblInfo, "group_name"        , new Point(0, 4), new Size(1, 1)),
                 crtInputCtrl(m_tblInfo, "content"           , new Point(0, 5), new Size(1, 1)),
                 crtInputCtrl(m_tblInfo, "note"              , new Point(0, 6), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "advance_payment"   , new Point(0, 7), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "reimbursement"     , new Point(0, 8), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "actually_spent"    , new Point(0, 9), new Size(1, 1)),
+                advance_payment,
+                reimbursement,
+                actually_spent,
+            };
+            reimbursement.EditingCompleted += (s, e) =>
+            {
+                long advance, reimbur;
+                bool bRet = long.TryParse(advance_payment.Text.Replace(",", ""), out advance);
+                bRet &= long.TryParse(reimbursement.Text.Replace(",", ""), out reimbur);
+                if (bRet)
+                {
+                    Debug.Assert(advance >= reimbur);
+                    actually_spent.Text = (advance - reimbur).ToString();
+                }
             };
             m_key = new keyMng("PCN", m_tblName, "payment_number");
         }
+
         public override List<ReportParameter> billRptParams
         {
             get
