@@ -182,24 +182,26 @@ namespace test_binding
             + "date datetime,"
             + "payment_number char(31),"
             + "name char(31),"
-            + "content text,"
+            + "addr char(63),"
             + "group_name char(31),"
             + "advance_payment INTEGER,"
             + "reimbursement INTEGER,"
             + "actually_spent INTEGER,"
+            + "content text,"
             + "note text"
             + ")";
             m_cols = new lColInfo[] {
                    new lColInfo( "ID","ID", lColInfo.lColType.num),
-                   new lColInfo( "date","Ngày Tháng", lColInfo.lColType.dateTime),
-                   new lColInfo( "payment_number","Mã Phiếu Chi", lColInfo.lColType.uniqueText),
-                   new lColInfo( "name","Họ Tên", lColInfo.lColType.text),
-                   new lColInfo( "content","Nội dung", lColInfo.lColType.text),
-                   new lColInfo( "group_name","Thuộc ban", lColInfo.lColType.text, "group_name"),
-                   new lColInfo( "advance_payment","Tạm ứng", lColInfo.lColType.currency),
-                   new lColInfo( "reimbursement","Hoàn ứng", lColInfo.lColType.currency),
-                   new lColInfo( "actually_spent","Thực chi", lColInfo.lColType.currency),
-                   new lColInfo( "note","Ghi Chú", lColInfo.lColType.text),
+                   new lColInfo( "payment_number"   ,"Mã Phiếu Chi", lColInfo.lColType.uniqueText),
+                   new lColInfo( "date"             ,"Ngày Tháng", lColInfo.lColType.dateTime),
+                   new lColInfo( "name"             ,"Họ Tên", lColInfo.lColType.text),
+                   new lColInfo( "addr"             ,"Địa chỉ", lColInfo.lColType.text),
+                   new lColInfo( "group_name"       ,"Thuộc ban", lColInfo.lColType.text, "group_name"),
+                   new lColInfo( "content"          ,"Nội dung", lColInfo.lColType.text),
+                   new lColInfo( "note"             ,"Ghi Chú", lColInfo.lColType.text),
+                   new lColInfo( "advance_payment"  ,"Tạm ứng", lColInfo.lColType.currency),
+                   new lColInfo( "reimbursement"    ,"Hoàn ứng", lColInfo.lColType.currency),
+                   new lColInfo( "actually_spent"   ,"Thực chi", lColInfo.lColType.currency),
                 };
         }
     };
@@ -214,25 +216,27 @@ namespace test_binding
             + "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
             + "date datetime,"
             + "payment_number char(31),"
-            + "name char(31),"
-            + "addr char(63),"
-            + "content text,"
             + "building char(31),"
             + "group_name char(31),"
+            + "constr_org char(31),"
+            + "name char(31),"
+            + "addr char(63),"
             + "spent INTEGER,"
+            + "content text,"
             + "note text"
             + ")";
             m_cols = new lColInfo[] {
                    new lColInfo( "ID","ID", lColInfo.lColType.num),
-                   new lColInfo( "date","Ngày Tháng", lColInfo.lColType.dateTime),
-                   new lColInfo( "payment_number","Mã Phiếu Chi", lColInfo.lColType.uniqueText),
-                   new lColInfo( "name","Họ Tên", lColInfo.lColType.text),
-                   new lColInfo( "addr","Địa chỉ", lColInfo.lColType.text),
-                   new lColInfo( "group_name","Thuộc ban", lColInfo.lColType.text, "group_name"),
-                   new lColInfo( "building","Công trình", lColInfo.lColType.text, "building"),
-                   new lColInfo( "content","Nội dung", lColInfo.lColType.text),
-                   new lColInfo( "note","Ghi Chú", lColInfo.lColType.text),
-                   new lColInfo( "spent","Số tiền", lColInfo.lColType.currency),
+                   new lColInfo( "payment_number"   ,"Mã Phiếu Chi", lColInfo.lColType.uniqueText),
+                   new lColInfo( "date"             ,"Ngày Tháng", lColInfo.lColType.dateTime),
+                   new lColInfo( "building"         ,"Công trình", lColInfo.lColType.text, "building"),
+                   new lColInfo( "group_name"       ,"Thuộc ban", lColInfo.lColType.text, "group_name"),
+                   new lColInfo( "constr_org"       ,"Đơn vị TC", lColInfo.lColType.text),
+                   new lColInfo( "name"             ,"Họ Tên", lColInfo.lColType.text),
+                   new lColInfo( "addr"             ,"Địa chỉ", lColInfo.lColType.text),
+                   new lColInfo( "content"          ,"Nội dung", lColInfo.lColType.text),
+                   new lColInfo( "note"             ,"Ghi Chú", lColInfo.lColType.text),
+                   new lColInfo( "spent"            ,"Số tiền", lColInfo.lColType.currency),
                 };
         }
     };
@@ -249,21 +253,23 @@ namespace test_binding
             + "date datetime,"
             + "payment_number char(31),"
             + "name char(31),"
+            + "addr char(63),"
             + "group_name char(31),"
-            + "content text,"
             + "salary INTEGER,"
+            + "content text,"
             + "note text"
             + ")";
             m_cols = new lColInfo[] {
                    new lColInfo( "ID","ID", lColInfo.lColType.num),
-                   new lColInfo( "month","Tháng(1...12)", lColInfo.lColType.num),
-                   new lColInfo( "date","Ngày Tháng", lColInfo.lColType.dateTime),
-                   new lColInfo( "payment_number","Mã Phiếu Chi", lColInfo.lColType.uniqueText),
-                   new lColInfo( "name","Họ Tên", lColInfo.lColType.text),
-                   new lColInfo( "group_name","Thuộc ban", lColInfo.lColType.text, "group_name"),
-                   new lColInfo( "content","Nội dung", lColInfo.lColType.text),
-                   new lColInfo( "salary","Số tiền", lColInfo.lColType.currency),
-                   new lColInfo( "note","Ghi Chú", lColInfo.lColType.text),
+                   new lColInfo( "payment_number"   ,"Mã Phiếu Chi", lColInfo.lColType.uniqueText),
+                   new lColInfo( "month"            ,"Tháng(1...12)", lColInfo.lColType.num),
+                   new lColInfo( "date"             ,"Ngày Tháng", lColInfo.lColType.dateTime),
+                   new lColInfo( "name"             ,"Họ Tên", lColInfo.lColType.text),
+                   new lColInfo( "addr"             ,"Địa chỉ", lColInfo.lColType.text),
+                   new lColInfo( "group_name"       ,"Thuộc ban", lColInfo.lColType.text, "group_name"),
+                   new lColInfo( "content"          ,"Nội dung", lColInfo.lColType.text),
+                   new lColInfo( "note"             ,"Ghi Chú", lColInfo.lColType.text),
+                   new lColInfo( "salary"           ,"Số tiền", lColInfo.lColType.currency),
                 };
         }
     };

@@ -712,12 +712,12 @@ namespace test_binding
 
             m_inputsCtrls = new List<lInputCtrl> {
                 crtInputCtrl(m_tblInfo, "receipt_number", new Point(0, 0), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "date", new Point(0, 1), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "name", new Point(0, 2), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "addr", new Point(0, 3), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "content", new Point(0, 4), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "note", new Point(0, 5), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "amount", new Point(0, 6), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "date"          , new Point(0, 1), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "name"          , new Point(0, 2), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "addr"          , new Point(0, 3), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "content"       , new Point(0, 4), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "note"          , new Point(0, 5), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "amount"        , new Point(0, 6), new Size(1, 1)),
             };
             m_key = new keyMng("PT", m_tblName, "receipt_number");
         }
@@ -750,6 +750,7 @@ namespace test_binding
     }
     public class lInterPayInputPanel : lInputPanel
     {
+        protected override lInputCtrl m_keyCtrl { get { return m_inputsCtrls[0]; } }
         private keyMng m_key;
         protected override keyMng m_keyMng { get { return m_key; } }
         public lInterPayInputPanel()
@@ -757,15 +758,47 @@ namespace test_binding
             m_tblName = "internal_payment";
             m_inputsCtrls = new List<lInputCtrl>
             {
-                crtInputCtrl(m_tblInfo, "date", new Point(0, 0), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "payment_number", new Point(0, 1), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "name", new Point(1, 0), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "group_name", new Point(1, 1), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "advance_payment", new Point(0, 2), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "reimbursement", new Point(1, 2), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "content", new Point(0, 2), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "payment_number"    , new Point(0, 0), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "date"              , new Point(0, 1), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "name"              , new Point(0, 2), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "addr"              , new Point(0, 3), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "group_name"        , new Point(0, 4), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "content"           , new Point(0, 5), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "note"              , new Point(0, 6), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "advance_payment"   , new Point(0, 7), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "reimbursement"     , new Point(0, 8), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "actually_spent"    , new Point(0, 9), new Size(1, 1)),
             };
             m_key = new keyMng("PCN", m_tblName, "payment_number");
+        }
+        public override List<ReportParameter> billRptParams
+        {
+            get
+            {
+                List<string> salaryTxs = new List<string>();
+                foreach (DataRow row in m_dataContent.m_dataTable.Rows)
+                {
+                    if (row.RowState == DataRowState.Deleted)
+                    {
+                        continue;
+                    }
+                    //[TODO] db null
+                    try
+                    {
+                        long amount = (long)row["advance_payment"];
+                        salaryTxs.Add(common.CurrencyToTxt(amount));
+                    }
+                    catch
+                    {
+                        Debug.Assert(false);
+                        salaryTxs.Add("   ");
+                    }
+                }
+                return new List<ReportParameter>()
+                {
+                    new ReportParameter("advanceTxts", salaryTxs.ToArray())
+                };
+            }
         }
     }
     public class lExterPayInputPanel : lInputPanel
@@ -778,15 +811,16 @@ namespace test_binding
             m_tblName = "external_payment";
             m_inputsCtrls = new List<lInputCtrl>
             {
-                crtInputCtrl(m_tblInfo, "payment_number", new Point(0, 1), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "date", new Point(0, 0), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "name", new Point(0, 2), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "addr", new Point(0, 3), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "group_name", new Point(0, 4), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "building", new Point(0, 5), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "content", new Point(0, 6), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "note", new Point(0, 7), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "spent", new Point(0, 8), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "payment_number", new Point(0, 0), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "date"          , new Point(0, 1), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "name"          , new Point(0, 2), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "addr"          , new Point(0, 3), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "group_name"    , new Point(0, 4), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "constr_org"    , new Point(0, 5), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "building"      , new Point(0, 6), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "content"       , new Point(0, 7), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "note"          , new Point(0, 8), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "spent"         , new Point(0, 9), new Size(1, 1)),
             };
             m_key = new keyMng("PCG", m_tblName, "payment_number");
         }
@@ -824,19 +858,51 @@ namespace test_binding
         protected override keyMng m_keyMng { get { return m_key; } }
         public lSalaryInputPanel()
         {
-            m_tblName = "receipts";
+            m_tblName = "salary";
 
             m_inputsCtrls = new List<lInputCtrl> {
-                crtInputCtrl(m_tblInfo, "receipt_number", new Point(0, 0), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "date", new Point(0, 1), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "name", new Point(0, 2), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "addr", new Point(0, 3), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "content", new Point(0, 4), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "note", new Point(0, 5), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "amount", new Point(0, 6), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "payment_number", new Point(0, 0), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "month"         , new Point(0, 1), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "date"          , new Point(0, 1), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "name"          , new Point(0, 2), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "addr"          , new Point(0, 3), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "group_name"    , new Point(0, 4), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "content"       , new Point(0, 5), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "note"          , new Point(0, 6), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "salary"        , new Point(0, 7), new Size(1, 1)),
             };
-            m_key = new keyMng("PT", m_tblName, "receipt_number");
+            m_key = new keyMng("PCL", m_tblName, "payment_number");
+        }
+        public override List<ReportParameter> billRptParams
+        {
+            get
+            {
+                List<string> salaryTxs = new List<string>();
+                foreach (DataRow row in m_dataContent.m_dataTable.Rows)
+                {
+                    if (row.RowState == DataRowState.Deleted)
+                    {
+                        continue;
+                    }
+                    //[TODO] db null
+                    try
+                    {
+                        long amount = (long)row["salary"];
+                        salaryTxs.Add(common.CurrencyToTxt(amount));
+                    }
+                    catch
+                    {
+                        Debug.Assert(false);
+                        salaryTxs.Add("   ");
+                    }
+                }
+                return new List<ReportParameter>()
+                {
+                    new ReportParameter("salaryTxts", salaryTxs.ToArray())
+                };
+            }
         }
     }
 
 }
+

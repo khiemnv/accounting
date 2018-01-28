@@ -99,9 +99,18 @@ namespace test_binding
 
             //Input
             var miInput = crtMenuItem("Input");
-            var miReceipt = crtMenuItem("Receipt");
+            var miReceipt = crtMenuItem("PT");
             miReceipt.Click += MiReceipt_Click;
             addChild(miInput, miReceipt);
+            var miInterpay = crtMenuItem("PCN");
+            miInterpay.Click += miInterpay_Click;
+            addChild(miInput, miInterpay);
+            var miExterpay = crtMenuItem("PCG");
+            miExterpay.Click += miExterpay_Click;
+            addChild(miInput, miExterpay);
+            var miSalary = crtMenuItem("PCL");
+            miSalary.Click += miSalary_Click;
+            addChild(miInput, miSalary);
 
 #if use_menuitem
             mainMenu.MenuItems.AddRange(new MenuItem[] { miFile, miEdit, miReport, miConfig, miHelp });
@@ -111,6 +120,21 @@ namespace test_binding
             mainMenu.Items.AddRange(new ToolStripMenuItem[] { miFile, miInput, miEdit, miReport, miConfig, miHelp });
             return mainMenu;
 #endif
+        }
+
+        private void miSalary_Click(object sender, EventArgs e)
+        {
+            openInputForm(inputFormType.salaryIF);
+        }
+
+        private void miExterpay_Click(object sender, EventArgs e)
+        {
+            openInputForm(inputFormType.exterPayIF);
+        }
+
+        private void miInterpay_Click(object sender, EventArgs e)
+        {
+            openInputForm(inputFormType.interPayIF);
         }
 
         private void MiReceipt_Click(object sender, EventArgs e)

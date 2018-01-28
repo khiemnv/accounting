@@ -40,7 +40,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -141,6 +141,16 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>accountingDataSet1.xsd</DependentUpon>
     </Compile>
+    <Compile Include="accountingDataSet2.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>accountingDataSet2.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="accountingDataSet3.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>accountingDataSet3.xsd</DependentUpon>
+    </Compile>
     <Compile Include="Form1.bgTask.cs" />
     <Compile Include="Form1.config.cs" />
     <Compile Include="Form1.customColumn.cs" />
@@ -182,7 +192,9 @@
     </Compile>
     <Compile Include="SqlServerTypes\Loader.cs" />
     <EmbeddedResource Include="bill_exterpay.rdlc" />
+    <EmbeddedResource Include="bill_interpay.rdlc" />
     <EmbeddedResource Include="bill_receipts.rdlc" />
+    <EmbeddedResource Include="bill_salary.rdlc" />
     <EmbeddedResource Include="c_exterpayment.rdlc" />
     <EmbeddedResource Include="c_interpayment.rdlc" />
     <EmbeddedResource Include="c_receipts.rdlc" />
@@ -239,6 +251,28 @@
     </None>
     <None Include="accountingDataSet1.xss">
       <DependentUpon>accountingDataSet1.xsd</DependentUpon>
+    </None>
+    <None Include="accountingDataSet2.xsc">
+      <DependentUpon>accountingDataSet2.xsd</DependentUpon>
+    </None>
+    <None Include="accountingDataSet2.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>accountingDataSet2.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="accountingDataSet2.xss">
+      <DependentUpon>accountingDataSet2.xsd</DependentUpon>
+    </None>
+    <None Include="accountingDataSet3.xsc">
+      <DependentUpon>accountingDataSet3.xsd</DependentUpon>
+    </None>
+    <None Include="accountingDataSet3.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>accountingDataSet3.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="accountingDataSet3.xss">
+      <DependentUpon>accountingDataSet3.xsd</DependentUpon>
     </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

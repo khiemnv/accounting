@@ -719,7 +719,7 @@
                           </Paragraphs>
                           <rd:DefaultName>Textbox18</rd:DefaultName>
                           <Top>1.04819in</Top>
-                          <Left>4.77546in</Left>
+                          <Left>4.78935in</Left>
                           <Height>0.1875in</Height>
                           <Width>1.41668in</Width>
                           <ZIndex>14</ZIndex>
@@ -773,14 +773,21 @@
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
-                        <Textbox Name="spent">
+                        <Textbox Name="amount">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!spent.Value</Value>
+                                  <Value>=format(Fields!salary.Value, "#,0;(#,0)")</Value>
+                                  <Style>
+                                    <FontFamily>times New Roman</FontFamily>
+                                    <FontSize>12pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                                <TextRun>
+                                  <Value> (VND)</Value>
                                   <Style>
                                     <FontFamily>times New Roman</FontFamily>
                                     <FontSize>12pt</FontSize>
@@ -792,7 +799,7 @@
                               </Style>
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>spent</rd:DefaultName>
+                          <rd:DefaultName>amount</rd:DefaultName>
                           <Top>2.8607in</Top>
                           <Left>1.29521in</Left>
                           <Height>0.1875in</Height>
@@ -859,7 +866,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Parameters!spentTxts.Value(RowNumber(Nothing)-1)</Value>
+                                  <Value>=Parameters!salaryTxts.Value(RowNumber(Nothing)-1)</Value>
                                   <Style>
                                     <FontFamily>times New Roman</FontFamily>
                                     <FontSize>12pt</FontSize>
@@ -983,7 +990,6 @@
                         </Border>
                       </Style>
                     </Rectangle>
-                    <rd:Selected>true</rd:Selected>
                   </CellContents>
                 </TablixCell>
               </TablixCells>
@@ -1044,6 +1050,10 @@
           <DataField>id</DataField>
           <rd:TypeName>System.Int64</rd:TypeName>
         </Field>
+        <Field Name="month">
+          <DataField>month</DataField>
+          <rd:TypeName>System.Int64</rd:TypeName>
+        </Field>
         <Field Name="date">
           <DataField>date</DataField>
           <rd:TypeName>System.DateTime</rd:TypeName>
@@ -1056,20 +1066,16 @@
           <DataField>name</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="content">
-          <DataField>content</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="building">
-          <DataField>building</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
         <Field Name="group_name">
           <DataField>group_name</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="spent">
-          <DataField>spent</DataField>
+        <Field Name="content">
+          <DataField>content</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="salary">
+          <DataField>salary</DataField>
           <rd:TypeName>System.Int64</rd:TypeName>
         </Field>
         <Field Name="note">
@@ -1082,17 +1088,17 @@
         </Field>
       </Fields>
       <rd:DataSetInfo>
-        <rd:DataSetName>accountingDataSet1</rd:DataSetName>
-        <rd:SchemaPath>D:\tmp\github\accounting\test_binding\accountingDataSet1.xsd</rd:SchemaPath>
-        <rd:TableName>external_payment</rd:TableName>
+        <rd:DataSetName>accountingDataSet2</rd:DataSetName>
+        <rd:SchemaPath>D:\tmp\github\accounting\test_binding\accountingDataSet2.xsd</rd:SchemaPath>
+        <rd:TableName>salary</rd:TableName>
         <rd:TableAdapterFillMethod>Fill</rd:TableAdapterFillMethod>
         <rd:TableAdapterGetDataMethod>GetData</rd:TableAdapterGetDataMethod>
-        <rd:TableAdapterName>external_paymentTableAdapter</rd:TableAdapterName>
+        <rd:TableAdapterName>salaryTableAdapter</rd:TableAdapterName>
       </rd:DataSetInfo>
     </DataSet>
   </DataSets>
   <ReportParameters>
-    <ReportParameter Name="spentTxts">
+    <ReportParameter Name="salaryTxts">
       <DataType>String</DataType>
       <DefaultValue>
         <Values>

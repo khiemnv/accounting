@@ -1,9 +1,11 @@
 ﻿//#define DEBUG_DRAWING
 #define use_sqlite
-#define save_config
 #define tab_header_blue
 //#define use_bg_work
-//#define chck_pass
+#if !DEBUG
+#define chck_pass
+#define save_config
+#endif
 
 using System;
 using System.Collections.Generic;
@@ -215,12 +217,14 @@ namespace test_binding
 #endif
 
             //load input
-            openInputForm(inputFormType.exPaymentIF);
+            openInputForm(inputFormType.exterPayIF);
         }
         enum inputFormType
         {
             receiptIF,
-            exPaymentIF,
+            exterPayIF,
+            interPayIF,
+            salaryIF
         }
         private void openInputForm(inputFormType type)
         {
@@ -230,8 +234,14 @@ namespace test_binding
                 case inputFormType.receiptIF:
                     inputDlg = new lReceiptsInputF();
                     break;
-                case inputFormType.exPaymentIF:
+                case inputFormType.exterPayIF:
                     inputDlg = new lExterPayInputF();
+                    break;
+                case inputFormType.interPayIF:
+                    inputDlg = new lInterPayInputF();
+                    break;
+                case inputFormType.salaryIF:
+                    inputDlg = new lSalaryInputF();
                     break;
             }
 

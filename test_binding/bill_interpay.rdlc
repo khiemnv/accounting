@@ -421,7 +421,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Mã PC: </Value>
+                                  <Value>Mã PT: </Value>
                                   <Style>
                                     <FontFamily>times New Roman</FontFamily>
                                     <FontSize>12pt</FontSize>
@@ -773,14 +773,21 @@
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
-                        <Textbox Name="spent">
+                        <Textbox Name="amount">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!spent.Value</Value>
+                                  <Value>=format(Fields!advance_payment.Value, "#,0;(#,0)")</Value>
+                                  <Style>
+                                    <FontFamily>times New Roman</FontFamily>
+                                    <FontSize>12pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                                <TextRun>
+                                  <Value> (VND)</Value>
                                   <Style>
                                     <FontFamily>times New Roman</FontFamily>
                                     <FontSize>12pt</FontSize>
@@ -792,7 +799,7 @@
                               </Style>
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>spent</rd:DefaultName>
+                          <rd:DefaultName>amount</rd:DefaultName>
                           <Top>2.8607in</Top>
                           <Left>1.29521in</Left>
                           <Height>0.1875in</Height>
@@ -859,7 +866,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Parameters!spentTxts.Value(RowNumber(Nothing)-1)</Value>
+                                  <Value>=Parameters!advanceTxts.Value(RowNumber(Nothing)-1)</Value>
                                   <Style>
                                     <FontFamily>times New Roman</FontFamily>
                                     <FontSize>12pt</FontSize>
@@ -983,7 +990,6 @@
                         </Border>
                       </Style>
                     </Rectangle>
-                    <rd:Selected>true</rd:Selected>
                   </CellContents>
                 </TablixCell>
               </TablixCells>
@@ -1060,16 +1066,20 @@
           <DataField>content</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="building">
-          <DataField>building</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
         <Field Name="group_name">
           <DataField>group_name</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="spent">
-          <DataField>spent</DataField>
+        <Field Name="advance_payment">
+          <DataField>advance_payment</DataField>
+          <rd:TypeName>System.Int64</rd:TypeName>
+        </Field>
+        <Field Name="reimbursement">
+          <DataField>reimbursement</DataField>
+          <rd:TypeName>System.Int64</rd:TypeName>
+        </Field>
+        <Field Name="actually_spent">
+          <DataField>actually_spent</DataField>
           <rd:TypeName>System.Int64</rd:TypeName>
         </Field>
         <Field Name="note">
@@ -1082,17 +1092,17 @@
         </Field>
       </Fields>
       <rd:DataSetInfo>
-        <rd:DataSetName>accountingDataSet1</rd:DataSetName>
-        <rd:SchemaPath>D:\tmp\github\accounting\test_binding\accountingDataSet1.xsd</rd:SchemaPath>
-        <rd:TableName>external_payment</rd:TableName>
+        <rd:DataSetName>accountingDataSet3</rd:DataSetName>
+        <rd:SchemaPath>D:\tmp\github\accounting\test_binding\accountingDataSet3.xsd</rd:SchemaPath>
+        <rd:TableName>internal_payment</rd:TableName>
         <rd:TableAdapterFillMethod>Fill</rd:TableAdapterFillMethod>
         <rd:TableAdapterGetDataMethod>GetData</rd:TableAdapterGetDataMethod>
-        <rd:TableAdapterName>external_paymentTableAdapter</rd:TableAdapterName>
+        <rd:TableAdapterName>internal_paymentTableAdapter</rd:TableAdapterName>
       </rd:DataSetInfo>
     </DataSet>
   </DataSets>
   <ReportParameters>
-    <ReportParameter Name="spentTxts">
+    <ReportParameter Name="advanceTxts">
       <DataType>String</DataType>
       <DefaultValue>
         <Values>

@@ -105,7 +105,7 @@ namespace test_binding
     {
         protected override void initCtrls()
         {
-            this.Text = "Phiếu Chi";
+            this.Text = "Phiếu Chi Ngoại";
             base.initCtrls();
         }
         protected override string GetBill()
@@ -119,13 +119,34 @@ namespace test_binding
     }
     public class lInterPayInputF : inputF
     {
+        protected override void initCtrls()
+        {
+            this.Text = "Phiếu Chi Nội";
+            base.initCtrls();
+        }
         protected override string GetBill()
         {
-            return @"..\..\bill_receipts.rdlc";
+            return @"..\..\bill_interpay.rdlc";
         }
         protected override lInputPanel CrtInputPanel()
         {
-            return new lReceiptsInputPanel();
+            return new lInterPayInputPanel();
+        }
+    }
+    public class lSalaryInputF : inputF
+    {
+        protected override void initCtrls()
+        {
+            this.Text = "Phiếu Chi Lương";
+            base.initCtrls();
+        }
+        protected override string GetBill()
+        {
+            return @"..\..\bill_salary.rdlc";
+        }
+        protected override lInputPanel CrtInputPanel()
+        {
+            return new lSalaryInputPanel();
         }
     }
 }
