@@ -346,7 +346,6 @@ namespace test_binding
                 m_udpateStsCb(m_stsTxt);
                 m_isEnable = false;
             }
-            public event EventHandler UpdateStsTxt;
         }
         statusMng m_stsMng;
         private void UpdateStsTxt(string txt)
@@ -420,7 +419,6 @@ namespace test_binding
             if (tbl != null) { update(); }
         }
 
-        private DateTime m_startTime;
         private void M_dataContent_FillTableCompleted(object sender, lDataContent.FillTableCompletedEventArgs e)
         {
             update();
