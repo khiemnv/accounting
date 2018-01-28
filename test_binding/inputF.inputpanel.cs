@@ -112,7 +112,7 @@ namespace test_binding
                     m_text.Text = value;
                 }
             }
-            
+
         }
     }
     [DataContract(Name = "InputCtrlDate")]
@@ -134,7 +134,7 @@ namespace test_binding
 
             m_panel.Controls.AddRange(new Control[] { m_label, m_date });
         }
-        
+
         public override void updateInsertParams(List<string> exprs, List<lSearchParam> srchParams)
         {
             string zStartDate = m_date.Value.ToString(lConfigMng.getDateFormat());
@@ -379,7 +379,14 @@ namespace test_binding
         protected virtual void Add()
         {
             //check key is unique
-            Debug.Assert(m_keyMng.IsUniqKey(m_keyCtrl.Text));
+            string key = m_keyCtrl.Text;
+            if (!m_keyMng.IsUniqKey(key))
+            {
+                Debug.Assert(false);
+                lConfigMng.showInputError("Mã này đã tồn tại");
+                m_keyCtrl.Text = m_keyMng.IncKey();
+                return;
+            }
 
             List<string> exprs = new List<string>();
             List<lSearchParam> srchParams = new List<lSearchParam>();
@@ -407,7 +414,7 @@ namespace test_binding
             //}
             bIncKeyReq = true;
         }
-        protected virtual lInputCtrl m_keyCtrl{get;}
+        protected virtual lInputCtrl m_keyCtrl { get; }
 
         protected virtual keyMng m_keyMng { get; }
         protected virtual string InitKey()
@@ -627,7 +634,8 @@ namespace test_binding
         string m_keyField;
         string m_dateField;
         Regex m_reg;
-        string m_preKey;
+        DateTime m_preDate;
+        int m_preNo;
         public keyMng(string preFix, string tblName, string keyField, string dateField = "date")
         {
             m_preFix = preFix;
@@ -639,8 +647,9 @@ namespace test_binding
         }
         private string genKey(DateTime date, int n)
         {
-            string zKey = m_preFix +  date.ToString("yyyyMMdd") + n.ToString("D3");
-            m_preKey = zKey;
+            string zKey = m_preFix + date.ToString("yyyyMMdd") + n.ToString("D3");
+            m_preDate = date;
+            m_preNo = n;
             return zKey;
         }
         public string InitKey()
@@ -658,12 +667,17 @@ namespace test_binding
                 int i = 1;
                 for (; i <= tbl.Rows.Count; i++)
                 {
-                    string curKey = tbl.Rows[i-1][0].ToString();
+                    string curKey = tbl.Rows[i - 1][0].ToString();
                     Match m = m_reg.Match(curKey);
                     no = int.Parse(m.Groups[2].Value);
                     if (i != no) break;
                 }
                 zKey = genKey(curDate, i);
+            }
+            if (!IsUniqKey(zKey))
+            {
+                Debug.Assert(false);    //invalid manual gen key
+                zKey = IncKey();
             }
             return zKey;
         }
@@ -684,14 +698,15 @@ namespace test_binding
         {
             //PTyyyyMMdd000
             string newKey = "";
-            string curKey = m_preKey;
-            Match m = m_reg.Match(curKey);
-            if (m.Success)
+            //string curKey = m_preKey;
+            //Match m = m_reg.Match(curKey);
+            //if (m.Success)
             {
-                int no = int.Parse(m.Groups[2].Value);
-                for (no++; no < 999; no++)
+                //int no = int.Parse(m.Groups[2].Value);
+                int no = m_preNo + 1;
+                for (; no < 999; no++)
                 {
-                    newKey = m.Groups[1].Value + no.ToString("D3");
+                    newKey = genKey(m_preDate, no);
                     if (IsUniqKey(newKey))
                     {
                         break;

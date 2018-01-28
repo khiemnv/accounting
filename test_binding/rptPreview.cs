@@ -36,6 +36,9 @@ namespace test_binding
             miOption.MenuItems.Add(miAutoScale);
 
             Menu.MenuItems.AddRange(new MenuItem[] { miFile, miOption });
+
+            //font
+            //this.Font = lConfigMng.getFont();
         }
 
         //data

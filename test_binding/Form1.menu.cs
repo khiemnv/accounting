@@ -75,6 +75,10 @@ namespace test_binding
             miBuilding.Click += MiBuilding_Click;
             addChild(miEdit, miBuilding);
 
+            var miConstrorg = crtMenuItem("Đơn vị TC");
+            miConstrorg.Click += MiConstrorg_Click;
+            addChild(miEdit, miConstrorg);
+
             //Report
             var miReport = crtMenuItem("&Report");
             miReport.Click += MiReport_Click;
@@ -152,6 +156,13 @@ namespace test_binding
             lReportDlg dlg = new lReportDlg();
             dlg.ShowDialog();
             dlg.Dispose();
+        }
+
+        private void MiConstrorg_Click(object sender, EventArgs e)
+        {
+            lEditDlg edtDlg = new lConstrorgEditDlg();
+            edtDlg.ShowDialog();
+            edtDlg.Dispose();
         }
 
         private void MiBuilding_Click(object sender, EventArgs e)

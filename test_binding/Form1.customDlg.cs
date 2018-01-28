@@ -267,6 +267,7 @@ namespace test_binding
             yearRadio.Hide();
 
             //set font
+            //this.Font = lConfigMng.getFont();
             foreach (Control crt in Controls)
             {
                 crt.Font = lConfigMng.getFont();
@@ -327,12 +328,22 @@ namespace test_binding
 
         private void LReportDlg_Load(object sender, EventArgs e)
         {
-            //load data for building combo box
-            BindingSource bs = new BindingSource();
-            lDataContent dc = appConfig.s_contentProvider.CreateDataContent("building");
-            bs.DataSource = dc.m_dataTable;
-            buildingCmb.DataSource = bs;
-            buildingCmb.DisplayMember = dc.m_dataTable.Columns[1].ColumnName;
+            {
+                //load data for building combo box
+                BindingSource bs = new BindingSource();
+                lDataContent dc = appConfig.s_contentProvider.CreateDataContent("building");
+                bs.DataSource = dc.m_dataTable;
+                buildingCmb.DataSource = bs;
+                buildingCmb.DisplayMember = dc.m_dataTable.Columns[1].ColumnName;
+            }
+            //load data for constr org cmb
+            {
+                BindingSource bs = new BindingSource();
+                lDataContent dc = appConfig.s_contentProvider.CreateDataContent("constr_org");
+                bs.DataSource = dc.m_dataTable;
+                constrorgCmb.DataSource = bs;
+                constrorgCmb.DisplayMember = dc.m_dataTable.Columns[1].ColumnName;
+            }
         }
     }
 
@@ -356,6 +367,9 @@ namespace test_binding
             m_tblPanel.SetColumnSpan(m_dataPanel.m_dataGridView, 2);
 
             Controls.Add(m_tblPanel);
+
+            //font
+            //this.Font = lConfigMng.getFont();
         }
         private void InitializeComponent()
         {
@@ -370,6 +384,7 @@ namespace test_binding
         {
             base.OnLoad(e);
             m_dataPanel.LoadData();
+            this.Text = m_dataPanel.m_tblInfo.m_tblAlias;
         }
         protected override void OnClosed(EventArgs e)
         {
@@ -399,6 +414,13 @@ namespace test_binding
         {
         }
     }
+    public class lConstrorgEditDlg : lEditDlg
+    {
+        public lConstrorgEditDlg()
+            : base(new lConstrorgDataPanel())
+        {
+        }
+    }
 
 
     public class lPasswdDlg : Form
@@ -414,6 +436,8 @@ namespace test_binding
         {
             InitializeComponent();
 
+            //font
+            //this.Font = lConfigMng.getFont();
         }
 
         private void M_passwdBtn_Click(object sender, EventArgs e)

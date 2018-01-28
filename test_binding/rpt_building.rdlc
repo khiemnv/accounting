@@ -9,7 +9,7 @@
           <Paragraph>
             <TextRuns>
               <TextRun>
-                <Value>Báo cáo công trình</Value>
+                <Value>Báo cáo thi công</Value>
                 <Style>
                   <FontSize>16pt</FontSize>
                   <Color>MidnightBlue</Color>
@@ -17,13 +17,13 @@
               </TextRun>
             </TextRuns>
             <Style>
-              <TextAlign>Right</TextAlign>
+              <TextAlign>Center</TextAlign>
             </Style>
           </Paragraph>
         </Paragraphs>
         <rd:DefaultName>Textbox1</rd:DefaultName>
         <Top>0.14458in</Top>
-        <Left>1.97792in</Left>
+        <Left>2.69667in</Left>
         <Height>0.34375in</Height>
         <Width>2.13542in</Width>
         <Style>
@@ -40,19 +40,19 @@
         <TablixBody>
           <TablixColumns>
             <TablixColumn>
-              <Width>1.04948in</Width>
+              <Width>0.92948in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>1.44704in</Width>
+              <Width>1.32704in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>1.37722in</Width>
+              <Width>1.25722in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>2.80594in</Width>
+              <Width>2.68594in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>1.32031in</Width>
+              <Width>1.20031in</Width>
             </TablixColumn>
           </TablixColumns>
           <TablixRows>
@@ -354,7 +354,7 @@
                             <TextRun>
                               <Value>=Fields!spent.Value</Value>
                               <Style>
-                                <Format>#,0,;(#,0,);'-'</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -511,7 +511,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!spent.Value)</Value>
                               <Style>
-                                <Format>#,0,;(#,0,);'-'</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -560,9 +560,10 @@
           </TablixMembers>
         </TablixRowHierarchy>
         <DataSetName>DataSet1</DataSetName>
-        <Top>1.405in</Top>
+        <Top>1.78in</Top>
+        <Left>0in</Left>
         <Height>0.88542in</Height>
-        <Width>8in</Width>
+        <Width>7.4in</Width>
         <ZIndex>1</ZIndex>
         <Style>
           <Border>
@@ -577,9 +578,15 @@
           <Paragraph>
             <TextRuns>
               <TextRun>
+                <Value>Công trình: </Value>
+                <Style>
+                  <Color>MidnightBlue</Color>
+                </Style>
+              </TextRun>
+              <TextRun>
                 <Value>=Parameters!buildingName.Value</Value>
                 <Style>
-                  <FontSize>16pt</FontSize>
+                  <FontWeight>Bold</FontWeight>
                   <Color>MidnightBlue</Color>
                 </Style>
               </TextRun>
@@ -590,10 +597,9 @@
           </Paragraph>
         </Paragraphs>
         <rd:DefaultName>Textbox1</rd:DefaultName>
-        <Top>0.14458in</Top>
-        <Left>4.11333in</Left>
-        <Height>0.34375in</Height>
-        <Width>1.75in</Width>
+        <Top>0.70361in</Top>
+        <Height>0.25in</Height>
+        <Width>7.4in</Width>
         <ZIndex>2</ZIndex>
         <Style>
           <Border>
@@ -622,7 +628,7 @@
           </Paragraph>
         </Paragraphs>
         <rd:DefaultName>Textbox20</rd:DefaultName>
-        <Top>0.97444in</Top>
+        <Top>1.46056in</Top>
         <Left>2.52431in</Left>
         <Height>0.25in</Height>
         <Width>1.23958in</Width>
@@ -658,7 +664,8 @@
           </Paragraph>
         </Paragraphs>
         <rd:DefaultName>Textbox36</rd:DefaultName>
-        <Top>0.97444in</Top>
+        <Top>1.46056in</Top>
+        <Left>0in</Left>
         <Height>0.25in</Height>
         <Width>0.61458in</Width>
         <ZIndex>4</ZIndex>
@@ -689,7 +696,7 @@
           </Paragraph>
         </Paragraphs>
         <rd:DefaultName>Textbox20</rd:DefaultName>
-        <Top>0.97444in</Top>
+        <Top>1.46056in</Top>
         <Left>0.61805in</Left>
         <Height>0.25in</Height>
         <Width>1.20486in</Width>
@@ -725,7 +732,7 @@
           </Paragraph>
         </Paragraphs>
         <rd:DefaultName>Textbox22</rd:DefaultName>
-        <Top>0.97444in</Top>
+        <Top>1.46056in</Top>
         <Left>1.80902in</Left>
         <Height>0.25in</Height>
         <Width>0.6875in</Width>
@@ -748,7 +755,7 @@
           <Paragraph>
             <TextRuns>
               <TextRun>
-                <Value>Báo cáo chi theo  công trình (đơn vị: 1,000 VND)</Value>
+                <Value>Báo cáo chi theo  công trình (đơn vị: VND)</Value>
                 <Style>
                   <FontWeight>Bold</FontWeight>
                   <Color>Blue</Color>
@@ -759,7 +766,8 @@
           </Paragraph>
         </Paragraphs>
         <rd:DefaultName>Textbox36</rd:DefaultName>
-        <Top>0.72444in</Top>
+        <Top>1.21056in</Top>
+        <Left>0in</Left>
         <Height>0.25in</Height>
         <Width>3.36334in</Width>
         <ZIndex>7</ZIndex>
@@ -795,10 +803,10 @@
           </Paragraph>
         </Paragraphs>
         <rd:DefaultName>Textbox39</rd:DefaultName>
-        <Top>2.44792in</Top>
-        <Left>5.98958in</Left>
+        <Top>2.96042in</Top>
+        <Left>5.4in</Left>
         <Height>0.23958in</Height>
-        <Width>2.01042in</Width>
+        <Width>2in</Width>
         <ZIndex>8</ZIndex>
         <Style>
           <Border>
@@ -811,13 +819,13 @@
         </Style>
       </Textbox>
     </ReportItems>
-    <Height>2.6875in</Height>
+    <Height>3.2in</Height>
     <Style />
   </Body>
-  <Width>8in</Width>
+  <Width>7.5in</Width>
   <Page>
-    <LeftMargin>1in</LeftMargin>
-    <RightMargin>1in</RightMargin>
+    <LeftMargin>0.5in</LeftMargin>
+    <RightMargin>0.5in</RightMargin>
     <TopMargin>1in</TopMargin>
     <BottomMargin>1in</BottomMargin>
     <Style />

@@ -531,4 +531,11 @@ namespace test_binding
             m_tblName = "building";
         }
     }
+    public class lConstrorgDataPanel : lGroupNameDataPanel
+    {
+        public lConstrorgDataPanel()
+        {
+            m_tblName = "constr_org";
+        }
+    }
 }

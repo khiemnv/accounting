@@ -723,6 +723,7 @@ namespace test_binding
                     crtSearchCtrl(m_tblInfo, "group_name", new Point(1, 0), new Size(1, 1), lSearchCtrl.SearchMode.match),
                     crtSearchCtrl(m_tblInfo, "content", new Point(1, 1), new Size(1, 1), lSearchCtrl.SearchMode.like),
                     crtSearchCtrl(m_tblInfo, "building", new Point(1, 2), new Size(1, 1), lSearchCtrl.SearchMode.match),
+                    crtSearchCtrl(m_tblInfo, "constr_org", new Point(1, 3), new Size(1, 1), lSearchCtrl.SearchMode.match),
                 };
         }
     }

@@ -231,7 +231,7 @@ namespace test_binding
                    new lColInfo( "date"             ,"Ngày Tháng", lColInfo.lColType.dateTime),
                    new lColInfo( "building"         ,"Công trình", lColInfo.lColType.text, "building"),
                    new lColInfo( "group_name"       ,"Thuộc ban", lColInfo.lColType.text, "group_name"),
-                   new lColInfo( "constr_org"       ,"Đơn vị TC", lColInfo.lColType.text),
+                   new lColInfo( "constr_org"       ,"Đơn vị TC", lColInfo.lColType.text, "constr_org"),
                    new lColInfo( "name"             ,"Họ Tên", lColInfo.lColType.text),
                    new lColInfo( "addr"             ,"Địa chỉ", lColInfo.lColType.text),
                    new lColInfo( "content"          ,"Nội dung", lColInfo.lColType.text),
@@ -303,6 +303,23 @@ namespace test_binding
             m_cols = new lColInfo[] {
                    new lColInfo( "ID","ID", lColInfo.lColType.num),
                    new lColInfo( "name","Công trình", lColInfo.lColType.text)
+                };
+        }
+    };
+
+    [DataContract(Name = "lConstrorgTblInfo")]
+    public class lConstrorgTblInfo : lTableInfo
+    {
+        public lConstrorgTblInfo()
+        {
+            m_tblName = "constr_org";
+            m_tblAlias = "Đơn vị TC";
+            m_crtQry = "CREATE TABLE if not exists constr_org("
+                + "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "name nchar(31))";
+            m_cols = new lColInfo[] {
+                   new lColInfo( "ID","ID", lColInfo.lColType.num),
+                   new lColInfo( "name","Đơn vị TC", lColInfo.lColType.text)
                 };
         }
     };
@@ -756,7 +773,8 @@ namespace test_binding
                     new lSalaryTblInfo(),
                     new lReceiptsContentTblInfo(),
                     new lGroupNameTblInfo(),
-                    new lBuildingTblInfo()
+                    new lBuildingTblInfo(),
+                    new lConstrorgTblInfo()
                 };
             m_views = new List<lTableInfo>() {
                     new lReceiptsViewInfo(),

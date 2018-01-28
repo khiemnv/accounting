@@ -110,6 +110,7 @@ namespace test_binding
 #endif
 
             //set font
+            //this.Font = lConfigMng.getFont();
             m_tabCtrl.Font = lConfigMng.getFont();
 
             Label tmpLbl = new Label();
@@ -220,7 +221,7 @@ namespace test_binding
 
 #if load_input
             //load input
-            openInputForm(inputFormType.exterPayIF);
+            //openInputForm(inputFormType.exterPayIF);
 #endif  //load_input
         }
         enum inputFormType

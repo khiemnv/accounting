@@ -58,6 +58,7 @@ namespace test_binding
                     typeof(lGroupNameTblInfo),
                     typeof(lBuildingTblInfo),
                     typeof(lReceiptsContentTblInfo),
+                    typeof(lConstrorgTblInfo),
                     typeof(lReceiptsViewInfo),
                     typeof(lInterPaymentViewInfo),
                     typeof(lExterPaymentViewInfo),
