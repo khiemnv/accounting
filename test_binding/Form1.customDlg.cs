@@ -40,7 +40,7 @@ namespace test_binding
             this.paymentRadio = new System.Windows.Forms.RadioButton();
             this.buildingRadio = new System.Windows.Forms.RadioButton();
             this.constrorgRadio = new System.Windows.Forms.RadioButton();
-            this.yearRadio = new System.Windows.Forms.RadioButton();
+            this.daysumRd = new System.Windows.Forms.RadioButton();
             this.startDate = new System.Windows.Forms.DateTimePicker();
             this.endDate = new System.Windows.Forms.DateTimePicker();
             this.paymentRptType = new System.Windows.Forms.ComboBox();
@@ -89,23 +89,23 @@ namespace test_binding
             this.constrorgRadio.Text = "Đơn vị TC";
             this.constrorgRadio.UseVisualStyleBackColor = true;
             // 
-            // yearRadio
+            // daysumRd
             // 
-            this.yearRadio.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.yearRadio.AutoSize = true;
-            this.yearRadio.Location = new System.Drawing.Point(3, 110);
-            this.yearRadio.Name = "yearRadio";
-            this.yearRadio.Size = new System.Drawing.Size(88, 17);
-            this.yearRadio.TabIndex = 3;
-            this.yearRadio.TabStop = true;
-            this.yearRadio.Text = "Báo cáo năm";
-            this.yearRadio.UseVisualStyleBackColor = true;
+            this.daysumRd.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.daysumRd.AutoSize = true;
+            this.daysumRd.Location = new System.Drawing.Point(3, 110);
+            this.daysumRd.Name = "daysumRd";
+            this.daysumRd.Size = new System.Drawing.Size(58, 17);
+            this.daysumRd.TabIndex = 3;
+            this.daysumRd.TabStop = true;
+            this.daysumRd.Text = "Sổ quỹ";
+            this.daysumRd.UseVisualStyleBackColor = true;
             // 
             // startDate
             // 
             this.startDate.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.startDate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.startDate.Location = new System.Drawing.Point(97, 3);
+            this.startDate.Location = new System.Drawing.Point(91, 3);
             this.startDate.Name = "startDate";
             this.startDate.Size = new System.Drawing.Size(147, 20);
             this.startDate.TabIndex = 4;
@@ -114,7 +114,7 @@ namespace test_binding
             // 
             this.endDate.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.endDate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.endDate.Location = new System.Drawing.Point(250, 3);
+            this.endDate.Location = new System.Drawing.Point(247, 3);
             this.endDate.Name = "endDate";
             this.endDate.Size = new System.Drawing.Size(147, 20);
             this.endDate.TabIndex = 5;
@@ -124,9 +124,9 @@ namespace test_binding
             this.tableLayoutPanel1.SetColumnSpan(this.paymentRptType, 2);
             this.paymentRptType.Dock = System.Windows.Forms.DockStyle.Fill;
             this.paymentRptType.FormattingEnabled = true;
-            this.paymentRptType.Location = new System.Drawing.Point(97, 29);
+            this.paymentRptType.Location = new System.Drawing.Point(91, 29);
             this.paymentRptType.Name = "paymentRptType";
-            this.paymentRptType.Size = new System.Drawing.Size(300, 21);
+            this.paymentRptType.Size = new System.Drawing.Size(306, 21);
             this.paymentRptType.TabIndex = 6;
             // 
             // label1
@@ -145,9 +145,9 @@ namespace test_binding
             this.tableLayoutPanel1.SetColumnSpan(this.buildingCmb, 2);
             this.buildingCmb.Dock = System.Windows.Forms.DockStyle.Fill;
             this.buildingCmb.FormattingEnabled = true;
-            this.buildingCmb.Location = new System.Drawing.Point(97, 56);
+            this.buildingCmb.Location = new System.Drawing.Point(91, 56);
             this.buildingCmb.Name = "buildingCmb";
-            this.buildingCmb.Size = new System.Drawing.Size(300, 21);
+            this.buildingCmb.Size = new System.Drawing.Size(306, 21);
             this.buildingCmb.TabIndex = 10;
             // 
             // tableLayoutPanel1
@@ -160,7 +160,7 @@ namespace test_binding
             this.tableLayoutPanel1.Controls.Add(this.buildingCmb, 1, 2);
             this.tableLayoutPanel1.Controls.Add(this.startDate, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.endDate, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.yearRadio, 0, 4);
+            this.tableLayoutPanel1.Controls.Add(this.daysumRd, 0, 4);
             this.tableLayoutPanel1.Controls.Add(this.paymentRadio, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.constrorgRadio, 0, 3);
             this.tableLayoutPanel1.Controls.Add(this.paymentRptType, 1, 1);
@@ -183,7 +183,7 @@ namespace test_binding
             // printBtn
             // 
             this.printBtn.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.printBtn.Location = new System.Drawing.Point(286, 153);
+            this.printBtn.Location = new System.Drawing.Point(284, 153);
             this.printBtn.Name = "printBtn";
             this.printBtn.Size = new System.Drawing.Size(75, 23);
             this.printBtn.TabIndex = 11;
@@ -195,9 +195,9 @@ namespace test_binding
             this.tableLayoutPanel1.SetColumnSpan(this.constrorgCmb, 2);
             this.constrorgCmb.Dock = System.Windows.Forms.DockStyle.Fill;
             this.constrorgCmb.FormattingEnabled = true;
-            this.constrorgCmb.Location = new System.Drawing.Point(97, 83);
+            this.constrorgCmb.Location = new System.Drawing.Point(91, 83);
             this.constrorgCmb.Name = "constrorgCmb";
-            this.constrorgCmb.Size = new System.Drawing.Size(300, 21);
+            this.constrorgCmb.Size = new System.Drawing.Size(306, 21);
             this.constrorgCmb.TabIndex = 12;
             // 
             // lReportDlg
@@ -221,7 +221,7 @@ namespace test_binding
         private System.Windows.Forms.RadioButton paymentRadio;
         private System.Windows.Forms.RadioButton buildingRadio;
         private System.Windows.Forms.RadioButton constrorgRadio;
-        private System.Windows.Forms.RadioButton yearRadio;
+        private System.Windows.Forms.RadioButton daysumRd;
         private System.Windows.Forms.DateTimePicker startDate;
         private System.Windows.Forms.DateTimePicker endDate;
         private System.Windows.Forms.ComboBox paymentRptType;
@@ -262,9 +262,6 @@ namespace test_binding
 
             printBtn.Click += PrintBtn_Click;
             Load += LReportDlg_Load;
-
-            //bao cao kiem ke & bao cao nam
-            yearRadio.Hide();
 
             //set font
             //this.Font = lConfigMng.getFont();
@@ -311,6 +308,10 @@ namespace test_binding
             else if (constrorgRadio.Checked)
             {
                 rpt = new lConstrorgReport(constrorgCmb.Text, startDate.Value, endDate.Value);
+            }
+            else if (daysumRd.Checked)
+            {
+                rpt = new lDaysumReport(startDate.Value, endDate.Value);
             }
             if (rpt != null)
             {

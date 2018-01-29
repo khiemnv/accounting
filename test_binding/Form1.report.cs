@@ -889,6 +889,43 @@ namespace test_binding
         }
     }
 
+    public class lDaysumReport : lDaysReport
+    {
+        List<ReportParameter> m_rptParams;
+        public lDaysumReport(DateTime startDate, DateTime endDate) : base(startDate, endDate)
+        {
+            string zStartDate = startDate.ToString(lConfigMng.getDisplayDateFormat());
+            string zEndDate = endDate.ToString(lConfigMng.getDisplayDateFormat());
+            m_rptParams = new List<ReportParameter>()
+            {
+                new ReportParameter("startDate",zStartDate),
+                new ReportParameter("endDate",zEndDate),
+            };
+            zStartDate = startDate.ToString(lConfigMng.getDateFormat());
+            zEndDate = endDate.ToString(lConfigMng.getDateFormat());
+#if use_sqlite
+            string qry = string.Format("select * from v_day_sum"
+                + " where date between '{0} 00:00:00' and '{1} 00:00:00'"
+                + " order by date",
+                zStartDate, zEndDate);
+#else
+            string qry = string.Format("select * from v_day_sum"
+                + " where date between '{0} 00:00:00' and '{1} 00:00:00'"
+                + " order by date",
+                zStartDate, zEndDate);
+#endif
+            m_sqls = new Dictionary<string, string>
+            {
+                { "DataSet1", qry }
+            };
+            m_rdlcPath = @"..\..\rpt_daysum.rdlc";
+        }
+        public override List<ReportParameter> getReportParam()
+        {
+            return m_rptParams;
+        }
+    }
+
     public class lCurReceiptsReport : lBaseReport
     {
         public lCurReceiptsReport()

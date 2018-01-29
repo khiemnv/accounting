@@ -289,7 +289,6 @@ namespace test_binding
                 };
         }
     };
-
     [DataContract(Name = "lBuildingTblInfo")]
     public class lBuildingTblInfo : lTableInfo
     {
@@ -306,7 +305,6 @@ namespace test_binding
                 };
         }
     };
-
     [DataContract(Name = "lConstrorgTblInfo")]
     public class lConstrorgTblInfo : lTableInfo
     {
@@ -323,7 +321,6 @@ namespace test_binding
                 };
         }
     };
-
     [DataContract(Name = "lReceiptsContentTblInfo")]
     public class lReceiptsContentTblInfo : lTableInfo
     {
@@ -340,6 +337,7 @@ namespace test_binding
                 };
         }
     };
+
     [DataContract(Name = "lReceiptsViewInfo")]
     public class lReceiptsViewInfo : lTableInfo
     {
@@ -417,6 +415,59 @@ namespace test_binding
                 new lColInfo("salary", "Lương", lColInfo.lColType.currency),
                 new lColInfo("year", "Năm", lColInfo.lColType.num),
                 new lColInfo("qtr", "Quý", lColInfo.lColType.num),
+            };
+        }
+    };
+    [DataContract(Name = "lDaysumViewInfo")]
+    public class lDaysumViewInfo : lTableInfo
+    {
+        public lDaysumViewInfo()
+        {
+            m_tblName = "v_day_sum";
+            m_crtQry = "CREATE VIEW if not exists v_day_sum AS"
+                    + "    SELECT date,"
+                    + "           sum(receipt) AS receipt,"
+                    + "           sum(interpay) AS interpay,"
+                    + "           sum(exterpay) AS exterpay,"
+                    + "           sum(salary) AS salary,"
+                    + "           sum(receipt) - sum(interpay) - sum(exterpay) - sum(salary) AS sum"
+                    + "      FROM ("
+                    + "               SELECT date,"
+                    + "                      amount AS receipt,"
+                    + "                      0 AS interpay,"
+                    + "                      0 AS exterpay,"
+                    + "                      0 AS salary"
+                    + "                 FROM receipts"
+                    + "               UNION"
+                    + "               SELECT date,"
+                    + "                      0 AS receipt,"
+                    + "                      advance_payment - reimbursement AS interpay,"
+                    + "                      0 AS exterpay,"
+                    + "                      0 AS salary"
+                    + "                 FROM internal_payment"
+                    + "               UNION"
+                    + "               SELECT date,"
+                    + "                      0 AS receipt,"
+                    + "                      0 AS interpay,"
+                    + "                      spent AS exterpay,"
+                    + "                      0 AS salary"
+                    + "                 FROM external_payment"
+                    + "               UNION"
+                    + "               SELECT date,"
+                    + "                      0 AS receipt,"
+                    + "                      0 AS interpay,"
+                    + "                      0 AS exterpay,"
+                    + "                      salary"
+                    + "                 FROM salary"
+                    + "           )"
+                    + "     GROUP BY date;";
+            m_cols = new lColInfo[] {
+                new lColInfo("date", "Ngày", lColInfo.lColType.text),
+                new lColInfo("receipt", "Thu", lColInfo.lColType.currency),
+                new lColInfo("interpay", "Chi nội", lColInfo.lColType.currency),
+                new lColInfo("exterpay", "Chi ngoại", lColInfo.lColType.currency),
+                new lColInfo("salary", "Lương", lColInfo.lColType.currency),
+                new lColInfo("sum", "Số dư cuối", lColInfo.lColType.currency),
             };
         }
     };
@@ -780,7 +831,8 @@ namespace test_binding
                     new lReceiptsViewInfo(),
                     new lInterPaymentViewInfo(),
                     new lExterPaymentViewInfo(),
-                    new lSalaryViewInfo()
+                    new lSalaryViewInfo(),
+                    new lDaysumViewInfo()
                 };
         }
     }

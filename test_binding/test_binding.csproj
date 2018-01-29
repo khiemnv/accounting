@@ -151,6 +151,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>accountingDataSet3.xsd</DependentUpon>
     </Compile>
+    <Compile Include="accountingDataSet4.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>accountingDataSet4.xsd</DependentUpon>
+    </Compile>
     <Compile Include="Form1.bgTask.cs" />
     <Compile Include="Form1.config.cs" />
     <Compile Include="Form1.customColumn.cs" />
@@ -225,6 +230,7 @@
       <DependentUpon>rptPreview.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="rpt_building.rdlc" />
+    <EmbeddedResource Include="rpt_daysum.rdlc" />
     <EmbeddedResource Include="rpt_constrorg.rdlc" />
     <EmbeddedResource Include="rpt_days.rdlc" />
     <EmbeddedResource Include="rpt_exterpayment.rdlc" />
@@ -277,6 +283,17 @@
     </None>
     <None Include="accountingDataSet3.xss">
       <DependentUpon>accountingDataSet3.xsd</DependentUpon>
+    </None>
+    <None Include="accountingDataSet4.xsc">
+      <DependentUpon>accountingDataSet4.xsd</DependentUpon>
+    </None>
+    <None Include="accountingDataSet4.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>accountingDataSet4.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="accountingDataSet4.xss">
+      <DependentUpon>accountingDataSet4.xsd</DependentUpon>
     </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
