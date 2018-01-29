@@ -64,10 +64,18 @@ namespace test_binding
                 }
             );
         }
+        lDataSync m_autoCompleteData;
         public override void LoadData()
         {
             if (m_colInfo != null && m_colInfo.m_lookupData != null)
             {
+                m_text.Validated += M_text_Validated;
+                m_autoCompleteData = m_colInfo.m_lookupData;
+                AutoCompleteStringCollection col = m_autoCompleteData.m_colls;
+                m_text.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+                m_text.AutoCompleteSource = AutoCompleteSource.CustomSource;
+                m_text.AutoCompleteCustomSource = col;
+#if false
                 m_combo = lConfigMng.crtComboBox();
                 m_text.Hide();
 
@@ -90,8 +98,21 @@ namespace test_binding
 
                 m_text.Dispose();
                 m_text = null;
+#endif
             }
         }
+
+        private void M_text_Validated(object sender, EventArgs e)
+        {
+            TextBox edt = (TextBox)sender;
+            Debug.WriteLine("M_text_Validated:" + edt.Text);
+            string selectedValue = edt.Text;
+            if (selectedValue != "")
+            {
+                m_autoCompleteData.Update(selectedValue);
+            }
+        }
+
         private void M_combo_Validated(object sender, EventArgs e)
         {
             string key = m_combo.Text;
@@ -470,6 +491,12 @@ namespace test_binding
 
             m_keyCtrl.Text = InitKey();
             m_dataContent.UpdateTableCompleted += M_dataContent_UpdateTableCompleted;
+
+            //load input ctrls data
+            foreach (var ctrl in m_inputsCtrls)
+            {
+                ctrl.LoadData();
+            }
         }
 
         private void M_dataContent_UpdateTableCompleted(object sender, lDataContent.FillTableCompletedEventArgs e)

@@ -154,8 +154,8 @@ namespace test_binding
                    new lColInfo( "date","Ngày Tháng", lColInfo.lColType.dateTime),
                    new lColInfo( "name","Họ tên", lColInfo.lColType.text),
                    new lColInfo( "addr","Địa chỉ", lColInfo.lColType.text),
-                   new lColInfo( "content","Lý do thu", lColInfo.lColType.text, "receipts_content"),
-                   new lColInfo( "note","Kèm theo", lColInfo.lColType.text),
+                   new lColInfo( "content","Nội dung", lColInfo.lColType.text, "receipts_content"),
+                   new lColInfo( "note","Ghi chú", lColInfo.lColType.text),
                    new lColInfo( "amount","Số tiền", lColInfo.lColType.currency),
                 };
         }
@@ -327,13 +327,13 @@ namespace test_binding
         public lReceiptsContentTblInfo()
         {
             m_tblName = "receipts_content";
-            m_tblAlias = "Nội dung chi";
+            m_tblAlias = "Ngồn thu";
             m_crtQry = "CREATE TABLE if not exists receipts_content("
                 + "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + " content nchar(31))";
             m_cols = new lColInfo[] {
                    new lColInfo( "ID","ID", lColInfo.lColType.num),
-                   new lColInfo( "content","Nội dung chi", lColInfo.lColType.text)
+                   new lColInfo( "content","Nguồn thu", lColInfo.lColType.text)
                 };
         }
     };

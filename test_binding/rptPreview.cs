@@ -39,6 +39,8 @@ namespace test_binding
 
             //font
             //this.Font = lConfigMng.getFont();
+            miAutoScale.Checked = true;
+            mAutoScale = true;
         }
 
         //data
