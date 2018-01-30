@@ -198,10 +198,10 @@ namespace test_binding
                    new lColInfo( "addr"             ,"Địa chỉ", lColInfo.lColType.text),
                    new lColInfo( "group_name"       ,"Thuộc ban", lColInfo.lColType.text, "group_name"),
                    new lColInfo( "content"          ,"Nội dung", lColInfo.lColType.text),
-                   new lColInfo( "note"             ,"Ghi Chú", lColInfo.lColType.text),
                    new lColInfo( "advance_payment"  ,"Tạm ứng", lColInfo.lColType.currency),
                    new lColInfo( "reimbursement"    ,"Hoàn ứng", lColInfo.lColType.currency),
                    new lColInfo( "actually_spent"   ,"Thực chi", lColInfo.lColType.currency),
+                   new lColInfo( "note"             ,"Ghi Chú", lColInfo.lColType.text),
                 };
         }
     };
@@ -229,14 +229,14 @@ namespace test_binding
                    new lColInfo( "ID","ID", lColInfo.lColType.num),
                    new lColInfo( "payment_number"   ,"Mã Phiếu Chi", lColInfo.lColType.uniqueText),
                    new lColInfo( "date"             ,"Ngày Tháng", lColInfo.lColType.dateTime),
-                   new lColInfo( "building"         ,"Công trình", lColInfo.lColType.text, "building"),
-                   new lColInfo( "group_name"       ,"Thuộc ban", lColInfo.lColType.text, "group_name"),
-                   new lColInfo( "constr_org"       ,"Đơn vị TC", lColInfo.lColType.text, "constr_org"),
                    new lColInfo( "name"             ,"Họ Tên", lColInfo.lColType.text),
                    new lColInfo( "addr"             ,"Địa chỉ", lColInfo.lColType.text),
                    new lColInfo( "content"          ,"Nội dung", lColInfo.lColType.text),
-                   new lColInfo( "note"             ,"Ghi Chú", lColInfo.lColType.text),
+                   new lColInfo( "constr_org"       ,"Đơn vị TC", lColInfo.lColType.text, "constr_org"),
+                   new lColInfo( "building"         ,"Công trình", lColInfo.lColType.text, "building"),
+                   new lColInfo( "group_name"       ,"Thuộc ban", lColInfo.lColType.text, "group_name"),
                    new lColInfo( "spent"            ,"Số tiền", lColInfo.lColType.currency),
+                   new lColInfo( "note"             ,"Ghi Chú", lColInfo.lColType.text),
                 };
         }
     };
@@ -268,8 +268,8 @@ namespace test_binding
                    new lColInfo( "addr"             ,"Địa chỉ", lColInfo.lColType.text),
                    new lColInfo( "group_name"       ,"Thuộc ban", lColInfo.lColType.text, "group_name"),
                    new lColInfo( "content"          ,"Nội dung", lColInfo.lColType.text),
-                   new lColInfo( "note"             ,"Ghi Chú", lColInfo.lColType.text),
                    new lColInfo( "salary"           ,"Số tiền", lColInfo.lColType.currency),
+                   new lColInfo( "note"             ,"Ghi Chú", lColInfo.lColType.text),
                 };
         }
     };

@@ -13,9 +13,11 @@ using Microsoft.Reporting.WinForms;
 
 namespace test_binding
 {
+    [DataContract(Name = "InputCtrl")]
     public class lInputCtrl : lSearchCtrl
     {
         protected new Label m_label;
+        //public lInputCtrl() { }
         public lInputCtrl(string fieldName, string alias, ctrlType type, Point pos, Size size)
             : base(fieldName, alias, type, pos, size)
         {
@@ -30,9 +32,17 @@ namespace test_binding
         {
             if (EditingCompleted != null) { EditingCompleted(this, Text); }
         }
+        //protected override void Dispose(bool disposing)
+        //{
+        //    if (disposing)
+        //    {
+        //        m_label.Dispose();
+        //    }
+        //    base.Dispose();
+        //}
     }
 
-    [DataContract(Name = "lInputCtrlText")]
+    [DataContract(Name = "InputCtrlText")]
     public class lInputCtrlText : lInputCtrl
     {
         protected TextBox m_text;
@@ -303,10 +313,12 @@ namespace test_binding
         }
     }
 
+    [DataContract(Name = "InputPanel")]
     public class lInputPanel
     {
         public lDataContent m_dataContent;
         public virtual List<ReportParameter> billRptParams { get; }
+        [DataMember(Name = "inputCtrls")]
         public List<lInputCtrl> m_inputsCtrls;
 
         public class PreviewEventArgs : EventArgs
@@ -322,6 +334,20 @@ namespace test_binding
         public virtual void initCtrls()
         {
             //create input ctrls
+            List<lInputCtrl> inputCtrls = m_inputsCtrls;
+            m_inputsCtrls = new List<lInputCtrl>();
+            foreach (lInputCtrl ctrl in inputCtrls)
+            {
+                m_inputsCtrls.Add(
+                    crtInputCtrl(
+                        m_tblInfo,
+                        ctrl.m_fieldName,
+                        ctrl.m_pos,
+                        ctrl.m_size,
+                        ctrl.m_mode
+                        )
+                    );
+            }
 
             //create table layout & add ctrls to
             //  +-------------------------+
@@ -341,12 +367,12 @@ namespace test_binding
 
             //add search ctrls to table layout
             int lastRow = 0;
-            foreach (lSearchCtrl searchCtrl in m_inputsCtrls)
+            foreach (var ctrl in m_inputsCtrls)
             {
-                m_tbl.Controls.Add(searchCtrl.m_panel, searchCtrl.m_pos.X, searchCtrl.m_pos.Y);
-                m_tbl.SetColumnSpan(searchCtrl.m_panel, searchCtrl.m_size.Width);
-                m_tbl.SetRowSpan(searchCtrl.m_panel, searchCtrl.m_size.Height);
-                lastRow = Math.Max(lastRow, searchCtrl.m_pos.Y);
+                m_tbl.Controls.Add(ctrl.m_panel, ctrl.m_pos.X, ctrl.m_pos.Y);
+                m_tbl.SetColumnSpan(ctrl.m_panel, ctrl.m_size.Width);
+                m_tbl.SetRowSpan(ctrl.m_panel, ctrl.m_size.Height);
+                lastRow = Math.Max(lastRow, ctrl.m_pos.Y);
             }
 
             //add buttons
@@ -743,6 +769,8 @@ namespace test_binding
             return newKey;
         }
     }
+
+    [DataContract(Name = "ReceiptsInputPanel")]
     public class lReceiptsInputPanel : lInputPanel
     {
         protected override lInputCtrl m_keyCtrl { get { return m_inputsCtrls[0]; } }
@@ -790,6 +818,7 @@ namespace test_binding
             }
         }
     }
+    [DataContract(Name = "InterPayInputPanel")]
     public class lInterPayInputPanel : lInputPanel
     {
         protected override lInputCtrl m_keyCtrl { get { return m_inputsCtrls[0]; } }
@@ -798,9 +827,9 @@ namespace test_binding
         public lInterPayInputPanel()
         {
             m_tblName = "internal_payment";
-            lInputCtrl advance_payment = crtInputCtrl(m_tblInfo, "advance_payment", new Point(0, 7), new Size(1, 1));
-            lInputCtrl reimbursement = crtInputCtrl(m_tblInfo, "reimbursement", new Point(0, 8), new Size(1, 1));
-            lInputCtrl actually_spent = crtInputCtrl(m_tblInfo, "actually_spent", new Point(0, 9), new Size(1, 1));
+            lInputCtrl advance_payment = crtInputCtrl(m_tblInfo, "advance_payment", new Point(0, 6), new Size(1, 1));
+            lInputCtrl reimbursement = crtInputCtrl(m_tblInfo, "reimbursement", new Point(0, 7), new Size(1, 1));
+            lInputCtrl actually_spent = crtInputCtrl(m_tblInfo, "actually_spent", new Point(0, 8), new Size(1, 1));
             m_inputsCtrls = new List<lInputCtrl>
             {
                 crtInputCtrl(m_tblInfo, "payment_number"    , new Point(0, 0), new Size(1, 1)),
@@ -809,10 +838,10 @@ namespace test_binding
                 crtInputCtrl(m_tblInfo, "addr"              , new Point(0, 3), new Size(1, 1)),
                 crtInputCtrl(m_tblInfo, "group_name"        , new Point(0, 4), new Size(1, 1)),
                 crtInputCtrl(m_tblInfo, "content"           , new Point(0, 5), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "note"              , new Point(0, 6), new Size(1, 1)),
                 advance_payment,
                 reimbursement,
                 actually_spent,
+                crtInputCtrl(m_tblInfo, "note"              , new Point(0, 9), new Size(1, 1)),
             };
             reimbursement.EditingCompleted += (s, e) =>
             {
@@ -858,6 +887,7 @@ namespace test_binding
             }
         }
     }
+    [DataContract(Name = "ExterPayInputPanel")]
     public class lExterPayInputPanel : lInputPanel
     {
         protected override lInputCtrl m_keyCtrl { get { return m_inputsCtrls[0]; } }
@@ -872,12 +902,12 @@ namespace test_binding
                 crtInputCtrl(m_tblInfo, "date"          , new Point(0, 1), new Size(1, 1)),
                 crtInputCtrl(m_tblInfo, "name"          , new Point(0, 2), new Size(1, 1)),
                 crtInputCtrl(m_tblInfo, "addr"          , new Point(0, 3), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "group_name"    , new Point(0, 4), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "content"       , new Point(0, 4), new Size(1, 1)),
                 crtInputCtrl(m_tblInfo, "constr_org"    , new Point(0, 5), new Size(1, 1)),
                 crtInputCtrl(m_tblInfo, "building"      , new Point(0, 6), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "content"       , new Point(0, 7), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "note"          , new Point(0, 8), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "spent"         , new Point(0, 9), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "group_name"    , new Point(0, 7), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "spent"         , new Point(0, 8), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "note"          , new Point(0, 9), new Size(1, 1)),
             };
             m_key = new keyMng("PCG", m_tblName, "payment_number");
         }
@@ -908,6 +938,7 @@ namespace test_binding
             }
         }
     }
+    [DataContract(Name = "SalaryInputPanel")]
     public class lSalaryInputPanel : lInputPanel
     {
         protected override lInputCtrl m_keyCtrl { get { return m_inputsCtrls[0]; } }
@@ -925,8 +956,8 @@ namespace test_binding
                 crtInputCtrl(m_tblInfo, "addr"          , new Point(0, 3), new Size(1, 1)),
                 crtInputCtrl(m_tblInfo, "group_name"    , new Point(0, 4), new Size(1, 1)),
                 crtInputCtrl(m_tblInfo, "content"       , new Point(0, 5), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "note"          , new Point(0, 6), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "salary"        , new Point(0, 7), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "salary"        , new Point(0, 6), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "note"          , new Point(0, 7), new Size(1, 1)),
             };
             m_key = new keyMng("PCL", m_tblName, "payment_number");
         }
@@ -939,6 +970,7 @@ namespace test_binding
                 {
                     if (row.RowState == DataRowState.Deleted)
                     {
+                        Debug.Assert(false);
                         continue;
                     }
                     //[TODO] db null
@@ -960,6 +992,5 @@ namespace test_binding
             }
         }
     }
-
 }
 
