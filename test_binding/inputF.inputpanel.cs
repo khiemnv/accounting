@@ -17,7 +17,7 @@ namespace test_binding
     public class lInputCtrl : lSearchCtrl
     {
         protected new Label m_label;
-        //public lInputCtrl() { }
+        public lInputCtrl() { }
         public lInputCtrl(string fieldName, string alias, ctrlType type, Point pos, Size size)
             : base(fieldName, alias, type, pos, size)
         {
@@ -334,20 +334,20 @@ namespace test_binding
         public virtual void initCtrls()
         {
             //create input ctrls
-            List<lInputCtrl> inputCtrls = m_inputsCtrls;
-            m_inputsCtrls = new List<lInputCtrl>();
-            foreach (lInputCtrl ctrl in inputCtrls)
-            {
-                m_inputsCtrls.Add(
-                    crtInputCtrl(
-                        m_tblInfo,
-                        ctrl.m_fieldName,
-                        ctrl.m_pos,
-                        ctrl.m_size,
-                        ctrl.m_mode
-                        )
-                    );
-            }
+            //List<lInputCtrl> inputCtrls = m_inputsCtrls;
+            //m_inputsCtrls = new List<lInputCtrl>();
+            //foreach (lInputCtrl ctrl in inputCtrls)
+            //{
+            //    m_inputsCtrls.Add(
+            //        crtInputCtrl(
+            //            m_tblInfo,
+            //            ctrl.m_fieldName,
+            //            ctrl.m_pos,
+            //            ctrl.m_size,
+            //            ctrl.m_mode
+            //            )
+            //        );
+            //}
 
             //create table layout & add ctrls to
             //  +-------------------------+
