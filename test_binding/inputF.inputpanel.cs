@@ -1021,8 +1021,10 @@ namespace test_binding
                 crtInputCtrl(m_tblInfo, "addr"          , new Point(0, 3), new Size(1, 1)),
                 crtInputCtrl(m_tblInfo, "group_name"    , new Point(0, 4), new Size(1, 1)),
                 crtInputCtrl(m_tblInfo, "content"       , new Point(0, 5), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "salary"        , new Point(0, 6), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "note"          , new Point(0, 7), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "bsalary"       , new Point(0, 6), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "esalary"       , new Point(0, 7), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "salary"        , new Point(0, 8), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "note"          , new Point(0, 9), new Size(1, 1)),
             };
             m_key = new keyMng("PCL", m_tblName, "payment_number");
             Dictionary<string, string> dict = new Dictionary<string, string> {

@@ -262,6 +262,8 @@ namespace test_binding
             + "name char(31),"
             + "addr char(63),"
             + "group_name char(31),"
+            + "bsalary INTEGER,"
+            + "esalary INTEGER,"
             + "salary INTEGER,"
             + "content text,"
             + "note text"
@@ -275,7 +277,9 @@ namespace test_binding
                    new lColInfo( "addr"             ,"Địa chỉ", lColInfo.lColType.text),
                    new lColInfo( "group_name"       ,"Thuộc ban", lColInfo.lColType.text, "group_name"),
                    new lColInfo( "content"          ,"Nội dung", lColInfo.lColType.text),
-                   new lColInfo( "salary"           ,"Số tiền", lColInfo.lColType.currency),
+                   new lColInfo( "bsalary"           ,"Lương CB", lColInfo.lColType.currency),
+                   new lColInfo( "esalary"           ,"Lương TN", lColInfo.lColType.currency),
+                   new lColInfo( "salary"           ,"Tổng lương", lColInfo.lColType.currency),
                    new lColInfo( "note"             ,"Ghi Chú", lColInfo.lColType.text),
                 };
         }

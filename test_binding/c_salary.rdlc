@@ -317,7 +317,6 @@
                         <PaddingBottom>2pt</PaddingBottom>
                       </Style>
                     </Textbox>
-                    <rd:Selected>true</rd:Selected>
                   </CellContents>
                 </TablixCell>
                 <TablixCell>
@@ -485,7 +484,7 @@
                             <TextRun>
                               <Value>=Fields!salary.Value</Value>
                               <Style>
-                                <Format>#,0,;(#,0,);'-'</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -738,7 +737,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!salary.Value)</Value>
                               <Style>
-                                <Format>#,0,;(#,0,);'-'</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -909,7 +908,7 @@
           <Paragraph>
             <TextRuns>
               <TextRun>
-                <Value>Báo cáo Chi ngoại chúng (đơn vị: 1,000 VND)</Value>
+                <Value>Báo cáo Chi ngoại chúng (đơn vị: VND)</Value>
                 <Style>
                   <FontWeight>Bold</FontWeight>
                   <Color>Blue</Color>
