@@ -9,7 +9,7 @@
           <Paragraph>
             <TextRuns>
               <TextRun>
-                <Value>Báo cáo kiểm kê (đơn vị 1,000 VND)</Value>
+                <Value>Báo cáo kiểm kê (đơn vị: VND)</Value>
                 <Style>
                   <FontWeight>Bold</FontWeight>
                   <Color>Blue</Color>
@@ -465,7 +465,7 @@
                             <TextRun>
                               <Value>=Fields!receipt.Value</Value>
                               <Style>
-                                <Format>#,0,;(#,0,);'-'</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -497,7 +497,7 @@
                             <TextRun>
                               <Value>=Fields!inter_pay.Value</Value>
                               <Style>
-                                <Format>#,0,;(#,0,);'-'</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -529,7 +529,7 @@
                             <TextRun>
                               <Value>=Fields!exter_pay.Value</Value>
                               <Style>
-                                <Format>#,0,;(#,0,);'-'</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -561,7 +561,7 @@
                             <TextRun>
                               <Value>=Fields!salary.Value</Value>
                               <Style>
-                                <Format>#,0,;(#,0,);'-'</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -593,7 +593,7 @@
                             <TextRun>
                               <Value>=Fields!receipt.Value-Fields!inter_pay.Value-Fields!exter_pay.Value-Fields!salary.Value</Value>
                               <Style>
-                                <Format>#,0,;(#,0,);'-'</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -661,7 +661,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!receipt.Value)</Value>
                               <Style>
-                                <Format>#,0,;(#,0,);'-'</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -694,7 +694,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!inter_pay.Value)</Value>
                               <Style>
-                                <Format>#,0,;(#,0,);'-'</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -727,7 +727,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!exter_pay.Value)</Value>
                               <Style>
-                                <Format>#,0,;(#,0,);'-'</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -760,7 +760,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!salary.Value)</Value>
                               <Style>
-                                <Format>#,0,;(#,0,);'-'</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -793,7 +793,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!receipt.Value, "DataSet2")-Sum(Fields!inter_pay.Value, "DataSet1")-Sum(Fields!exter_pay.Value, "DataSet1")-Sum(Fields!salary.Value, "DataSet1")</Value>
                               <Style>
-                                <Format>#,0,;(#,0,);'-'</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -1100,7 +1100,6 @@
                         <PaddingBottom>2pt</PaddingBottom>
                       </Style>
                     </Textbox>
-                    <rd:Selected>true</rd:Selected>
                   </CellContents>
                 </TablixCell>
                 <TablixCell>
@@ -1144,7 +1143,7 @@
                             <TextRun>
                               <Value>=Fields!inter_pay.Value</Value>
                               <Style>
-                                <Format>#,0,;(#,0,);'-'</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -1163,6 +1162,7 @@
                         <PaddingBottom>2pt</PaddingBottom>
                       </Style>
                     </Textbox>
+                    <rd:Selected>true</rd:Selected>
                   </CellContents>
                 </TablixCell>
                 <TablixCell>
@@ -1176,7 +1176,7 @@
                             <TextRun>
                               <Value>=Fields!exter_pay.Value</Value>
                               <Style>
-                                <Format>#,0,;(#,0,);'-'</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -1208,7 +1208,7 @@
                             <TextRun>
                               <Value>=Fields!salary.Value</Value>
                               <Style>
-                                <Format>#,0,;(#,0,);'-'</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -1240,7 +1240,7 @@
                             <TextRun>
                               <Value>=Fields!inter_pay.Value+Fields!exter_pay.Value+Fields!salary.Value</Value>
                               <Style>
-                                <Format>#,0,;(#,0,);'-'</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -1339,7 +1339,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!inter_pay.Value)</Value>
                               <Style>
-                                <Format>#,0,;(#,0,);'-'</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -1372,7 +1372,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!exter_pay.Value)</Value>
                               <Style>
-                                <Format>#,0,;(#,0,);'-'</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -1405,7 +1405,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!salary.Value)</Value>
                               <Style>
-                                <Format>#,0,;(#,0,);'-'</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -1438,7 +1438,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!inter_pay.Value)+Sum(Fields!exter_pay.Value)+Sum(Fields!salary.Value)</Value>
                               <Style>
-                                <Format>#,0,;(#,0,);'-'</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -1631,7 +1631,7 @@
           <Paragraph>
             <TextRuns>
               <TextRun>
-                <Value>Báo cáo chi theo  ban (đơn vị: 1,000 VND)</Value>
+                <Value>Báo cáo chi theo  ban (đơn vị: VND)</Value>
                 <Style>
                   <FontWeight>Bold</FontWeight>
                   <Color>Blue</Color>

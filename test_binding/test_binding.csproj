@@ -184,10 +184,7 @@
     <Compile Include="rptPreview.Designer.cs">
       <DependentUpon>rptPreview.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="bill_exterpay.rdlc" />
-    <EmbeddedResource Include="bill_interpay.rdlc" />
-    <EmbeddedResource Include="bill_receipts.rdlc" />
-    <EmbeddedResource Include="bill_salary.rdlc" />
+    <EmbeddedResource Include="bill_general.rdlc" />
     <EmbeddedResource Include="c_exterpayment.rdlc" />
     <EmbeddedResource Include="c_interpayment.rdlc" />
     <EmbeddedResource Include="c_receipts.rdlc" />

@@ -353,7 +353,6 @@
                         <PaddingBottom>2pt</PaddingBottom>
                       </Style>
                     </Textbox>
-                    <rd:Selected>true</rd:Selected>
                   </CellContents>
                 </TablixCell>
                 <TablixCell>
@@ -487,7 +486,7 @@
                             <TextRun>
                               <Value>=Fields!advance_payment.Value</Value>
                               <Style>
-                                <Format>#,0,;(#,0,);'-'</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -519,7 +518,7 @@
                             <TextRun>
                               <Value>=Fields!reimbursement.Value</Value>
                               <Style>
-                                <Format>#,0,;(#,0,);'-'</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -551,7 +550,7 @@
                             <TextRun>
                               <Value>=Fields!actually_spent.Value</Value>
                               <Style>
-                                <Format>#,0,;(#,0,);'-'</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -773,7 +772,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!advance_payment.Value)</Value>
                               <Style>
-                                <Format>#,0,;(#,0,);'-'</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -806,7 +805,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!reimbursement.Value)</Value>
                               <Style>
-                                <Format>#,0,;(#,0,);'-'</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -839,7 +838,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!actually_spent.Value)</Value>
                               <Style>
-                                <Format>#,0,;(#,0,);'-'</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -1011,7 +1010,7 @@
           <Paragraph>
             <TextRuns>
               <TextRun>
-                <Value>Báo cáo Chi nội chúng (đơn vị: 1,000 VND)</Value>
+                <Value>Báo cáo Chi nội chúng (đơn vị:  VND)</Value>
                 <Style>
                   <FontWeight>Bold</FontWeight>
                   <Color>Blue</Color>

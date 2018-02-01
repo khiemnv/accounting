@@ -60,7 +60,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!salary.Value)</Value>
                               <Style>
-                                <Format>#0,0;(#0,0)</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -97,7 +97,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!salary.Value)</Value>
                               <Style>
-                                <Format>#0,0;(#0,0)</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -358,7 +358,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!salary.Value)</Value>
                               <Style>
-                                <Format>#0,0;(#0,0)</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -395,7 +395,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!salary.Value)</Value>
                               <Style>
-                                <Format>#0,0;(#0,0)</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -671,7 +671,7 @@
           <Paragraph>
             <TextRuns>
               <TextRun>
-                <Value>Tổng quát (theo năm) đơn vị 1,000 VND</Value>
+                <Value>Tổng quát (theo năm) đơn vị VND</Value>
                 <Style>
                   <FontSize>12pt</FontSize>
                   <FontWeight>Bold</FontWeight>
@@ -704,7 +704,7 @@
           <Paragraph>
             <TextRuns>
               <TextRun>
-                <Value>Chi tiết (theo quý) đơn vị 1,000 VND</Value>
+                <Value>Chi tiết (theo quý) đơn vị VND</Value>
                 <Style>
                   <FontSize>12pt</FontSize>
                   <FontWeight>Bold</FontWeight>
@@ -820,7 +820,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!salary.Value)</Value>
                               <Style>
-                                <Format>#0,0;(#0,0)</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -857,7 +857,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!salary.Value)</Value>
                               <Style>
-                                <Format>#0,0;(#0,0)</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -1181,7 +1181,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!salary.Value)</Value>
                               <Style>
-                                <Format>#0,0;(#0,0)</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -1218,7 +1218,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!salary.Value)</Value>
                               <Style>
-                                <Format>#0,0;(#0,0)</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -1542,7 +1542,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!salary.Value)</Value>
                               <Style>
-                                <Format>#0,0;(#0,0)</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -1579,7 +1579,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!salary.Value)</Value>
                               <Style>
-                                <Format>#0,0;(#0,0)</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -1903,7 +1903,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!salary.Value)</Value>
                               <Style>
-                                <Format>#0,0;(#0,0)</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -1940,7 +1940,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!salary.Value)</Value>
                               <Style>
-                                <Format>#0,0;(#0,0)</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>

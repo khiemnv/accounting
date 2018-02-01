@@ -317,48 +317,66 @@ namespace test_binding
     public class lInputPanel
     {
         public lDataContent m_dataContent;
-        public DataTable m_bills;
-
+        
         //convert currency to text
         protected class rptAssist
         {
-            public rptAssist(string paramName, string convField)
+            DataTable m_data;
+            Dictionary<string,string> m_convMap;
+            public rptAssist(int billType, Dictionary<string, string> convMap)
             {
-                m_paramName = paramName;
-                m_field = convField;
+                m_convMap = convMap;
+
+                m_data = new DataTable();
+                m_data.Columns.Add(new DataColumn("name"));
+                m_data.Columns.Add(new DataColumn("addr"));
+                m_data.Columns.Add(new DataColumn("date", typeof(DateTime)));
+                m_data.Columns.Add(new DataColumn("num"));
+                m_data.Columns.Add(new DataColumn("content"));
+                m_data.Columns.Add(new DataColumn("note"));
+                m_data.Columns.Add(new DataColumn("amount", typeof(Int64)));
+                m_data.Columns.Add(new DataColumn("amountTxt"));
+
+                m_type = billType;
             }
-            string m_paramName;
-            string m_field;
-            public List<ReportParameter> crtParams(DataTable dt)
+            //receipt = 1
+            //payment = 2
+            int m_type;
+            public DataTable getData() { return m_data; }
+            public void clearData() { m_data.Clear(); }
+            public void setData(DataRow dr)
             {
-                List<string> salaryTxs = new List<string>();
-                foreach (DataRow row in dt.Rows)
+                m_data.Clear();
+                var newRow = m_data.NewRow();
+                newRow["name"] = dr[m_convMap["name"]];
+                newRow["addr"] = dr[m_convMap["addr"]];
+                newRow["date"] = dr[m_convMap["date"]];
+                newRow["num"] = dr[m_convMap["num"]];
+                newRow["content"] = dr[m_convMap["content"]];
+                newRow["note"] = dr[m_convMap["note"]];
+                newRow["amount"] = dr[m_convMap["amount"]];
+                long amount = (long)newRow["amount"];
+                var amountTxt = "";
+                if (amount > 0)
                 {
-                    if (row.RowState == DataRowState.Deleted)
-                    {
-                        continue;
-                    }
-                    //[TODO] db null
-                    try
-                    {
-                        long amount = (long)row[m_field];
-                        salaryTxs.Add(common.CurrencyToTxt(amount));
-                    }
-                    catch
-                    {
-                        Debug.Assert(false);
-                        salaryTxs.Add("   ");
-                    }
+                    amountTxt = common.CurrencyToTxt(amount);
                 }
+                newRow["amountTxt"] = amountTxt;
+
+                m_data.Rows.Add(newRow);
+                m_data.ImportRow(newRow);
+            }
+            public List<ReportParameter> crtParams()
+            {
                 return new List<ReportParameter>()
                 {
-                    new ReportParameter(m_paramName, salaryTxs.ToArray())
+                    new ReportParameter("type", m_type.ToString())
                 };
             }
         }
         protected rptAssist m_rptAsst;
-
-        public virtual List<ReportParameter> billRptParams { get { return m_rptAsst.crtParams(m_bills); } }
+        public virtual DataTable billRptData { get { return m_rptAsst.getData(); } }
+        public virtual List<ReportParameter> billRptParams { get { return m_rptAsst.crtParams(); } }
 
         [DataMember(Name = "inputCtrls")]
         public List<lInputCtrl> m_inputsCtrls;
@@ -456,8 +474,7 @@ namespace test_binding
             {
                 var row = rows[0];
                 DataRow dr = ((DataRowView)row.DataBoundItem).Row;
-                m_bills.Rows.Clear();
-                m_bills.ImportRow(dr);
+                m_rptAsst.setData(dr);
 
                 if (RefreshPreview != null) { RefreshPreview(this, null); }
             }
@@ -469,7 +486,7 @@ namespace test_binding
             m_dataContent.m_dataTable.Clear();
 
             //clean bills
-            m_bills.Rows.Clear();
+            m_rptAsst.clearData();
             if (RefreshPreview != null) { RefreshPreview(this, null); }
         }
         private void M_clearBtn_Click(object sender, EventArgs e)
@@ -519,8 +536,7 @@ namespace test_binding
             m_dataContent.Submit();
 
             //add new record to bills
-            m_bills.Rows.Clear();
-            m_bills.ImportRow(newRow);
+            m_rptAsst.setData(newRow);
             if (RefreshPreview != null) { RefreshPreview(this, null); }
 
             //inc key
@@ -548,7 +564,7 @@ namespace test_binding
         }
         protected virtual void Save()
         {
-            m_bills.Clear();
+            billRptData.Clear();
             if (RefreshPreview != null) { RefreshPreview(this, null); }
 
             m_dataContent.Submit();
@@ -593,9 +609,6 @@ namespace test_binding
             {
                 ctrl.LoadData();
             }
-
-            //init bill table
-            m_bills = tbl.Copy();
         }
 
         private void M_dataContent_UpdateTableCompleted(object sender, lDataContent.FillTableCompletedEventArgs e)
@@ -873,7 +886,16 @@ namespace test_binding
             };
             m_key = new keyMng("PT", m_tblName, "receipt_number");
 
-            m_rptAsst = new rptAssist("amountTxts", "amount");
+            Dictionary<string, string> dict = new Dictionary<string, string> {
+                { "name","name" },
+                { "addr","addr" },
+                { "date","date" },
+                { "num","receipt_number" },
+                { "content","content" },
+                { "note","note" },
+                { "amount","amount" },
+            };
+            m_rptAsst = new rptAssist(1, dict);
         }
     }
     [DataContract(Name = "InterPayInputPanel")]
@@ -922,8 +944,16 @@ namespace test_binding
             };
 #endif
             m_key = new keyMng("PCN", m_tblName, "payment_number");
-
-            m_rptAsst = new rptAssist("advanceTxts", "advance_payment" );
+            Dictionary<string, string> dict = new Dictionary<string, string> {
+                { "name","name" },
+                { "addr","addr" },
+                { "date","date" },
+                { "num","payment_number" },
+                { "content","content" },
+                { "note","note" },
+                { "amount","advance_payment" },
+            };
+            m_rptAsst = new rptAssist(2, dict);
         }
         public override void initCtrls()
         {
@@ -961,7 +991,16 @@ namespace test_binding
                 crtInputCtrl(m_tblInfo, "note"          , new Point(0, 9), new Size(1, 1)),
             };
             m_key = new keyMng("PCG", m_tblName, "payment_number");
-            m_rptAsst = new rptAssist("spentTxts", "spent");
+            Dictionary<string, string> dict = new Dictionary<string, string> {
+                { "name","name" },
+                { "addr","addr" },
+                { "date","date" },
+                { "num","payment_number" },
+                { "content","content" },
+                { "note","note" },
+                { "amount","spent" },
+            };
+            m_rptAsst = new rptAssist(2, dict);
         }
     }
     [DataContract(Name = "SalaryInputPanel")]
@@ -986,7 +1025,16 @@ namespace test_binding
                 crtInputCtrl(m_tblInfo, "note"          , new Point(0, 7), new Size(1, 1)),
             };
             m_key = new keyMng("PCL", m_tblName, "payment_number");
-            m_rptAsst = new rptAssist("salaryTxts", "salary");
+            Dictionary<string, string> dict = new Dictionary<string, string> {
+                { "name","name" },
+                { "addr","addr" },
+                { "date","date" },
+                { "num","payment_number" },
+                { "content","content" },
+                { "note","note" },
+                { "amount","salary" },
+            };
+            m_rptAsst = new rptAssist(2, dict);
         }
     }
 }

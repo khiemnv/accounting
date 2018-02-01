@@ -112,7 +112,7 @@
                               <Value>=Sum(Fields!amount.Value)</Value>
                               <Style>
                                 <FontFamily>Tahoma</FontFamily>
-                                <Format>#,0;(#,0)</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                                 <Color>#4d4d4d</Color>
                               </Style>
                             </TextRun>
@@ -132,6 +132,7 @@
                         <PaddingBottom>2pt</PaddingBottom>
                       </Style>
                     </Textbox>
+                    <rd:Selected>true</rd:Selected>
                   </CellContents>
                 </TablixCell>
                 <TablixCell>
@@ -147,7 +148,7 @@
                               <Style>
                                 <FontFamily>Tahoma</FontFamily>
                                 <FontWeight>Bold</FontWeight>
-                                <Format>#,0;(#,0)</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                                 <Color>White</Color>
                               </Style>
                             </TextRun>
@@ -188,7 +189,7 @@
                               <Style>
                                 <FontFamily>Tahoma</FontFamily>
                                 <FontWeight>Bold</FontWeight>
-                                <Format>#,0;(#,0)</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                                 <Color>#465678</Color>
                               </Style>
                             </TextRun>
@@ -224,7 +225,7 @@
                               <Style>
                                 <FontFamily>Tahoma</FontFamily>
                                 <FontWeight>Bold</FontWeight>
-                                <Format>#,0;(#,0)</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                                 <Color>#465678</Color>
                               </Style>
                             </TextRun>
@@ -265,7 +266,7 @@
                               <Style>
                                 <FontFamily>Tahoma</FontFamily>
                                 <FontWeight>Bold</FontWeight>
-                                <Format>#,0;(#,0)</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                                 <Color>White</Color>
                               </Style>
                             </TextRun>
@@ -301,7 +302,7 @@
                               <Style>
                                 <FontFamily>Tahoma</FontFamily>
                                 <FontWeight>Bold</FontWeight>
-                                <Format>#,0;(#,0)</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                                 <Color>White</Color>
                               </Style>
                             </TextRun>
@@ -733,7 +734,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!amount.Value)</Value>
                               <Style>
-                                <Format>#,0</Format>
+                                <Format>#,0;-#,0;'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -770,7 +771,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!amount.Value)</Value>
                               <Style>
-                                <Format>#,0</Format>
+                                <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -957,7 +958,7 @@
           <Paragraph>
             <TextRuns>
               <TextRun>
-                <Value>Chi tiết (theo quý) đơn vị 1,000 VND</Value>
+                <Value>Chi tiết (theo quý) đơn vị VND</Value>
                 <Style>
                   <FontSize>12pt</FontSize>
                   <FontWeight>Bold</FontWeight>
@@ -991,7 +992,7 @@
           <Paragraph>
             <TextRuns>
               <TextRun>
-                <Value>Tổng quát (theo năm) đơn vị 1,000 VND</Value>
+                <Value>Tổng quát (theo năm) đơn vị VND</Value>
                 <Style>
                   <FontSize>12pt</FontSize>
                   <FontWeight>Bold</FontWeight>

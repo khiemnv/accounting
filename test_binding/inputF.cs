@@ -45,7 +45,7 @@ namespace test_binding
         private void showSingleBill()
         {
             //set report data
-            var dt = m_inputPanel.m_bills;
+            var dt = m_inputPanel.billRptData;
             if (dt.Rows.Count > 0)
             {
                 reportViewer2.ProcessingMode = ProcessingMode.Local;
@@ -78,7 +78,7 @@ namespace test_binding
         protected lInputPanel m_inputPanel;
         protected virtual string GetBill()
         {
-            return @"..\..\bill_receipts.rdlc";
+            return @"..\..\bill_general.rdlc";
         }
 
         protected virtual void initCtrls()
@@ -97,10 +97,12 @@ namespace test_binding
             this.Text = "Phiếu Thu";
             base.initCtrls();
         }
+#if use_general_bill
         protected override string GetBill()
         {
             return @"..\..\bill_receipts.rdlc";
         }
+#endif
         protected override lInputPanel CrtInputPanel()
         {
             return new lReceiptsInputPanel();
@@ -113,10 +115,12 @@ namespace test_binding
             this.Text = "Phiếu Chi Ngoại";
             base.initCtrls();
         }
+#if use_general_bill
         protected override string GetBill()
         {
             return @"..\..\bill_exterpay.rdlc";
         }
+#endif
         protected override lInputPanel CrtInputPanel()
         {
             return new lExterPayInputPanel();
@@ -129,10 +133,12 @@ namespace test_binding
             this.Text = "Phiếu Chi Nội";
             base.initCtrls();
         }
+#if use_general_bill
         protected override string GetBill()
         {
             return @"..\..\bill_interpay.rdlc";
         }
+#endif
         protected override lInputPanel CrtInputPanel()
         {
             return new lInterPayInputPanel();
@@ -145,10 +151,12 @@ namespace test_binding
             this.Text = "Phiếu Chi Lương";
             base.initCtrls();
         }
+#if use_general_bill
         protected override string GetBill()
         {
             return @"..\..\bill_salary.rdlc";
         }
+#endif
         protected override lInputPanel CrtInputPanel()
         {
             return new lSalaryInputPanel();
