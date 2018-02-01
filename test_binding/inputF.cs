@@ -42,14 +42,14 @@ namespace test_binding
             return m_inputPanel.billRptParams;
         }
 
-        protected virtual void LoadData()
+        private void showSingleBill()
         {
-            m_inputPanel.LoadData();
-            m_inputPanel.RefreshPreview += refreshPreview;
+            //set report data
+            var dt = m_inputPanel.m_bills;
+            if (dt.Rows.Count > 0)
             {
-                //after load data complete
-                var dt = m_inputPanel.m_dataContent.m_dataTable;
-                //dt.TableName = m_viewName;
+                reportViewer2.ProcessingMode = ProcessingMode.Local;
+                reportViewer2.Clear();
 
                 LocalReport report = reportViewer2.LocalReport;
                 report.ReportPath = GetBill();
@@ -63,11 +63,16 @@ namespace test_binding
             }
         }
 
+        protected virtual void LoadData()
+        {
+            m_inputPanel.LoadData();
+            m_inputPanel.RefreshPreview += refreshPreview;
+            
+        }
+
         private void refreshPreview(object sender, lInputPanel.PreviewEventArgs e)
         {
-            reportViewer2.LocalReport.SetParameters(crtParams());
-            //reportViewer2.LocalReport.Refresh();
-            reportViewer2.RefreshReport();
+            showSingleBill();
         }
 
         protected lInputPanel m_inputPanel;

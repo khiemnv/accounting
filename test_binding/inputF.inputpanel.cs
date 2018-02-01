@@ -317,7 +317,49 @@ namespace test_binding
     public class lInputPanel
     {
         public lDataContent m_dataContent;
-        public virtual List<ReportParameter> billRptParams { get; }
+        public DataTable m_bills;
+
+        //convert currency to text
+        protected class rptAssist
+        {
+            public rptAssist(string paramName, string convField)
+            {
+                m_paramName = paramName;
+                m_field = convField;
+            }
+            string m_paramName;
+            string m_field;
+            public List<ReportParameter> crtParams(DataTable dt)
+            {
+                List<string> salaryTxs = new List<string>();
+                foreach (DataRow row in dt.Rows)
+                {
+                    if (row.RowState == DataRowState.Deleted)
+                    {
+                        continue;
+                    }
+                    //[TODO] db null
+                    try
+                    {
+                        long amount = (long)row[m_field];
+                        salaryTxs.Add(common.CurrencyToTxt(amount));
+                    }
+                    catch
+                    {
+                        Debug.Assert(false);
+                        salaryTxs.Add("   ");
+                    }
+                }
+                return new List<ReportParameter>()
+                {
+                    new ReportParameter(m_paramName, salaryTxs.ToArray())
+                };
+            }
+        }
+        protected rptAssist m_rptAsst;
+
+        public virtual List<ReportParameter> billRptParams { get { return m_rptAsst.crtParams(m_bills); } }
+
         [DataMember(Name = "inputCtrls")]
         public List<lInputCtrl> m_inputsCtrls;
 
@@ -330,7 +372,7 @@ namespace test_binding
         protected lTableInfo m_tblInfo { get { return appConfig.s_config.getTable(m_tblName); } }
 
         public TableLayoutPanel m_tbl;
-        DataGridView m_dataGridView;
+        protected DataGridView m_dataGridView;
         public virtual void initCtrls()
         {
             //create input ctrls
@@ -400,17 +442,39 @@ namespace test_binding
             m_dataGridView = lConfigMng.crtDGV();
             m_dataGridView.EnableHeadersVisualStyles = false;
             m_dataGridView.Dock = DockStyle.Fill;
+            m_dataGridView.CellClick += M_dataGridView_CellClick;
 
             m_tbl.Controls.Add(m_dataGridView, 0, ++lastRow);
             m_tbl.Dock = DockStyle.Fill;
             m_tbl.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
         }
 
-        private void M_clearBtn_Click(object sender, EventArgs e)
+        private void M_dataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            var rows = m_dataGridView.SelectedRows;
+            if (rows.Count > 0)
+            {
+                var row = rows[0];
+                DataRow dr = ((DataRowView)row.DataBoundItem).Row;
+                m_bills.Rows.Clear();
+                m_bills.ImportRow(dr);
+
+                if (RefreshPreview != null) { RefreshPreview(this, null); }
+            }
+        }
+
+        private void Clear()
         {
             m_dataGridView.CancelEdit();
             m_dataContent.m_dataTable.Clear();
+
+            //clean bills
+            m_bills.Rows.Clear();
             if (RefreshPreview != null) { RefreshPreview(this, null); }
+        }
+        private void M_clearBtn_Click(object sender, EventArgs e)
+        {
+            Clear();
         }
 
         private void M_editBtn_Click(object sender, EventArgs e)
@@ -454,11 +518,12 @@ namespace test_binding
             tbl.Rows.Add(newRow);
             m_dataContent.Submit();
 
-            //sync
-            //if (RefreshPreview != null)
-            //{
-            //    RefreshPreview(this, new PreviewEventArgs { tbl = tbl });
-            //}
+            //add new record to bills
+            m_bills.Rows.Clear();
+            m_bills.ImportRow(newRow);
+            if (RefreshPreview != null) { RefreshPreview(this, null); }
+
+            //inc key
             bIncKeyReq = true;
         }
         protected virtual lInputCtrl m_keyCtrl { get; }
@@ -483,6 +548,9 @@ namespace test_binding
         }
         protected virtual void Save()
         {
+            m_bills.Clear();
+            if (RefreshPreview != null) { RefreshPreview(this, null); }
+
             m_dataContent.Submit();
         }
         protected virtual void InsertRec()
@@ -507,6 +575,8 @@ namespace test_binding
             //m_dataGridView.AutoGenerateColumns = false;
             //crtColumns();
             m_dataContent = appConfig.s_contentProvider.CreateDataContent(m_tblInfo.m_tblName);
+
+            //init gridview
             m_dataGridView.DataSource = m_dataContent.m_bindingSource;
             DataTable tbl = (DataTable)m_dataContent.m_bindingSource.DataSource;
             if (tbl != null)
@@ -523,6 +593,9 @@ namespace test_binding
             {
                 ctrl.LoadData();
             }
+
+            //init bill table
+            m_bills = tbl.Copy();
         }
 
         private void M_dataContent_UpdateTableCompleted(object sender, lDataContent.FillTableCompletedEventArgs e)
@@ -533,11 +606,13 @@ namespace test_binding
                 m_keyCtrl.Text = IncKey();
                 bIncKeyReq = false;
             }
+#if single_preview
             //if delete or add complete
             if (RefreshPreview != null)
             {
                 RefreshPreview(this, new PreviewEventArgs { tbl = m_dataContent.m_dataTable });
             }
+#endif
         }
 
         private void crtColumns()
@@ -610,6 +685,13 @@ namespace test_binding
             int i = 1;
             for (; i < m_dataGridView.ColumnCount; i++)
             {
+                //show hide columns
+                if (tblInfo.m_cols[i].m_visible == false)
+                {
+                    m_dataGridView.Columns[i].Visible = false;
+                    continue;
+                }
+
                 m_dataGridView.Columns[i].HeaderText = tblInfo.m_cols[i].m_alias;
 
 #if header_blue
@@ -790,32 +872,8 @@ namespace test_binding
                 crtInputCtrl(m_tblInfo, "amount"        , new Point(0, 6), new Size(1, 1)),
             };
             m_key = new keyMng("PT", m_tblName, "receipt_number");
-        }
-        public override List<ReportParameter> billRptParams
-        {
-            get
-            {
-                List<string> amountTxs = new List<string>();
-                foreach (DataRow row in m_dataContent.m_dataTable.Rows)
-                {
-                    if (row.RowState == DataRowState.Deleted) continue;
-                    //[TODO] db null
-                    try
-                    {
-                        long amount = (long)row["amount"];
-                        amountTxs.Add(common.CurrencyToTxt(amount));
-                    }
-                    catch
-                    {
-                        Debug.Assert(false);
-                        amountTxs.Add("   ");
-                    }
-                }
-                return new List<ReportParameter>()
-                {
-                    new ReportParameter("amountTxts", amountTxs.ToArray())
-                };
-            }
+
+            m_rptAsst = new rptAssist("amountTxts", "amount");
         }
     }
     [DataContract(Name = "InterPayInputPanel")]
@@ -827,9 +885,11 @@ namespace test_binding
         public lInterPayInputPanel()
         {
             m_tblName = "internal_payment";
+#if has_advance
             lInputCtrl advance_payment = crtInputCtrl(m_tblInfo, "advance_payment", new Point(0, 6), new Size(1, 1));
             lInputCtrl reimbursement = crtInputCtrl(m_tblInfo, "reimbursement", new Point(0, 7), new Size(1, 1));
             lInputCtrl actually_spent = crtInputCtrl(m_tblInfo, "actually_spent", new Point(0, 8), new Size(1, 1));
+#endif
             m_inputsCtrls = new List<lInputCtrl>
             {
                 crtInputCtrl(m_tblInfo, "payment_number"    , new Point(0, 0), new Size(1, 1)),
@@ -838,11 +898,17 @@ namespace test_binding
                 crtInputCtrl(m_tblInfo, "addr"              , new Point(0, 3), new Size(1, 1)),
                 crtInputCtrl(m_tblInfo, "group_name"        , new Point(0, 4), new Size(1, 1)),
                 crtInputCtrl(m_tblInfo, "content"           , new Point(0, 5), new Size(1, 1)),
+#if has_advance
                 advance_payment,
                 reimbursement,
                 actually_spent,
                 crtInputCtrl(m_tblInfo, "note"              , new Point(0, 9), new Size(1, 1)),
+#else
+                crtInputCtrl(m_tblInfo, "advance_payment"   , new Point(0, 6), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "note"              , new Point(0, 7), new Size(1, 1)),
+#endif
             };
+#if has_advance
             reimbursement.EditingCompleted += (s, e) =>
             {
                 long advance, reimbur;
@@ -854,37 +920,22 @@ namespace test_binding
                     actually_spent.Text = (advance - reimbur).ToString();
                 }
             };
+#endif
             m_key = new keyMng("PCN", m_tblName, "payment_number");
-        }
 
-        public override List<ReportParameter> billRptParams
+            m_rptAsst = new rptAssist("advanceTxts", "advance_payment" );
+        }
+        public override void initCtrls()
         {
-            get
+            base.initCtrls();
+
+            m_dataGridView.CellEndEdit += (s, e) =>
             {
-                List<string> salaryTxs = new List<string>();
-                foreach (DataRow row in m_dataContent.m_dataTable.Rows)
-                {
-                    if (row.RowState == DataRowState.Deleted)
-                    {
-                        continue;
-                    }
-                    //[TODO] db null
-                    try
-                    {
-                        long amount = (long)row["advance_payment"];
-                        salaryTxs.Add(common.CurrencyToTxt(amount));
-                    }
-                    catch
-                    {
-                        Debug.Assert(false);
-                        salaryTxs.Add("   ");
-                    }
-                }
-                return new List<ReportParameter>()
-                {
-                    new ReportParameter("advanceTxts", salaryTxs.ToArray())
-                };
-            }
+                //if (e.ColumnIndex == )
+                //{
+
+                //}
+            };
         }
     }
     [DataContract(Name = "ExterPayInputPanel")]
@@ -910,32 +961,7 @@ namespace test_binding
                 crtInputCtrl(m_tblInfo, "note"          , new Point(0, 9), new Size(1, 1)),
             };
             m_key = new keyMng("PCG", m_tblName, "payment_number");
-        }
-        public override List<ReportParameter> billRptParams
-        {
-            get
-            {
-                List<string> spentTxs = new List<string>();
-                foreach (DataRow row in m_dataContent.m_dataTable.Rows)
-                {
-                    if (row.RowState == DataRowState.Deleted) continue;
-                    //[TODO] db null
-                    try
-                    {
-                        long amount = (long)row["spent"];
-                        spentTxs.Add(common.CurrencyToTxt(amount));
-                    }
-                    catch
-                    {
-                        Debug.Assert(false);
-                        spentTxs.Add("   ");
-                    }
-                }
-                return new List<ReportParameter>()
-                {
-                    new ReportParameter("spentTxts", spentTxs.ToArray())
-                };
-            }
+            m_rptAsst = new rptAssist("spentTxts", "spent");
         }
     }
     [DataContract(Name = "SalaryInputPanel")]
@@ -960,36 +986,7 @@ namespace test_binding
                 crtInputCtrl(m_tblInfo, "note"          , new Point(0, 7), new Size(1, 1)),
             };
             m_key = new keyMng("PCL", m_tblName, "payment_number");
-        }
-        public override List<ReportParameter> billRptParams
-        {
-            get
-            {
-                List<string> salaryTxs = new List<string>();
-                foreach (DataRow row in m_dataContent.m_dataTable.Rows)
-                {
-                    if (row.RowState == DataRowState.Deleted)
-                    {
-                        Debug.Assert(false);
-                        continue;
-                    }
-                    //[TODO] db null
-                    try
-                    {
-                        long amount = (long)row["salary"];
-                        salaryTxs.Add(common.CurrencyToTxt(amount));
-                    }
-                    catch
-                    {
-                        Debug.Assert(false);
-                        salaryTxs.Add("   ");
-                    }
-                }
-                return new List<ReportParameter>()
-                {
-                    new ReportParameter("salaryTxts", salaryTxs.ToArray())
-                };
-            }
+            m_rptAsst = new rptAssist("salaryTxts", "salary");
         }
     }
 }

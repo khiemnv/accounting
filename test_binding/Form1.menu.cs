@@ -91,16 +91,16 @@ namespace test_binding
 
             //Input
             var miInput = crtMenuItem("Input");
-            var miReceipt = crtMenuItem("PT");
+            var miReceipt = crtMenuItem("Phiếu Thu");
             miReceipt.Click += MiReceipt_Click;
             addChild(miInput, miReceipt);
-            var miInterpay = crtMenuItem("PCN");
+            var miInterpay = crtMenuItem("Phiếu Chi Nội Chúng");
             miInterpay.Click += miInterpay_Click;
             addChild(miInput, miInterpay);
-            var miExterpay = crtMenuItem("PCG");
+            var miExterpay = crtMenuItem("Phiếu Chi Ngoại Chúng");
             miExterpay.Click += miExterpay_Click;
             addChild(miInput, miExterpay);
-            var miSalary = crtMenuItem("PCL");
+            var miSalary = crtMenuItem("Phiếu Chi Lương");
             miSalary.Click += miSalary_Click;
             addChild(miInput, miSalary);
 

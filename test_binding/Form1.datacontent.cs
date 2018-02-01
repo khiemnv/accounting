@@ -61,22 +61,29 @@ namespace test_binding
             public string m_lookupTbl;
             [DataMember(Name = "type", EmitDefaultValue = false)]
             public lColType m_type;
+            [DataMember(Name = "visible", EmitDefaultValue = false)]
+            public bool m_visible;
 
             public lDataSync m_lookupData;
-            private void init(string field, string alias, lColType type, string lookupTbl)
+            private void init(string field, string alias, lColType type, string lookupTbl, bool visible)
             {
                 m_lookupTbl = lookupTbl;
                 m_field = field;
                 m_alias = alias;
                 m_type = type;
+                m_visible = visible;
+            }
+            public lColInfo(string field, string alias, lColType type, string lookupTbl, bool visible)
+            {
+                init(field, alias, type, lookupTbl, visible);
             }
             public lColInfo(string field, string alias, lColType type, string lookupTbl)
             {
-                init(field, alias, type, lookupTbl);
+                init(field, alias, type, lookupTbl, true);
             }
             public lColInfo(string field, string alias, lColType type)
             {
-                init(field, alias, type, null);
+                init(field, alias, type, null, true);
             }
         };
 
@@ -149,7 +156,7 @@ namespace test_binding
             + "note text"
             + ")";
             m_cols = new lColInfo[] {
-                   new lColInfo( "ID","ID", lColInfo.lColType.num),
+                   new lColInfo( "ID","ID", lColInfo.lColType.num, null, false),
                    new lColInfo( "receipt_number","Mã PT", lColInfo.lColType.uniqueText),
                    new lColInfo( "date","Ngày Tháng", lColInfo.lColType.dateTime),
                    new lColInfo( "name","Họ tên", lColInfo.lColType.text),
@@ -191,17 +198,17 @@ namespace test_binding
             + "note text"
             + ")";
             m_cols = new lColInfo[] {
-                   new lColInfo( "ID","ID", lColInfo.lColType.num),
-                   new lColInfo( "payment_number"   ,"Mã Phiếu Chi", lColInfo.lColType.uniqueText),
-                   new lColInfo( "date"             ,"Ngày Tháng", lColInfo.lColType.dateTime),
-                   new lColInfo( "name"             ,"Họ Tên", lColInfo.lColType.text),
-                   new lColInfo( "addr"             ,"Địa chỉ", lColInfo.lColType.text),
-                   new lColInfo( "group_name"       ,"Thuộc ban", lColInfo.lColType.text, "group_name"),
-                   new lColInfo( "content"          ,"Nội dung", lColInfo.lColType.text),
-                   new lColInfo( "advance_payment"  ,"Tạm ứng", lColInfo.lColType.currency),
-                   new lColInfo( "reimbursement"    ,"Hoàn ứng", lColInfo.lColType.currency),
-                   new lColInfo( "actually_spent"   ,"Thực chi", lColInfo.lColType.currency),
-                   new lColInfo( "note"             ,"Ghi Chú", lColInfo.lColType.text),
+                   new lColInfo( "ID"               ,"ID"           , lColInfo.lColType.num, null, false),
+                   new lColInfo( "payment_number"   ,"Mã Phiếu Chi" , lColInfo.lColType.uniqueText),
+                   new lColInfo( "date"             ,"Ngày Tháng"   , lColInfo.lColType.dateTime),
+                   new lColInfo( "name"             ,"Họ Tên"       , lColInfo.lColType.text),
+                   new lColInfo( "addr"             ,"Địa chỉ"      , lColInfo.lColType.text),
+                   new lColInfo( "group_name"       ,"Thuộc ban"    , lColInfo.lColType.text, "group_name"),
+                   new lColInfo( "content"          ,"Nội dung"     , lColInfo.lColType.text),
+                   new lColInfo( "advance_payment"  ,"Số tiền"      , lColInfo.lColType.currency),
+                   new lColInfo( "reimbursement"    ,"Hoàn ứng"     , lColInfo.lColType.currency, null, false),
+                   new lColInfo( "actually_spent"   ,"Thực chi"     , lColInfo.lColType.currency, null, false),
+                   new lColInfo( "note"             ,"Ghi Chú"      , lColInfo.lColType.text),
                 };
         }
     };
@@ -226,7 +233,7 @@ namespace test_binding
             + "note text"
             + ")";
             m_cols = new lColInfo[] {
-                   new lColInfo( "ID","ID", lColInfo.lColType.num),
+                   new lColInfo( "ID","ID", lColInfo.lColType.num, null, false),
                    new lColInfo( "payment_number"   ,"Mã Phiếu Chi", lColInfo.lColType.uniqueText),
                    new lColInfo( "date"             ,"Ngày Tháng", lColInfo.lColType.dateTime),
                    new lColInfo( "name"             ,"Họ Tên", lColInfo.lColType.text),
@@ -260,7 +267,7 @@ namespace test_binding
             + "note text"
             + ")";
             m_cols = new lColInfo[] {
-                   new lColInfo( "ID","ID", lColInfo.lColType.num),
+                   new lColInfo( "ID","ID", lColInfo.lColType.num, null, false),
                    new lColInfo( "payment_number"   ,"Mã Phiếu Chi", lColInfo.lColType.uniqueText),
                    new lColInfo( "month"            ,"Tháng(1...12)", lColInfo.lColType.num),
                    new lColInfo( "date"             ,"Ngày Tháng", lColInfo.lColType.dateTime),
@@ -284,7 +291,7 @@ namespace test_binding
                 + "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "name nchar(31))";
             m_cols = new lColInfo[] {
-                   new lColInfo( "ID","ID", lColInfo.lColType.num),
+                   new lColInfo( "ID","ID", lColInfo.lColType.num, null, false),
                    new lColInfo( "name","Các ban", lColInfo.lColType.text)
                 };
         }
@@ -300,7 +307,7 @@ namespace test_binding
                 + "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "name nchar(31))";
             m_cols = new lColInfo[] {
-                   new lColInfo( "ID","ID", lColInfo.lColType.num),
+                   new lColInfo( "ID","ID", lColInfo.lColType.num, null, false),
                    new lColInfo( "name","Công trình", lColInfo.lColType.text)
                 };
         }
@@ -316,7 +323,7 @@ namespace test_binding
                 + "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "name nchar(31))";
             m_cols = new lColInfo[] {
-                   new lColInfo( "ID","ID", lColInfo.lColType.num),
+                   new lColInfo( "ID","ID", lColInfo.lColType.num, null, false),
                    new lColInfo( "name","Đơn vị TC", lColInfo.lColType.text)
                 };
         }
@@ -332,7 +339,7 @@ namespace test_binding
                 + "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + " content nchar(31))";
             m_cols = new lColInfo[] {
-                   new lColInfo( "ID","ID", lColInfo.lColType.num),
+                   new lColInfo( "ID","ID", lColInfo.lColType.num, null, false),
                    new lColInfo( "content","Nguồn thu", lColInfo.lColType.text)
                 };
         }

@@ -199,8 +199,9 @@ namespace test_binding
                         dgvcol.DefaultCellStyle.Format = lConfigMng.getDisplayDateFormat();
                         break;
                 }
+                //show hide col
+                dgvcol.Visible = field.m_visible;
             }
-            m_dataGridView.Columns[0].Visible = false;
             //last columns
             var lastCol = m_dataGridView.Columns[i];
             lastCol.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
@@ -214,6 +215,13 @@ namespace test_binding
             int i = 1;
             for (; i < m_dataGridView.ColumnCount; i++)
             {
+                //show hide columns
+                if (tblInfo.m_cols[i].m_visible == false)
+                {
+                    m_dataGridView.Columns[i].Visible = false;
+                    continue;
+                }
+
                 m_dataGridView.Columns[i].HeaderText = tblInfo.m_cols[i].m_alias;
 
 #if header_blue
