@@ -221,7 +221,8 @@ namespace test_binding
 
 #if load_input
             //load input
-            //openInputForm(inputFormType.exterPayIF);
+            openInputForm(inputFormType.salaryIF);
+            //MiReport_Click(this, null);
 #endif  //load_input
         }
         enum inputFormType
@@ -324,7 +325,11 @@ namespace test_binding
         {
             if (m_report != null)
             {
-                m_report.Run();
+                var previewDlg = new rptPreview();
+                previewDlg.mRpt = m_report;
+                previewDlg.ShowDialog();
+                //rpt.Run();
+                m_report.Clean();
                 m_report.Dispose();
             }
         }

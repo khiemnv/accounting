@@ -49,6 +49,7 @@ namespace test_binding
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.printBtn = new System.Windows.Forms.Button();
             this.constrorgCmb = new System.Windows.Forms.ComboBox();
+            this.rptRcptRad = new System.Windows.Forms.RadioButton();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -57,7 +58,7 @@ namespace test_binding
             this.paymentRadio.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.paymentRadio.AutoSize = true;
             this.paymentRadio.Checked = true;
-            this.paymentRadio.Location = new System.Drawing.Point(3, 31);
+            this.paymentRadio.Location = new System.Drawing.Point(8, 36);
             this.paymentRadio.Name = "paymentRadio";
             this.paymentRadio.Size = new System.Drawing.Size(82, 17);
             this.paymentRadio.TabIndex = 0;
@@ -69,7 +70,7 @@ namespace test_binding
             // 
             this.buildingRadio.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.buildingRadio.AutoSize = true;
-            this.buildingRadio.Location = new System.Drawing.Point(3, 58);
+            this.buildingRadio.Location = new System.Drawing.Point(8, 63);
             this.buildingRadio.Name = "buildingRadio";
             this.buildingRadio.Size = new System.Drawing.Size(73, 17);
             this.buildingRadio.TabIndex = 1;
@@ -81,7 +82,7 @@ namespace test_binding
             // 
             this.constrorgRadio.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.constrorgRadio.AutoSize = true;
-            this.constrorgRadio.Location = new System.Drawing.Point(3, 85);
+            this.constrorgRadio.Location = new System.Drawing.Point(8, 90);
             this.constrorgRadio.Name = "constrorgRadio";
             this.constrorgRadio.Size = new System.Drawing.Size(73, 17);
             this.constrorgRadio.TabIndex = 2;
@@ -93,7 +94,7 @@ namespace test_binding
             // 
             this.daysumRd.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.daysumRd.AutoSize = true;
-            this.daysumRd.Location = new System.Drawing.Point(3, 110);
+            this.daysumRd.Location = new System.Drawing.Point(8, 115);
             this.daysumRd.Name = "daysumRd";
             this.daysumRd.Size = new System.Drawing.Size(58, 17);
             this.daysumRd.TabIndex = 3;
@@ -105,18 +106,18 @@ namespace test_binding
             // 
             this.startDate.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.startDate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.startDate.Location = new System.Drawing.Point(91, 3);
+            this.startDate.Location = new System.Drawing.Point(97, 8);
             this.startDate.Name = "startDate";
-            this.startDate.Size = new System.Drawing.Size(147, 20);
+            this.startDate.Size = new System.Drawing.Size(144, 20);
             this.startDate.TabIndex = 4;
             // 
             // endDate
             // 
             this.endDate.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.endDate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.endDate.Location = new System.Drawing.Point(247, 3);
+            this.endDate.Location = new System.Drawing.Point(247, 8);
             this.endDate.Name = "endDate";
-            this.endDate.Size = new System.Drawing.Size(147, 20);
+            this.endDate.Size = new System.Drawing.Size(145, 20);
             this.endDate.TabIndex = 5;
             // 
             // paymentRptType
@@ -124,16 +125,16 @@ namespace test_binding
             this.tableLayoutPanel1.SetColumnSpan(this.paymentRptType, 2);
             this.paymentRptType.Dock = System.Windows.Forms.DockStyle.Fill;
             this.paymentRptType.FormattingEnabled = true;
-            this.paymentRptType.Location = new System.Drawing.Point(91, 29);
+            this.paymentRptType.Location = new System.Drawing.Point(97, 34);
             this.paymentRptType.Name = "paymentRptType";
-            this.paymentRptType.Size = new System.Drawing.Size(306, 21);
+            this.paymentRptType.Size = new System.Drawing.Size(295, 21);
             this.paymentRptType.TabIndex = 6;
             // 
             // label1
             // 
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 6);
+            this.label1.Location = new System.Drawing.Point(8, 11);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(66, 13);
             this.label1.TabIndex = 9;
@@ -145,9 +146,9 @@ namespace test_binding
             this.tableLayoutPanel1.SetColumnSpan(this.buildingCmb, 2);
             this.buildingCmb.Dock = System.Windows.Forms.DockStyle.Fill;
             this.buildingCmb.FormattingEnabled = true;
-            this.buildingCmb.Location = new System.Drawing.Point(91, 56);
+            this.buildingCmb.Location = new System.Drawing.Point(97, 61);
             this.buildingCmb.Name = "buildingCmb";
-            this.buildingCmb.Size = new System.Drawing.Size(306, 21);
+            this.buildingCmb.Size = new System.Drawing.Size(295, 21);
             this.buildingCmb.TabIndex = 10;
             // 
             // tableLayoutPanel1
@@ -167,9 +168,12 @@ namespace test_binding
             this.tableLayoutPanel1.Controls.Add(this.buildingRadio, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.printBtn, 2, 5);
             this.tableLayoutPanel1.Controls.Add(this.constrorgCmb, 1, 3);
+            this.tableLayoutPanel1.Controls.Add(this.rptRcptRad, 0, 5);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(5);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.Padding = new System.Windows.Forms.Padding(5);
             this.tableLayoutPanel1.RowCount = 6;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -183,7 +187,7 @@ namespace test_binding
             // printBtn
             // 
             this.printBtn.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.printBtn.Location = new System.Drawing.Point(284, 153);
+            this.printBtn.Location = new System.Drawing.Point(282, 153);
             this.printBtn.Name = "printBtn";
             this.printBtn.Size = new System.Drawing.Size(75, 23);
             this.printBtn.TabIndex = 11;
@@ -195,10 +199,21 @@ namespace test_binding
             this.tableLayoutPanel1.SetColumnSpan(this.constrorgCmb, 2);
             this.constrorgCmb.Dock = System.Windows.Forms.DockStyle.Fill;
             this.constrorgCmb.FormattingEnabled = true;
-            this.constrorgCmb.Location = new System.Drawing.Point(91, 83);
+            this.constrorgCmb.Location = new System.Drawing.Point(97, 88);
             this.constrorgCmb.Name = "constrorgCmb";
-            this.constrorgCmb.Size = new System.Drawing.Size(306, 21);
+            this.constrorgCmb.Size = new System.Drawing.Size(295, 21);
             this.constrorgCmb.TabIndex = 12;
+            // 
+            // rptRcptRad
+            // 
+            this.rptRcptRad.AutoSize = true;
+            this.rptRcptRad.Location = new System.Drawing.Point(8, 138);
+            this.rptRcptRad.Name = "rptRcptRad";
+            this.rptRcptRad.Size = new System.Drawing.Size(83, 17);
+            this.rptRcptRad.TabIndex = 13;
+            this.rptRcptRad.TabStop = true;
+            this.rptRcptRad.Text = "Báo cáo thu";
+            this.rptRcptRad.UseVisualStyleBackColor = true;
             // 
             // lReportDlg
             // 
@@ -232,6 +247,7 @@ namespace test_binding
         #endregion
 
         private ComboBox constrorgCmb;
+        private RadioButton rptRcptRad;
 
         enum receiptsRptType
         {
@@ -312,6 +328,10 @@ namespace test_binding
             else if (daysumRd.Checked)
             {
                 rpt = new lDaysumReport(startDate.Value, endDate.Value);
+            }
+            else if (rptRcptRad.Checked)
+            {
+                rpt = new lReceiptsReport();
             }
             if (rpt != null)
             {

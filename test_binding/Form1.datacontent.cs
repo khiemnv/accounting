@@ -271,7 +271,7 @@ namespace test_binding
             m_cols = new lColInfo[] {
                    new lColInfo( "ID","ID", lColInfo.lColType.num, null, false),
                    new lColInfo( "payment_number"   ,"Mã Phiếu Chi", lColInfo.lColType.uniqueText),
-                   new lColInfo( "month"            ,"Tháng(1...12)", lColInfo.lColType.num),
+                   new lColInfo( "month"            ,"Tháng(1...12)", lColInfo.lColType.num, null, false),
                    new lColInfo( "date"             ,"Ngày Tháng", lColInfo.lColType.dateTime),
                    new lColInfo( "name"             ,"Họ Tên", lColInfo.lColType.text),
                    new lColInfo( "addr"             ,"Địa chỉ", lColInfo.lColType.text),

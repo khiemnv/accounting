@@ -132,7 +132,6 @@
                         <PaddingBottom>2pt</PaddingBottom>
                       </Style>
                     </Textbox>
-                    <rd:Selected>true</rd:Selected>
                   </CellContents>
                 </TablixCell>
                 <TablixCell>
@@ -1061,7 +1060,7 @@
           <Paragraph>
             <TextRuns>
               <TextRun>
-                <Value>Thống Kê Chi</Value>
+                <Value>Thống Kê Thu</Value>
                 <Style>
                   <FontSize>16pt</FontSize>
                   <Color>MidnightBlue</Color>

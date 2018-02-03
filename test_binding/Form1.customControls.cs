@@ -453,7 +453,8 @@ namespace test_binding
         protected override void OnCellEndEdit(DataGridViewCellEventArgs e)
         {
             base.OnCellEndEdit(e);
-            if (m_tblInfo.m_cols[e.ColumnIndex].m_field == "date")
+            string field = m_tblInfo.m_cols[e.ColumnIndex].m_field;
+            if (field == "date")
             {
                 var val = Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
                 if (val != DBNull.Value)
@@ -462,6 +463,15 @@ namespace test_binding
                     if (Rows[e.RowIndex].Cells["month"].Value == DBNull.Value)
                         this.Rows[e.RowIndex].Cells["month"].Value = cur.Month;
                 }
+            }
+            if ((field == "bsalary") || (field == "esalary"))
+            {
+                Int64 sum = 0;
+                var val = Rows[e.RowIndex].Cells["bsalary"].Value;
+                if (val != DBNull.Value) { sum += (long)val; }
+                val = Rows[e.RowIndex].Cells["esalary"].Value;
+                if (val != DBNull.Value) { sum += (long)val; }
+                Rows[e.RowIndex].Cells["salary"].Value = sum;
             }
         }
     }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define format_currency
+
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
@@ -211,7 +213,8 @@ namespace test_binding
 #endif
             m_val.Width = w;
             m_val.RightToLeft = RightToLeft.Yes;
-            m_val.TextChanged += M_val_TextChanged;
+            m_val.KeyPress += onKeyPress;
+            m_val.KeyUp += onKeyUp;
             m_val.Validated += M_val_Validated;
             m_panel.Controls.AddRange(new Control[] { m_label, m_val });
         }
@@ -221,27 +224,74 @@ namespace test_binding
             onEditingCompleted();
         }
 
-        private void M_val_KeyPress(object sender, KeyPressEventArgs e)
+        private void onKeyPress(object sender, KeyPressEventArgs e)
         {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) &&
-                (e.KeyChar != ','))
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
             {
                 e.Handled = true;
             }
-
-            //// only allow one decimal point
-            //if ((e.KeyChar == ',') && ((sender as TextBox).Text.IndexOf(',') > -1))
-            //{
-            //    e.Handled = true;
-            //}
         }
 
-        //ToolTip tt = new ToolTip();
-        private void M_val_TextChanged(object sender, EventArgs e)
+        int selectStart;
+        private void onKeyUp(object sender, KeyEventArgs e)
         {
-            string val;
+            TextBox tb = (TextBox)sender;
+            if (e.KeyCode == Keys.Back)
+            {
+                //0,000 ->0000
+                string txt = tb.Text;
+                char[] buff = new char[txt.Length];
+                int s = 0;
+                int i = txt.Length - 1;
+                for (; i >= 0; i--)
+                {
+                    char ch = txt[i];
+                    s++;
+                    if (ch == ',') { s = 0; }
+                    if (s == 4)
+                    {
+                        string newVal = "";
+                        if (i > 0) newVal = txt.Substring(0, i);
+                        newVal = newVal + new string(buff, i + 1, txt.Length - i - 1);
+                        selectStart = tb.SelectionStart - 1;
+                        chgTxt(tb,newVal);
+                        return;
+                    }
+                    buff[i] = ch;
+                }
+            }
+            else if (e.KeyCode == Keys.Delete)
+            {
+                //0,000 ->0000
+                string txt = tb.Text;
+                char[] buff = new char[txt.Length];
+                int s = 0;
+                int i = txt.Length - 1;
+                for (; i >= 0; i--)
+                {
+                    char ch = txt[i];
+                    s++;
+                    if (ch == ',') { s = 0; }
+                    if (s == 4)
+                    {
+                        string newVal = "";
+                        newVal = txt.Substring(0, i + 1);
+                        newVal = newVal + new string(buff, i + 2, txt.Length - i - 2);
+                        selectStart = tb.SelectionStart;
+                        chgTxt(tb, newVal);
+                        return;
+                    }
+                    buff[i] = ch;
+                }
+            }
+
+            selectStart = tb.SelectionStart;
+            chgTxt(tb,tb.Text);
+        }
+
+        private void chgTxt(TextBox tb, string val)
+        {
             Int64 amount = 0;
-            val = m_val.Text;
             //display in 000,000
             char[] buff = new char[64];
             Debug.Assert(val.Length < 48);
@@ -261,13 +311,15 @@ namespace test_binding
                     j--;
                 }
             }
-            val = new string(buff, j + 1, 63 - j);
-            m_val.Text = val;
-            m_val.Select(val.Length, 0);
+            string newVal = new string(buff, j + 1, 63 - j);
+            tb.Text = newVal;
+
+            selectStart += newVal.Length - val.Length;
+            if (selectStart >= 0) { tb.Select(selectStart, 0); }
 
             //update size
             int w = lConfigMng.getWidth(val);
-            if (w > 100) m_val.Width = w;
+            if (w > 100) tb.Width = w;
 #if display_amount_tooltip
             if (amount > 0)
             {
@@ -1009,23 +1061,29 @@ namespace test_binding
         protected override lInputCtrl m_keyCtrl { get { return m_inputsCtrls[0]; } }
         private keyMng m_key;
         protected override keyMng m_keyMng { get { return m_key; } }
+        lInputCtrl bsalary;
+        lInputCtrl esalary;
+        lInputCtrl salary;
         public lSalaryInputPanel()
         {
             m_tblName = "salary";
-
+            bsalary = crtInputCtrl(m_tblInfo, "bsalary", new Point(0, 6), new Size(1, 1));
+            esalary = crtInputCtrl(m_tblInfo, "esalary", new Point(0, 7), new Size(1, 1));
+            salary = crtInputCtrl(m_tblInfo, "salary", new Point(0, 8), new Size(1, 1));
             m_inputsCtrls = new List<lInputCtrl> {
                 crtInputCtrl(m_tblInfo, "payment_number", new Point(0, 0), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "month"         , new Point(0, 1), new Size(1, 1)),
                 crtInputCtrl(m_tblInfo, "date"          , new Point(0, 1), new Size(1, 1)),
                 crtInputCtrl(m_tblInfo, "name"          , new Point(0, 2), new Size(1, 1)),
                 crtInputCtrl(m_tblInfo, "addr"          , new Point(0, 3), new Size(1, 1)),
                 crtInputCtrl(m_tblInfo, "group_name"    , new Point(0, 4), new Size(1, 1)),
                 crtInputCtrl(m_tblInfo, "content"       , new Point(0, 5), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "bsalary"       , new Point(0, 6), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "esalary"       , new Point(0, 7), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "salary"        , new Point(0, 8), new Size(1, 1)),
+                bsalary,
+                esalary,
+                salary,
                 crtInputCtrl(m_tblInfo, "note"          , new Point(0, 9), new Size(1, 1)),
             };
+            bsalary.EditingCompleted += onEditSalaryCompleted;
+            esalary.EditingCompleted += onEditSalaryCompleted;
             m_key = new keyMng("PCL", m_tblName, "payment_number");
             Dictionary<string, string> dict = new Dictionary<string, string> {
                 { "name","name" },
@@ -1037,6 +1095,15 @@ namespace test_binding
                 { "amount","salary" },
             };
             m_rptAsst = new rptAssist(2, dict);
+        }
+
+        private void onEditSalaryCompleted(object sender, string e)
+        {
+            Int64 val;
+            Int64 sum = 0;
+            if (Int64.TryParse(bsalary.Text.Replace(",",""), out val)) { sum += val; }
+            if (Int64.TryParse(esalary.Text.Replace(",", ""), out val)) { sum += val; }
+            salary.Text = string.Format("{0:#,0}", sum);
         }
     }
 }
