@@ -397,6 +397,13 @@ namespace test_binding
                 m_dataGridView.AutoGenerateColumns = false;
             }
 #endif
+            //fix col["ID"] not hide
+            if (m_dataGridView.Columns[0].Visible)
+            {
+                m_dataGridView.Columns[0].Visible = false;
+            }
+
+            //update sum
             Int64 sum = getSum();
             string txt = sum.ToString(lConfigMng.getCurrencyFormat());
 #if fit_txt_size
@@ -424,7 +431,14 @@ namespace test_binding
 
             m_dataGridView.DataSource = m_dataContent.m_bindingSource;
             DataTable tbl = (DataTable)m_dataContent.m_bindingSource.DataSource;
-            if (tbl != null) { update(); }
+            if (tbl != null)
+            {
+                update();
+            }
+            else
+            {
+                Debug.Assert(false, "tbl not created!");
+            }
         }
 
         private void M_dataContent_FillTableCompleted(object sender, lDataContent.FillTableCompletedEventArgs e)

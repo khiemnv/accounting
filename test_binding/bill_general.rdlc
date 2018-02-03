@@ -507,15 +507,15 @@
                                 </TextRun>
                               </TextRuns>
                               <Style>
-                                <TextAlign>Right</TextAlign>
+                                <TextAlign>Left</TextAlign>
                               </Style>
                             </Paragraph>
                           </Paragraphs>
                           <rd:DefaultName>Textbox13</rd:DefaultName>
                           <Top>1.1in</Top>
-                          <Left>3.8in</Left>
+                          <Left>4.1in</Left>
                           <Height>0.2in</Height>
-                          <Width>1in</Width>
+                          <Width>0.7in</Width>
                           <ZIndex>11</ZIndex>
                           <Style>
                             <Border>
@@ -1057,15 +1057,15 @@
                                 </TextRun>
                               </TextRuns>
                               <Style>
-                                <TextAlign>Right</TextAlign>
+                                <TextAlign>Left</TextAlign>
                               </Style>
                             </Paragraph>
                           </Paragraphs>
                           <rd:DefaultName>Textbox13</rd:DefaultName>
                           <Top>0.9in</Top>
-                          <Left>3.8in</Left>
+                          <Left>4.1in</Left>
                           <Height>0.2in</Height>
-                          <Width>1in</Width>
+                          <Width>0.7in</Width>
                           <ZIndex>23</ZIndex>
                           <Style>
                             <Border>
@@ -1086,7 +1086,6 @@
                         </Border>
                       </Style>
                     </Rectangle>
-                    <rd:Selected>true</rd:Selected>
                   </CellContents>
                 </TablixCell>
               </TablixCells>

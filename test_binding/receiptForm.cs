@@ -111,7 +111,9 @@ namespace test_binding
                 //show input success
             }
             else
-                Debug.Assert(false);
+            {
+                Debug.Assert(false, "not used");
+            }
         }
     }
 }

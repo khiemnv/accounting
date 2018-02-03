@@ -1030,7 +1030,7 @@ namespace test_binding
                 Int64 maxId = getMaxRowId();
                 ProgressDlg prg = new ProgressDlg();
                 prg.TopMost = true;
-                Debug.Assert(!m_isView);
+                Debug.Assert(!m_isView, "not featch large data on view!");
                 prg.m_cursor = this;
                 prg.m_endPos = maxId;
                 prg.m_scale = 1000;
@@ -1068,7 +1068,7 @@ namespace test_binding
         //require execute in form's thread
         void fetchLargeData()
         {
-            Debug.Assert(!m_isView);
+            Debug.Assert(!m_isView, "not fectch large data on view");
             using (new myElapsed("fetchLargeData"))
             {
                 DataTable tbl = m_dataTable;
@@ -1116,7 +1116,7 @@ namespace test_binding
         delegate void noParamDelegate();
         protected virtual void fetchData()
         {
-            Debug.Assert(!m_isView);
+            Debug.Assert(!m_isView, "not fectch data on view");
             if (getMaxRowId() > 1000)
                 invokeFetchLargeData();
             else
@@ -1204,7 +1204,8 @@ namespace test_binding
             });
         }
         protected virtual void GetData(string sql) { throw new NotImplementedException(); }
-
+        public virtual void BeginTrans() { }
+        public virtual void EndTrans() { }
         #region dispose
         // Dispose() calls Dispose(true)  
         public void Dispose()
@@ -1237,6 +1238,7 @@ namespace test_binding
     {
         private readonly SQLiteConnection m_cnn;
         private SQLiteDataAdapter m_dataAdapter;
+        private SQLiteTransaction m_trans;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         public lSQLiteDataContent(string tblName, SQLiteConnection cnn)
@@ -1367,6 +1369,15 @@ namespace test_binding
             // Populate a new data table and bind it to the BindingSource.
             fetchData();
         }
+        public override void BeginTrans()
+        {
+            m_trans = m_cnn.BeginTransaction();
+        }
+        public override void EndTrans()
+        {
+            m_trans.Commit();
+            m_trans.Dispose();
+        }
 
         #region dispose
         protected override void Dispose(bool disposing)
@@ -1411,6 +1422,7 @@ namespace test_binding
     {
         private SqlConnection m_cnn;
         private SqlDataAdapter m_dataAdapter;
+        private SqlTransaction m_trans;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         public lSqlDataContent(string tblName, SqlConnection cnn)
@@ -1491,6 +1503,16 @@ namespace test_binding
         protected override void fillTable()
         {
             m_dataAdapter.Fill(m_dataTable);
+        }
+
+        public override void BeginTrans()
+        {
+            m_trans = m_cnn.BeginTransaction();
+        }
+        public override void EndTrans()
+        {
+            m_trans.Commit();
+            m_trans.Dispose();
         }
     }
 

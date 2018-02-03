@@ -486,8 +486,8 @@ namespace test_binding
 
         protected virtual string getDateQry(string zStartDate, string zEndDate)
         {
-            Debug.Assert(lConfigMng.checkDateString(zStartDate));
-            Debug.Assert(lConfigMng.checkDateString(zEndDate));
+            Debug.Assert(lConfigMng.checkDateString(zStartDate), "invalid date format");
+            Debug.Assert(lConfigMng.checkDateString(zEndDate), "invalid date format");
 #if use_sqlite
             string qryDaysData = string.Format("select group_name, date, name,"
                 + " sum(inter_pay) as inter_pay, sum(exter_pay) as exter_pay, sum(salary) as salary"
@@ -523,8 +523,8 @@ namespace test_binding
 
         protected string getMonthQry(string zStartDate, string zEndDate)
         {
-            Debug.Assert(lConfigMng.checkDateString(zStartDate));
-            Debug.Assert(lConfigMng.checkDateString(zEndDate));
+            Debug.Assert(lConfigMng.checkDateString(zStartDate), "invalid date format");
+            Debug.Assert(lConfigMng.checkDateString(zEndDate), "invalid date format");
 #if use_sqlite
             string qryMonthData = string.Format("select month, sum(receipt) as receipt, sum(inter_pay) as inter_pay, sum(exter_pay) as exter_pay, sum(salary) as salary, 0 as remain "
                 + " from("
@@ -699,8 +699,8 @@ namespace test_binding
     {
         protected override string getDateQry(string zStartDate, string zEndDate)
         {
-            Debug.Assert(lConfigMng.checkDateString(zStartDate));
-            Debug.Assert(lConfigMng.checkDateString(zEndDate));
+            Debug.Assert(lConfigMng.checkDateString(zStartDate), "invalid date format");
+            Debug.Assert(lConfigMng.checkDateString(zEndDate), "invalid date format");
 #if use_sqlite
             string qryWeeksData = string.Format("select group_name, week as date, '' as name,"
                + " sum(inter_pay) as inter_pay, sum(exter_pay) as exter_pay, sum(salary) as salary"
@@ -756,8 +756,8 @@ namespace test_binding
     {
         protected override string getDateQry(string zStartDate, string zEndDate)
         {
-            Debug.Assert(lConfigMng.checkDateString(zStartDate));
-            Debug.Assert(lConfigMng.checkDateString(zEndDate));
+            Debug.Assert(lConfigMng.checkDateString(zStartDate), "invalid date format");
+            Debug.Assert(lConfigMng.checkDateString(zEndDate), "invalid date format");
 #if use_sqlite
             string qryMonthsData = string.Format("select group_name, month as date, '' as name,"
                + " sum(inter_pay) as inter_pay, sum(exter_pay) as exter_pay, sum(salary) as salary"

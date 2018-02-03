@@ -1,4 +1,5 @@
 ﻿#define format_currency
+#define use_sqlite
 
 using System;
 using System.Collections.Generic;
@@ -28,6 +29,7 @@ namespace test_binding
             m_label.TextAlign = ContentAlignment.MiddleLeft;
             m_panel.BorderStyle = BorderStyle.None;
         }
+        public virtual bool ReadOnly { get; set; }
         public virtual string Text { get; set; }
         public event EventHandler<string> EditingCompleted;
         protected virtual void onEditingCompleted()
@@ -131,6 +133,19 @@ namespace test_binding
             string val = m_colInfo.m_lookupData.find(key);
             if (val != null)
                 m_combo.Text = val;
+        }
+        public override bool ReadOnly
+        {
+            get
+            {
+                return m_text.ReadOnly;
+            }
+
+            set
+            {
+                m_text.ReadOnly = value;
+                m_text.TabStop = !value;
+            }
         }
         public override string Text
         {
@@ -294,7 +309,7 @@ namespace test_binding
             Int64 amount = 0;
             //display in 000,000
             char[] buff = new char[64];
-            Debug.Assert(val.Length < 48);
+            Debug.Assert(val.Length < 48, "currency too long");
             int j = 63;
             for (int i = val.Length; i > 0; i--)
             {
@@ -336,7 +351,19 @@ namespace test_binding
             val = m_val.Text.Replace(",", "");
             if (val == "") val = "0";
         }
+        public override bool ReadOnly
+        {
+            get
+            {
+                return m_val.ReadOnly;
+            }
 
+            set
+            {
+                m_val.ReadOnly = value;
+                m_val.TabStop = !value;
+            }
+        }
         public override string Text
         {
             get
@@ -558,41 +585,47 @@ namespace test_binding
         }
         protected virtual void Add()
         {
-            //check key is unique
-            string key = m_keyCtrl.Text;
-            if (!m_keyMng.IsUniqKey(key))
+            m_dataContent.BeginTrans();
+            do
             {
-                Debug.Assert(false);
-                lConfigMng.showInputError("Mã này đã tồn tại");
-                m_keyCtrl.Text = m_keyMng.IncKey();
-                return;
-            }
+                //check key is unique
+                string key = m_keyCtrl.Text;
+                if (!m_keyMng.IsUniqKey(key))
+                {
+                    //case: multi users
+                    Debug.Assert(false, "other user inputting");
+                    lConfigMng.showInputError("Mã này đã tồn tại");
+                    m_keyCtrl.Text = m_keyMng.IncKey();
+                    break;
+                }
 
-            List<string> exprs = new List<string>();
-            List<lSearchParam> srchParams = new List<lSearchParam>();
-            foreach (lSearchCtrl ctrl in m_inputsCtrls)
-            {
-                ctrl.updateInsertParams(exprs, srchParams);
-            }
+                List<string> exprs = new List<string>();
+                List<lSearchParam> srchParams = new List<lSearchParam>();
+                foreach (lSearchCtrl ctrl in m_inputsCtrls)
+                {
+                    ctrl.updateInsertParams(exprs, srchParams);
+                }
 
-            //crt new row
-            DataTable tbl = m_dataContent.m_dataTable;
-            DataRow newRow = tbl.NewRow();
-            for (int i = 0; i < exprs.Count; i++)
-            {
-                string field = exprs[i];
-                var newValue = srchParams[i].val;
-                newRow[field] = newValue;
-            }
-            tbl.Rows.Add(newRow);
-            m_dataContent.Submit();
+                //crt new row
+                DataTable tbl = m_dataContent.m_dataTable;
+                DataRow newRow = tbl.NewRow();
+                for (int i = 0; i < exprs.Count; i++)
+                {
+                    string field = exprs[i];
+                    var newValue = srchParams[i].val;
+                    newRow[field] = newValue;
+                }
+                tbl.Rows.Add(newRow);
+                m_dataContent.Submit();
 
-            //add new record to bills
-            m_rptAsst.setData(newRow);
-            if (RefreshPreview != null) { RefreshPreview(this, null); }
+                //add new record to bills
+                m_rptAsst.setData(newRow);
+                if (RefreshPreview != null) { RefreshPreview(this, null); }
 
-            //inc key
-            bIncKeyReq = true;
+                //inc key
+                bIncKeyReq = true;
+            } while (false);
+            m_dataContent.EndTrans();
         }
         protected virtual lInputCtrl m_keyCtrl { get; }
 
@@ -652,6 +685,11 @@ namespace test_binding
                 updateCols();
                 m_dataGridView.AutoGenerateColumns = false;
             }
+            else
+            {
+                Debug.Assert(tbl != null, "table not loaded");
+            }
+            m_dataGridView.AllowUserToAddRows = false;
 
             m_keyCtrl.Text = InitKey();
             m_dataContent.UpdateTableCompleted += M_dataContent_UpdateTableCompleted;
@@ -783,6 +821,7 @@ namespace test_binding
                 m_dataGridView.Columns[i].DisplayIndex = i - 1;
 #endif
             }
+            m_dataGridView.Columns[1].ReadOnly = true;
             m_dataGridView.Columns[i - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             m_dataGridView.Columns[i - 1].FillWeight = 1;
         }
@@ -843,15 +882,48 @@ namespace test_binding
             m_keyField = keyField;
             m_dateField = dateField;
             //@"(PT\d{8})(\d{3})"
-            m_reg = new Regex(@"(\d{8})(\d{3})");
+            m_reg = new Regex(@"(\d{4})(\d{3})");
         }
         private string genKey(DateTime date, int n)
         {
-            string zKey = m_preFix + date.ToString("yyyyMMdd") + n.ToString("D3");
+            string zKey = m_preFix + date.ToString("yyyy") + n.ToString("D3");
             m_preDate = date;
             m_preNo = n;
             return zKey;
         }
+        public string InitKey()
+        {
+            DateTime curDate = DateTime.Now.Date;
+            //PTyyyy001
+            string zKey = genKey(curDate, 1);
+            string zDate = curDate.ToString(lConfigMng.getDateFormat());
+#if use_sqlite
+            string sql = string.Format("SELECT * FROM {0} ORDER BY ID DESC LIMIT 1", m_tblName);
+#else
+            string sql = string.Format("SELECT TOP 1 * FROM {0} ORDER BY ID DESC", m_tblName);
+#endif
+            DataTable tbl = appConfig.s_contentProvider.GetData(sql);
+            if (tbl.Rows.Count > 0)
+            {
+                int no = 1;
+                string curKey = tbl.Rows[0][m_keyField].ToString();
+                Match m = m_reg.Match(curKey);
+                int year = int.Parse(m.Groups[1].Value);
+                if (year == curDate.Year)
+                {
+                    no = int.Parse(m.Groups[2].Value);
+                    zKey = genKey(curDate, no + 1);
+                }
+                //else reset key by year
+            }
+            if (!IsUniqKey(zKey))
+            {
+                Debug.Assert(false, "gen key error - multi user inputting");
+                zKey = IncKey();
+            }
+            return zKey;
+        }
+#if key_reset_daily
         public string InitKey()
         {
             DateTime curDate = DateTime.Now.Date;
@@ -881,6 +953,7 @@ namespace test_binding
             }
             return zKey;
         }
+#endif //key_reset_daily
         public bool IsUniqKey(string val)
         {
             var bRet = true;
@@ -936,6 +1009,7 @@ namespace test_binding
                 crtInputCtrl(m_tblInfo, "note"          , new Point(0, 5), new Size(1, 1)),
                 crtInputCtrl(m_tblInfo, "amount"        , new Point(0, 6), new Size(1, 1)),
             };
+            m_inputsCtrls[0].ReadOnly = true;
             m_key = new keyMng("PT", m_tblName, "receipt_number");
 
             Dictionary<string, string> dict = new Dictionary<string, string> {
@@ -982,6 +1056,7 @@ namespace test_binding
                 crtInputCtrl(m_tblInfo, "note"              , new Point(0, 7), new Size(1, 1)),
 #endif
             };
+            m_inputsCtrls[0].ReadOnly = true;
 #if has_advance
             reimbursement.EditingCompleted += (s, e) =>
             {
@@ -1042,6 +1117,7 @@ namespace test_binding
                 crtInputCtrl(m_tblInfo, "spent"         , new Point(0, 8), new Size(1, 1)),
                 crtInputCtrl(m_tblInfo, "note"          , new Point(0, 9), new Size(1, 1)),
             };
+            m_inputsCtrls[0].ReadOnly = true;
             m_key = new keyMng("PCG", m_tblName, "payment_number");
             Dictionary<string, string> dict = new Dictionary<string, string> {
                 { "name","name" },
@@ -1082,8 +1158,10 @@ namespace test_binding
                 salary,
                 crtInputCtrl(m_tblInfo, "note"          , new Point(0, 9), new Size(1, 1)),
             };
+            m_inputsCtrls[0].ReadOnly = true;
             bsalary.EditingCompleted += onEditSalaryCompleted;
             esalary.EditingCompleted += onEditSalaryCompleted;
+            salary.ReadOnly = true;
             m_key = new keyMng("PCL", m_tblName, "payment_number");
             Dictionary<string, string> dict = new Dictionary<string, string> {
                 { "name","name" },
