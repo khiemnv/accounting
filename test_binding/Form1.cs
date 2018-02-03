@@ -221,8 +221,8 @@ namespace test_binding
 
 #if load_input
             //load input
-            openInputForm(inputFormType.salaryIF);
-            //MiReport_Click(this, null);
+            //openInputForm(inputFormType.receiptIF);
+            MiReport_Click(this, null);
 #endif  //load_input
         }
         enum inputFormType

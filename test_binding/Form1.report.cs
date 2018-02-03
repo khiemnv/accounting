@@ -641,6 +641,9 @@ namespace test_binding
 
                 //after load data complete
                 dt.TableName = pair.Key;
+                onLoadDataComplete(dt);
+
+                //add to ds
                 ds.Tables.Add(dt);
 
                 report.ReportPath = m_rdlcPath;
@@ -671,6 +674,11 @@ namespace test_binding
         protected virtual DataTable getData(string key)
         {
             return loadData(m_sqls[key]);
+        }
+
+        protected virtual void onLoadDataComplete(DataTable dt)
+        {
+            //modify qry data
         }
     }
     public class lSqlDaysReport : lDaysReport
@@ -901,6 +909,7 @@ namespace test_binding
                 new ReportParameter("startDate",zStartDate),
                 new ReportParameter("endDate",zEndDate),
             };
+
             zStartDate = startDate.ToString(lConfigMng.getDateFormat());
             zEndDate = endDate.ToString(lConfigMng.getDateFormat());
 #if use_sqlite
@@ -919,6 +928,48 @@ namespace test_binding
                 { "DataSet1", qry }
             };
             m_rdlcPath = @"..\..\rpt_daysum.rdlc";
+        }
+        protected override void onLoadDataComplete(DataTable dt)
+        {
+            Int64 inc = 0;
+            foreach (DataRow row in dt.Rows)
+            {
+                inc += (Int64)row["sum"];
+                row["sum"] = inc;
+            }
+            m_rptParams.Add(new ReportParameter("remain", inc.ToString()));
+        }
+        public override List<ReportParameter> getReportParam()
+        {
+            return m_rptParams;
+        }
+    }
+
+    public class lReceiptsDays : lDaysReport
+    {
+        List<ReportParameter> m_rptParams;
+        public lReceiptsDays(DateTime startDate, DateTime endDate) : base(startDate, endDate)
+        {
+            string zStartDate = startDate.ToString(lConfigMng.getDisplayDateFormat());
+            string zEndDate = endDate.ToString(lConfigMng.getDisplayDateFormat());
+            m_rptParams = new List<ReportParameter>()
+            {
+                new ReportParameter("startDate",zStartDate),
+                new ReportParameter("endDate",zEndDate),
+            };
+
+            zStartDate = startDate.ToString(lConfigMng.getDateFormat());
+            zEndDate = endDate.ToString(lConfigMng.getDateFormat());
+            string qry = string.Format("select * from receipts"
+                + " where date between '{0} 00:00:00' and '{1} 00:00:00'"
+                + " order by date",
+                zStartDate, zEndDate);
+
+            m_sqls = new Dictionary<string, string>
+            {
+                { "DataSet1", qry }
+            };
+            m_rdlcPath = @"..\..\rpt_receiptsdays.rdlc";
         }
         public override List<ReportParameter> getReportParam()
         {

@@ -331,7 +331,7 @@ namespace test_binding
             }
             else if (rptRcptRad.Checked)
             {
-                rpt = new lReceiptsReport();
+                rpt = new lReceiptsDays(startDate.Value, endDate.Value);
             }
             if (rpt != null)
             {
