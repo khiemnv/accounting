@@ -22,10 +22,8 @@
           </Paragraph>
         </Paragraphs>
         <rd:DefaultName>Textbox1</rd:DefaultName>
-        <Top>0.14458in</Top>
-        <Left>2.63416in</Left>
-        <Height>0.34375in</Height>
-        <Width>2.13542in</Width>
+        <Height>0.3in</Height>
+        <Width>6.5in</Width>
         <Style>
           <Border>
             <Style>None</Style>
@@ -40,24 +38,24 @@
         <TablixBody>
           <TablixColumns>
             <TablixColumn>
-              <Width>0.93136in</Width>
+              <Width>1in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>1.32892in</Width>
+              <Width>1in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>1.2591in</Width>
+              <Width>1.5in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>2.50133in</Width>
+              <Width>2in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>1.37581in</Width>
+              <Width>1in</Width>
             </TablixColumn>
           </TablixColumns>
           <TablixRows>
             <TablixRow>
-              <Height>0.29514in</Height>
+              <Height>0.25in</Height>
               <TablixCells>
                 <TablixCell>
                   <CellContents>
@@ -217,7 +215,7 @@
               </TablixCells>
             </TablixRow>
             <TablixRow>
-              <Height>0.3in</Height>
+              <Height>0.25in</Height>
               <TablixCells>
                 <TablixCell>
                   <CellContents>
@@ -380,7 +378,7 @@
               </TablixCells>
             </TablixRow>
             <TablixRow>
-              <Height>0.29514in</Height>
+              <Height>0.25in</Height>
               <TablixCells>
                 <TablixCell>
                   <CellContents>
@@ -562,10 +560,9 @@
           </TablixMembers>
         </TablixRowHierarchy>
         <DataSetName>DataSet1</DataSetName>
-        <Top>1.66888in</Top>
-        <Left>0.00347in</Left>
-        <Height>0.89028in</Height>
-        <Width>7.39652in</Width>
+        <Top>1.6in</Top>
+        <Height>0.75in</Height>
+        <Width>6.5in</Width>
         <ZIndex>1</ZIndex>
         <Style>
           <Border>
@@ -599,47 +596,14 @@
           </Paragraph>
         </Paragraphs>
         <rd:DefaultName>Textbox1</rd:DefaultName>
-        <Top>0.67236in</Top>
-        <Height>0.23958in</Height>
-        <Width>7.39653in</Width>
+        <Top>0.55in</Top>
+        <Height>0.25in</Height>
+        <Width>6.5in</Width>
         <ZIndex>2</ZIndex>
         <Style>
           <Border>
             <Style>None</Style>
           </Border>
-          <PaddingLeft>2pt</PaddingLeft>
-          <PaddingRight>2pt</PaddingRight>
-          <PaddingTop>2pt</PaddingTop>
-          <PaddingBottom>2pt</PaddingBottom>
-        </Style>
-      </Textbox>
-      <Textbox Name="Textbox21">
-        <CanGrow>true</CanGrow>
-        <KeepTogether>true</KeepTogether>
-        <Paragraphs>
-          <Paragraph>
-            <TextRuns>
-              <TextRun>
-                <Value>=Parameters!endDate.Value</Value>
-                <Style />
-              </TextRun>
-            </TextRuns>
-            <Style>
-              <TextAlign>Left</TextAlign>
-            </Style>
-          </Paragraph>
-        </Paragraphs>
-        <rd:DefaultName>Textbox20</rd:DefaultName>
-        <Top>1.34944in</Top>
-        <Left>2.52084in</Left>
-        <Height>0.25in</Height>
-        <Width>1.23958in</Width>
-        <ZIndex>3</ZIndex>
-        <Style>
-          <Border>
-            <Style>None</Style>
-          </Border>
-          <VerticalAlign>Middle</VerticalAlign>
           <PaddingLeft>2pt</PaddingLeft>
           <PaddingRight>2pt</PaddingRight>
           <PaddingTop>2pt</PaddingTop>
@@ -653,41 +617,29 @@
           <Paragraph>
             <TextRuns>
               <TextRun>
-                <Value>từ ngày:</Value>
+                <Value>từ ngày: </Value>
                 <Style>
                   <FontWeight>Bold</FontWeight>
                   <Color>Blue</Color>
                 </Style>
               </TextRun>
-            </TextRuns>
-            <Style>
-              <TextAlign>Left</TextAlign>
-            </Style>
-          </Paragraph>
-        </Paragraphs>
-        <rd:DefaultName>Textbox36</rd:DefaultName>
-        <Top>1.34944in</Top>
-        <Height>0.25in</Height>
-        <Width>0.61458in</Width>
-        <ZIndex>4</ZIndex>
-        <Style>
-          <Border>
-            <Style>None</Style>
-          </Border>
-          <PaddingLeft>2pt</PaddingLeft>
-          <PaddingRight>2pt</PaddingRight>
-          <PaddingTop>2pt</PaddingTop>
-          <PaddingBottom>2pt</PaddingBottom>
-        </Style>
-      </Textbox>
-      <Textbox Name="Textbox20">
-        <CanGrow>true</CanGrow>
-        <KeepTogether>true</KeepTogether>
-        <Paragraphs>
-          <Paragraph>
-            <TextRuns>
               <TextRun>
                 <Value>=Parameters!startDate.Value</Value>
+                <Style />
+              </TextRun>
+              <TextRun>
+                <Value xml:space="preserve"> </Value>
+                <Style />
+              </TextRun>
+              <TextRun>
+                <Value>đến ngày: </Value>
+                <Style>
+                  <FontWeight>Bold</FontWeight>
+                  <Color>Blue</Color>
+                </Style>
+              </TextRun>
+              <TextRun>
+                <Value>=Parameters!endDate.Value</Value>
                 <Style />
               </TextRun>
             </TextRuns>
@@ -696,53 +648,15 @@
             </Style>
           </Paragraph>
         </Paragraphs>
-        <rd:DefaultName>Textbox20</rd:DefaultName>
-        <Top>1.34944in</Top>
-        <Left>0.61458in</Left>
+        <rd:DefaultName>Textbox36</rd:DefaultName>
+        <Top>1.3in</Top>
         <Height>0.25in</Height>
-        <Width>1.20486in</Width>
-        <ZIndex>5</ZIndex>
+        <Width>3.5in</Width>
+        <ZIndex>3</ZIndex>
         <Style>
           <Border>
             <Style>None</Style>
           </Border>
-          <VerticalAlign>Middle</VerticalAlign>
-          <PaddingLeft>2pt</PaddingLeft>
-          <PaddingRight>2pt</PaddingRight>
-          <PaddingTop>2pt</PaddingTop>
-          <PaddingBottom>2pt</PaddingBottom>
-        </Style>
-      </Textbox>
-      <Textbox Name="Textbox22">
-        <CanGrow>true</CanGrow>
-        <KeepTogether>true</KeepTogether>
-        <Paragraphs>
-          <Paragraph>
-            <TextRuns>
-              <TextRun>
-                <Value>tới ngày:</Value>
-                <Style>
-                  <FontWeight>Bold</FontWeight>
-                  <Color>Blue</Color>
-                </Style>
-              </TextRun>
-            </TextRuns>
-            <Style>
-              <TextAlign>Right</TextAlign>
-            </Style>
-          </Paragraph>
-        </Paragraphs>
-        <rd:DefaultName>Textbox22</rd:DefaultName>
-        <Top>1.34944in</Top>
-        <Left>1.80555in</Left>
-        <Height>0.25in</Height>
-        <Width>0.6875in</Width>
-        <ZIndex>6</ZIndex>
-        <Style>
-          <Border>
-            <Style>None</Style>
-          </Border>
-          <VerticalAlign>Middle</VerticalAlign>
           <PaddingLeft>2pt</PaddingLeft>
           <PaddingRight>2pt</PaddingRight>
           <PaddingTop>2pt</PaddingTop>
@@ -767,11 +681,10 @@
           </Paragraph>
         </Paragraphs>
         <rd:DefaultName>Textbox36</rd:DefaultName>
-        <Top>1.09944in</Top>
-        <Left>0.00347in</Left>
+        <Top>1.05in</Top>
         <Height>0.25in</Height>
-        <Width>3.36334in</Width>
-        <ZIndex>7</ZIndex>
+        <Width>3.5in</Width>
+        <ZIndex>4</ZIndex>
         <Style>
           <Border>
             <Style>None</Style>
@@ -805,11 +718,11 @@
           </Paragraph>
         </Paragraphs>
         <rd:DefaultName>Textbox39</rd:DefaultName>
-        <Top>2.825in</Top>
-        <Left>5.39305in</Left>
-        <Height>0.23958in</Height>
-        <Width>2.01042in</Width>
-        <ZIndex>8</ZIndex>
+        <Top>2.6in</Top>
+        <Left>4.5in</Left>
+        <Height>0.2in</Height>
+        <Width>2in</Width>
+        <ZIndex>5</ZIndex>
         <Style>
           <Border>
             <Style>None</Style>
@@ -821,10 +734,10 @@
         </Style>
       </Textbox>
     </ReportItems>
-    <Height>3.2in</Height>
+    <Height>2.8in</Height>
     <Style />
   </Body>
-  <Width>7.5in</Width>
+  <Width>6.5in</Width>
   <Page>
     <LeftMargin>0.5in</LeftMargin>
     <RightMargin>0.5in</RightMargin>
