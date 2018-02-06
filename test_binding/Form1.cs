@@ -136,17 +136,18 @@ namespace test_binding
 
 #if use_bg_work
             //background work
-            m_bgwork = new myWorker();
+            m_bgwork = myWorker.getWorker();
             m_bgwork.BgProcess += bg_process;
             m_bgwork.FgProcess += fg_process;
 #endif
         }
 
 #if use_bg_work
-        private void bg_process(object sender, BgTask e)
+
+        private void bg_process(object sender, myTask e)
         {
-            Debug.WriteLine(string.Format("bg_process {0}", e.eType));
-            switch (e.eType)
+            Debug.WriteLine(string.Format("bg_process {0}", e.iType));
+            switch (((BgTask)e).eType)
             {
                 case BgTask.bgTaskType.bgExec:
                     taskCallback0 t = (taskCallback0)e.data;
@@ -155,10 +156,10 @@ namespace test_binding
             }
         }
 
-        private void fg_process(object sender, FgTask e)
+        private void fg_process(object sender, myTask e)
         {
-            Debug.WriteLine(string.Format("fg_process {0}", e.eType));
-            switch(e.eType)
+            Debug.WriteLine(string.Format("fg_process {0}", e.iType));
+            switch(((FgTask)e).eType)
             {
                 case FgTask.fgTaskType.fgExec:
                     Invoke((taskCallback0)e.data);
@@ -222,7 +223,7 @@ namespace test_binding
 #if load_input
             //load input
             //openInputForm(inputFormType.receiptIF);
-            MiReport_Click(this, null);
+            //MiReport_Click(this, null);
 #endif  //load_input
         }
         enum inputFormType

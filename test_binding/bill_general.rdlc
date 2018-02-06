@@ -63,7 +63,7 @@
                                   <Value>=Fields!content.Value</Value>
                                   <Style>
                                     <FontFamily>times New Roman</FontFamily>
-                                    <FontSize>12pt</FontSize>
+                                    <FontSize>14pt</FontSize>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -243,6 +243,7 @@
                                   <Style>
                                     <FontFamily>times New Roman</FontFamily>
                                     <FontSize>12pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
                                     <Format>#,0 'VND';(#,0 'VND');'-'</Format>
                                   </Style>
                                 </TextRun>
@@ -972,6 +973,7 @@
                                   <Style>
                                     <FontFamily>times New Roman</FontFamily>
                                     <FontSize>12pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
                                     <Format>#,0 'VND';(#,0 'VND');'-'</Format>
                                   </Style>
                                 </TextRun>
@@ -1086,7 +1088,6 @@
                         </Border>
                       </Style>
                     </Rectangle>
-                    <rd:Selected>true</rd:Selected>
                   </CellContents>
                 </TablixCell>
               </TablixCells>

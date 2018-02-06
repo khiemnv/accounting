@@ -969,7 +969,7 @@ namespace test_binding
             {
                 { "DataSet1", qry }
             };
-            m_rdlcPath = @"..\..\rpt_receiptsdays.rdlc";
+            m_rdlcPath = @"..\..\rpt_dayreceipts.rdlc";
         }
         public override List<ReportParameter> getReportParam()
         {

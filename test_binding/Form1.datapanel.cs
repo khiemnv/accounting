@@ -7,6 +7,7 @@
 #define use_cmd_params
 #define header_blue
 //#define fit_txt_size
+//#define use_bg_work
 
 using System.Windows.Forms;
 using System;
@@ -319,15 +320,45 @@ namespace test_binding
             }
 #endif
 #if use_cmd_params
+
+        class srchTsk:BgTask
+        {
+            public List<string> m_exprs;
+            public List<lSearchParam> m_srchParams;
+            public srchTsk(List<string> exprs, List<lSearchParam> srchParams)
+            {
+                eType = bgTaskType.DP_BG_SEARCH;
+                m_exprs = exprs;
+                m_srchParams = srchParams;
+                data = this;
+            }
+        }
+        class updateStsTsk:FgTask
+        {
+            public string m_txt;
+            public updateStsTsk(object owner, string txt)
+            {
+                eType = fgTaskType.DP_BG_UPDATESTS;
+                m_txt = txt;
+                data = this;
+                m_owner = owner;
+            }
+        }
+
         public void search(List<string> exprs, List<lSearchParam> srchParams)
         {
             m_stsMng.onTaskBegin("Searching");
+#if use_bg_work
+            m_wkr.qryBgTask(new srchTsk(exprs, srchParams));
+            m_wkr.qryFgTask(new updateStsTsk(this, "Searching completed!"));
+#else
             m_dataContent.Search(exprs, srchParams);
+#endif
             //update();
         }
 #endif
-        #region status_txt
-        delegate void callBack_z(string txt);
+            #region status_txt
+            delegate void callBack_z(string txt);
         class statusMng {
             public DateTime m_startTime;
             public string m_stsTxt;
@@ -363,10 +394,18 @@ namespace test_binding
         }
         #endregion  //status_txt
 
+#if use_bg_work
+        myWorker m_wkr;
+#endif
+
         private void reloadButton_Click(object sender, System.EventArgs e)
         {
+#if use_bg_work
+            m_wkr.qryBgTask(new DPBgTsk(DPBgTsk.eTask.bgSearch, ""));
+#else
             m_stsMng.onTaskBegin("Reloading");
             m_dataContent.Reload();
+#endif
             //update();
             //m_status.Text = "Reloading completed!";
         }
@@ -424,8 +463,10 @@ namespace test_binding
                 crtColumns();
 #endif
             m_dataContent = appConfig.s_contentProvider.CreateDataContent(m_tblInfo.m_tblName);
+#if !use_bg_work
             m_dataContent.FillTableCompleted += M_dataContent_FillTableCompleted;
             m_dataContent.UpdateTableCompleted += M_dataContent_FillTableCompleted;
+#endif
 #if !init_datatable_cols
                 m_dataContent.Load();
 #endif
@@ -440,7 +481,72 @@ namespace test_binding
             {
                 Debug.Assert(false, "tbl not created!");
             }
+
+#if use_bg_work
+            m_wkr = myWorker.getWorker();
+            m_wkr.BgProcess += M_wkr_BgProcess;
+            m_wkr.FgProcess += M_wkr_FgProcess;
+#endif
         }
+#if use_bg_work
+        class DPBgTsk : BgTask
+        {
+            public enum eTask {
+                bgSearch
+            }
+            public DPBgTsk(eTask eType, string txt)
+            {
+                sender = "DataPanel";
+                iType = (int)eType;
+                data = txt;
+            }
+            public new eTask eType
+            { get { return (eTask)iType; } }
+        }
+        class DPFgTsk : FgTask
+        {
+            public enum eTask
+            {
+                fgUpdateSts
+            }
+            public DPFgTsk(eTask eType, string txt)
+            {
+                sender = "DataPanel";
+                iType = (int)eType;
+                data = txt;
+            }
+            public new eTask eType
+            { get { return (eTask)iType; } }
+        }
+
+        private void M_wkr_FgProcess(object sender, myTask e)
+        {
+            FgTask t = (FgTask)e;
+            if (t == null) return;
+
+            switch(t.eType)
+            {
+                case FgTask.fgTaskType.DP_BG_UPDATESTS:
+                    var updtsk = (updateStsTsk)t.data;
+                    m_status.Text = (string)updtsk.m_txt;
+                    break;
+            }
+        }
+
+        private void M_wkr_BgProcess(object sender, myTask e)
+        {
+            BgTask t = (BgTask)e;
+            if (t == null) return;
+
+            switch (t.eType)
+            {
+                case BgTask.bgTaskType.DP_BG_SEARCH:
+                    var tsk = (srchTsk)t.data;
+                    m_dataContent.Search(tsk.m_exprs, tsk.m_srchParams);
+                    break;
+            }
+        }
+#endif
 
         private void M_dataContent_FillTableCompleted(object sender, lDataContent.FillTableCompletedEventArgs e)
         {
@@ -448,7 +554,7 @@ namespace test_binding
             m_stsMng.onTaskEnd(e.TimeComplete);
         }
 
-        #region dispose
+#region dispose
         // Dispose() calls Dispose(true)  
         public void Dispose()
         {
@@ -484,7 +590,7 @@ namespace test_binding
             }
             // free native resources if there are any.  
         }
-        #endregion
+#endregion
     }
 
     [DataContract(Name = "InterPaymentDataPanel")]

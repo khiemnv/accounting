@@ -83,13 +83,15 @@ namespace test_binding
         {
             if (m_colInfo != null && m_colInfo.m_lookupData != null)
             {
+#if false
                 m_text.Validated += M_text_Validated;
                 m_autoCompleteData = m_colInfo.m_lookupData;
                 AutoCompleteStringCollection col = m_autoCompleteData.m_colls;
                 m_text.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
                 m_text.AutoCompleteSource = AutoCompleteSource.CustomSource;
                 m_text.AutoCompleteCustomSource = col;
-#if false
+#endif
+#if true
                 m_combo = lConfigMng.crtComboBox();
                 m_text.Hide();
 
