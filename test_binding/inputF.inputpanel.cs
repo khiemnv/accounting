@@ -1,5 +1,6 @@
 ﻿#define format_currency
 #define use_sqlite
+//#define use_bg_work
 
 using System;
 using System.Collections.Generic;
@@ -83,15 +84,15 @@ namespace test_binding
         {
             if (m_colInfo != null && m_colInfo.m_lookupData != null)
             {
-#if false
+#if use_auto_complete
                 m_text.Validated += M_text_Validated;
                 m_autoCompleteData = m_colInfo.m_lookupData;
                 AutoCompleteStringCollection col = m_autoCompleteData.m_colls;
                 m_text.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
                 m_text.AutoCompleteSource = AutoCompleteSource.CustomSource;
                 m_text.AutoCompleteCustomSource = col;
-#endif
-#if true
+#endif  //use_auto_complete
+#if true    //use combo
                 m_combo = lConfigMng.crtComboBox();
                 m_text.Hide();
 
@@ -117,7 +118,7 @@ namespace test_binding
 #endif
             }
         }
-
+#if use_auto_complete
         private void M_text_Validated(object sender, EventArgs e)
         {
             TextBox edt = (TextBox)sender;
@@ -128,6 +129,7 @@ namespace test_binding
                 m_autoCompleteData.Update(selectedValue);
             }
         }
+#endif
 
         private void M_combo_Validated(object sender, EventArgs e)
         {
@@ -398,7 +400,10 @@ namespace test_binding
     public class lInputPanel
     {
         public lDataContent m_dataContent;
-        
+
+#if use_bg_work
+        myWorker m_wkr;
+#endif
         //convert currency to text
         protected class rptAssist
         {
@@ -569,6 +574,15 @@ namespace test_binding
             //clean bills
             m_rptAsst.clearData();
             if (RefreshPreview != null) { RefreshPreview(this, null); }
+
+#if use_bg_work
+            m_wkr.qryFgTask(new FgTask
+            {
+                sender = "IP," + m_tblName,
+                receiver = "DP," + m_tblName,
+                eType = FgTask.fgTaskType.DP_FG_UPDATESUM,
+            }, true);
+#endif
         }
         private void M_clearBtn_Click(object sender, EventArgs e)
         {
@@ -628,6 +642,14 @@ namespace test_binding
                 bIncKeyReq = true;
             } while (false);
             m_dataContent.EndTrans();
+#if use_bg_work
+            m_wkr.qryFgTask(new FgTask
+            {
+                sender = "IP," + m_tblName,
+                receiver = "DP," + m_tblName,
+                eType = FgTask.fgTaskType.DP_FG_UPDATESUM,
+            }, true);
+#endif
         }
         protected virtual lInputCtrl m_keyCtrl { get; }
 
@@ -655,6 +677,13 @@ namespace test_binding
             if (RefreshPreview != null) { RefreshPreview(this, null); }
 
             m_dataContent.Submit();
+#if use_bg_work
+            m_wkr.qryFgTask(new FgTask {
+                sender = "IP," + m_tblName,
+                receiver = "DP," + m_tblName,
+                eType = FgTask.fgTaskType.DP_FG_UPDATESUM,
+            }, true);
+#endif
         }
         protected virtual void InsertRec()
         {
@@ -701,6 +730,10 @@ namespace test_binding
             {
                 ctrl.LoadData();
             }
+
+#if use_bg_work
+            m_wkr = myWorker.getWorker();
+#endif
         }
 
         private void M_dataContent_UpdateTableCompleted(object sender, lDataContent.FillTableCompletedEventArgs e)

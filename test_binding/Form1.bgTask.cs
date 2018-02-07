@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define none_stop
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -23,16 +25,20 @@ namespace test_binding
         {
             bgExec = 0x00,      //execute callback no param
             DP_BG_SEARCH,       //<MOD>_BG_<TASK>
+            NOOP,
         }
         public bgTaskType eType { get { return (bgTaskType)iType; } set{ iType = (int)value; } }
     }
     public class FgTask : myTask
     {
-        public object m_owner;
         public enum fgTaskType
         {
             fgExec = 0x10000,
-            DP_BG_UPDATESTS
+            DP_FG_UPDATESTS,
+            F1_FG_UPDATESTS,
+            DP_FG_SEARCH,
+            F1_FG_UPDATEPRG,
+            DP_FG_UPDATESUM,
         }
         public fgTaskType eType
         {
@@ -53,6 +59,9 @@ namespace test_binding
             m_worker.ProgressChanged += onProgressChanged;
             m_worker.RunWorkerCompleted += onCompleted;
             m_worker.WorkerReportsProgress = true;
+#if none_stop
+            m_worker.RunWorkerAsync();
+#endif
         }
 
         public static myWorker s_worker;
@@ -72,7 +81,7 @@ namespace test_binding
 
         private void onProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            Debug.WriteLine("onProgressChanged" + e.UserState.ToString());
+            Debug.WriteLine("onProgressChanged " + e.UserState.ToString());
             OnFgProcess((FgTask)e.UserState);
         }
 
@@ -91,35 +100,49 @@ namespace test_binding
 
                     var fgTsk = msg as FgTask;
                     if (fgTsk != null)
-                        onProgressChanged(this, new ProgressChangedEventArgs(1, fgTsk));
+                        m_worker.ReportProgress(fgTsk.percent, fgTsk);
                 }
                 else
                 {
+#if none_stop
                     Debug.WriteLine("M_srchWorker_DoWork fall sleep, i = {0}", i);
-                    //sleep(1000);
+                    sleep(1000);
+#else
                     break;
+#endif
                 }
             }
         }
 
         bool m_WorkerIsRunning { get { return m_worker.IsBusy; } }
-        public void qryBgTask(BgTask task)
+        public void qryBgTask(BgTask task, bool bResume = false)
         {
-            Debug.WriteLine("{0} qryBgTask {1}", this, task.iType);
+            Debug.WriteLine("[qryBgTask] {0}", task.eType.ToString());
             m_msgQueue.Enqueue(task);
-            if (!m_WorkerIsRunning)
+#if none_stop
+#else
+            if (bResume && !m_WorkerIsRunning)
             {
                 m_worker.RunWorkerAsync();
             }
+#endif
         }
-        public void qryFgTask(FgTask task)
+        public void execFgTask(FgTask task)
         {
-            Debug.WriteLine("{0} qryFgTask {1}", this, task.iType);
+            Debug.Assert(m_WorkerIsRunning, "worker is not running");
+            m_worker.ReportProgress(task.percent, task);
+        }
+        public void qryFgTask(FgTask task, bool bResume = false)
+        {
+            Debug.WriteLine("[qryFgTask] {0}", task.eType.ToString());
             m_msgQueue.Enqueue(task);
-            if (!m_WorkerIsRunning)
+#if none_stop
+#else
+            if (bResume && !m_WorkerIsRunning)
             {
                 m_worker.RunWorkerAsync();
             }
+#endif
         }
 
         public class FillTableCompletedEventArgs : EventArgs
@@ -159,14 +182,20 @@ namespace test_binding
 
         protected virtual void OnBgProcess(BgTask task)
         {
-            Debug.WriteLine("onProgressChanged" + task.eType.ToString());
-            //BgProcess?.Invoke(this, task);
+            Debug.WriteLine("OnBgProcess " + task.eType.ToString());
+            if (task.eType == BgTask.bgTaskType.NOOP)
+            {
+                //sleep
+                sleep((int)task.data);
+                return;
+            }
+
             if (mBgProcess != null) mBgProcess.Invoke(this, task);
         }
         protected virtual void OnFgProcess(FgTask task)
         {
-            //FgProcess?.Invoke(this, task);
-            if (mFgProcess != null) mFgProcess.Invoke(task.m_owner, task);
+            Debug.WriteLine("OnFgProcess " + task.eType.ToString());
+            if (mFgProcess != null) mFgProcess.Invoke(this, task);
         }
 
         //sleep ?ms
@@ -174,6 +203,30 @@ namespace test_binding
         {
             var t = Task.Run(() => Task.Delay(timeout));
             t.Wait();
+        }
+    }
+
+    //custom task
+    public class srchTsk : FgTask
+    {
+        public List<string> m_exprs;
+        public List<lSearchParam> m_srchParams;
+        public srchTsk(List<string> exprs, List<lSearchParam> srchParams)
+        {
+            eType = fgTaskType.DP_FG_SEARCH;
+            m_exprs = exprs;
+            m_srchParams = srchParams;
+            data = this;
+        }
+    }
+    public class updateStsTsk : FgTask
+    {
+        public string m_txt;
+        public updateStsTsk(object owner, string txt)
+        {
+            eType = fgTaskType.DP_FG_UPDATESTS;
+            m_txt = txt;
+            data = this;
         }
     }
 }

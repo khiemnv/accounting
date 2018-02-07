@@ -16,6 +16,7 @@ using System.Runtime.Serialization;
 using System.Drawing;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.ComponentModel;
 
 namespace test_binding
 {
@@ -77,7 +78,7 @@ namespace test_binding
             //tab control
             m_tabCtrl = new TabControl();
             //Controls.Add(m_tabCtrl);
-            m_tabCtrl.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+            //m_tabCtrl.Anchor = AnchorStyles.Top | AnchorStyles.Left |AnchorStyles.Right|AnchorStyles.Bottom;
             m_tabCtrl.Dock = DockStyle.Fill;
 
 #if crtnew_panel
@@ -122,6 +123,10 @@ namespace test_binding
 
             TableLayoutPanel tmpTbl = new TableLayoutPanel();
             tmpTbl.Dock = DockStyle.Fill;
+            tmpTbl.RowCount = 3;
+            tmpTbl.RowStyles.Add(new RowStyle());
+            tmpTbl.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+            tmpTbl.RowStyles.Add(new RowStyle());
 
             if (mn != null)
             {
@@ -131,6 +136,21 @@ namespace test_binding
             tmpTbl.Controls.Add(tmpLbl, 1, 0);
             tmpTbl.Controls.Add(m_tabCtrl, 0, 1);
             tmpTbl.SetColumnSpan(m_tabCtrl, 2);
+
+#if use_bg_work
+            sts = new StatusStrip();
+            sts.Dock = DockStyle.Bottom;
+            stsLbl = new ToolStripStatusLabel();
+            stsLbl.Dock = DockStyle.Left;
+            prg = new ToolStripProgressBar();
+            prg.Dock = DockStyle.Right;
+            prg.Maximum = 100;
+            prg.Visible = false;
+            sts.Items.AddRange(new ToolStripItem[] { stsLbl, prg });
+
+            tmpTbl.Controls.Add(sts, 0, 2);
+            tmpTbl.SetColumnSpan(sts, 2);
+#endif
 
             Controls.Add(tmpTbl);
 
@@ -143,26 +163,43 @@ namespace test_binding
         }
 
 #if use_bg_work
+        StatusStrip sts;
+        ToolStripStatusLabel stsLbl;
+        ToolStripProgressBar prg;
 
         private void bg_process(object sender, myTask e)
         {
-            Debug.WriteLine(string.Format("bg_process {0}", e.iType));
-            switch (((BgTask)e).eType)
+            var t = e as BgTask;
+            if (t == null) return;
+            Debug.WriteLine(string.Format("F1 bg_process {0}", t.eType.ToString()));
+            if (!t.receiver.Contains("F1,")) return;
+
+            switch (t.eType)
             {
                 case BgTask.bgTaskType.bgExec:
-                    taskCallback0 t = (taskCallback0)e.data;
-                    t.Invoke();
+                    var cb = (taskCallback0)e.data;
+                    cb.Invoke();
                     break;
             }
         }
 
         private void fg_process(object sender, myTask e)
         {
-            Debug.WriteLine(string.Format("fg_process {0}", e.iType));
-            switch(((FgTask)e).eType)
+            var t = e as FgTask;
+            if (t == null) return;
+            Debug.WriteLine(string.Format("F1 fg_process {0}", t.eType.ToString()));
+            if (!t.receiver.Contains("F1,")) return;
+
+            switch (t.eType)
             {
                 case FgTask.fgTaskType.fgExec:
                     Invoke((taskCallback0)e.data);
+                    break;
+                case FgTask.fgTaskType.F1_FG_UPDATESTS:
+                    stsLbl.Text = t.data.ToString();
+                    break;
+                case FgTask.fgTaskType.F1_FG_UPDATEPRG:
+                    prg.Value = t.percent;
                     break;
             }
         }
@@ -359,7 +396,7 @@ namespace test_binding
 
             //add search panel to table layout
             m_searchPanel.initCtrls();
-            m_panel.Controls.Add(m_searchPanel.m_tbl, 0, 0);
+            m_panel.Controls.Add(m_searchPanel.m_tblPanel, 0, 0);
 
             //add print btn to table layout
             m_printBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;

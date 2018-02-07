@@ -320,38 +320,12 @@ namespace test_binding
             }
 #endif
 #if use_cmd_params
-
-        class srchTsk:BgTask
-        {
-            public List<string> m_exprs;
-            public List<lSearchParam> m_srchParams;
-            public srchTsk(List<string> exprs, List<lSearchParam> srchParams)
-            {
-                eType = bgTaskType.DP_BG_SEARCH;
-                m_exprs = exprs;
-                m_srchParams = srchParams;
-                data = this;
-            }
-        }
-        class updateStsTsk:FgTask
-        {
-            public string m_txt;
-            public updateStsTsk(object owner, string txt)
-            {
-                eType = fgTaskType.DP_BG_UPDATESTS;
-                m_txt = txt;
-                data = this;
-                m_owner = owner;
-            }
-        }
-
         public void search(List<string> exprs, List<lSearchParam> srchParams)
         {
-            m_stsMng.onTaskBegin("Searching");
 #if use_bg_work
-            m_wkr.qryBgTask(new srchTsk(exprs, srchParams));
-            m_wkr.qryFgTask(new updateStsTsk(this, "Searching completed!"));
+            //move code to lower - search panel
 #else
+            m_stsMng.onTaskBegin("Searching");
             m_dataContent.Search(exprs, srchParams);
 #endif
             //update();
@@ -401,7 +375,13 @@ namespace test_binding
         private void reloadButton_Click(object sender, System.EventArgs e)
         {
 #if use_bg_work
-            m_wkr.qryBgTask(new DPBgTsk(DPBgTsk.eTask.bgSearch, ""));
+            m_dataContent.Reload();
+            m_wkr.qryFgTask(new FgTask() {
+                receiver = "F1," + m_tblName,
+                sender = "DP," + m_tblName,
+                eType = FgTask.fgTaskType.F1_FG_UPDATESTS,
+                data = "Reloading Completed!"
+            }, true);
 #else
             m_stsMng.onTaskBegin("Reloading");
             m_dataContent.Reload();
@@ -411,8 +391,19 @@ namespace test_binding
         }
         private void submitButton_Click(object sender, System.EventArgs e)
         {
+#if use_bg_work
+            m_dataContent.Submit();
+            m_wkr.qryFgTask(new FgTask()
+            {
+                receiver = "F1," + m_tblName,
+                sender = "DP," + m_tblName,
+                eType = FgTask.fgTaskType.F1_FG_UPDATESTS,
+                data = "Submiting Completed!"
+            }, true);
+#else
             m_stsMng.onTaskBegin("Saving");
             m_dataContent.Submit();
+#endif
         }
 
         public virtual Int64 getSum()
@@ -489,46 +480,29 @@ namespace test_binding
 #endif
         }
 #if use_bg_work
-        class DPBgTsk : BgTask
-        {
-            public enum eTask {
-                bgSearch
-            }
-            public DPBgTsk(eTask eType, string txt)
-            {
-                sender = "DataPanel";
-                iType = (int)eType;
-                data = txt;
-            }
-            public new eTask eType
-            { get { return (eTask)iType; } }
-        }
-        class DPFgTsk : FgTask
-        {
-            public enum eTask
-            {
-                fgUpdateSts
-            }
-            public DPFgTsk(eTask eType, string txt)
-            {
-                sender = "DataPanel";
-                iType = (int)eType;
-                data = txt;
-            }
-            public new eTask eType
-            { get { return (eTask)iType; } }
-        }
-
         private void M_wkr_FgProcess(object sender, myTask e)
         {
             FgTask t = (FgTask)e;
             if (t == null) return;
+            if (t.receiver != ("DP," + m_tblName)) return;
 
-            switch(t.eType)
+            OnFgProccess(t);
+        }
+        protected virtual void OnFgProccess(FgTask t)
+        {
+            switch (t.eType)
             {
-                case FgTask.fgTaskType.DP_BG_UPDATESTS:
+                case FgTask.fgTaskType.DP_FG_UPDATESTS:
                     var updtsk = (updateStsTsk)t.data;
                     m_status.Text = (string)updtsk.m_txt;
+                    break;
+                case FgTask.fgTaskType.DP_FG_SEARCH:
+                    var tsk = (srchTsk)t.data;
+                    m_dataContent.Search(tsk.m_exprs, tsk.m_srchParams);
+                    update();
+                    break;
+                case FgTask.fgTaskType.DP_FG_UPDATESUM:
+                    update();
                     break;
             }
         }
@@ -537,7 +511,12 @@ namespace test_binding
         {
             BgTask t = (BgTask)e;
             if (t == null) return;
+            if (t.receiver != ("DP," + m_tblName)) return;
 
+            OnBgProccess(t);
+        }
+        protected virtual void OnBgProccess(BgTask t)
+        {
             switch (t.eType)
             {
                 case BgTask.bgTaskType.DP_BG_SEARCH:
@@ -599,7 +578,7 @@ namespace test_binding
         public lInterPaymentDataPanel()
         {
             m_tblName = "internal_payment";
-            m_countOn = "actually_spent";
+            m_countOn = "advance_payment";
         }
     }
 

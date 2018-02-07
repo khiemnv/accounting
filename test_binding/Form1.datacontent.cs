@@ -5,6 +5,7 @@
 #define use_single_qry
 #define use_progress_dlg
 #define use_sqlite
+//#define use_bg_work
 
 using System.Windows.Forms;
 using System.Data.SqlClient;
@@ -609,7 +610,9 @@ namespace test_binding
         protected override lDataContent newDataContent(string tblName)
         {
             lSqlDataContent data = new lSqlDataContent(tblName, m_cnn);
+#if !use_bg_work
             data.m_form = m_form;
+#endif
             return data;
         }
 
@@ -710,7 +713,9 @@ namespace test_binding
         protected override lDataContent newDataContent(string tblName)
         {
             lSQLiteDataContent data = new lSQLiteDataContent(tblName, m_cnn);
+#if !use_bg_work
             data.m_form = m_form;
+#endif
             return data;
         }
 
@@ -953,7 +958,11 @@ namespace test_binding
     public class lDataContent : ICursor, IDisposable
     {
         #region fetch_data
+#if use_bg_work
+        myWorker m_wkr;
+#else
         public Form1 m_form;
+#endif
         public DataTable m_dataTable { get; private set; }
 
         #region event
@@ -1019,6 +1028,7 @@ namespace test_binding
         protected virtual void fillTable() { throw new NotImplementedException(); }
         protected virtual void updateTable() { throw new NotImplementedException(); }
         //delegate noParamDelegate
+#if !use_bg_work
         void invokeFetchLargeData()
         {
             //fix reload not display progress
@@ -1049,26 +1059,25 @@ namespace test_binding
 
             Task t = Task.Run(() => showProgress());
             m_form.Invoke(getData);
-#if use_bg_work
-            m_form.m_bgwork.qryBgTask(new BgTask
-            {
-                eType = BgTask.bgTaskType.bgExec,
-                data = showProgress
-            });
+            //m_form.m_bgwork.qryBgTask(new BgTask
+            //{
+            //    eType = BgTask.bgTaskType.bgExec,
+            //    data = showProgress
+            //});
 
-            //m_form.Invoke(getData);
-            m_form.m_bgwork.qryFgTask(new FgTask {
-                eType =FgTask.fgTaskType.fgExec,
-                data = getData
-            }
-            );
-#endif
+            ////m_form.Invoke(getData);
+            //m_form.m_bgwork.qryFgTask(new FgTask {
+            //    eType =FgTask.fgTaskType.fgExec,
+            //    data = getData
+            //}
+            //);
         }
+#endif
 
         //require execute in form's thread
         void fetchLargeData()
         {
-            Debug.Assert(!m_isView, "not fectch large data on view");
+            Debug.Assert(!m_isView, "not fectch large data on view");   //rowid not exist
             using (new myElapsed("fetchLargeData"))
             {
                 DataTable tbl = m_dataTable;
@@ -1096,7 +1105,7 @@ namespace test_binding
             //Debug.WriteLine("{0}.M_tbl_RowChanged {1}", this, e.Row[0]);
             m_lastId = Math.Max(m_lastId, (Int64)e.Row[0]);
         }
-        #region cursor
+#region cursor
         public Int64 getPos()
         {
             return m_lastId;
@@ -1111,16 +1120,20 @@ namespace test_binding
         {
             return m_msgStatus;
         }
-        #endregion
+#endregion
 #endif
         delegate void noParamDelegate();
         protected virtual void fetchData()
         {
             Debug.Assert(!m_isView, "not fectch data on view");
+#if use_bg_work
+            fetchLargeData();
+#else
             if (getMaxRowId() > 1000)
                 invokeFetchLargeData();
             else
                 fetchSmallData();
+#endif
         }
         void fetchSmallData()
         {
@@ -1134,7 +1147,7 @@ namespace test_binding
             if (m_refresher != null)
                 m_refresher.Refresh();
         }
-        #endregion
+#endregion
         public bool m_isView;
         public BindingSource m_bindingSource { get; private set; }
         protected string m_table;
@@ -1170,6 +1183,10 @@ namespace test_binding
                     }
                 }
             }
+
+#if use_bg_work
+            m_wkr = myWorker.getWorker();
+#endif
         }
 #if !use_cmd_params
             public virtual void Search(string exprs)
@@ -1193,6 +1210,9 @@ namespace test_binding
         public virtual void Submit()
         {
             m_changed = false;
+#if use_bg_work
+            updateTable();
+#else
             Task delayUpdate = Task.Run(() =>
             {
                 Thread.Sleep(100);
@@ -1202,11 +1222,12 @@ namespace test_binding
                     OnUpdateTableCompleted(new FillTableCompletedEventArgs() { TimeComplete = DateTime.Now });
                 }));
             });
+#endif
         }
         protected virtual void GetData(string sql) { throw new NotImplementedException(); }
         public virtual void BeginTrans() { }
         public virtual void EndTrans() { }
-        #region dispose
+#region dispose
         // Dispose() calls Dispose(true)  
         public void Dispose()
         {
@@ -1231,7 +1252,7 @@ namespace test_binding
             }
             // free native resources if there are any. 
         }
-        #endregion
+#endregion
     }
 #if use_sqlite
     public class lSQLiteDataContent : lDataContent
@@ -1379,7 +1400,7 @@ namespace test_binding
             m_trans.Dispose();
         }
 
-        #region dispose
+#region dispose
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -1389,9 +1410,9 @@ namespace test_binding
             // free native resources if there are any. 
             base.Dispose(disposing);
         }
-        #endregion
+#endregion
 
-        #region fetch_data
+#region fetch_data
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         Int64 qryOne(string qry)
         {
@@ -1415,7 +1436,7 @@ namespace test_binding
         {
             m_dataAdapter.Fill(m_dataTable);
         }
-        #endregion
+#endregion
     }
 #endif //use_sqlite
     public class lSqlDataContent : lDataContent
@@ -1615,7 +1636,7 @@ namespace test_binding
                 return null;
         }
 
-        #region dispose
+#region dispose
         // Dispose() calls Dispose(true)  
         public void Dispose()
         {
@@ -1641,6 +1662,6 @@ namespace test_binding
             }
             // free native resources if there are any.  
         }
-        #endregion
+#endregion
     }
 }

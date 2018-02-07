@@ -2,6 +2,7 @@
 #define use_cmd_params
 #define use_sqlite
 //#define fit_txt_size
+//#define use_bg_work
 
 using System.Drawing;
 using System.Windows.Forms;
@@ -496,11 +497,15 @@ namespace test_binding
         public lDataPanel m_dataPanel;
         public lTableInfo m_tblInfo { get { return m_dataPanel.m_tblInfo; } }
 
-        public TableLayoutPanel m_tbl;
+        public TableLayoutPanel m_tblPanel;
         public Button m_searchBtn;
 
         [DataMember(Name = "searchCtrls")]
         public List<lSearchCtrl> m_searchCtrls;
+
+#if use_bg_work
+        myWorker m_wkr;
+#endif
 
         protected lSearchPanel() { }
 
@@ -548,8 +553,8 @@ namespace test_binding
             //  +-------------------------+
             //  |       search btn        |
             //  +-------------------------+
-            m_tbl = new TableLayoutPanel();
-            m_tbl.AutoSize = true;
+            m_tblPanel = new TableLayoutPanel();
+            m_tblPanel.AutoSize = true;
 #if DEBUG_DRAWING
                 m_tbl.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
 #endif
@@ -558,14 +563,14 @@ namespace test_binding
             int lastRow = 0;
             foreach (lSearchCtrl searchCtrl in m_searchCtrls)
             {
-                m_tbl.Controls.Add(searchCtrl.m_panel, searchCtrl.m_pos.X, searchCtrl.m_pos.Y);
-                m_tbl.SetColumnSpan(searchCtrl.m_panel, searchCtrl.m_size.Width);
-                m_tbl.SetRowSpan(searchCtrl.m_panel, searchCtrl.m_size.Height);
+                m_tblPanel.Controls.Add(searchCtrl.m_panel, searchCtrl.m_pos.X, searchCtrl.m_pos.Y);
+                m_tblPanel.SetColumnSpan(searchCtrl.m_panel, searchCtrl.m_size.Width);
+                m_tblPanel.SetRowSpan(searchCtrl.m_panel, searchCtrl.m_size.Height);
                 lastRow = Math.Max(lastRow, searchCtrl.m_pos.Y);
             }
 
             //  add search button to last row
-            m_tbl.Controls.Add(m_searchBtn, 1, lastRow + 1);
+            m_tblPanel.Controls.Add(m_searchBtn, 1, lastRow + 1);
             m_searchBtn.Anchor = AnchorStyles.Right;
         }
 
@@ -578,8 +583,27 @@ namespace test_binding
             {
                 searchCtrl.updateSearchParams(exprs, srchParams);
             }
-            m_dataPanel.search(exprs, srchParams);
+#if use_bg_work
+            //send to form 1
+            m_wkr.qryFgTask(new FgTask {
+                sender = "SP," + m_tblInfo.m_tblName,
+                receiver = "F1," + m_tblInfo.m_tblName,
+                eType = FgTask.fgTaskType.F1_FG_UPDATESTS,
+                data = "Searching" });
+            //sent to special data panel
+            m_wkr.qryFgTask(new srchTsk(exprs, srchParams) {
+                sender = "SP," + m_tblInfo.m_tblName,
+                receiver = "DP," + m_tblInfo.m_tblName });
+            //send to form 1
+            m_wkr.qryFgTask(new FgTask {
+                sender = "SP," + m_tblInfo.m_tblName ,
+                receiver = "F1," + m_tblInfo.m_tblName,
+                eType = FgTask.fgTaskType.F1_FG_UPDATESTS,
+                data = "Searching completed!" }, true);
 #else
+            m_dataPanel.search(exprs, srchParams);
+#endif //end use_bg_work
+#else   //!use_cmd_params
                 string where = null;
                 List<string> exprs = new List<string> ();
                 foreach (lSearchCtrl searchCtrl in m_searchCtrls)
@@ -593,7 +617,7 @@ namespace test_binding
                     where = string.Join(" and ", exprs);
                 }
                 m_dataPanel.search(where);
-#endif
+#endif  //end use_cmd_params
         }
 
         public virtual void LoadData()
@@ -602,6 +626,9 @@ namespace test_binding
             {
                 ctrl.LoadData();
             }
+#if use_bg_work
+            m_wkr = myWorker.getWorker();
+#endif
         }
 
         public lSearchCtrl crtSearchCtrl(lTableInfo tblInfo, string colName, Point pos, Size size)
@@ -671,7 +698,7 @@ namespace test_binding
                 }
             }
             // free native resources if there are any.  
-            m_tbl.Dispose();
+            m_tblPanel.Dispose();
             m_searchBtn.Dispose();
             m_searchCtrls.Clear();
         }
@@ -735,12 +762,12 @@ namespace test_binding
         {
             m_dataPanel = dataPanel;
             m_searchCtrls = new List<lSearchCtrl> {
-                    crtSearchCtrl(m_tblInfo, "month", new Point(0, 0), new Size(1, 1)),
-                    crtSearchCtrl(m_tblInfo, "date", new Point(0, 1), new Size(1, 1)),
-                    crtSearchCtrl(m_tblInfo, "payment_number", new Point(0, 2), new Size(1, 1), lSearchCtrl.SearchMode.match),
-                    crtSearchCtrl(m_tblInfo, "name", new Point(1, 0), new Size(1, 1), lSearchCtrl.SearchMode.like),
-                    crtSearchCtrl(m_tblInfo, "group_name", new Point(1, 1), new Size(1, 1), lSearchCtrl.SearchMode.match),
-                    crtSearchCtrl(m_tblInfo, "content", new Point(1, 2), new Size(1, 1), lSearchCtrl.SearchMode.like),
+                    //crtSearchCtrl(m_tblInfo, "month", new Point(0, 0), new Size(1, 1)),
+                    crtSearchCtrl(m_tblInfo, "date"             , new Point(0, 0), new Size(1, 1)),
+                    crtSearchCtrl(m_tblInfo, "payment_number"   , new Point(0, 1), new Size(1, 1), lSearchCtrl.SearchMode.match),
+                    crtSearchCtrl(m_tblInfo, "name"             , new Point(1, 0), new Size(1, 1), lSearchCtrl.SearchMode.like),
+                    crtSearchCtrl(m_tblInfo, "group_name"       , new Point(1, 1), new Size(1, 1), lSearchCtrl.SearchMode.match),
+                    crtSearchCtrl(m_tblInfo, "content"          , new Point(1, 2), new Size(1, 1), lSearchCtrl.SearchMode.like),
                 };
         }
     }
