@@ -315,6 +315,11 @@ namespace test_binding
             var w = getSize(txt).Width;
             return w;
         }
+        public static int getHeight(string txt)
+        {
+            var h = getSize(txt).Height;
+            return h;
+        }
 
         //msg box
         public static void showInputError(string msg)
