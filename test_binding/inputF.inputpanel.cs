@@ -405,10 +405,12 @@ namespace test_binding
         myWorker m_wkr;
 #endif
         //convert currency to text
+        protected delegate void ConvertRowCompletedCb(DataRow inRow, DataRow outRow);
         protected class rptAssist
         {
             DataTable m_data;
             Dictionary<string,string> m_convMap;
+            public ConvertRowCompletedCb ConvertRowCompleted;
             public rptAssist(int billType, Dictionary<string, string> convMap)
             {
                 m_convMap = convMap;
@@ -441,6 +443,9 @@ namespace test_binding
                 newRow["content"] = dr[m_convMap["content"]];
                 newRow["note"] = dr[m_convMap["note"]];
                 newRow["amount"] = dr[m_convMap["amount"]];
+
+                if (ConvertRowCompleted != null) ConvertRowCompleted(dr, newRow);
+
                 long amount = (long)newRow["amount"];
                 var amountTxt = "";
                 if (amount > 0)
@@ -1088,7 +1093,8 @@ namespace test_binding
                 crtInputCtrl(m_tblInfo, "note"              , new Point(0, 9), new Size(1, 1)),
 #else
                 crtInputCtrl(m_tblInfo, "advance_payment"   , new Point(0, 6), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "note"              , new Point(0, 7), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "actually_spent"    , new Point(0, 7), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "note"              , new Point(0, 8), new Size(1, 1)),
 #endif
             };
             m_inputsCtrls[0].ReadOnly = true;
@@ -1116,6 +1122,19 @@ namespace test_binding
                 { "amount","advance_payment" },
             };
             m_rptAsst = new rptAssist(2, dict);
+            m_rptAsst.ConvertRowCompleted = (inR, outR) =>
+            {
+                Debug.Assert((Int64)inR["advance_payment"] > 0, "advance should not zero");
+                var obj = inR["actually_spent"];
+                if (obj != DBNull.Value)
+                {
+                    Int64 act = (Int64)obj;
+                    if (act > 0)
+                    {
+                        outR["amount"] = act;
+                    }
+                }
+            };
         }
         public override void initCtrls()
         {

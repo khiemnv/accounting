@@ -206,9 +206,9 @@ namespace test_binding
                    new lColInfo( "addr"             ,"Địa chỉ"      , lColInfo.lColType.text),
                    new lColInfo( "group_name"       ,"Thuộc ban"    , lColInfo.lColType.text, "group_name"),
                    new lColInfo( "content"          ,"Nội dung"     , lColInfo.lColType.text),
-                   new lColInfo( "advance_payment"  ,"Số tiền"      , lColInfo.lColType.currency),
+                   new lColInfo( "advance_payment"  ,"Tạm ứng"      , lColInfo.lColType.currency),
                    new lColInfo( "reimbursement"    ,"Hoàn ứng"     , lColInfo.lColType.currency, null, false),
-                   new lColInfo( "actually_spent"   ,"Thực chi"     , lColInfo.lColType.currency, null, false),
+                   new lColInfo( "actually_spent"   ,"Thực chi"     , lColInfo.lColType.currency),
                    new lColInfo( "note"             ,"Ghi Chú"      , lColInfo.lColType.text),
                 };
         }

@@ -6,12 +6,12 @@
         <TablixBody>
           <TablixColumns>
             <TablixColumn>
-              <Width>6.3in</Width>
+              <Width>7in</Width>
             </TablixColumn>
           </TablixColumns>
           <TablixRows>
             <TablixRow>
-              <Height>5in</Height>
+              <Height>4.9in</Height>
               <TablixCells>
                 <TablixCell>
                   <CellContents>
@@ -27,7 +27,7 @@
                                   <Value>=Fields!name.Value</Value>
                                   <Style>
                                     <FontFamily>times New Roman</FontFamily>
-                                    <FontSize>12pt</FontSize>
+                                    <FontSize>14pt</FontSize>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -38,9 +38,9 @@
                           </Paragraphs>
                           <rd:DefaultName>name</rd:DefaultName>
                           <Top>1.7in</Top>
-                          <Left>0.9in</Left>
+                          <Left>0.8in</Left>
                           <Height>0.2in</Height>
-                          <Width>5.3in</Width>
+                          <Width>6.2in</Width>
                           <Style>
                             <Border>
                               <Style>None</Style>
@@ -74,9 +74,9 @@
                           </Paragraphs>
                           <rd:DefaultName>content</rd:DefaultName>
                           <Top>2.3in</Top>
-                          <Left>0.9in</Left>
+                          <Left>0.8in</Left>
                           <Height>0.2in</Height>
-                          <Width>5.3in</Width>
+                          <Width>6.2in</Width>
                           <ZIndex>1</ZIndex>
                           <Style>
                             <Border>
@@ -100,7 +100,7 @@
                                   <Value>Họ tên:</Value>
                                   <Style>
                                     <FontFamily>times New Roman</FontFamily>
-                                    <FontSize>12pt</FontSize>
+                                    <FontSize>14pt</FontSize>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -109,7 +109,6 @@
                           </Paragraphs>
                           <rd:DefaultName>Textbox4</rd:DefaultName>
                           <Top>1.7in</Top>
-                          <Left>0.1in</Left>
                           <Height>0.2in</Height>
                           <Width>0.8in</Width>
                           <ZIndex>2</ZIndex>
@@ -130,7 +129,7 @@
                                   <Value>Lý do </Value>
                                   <Style>
                                     <FontFamily>times New Roman</FontFamily>
-                                    <FontSize>12pt</FontSize>
+                                    <FontSize>14pt</FontSize>
                                   </Style>
                                 </TextRun>
                                 <TextRun>
@@ -138,7 +137,7 @@
                                   <Style>
                                     <FontStyle>Normal</FontStyle>
                                     <FontFamily>Times New Roman</FontFamily>
-                                    <FontSize>12pt</FontSize>
+                                    <FontSize>14pt</FontSize>
                                     <FontWeight>Normal</FontWeight>
                                     <TextDecoration>None</TextDecoration>
                                     <Color>#000000</Color>
@@ -148,7 +147,7 @@
                                   <Value>:</Value>
                                   <Style>
                                     <FontFamily>times New Roman</FontFamily>
-                                    <FontSize>12pt</FontSize>
+                                    <FontSize>14pt</FontSize>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -157,7 +156,6 @@
                           </Paragraphs>
                           <rd:DefaultName>Textbox7</rd:DefaultName>
                           <Top>2.3in</Top>
-                          <Left>0.1in</Left>
                           <Height>0.2in</Height>
                           <Width>0.8in</Width>
                           <ZIndex>3</ZIndex>
@@ -179,7 +177,7 @@
                                   <Style>
                                     <FontStyle>Normal</FontStyle>
                                     <FontFamily>Times New Roman</FontFamily>
-                                    <FontSize>12pt</FontSize>
+                                    <FontSize>14pt</FontSize>
                                     <FontWeight>Normal</FontWeight>
                                     <TextDecoration>None</TextDecoration>
                                     <Color>#000000</Color>
@@ -190,7 +188,7 @@
                                   <Style>
                                     <FontStyle>Normal</FontStyle>
                                     <FontFamily>Times New Roman</FontFamily>
-                                    <FontSize>12pt</FontSize>
+                                    <FontSize>14pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                     <TextDecoration>None</TextDecoration>
                                     <Color>#000000</Color>
@@ -206,7 +204,7 @@
                                   <Style>
                                     <FontStyle>Normal</FontStyle>
                                     <FontFamily>Times New Roman</FontFamily>
-                                    <FontSize>12pt</FontSize>
+                                    <FontSize>14pt</FontSize>
                                     <FontWeight>Normal</FontWeight>
                                     <TextDecoration>None</TextDecoration>
                                     <Color>#000000</Color>
@@ -218,9 +216,8 @@
                           </Paragraphs>
                           <rd:DefaultName>Textbox1</rd:DefaultName>
                           <Top>0.4in</Top>
-                          <Left>0.1in</Left>
-                          <Height>0.4in</Height>
-                          <Width>6.1in</Width>
+                          <Height>0.5in</Height>
+                          <Width>7in</Width>
                           <ZIndex>4</ZIndex>
                           <Style>
                             <Border>
@@ -242,7 +239,7 @@
                                   <Value>=Fields!amount.Value</Value>
                                   <Style>
                                     <FontFamily>times New Roman</FontFamily>
-                                    <FontSize>12pt</FontSize>
+                                    <FontSize>14pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                     <Format>#,0 'VND';(#,0 'VND');'-'</Format>
                                   </Style>
@@ -255,9 +252,9 @@
                           </Paragraphs>
                           <rd:DefaultName>amount</rd:DefaultName>
                           <Top>2.9in</Top>
-                          <Left>0.9in</Left>
+                          <Left>0.8in</Left>
                           <Height>0.2in</Height>
-                          <Width>5.3in</Width>
+                          <Width>6.2in</Width>
                           <ZIndex>5</ZIndex>
                           <Style>
                             <Border>
@@ -293,10 +290,9 @@
                             </Paragraph>
                           </Paragraphs>
                           <rd:DefaultName>Textbox8</rd:DefaultName>
-                          <Top>0.9in</Top>
-                          <Left>0.1in</Left>
+                          <Top>1in</Top>
                           <Height>0.4in</Height>
-                          <Width>3.5in</Width>
+                          <Width>4.9in</Width>
                           <ZIndex>6</ZIndex>
                           <Style>
                             <Border>
@@ -314,42 +310,42 @@
                                   <Value>Ngày </Value>
                                   <Style>
                                     <FontFamily>times New Roman</FontFamily>
-                                    <FontSize>12pt</FontSize>
+                                    <FontSize>14pt</FontSize>
                                   </Style>
                                 </TextRun>
                                 <TextRun>
                                   <Value>=Day(Globals!ExecutionTime)</Value>
                                   <Style>
                                     <FontFamily>times New Roman</FontFamily>
-                                    <FontSize>12pt</FontSize>
+                                    <FontSize>14pt</FontSize>
                                   </Style>
                                 </TextRun>
                                 <TextRun>
                                   <Value> tháng </Value>
                                   <Style>
                                     <FontFamily>times New Roman</FontFamily>
-                                    <FontSize>12pt</FontSize>
+                                    <FontSize>14pt</FontSize>
                                   </Style>
                                 </TextRun>
                                 <TextRun>
                                   <Value>=Month(Globals!ExecutionTime)</Value>
                                   <Style>
                                     <FontFamily>times New Roman</FontFamily>
-                                    <FontSize>12pt</FontSize>
+                                    <FontSize>14pt</FontSize>
                                   </Style>
                                 </TextRun>
                                 <TextRun>
                                   <Value> năm </Value>
                                   <Style>
                                     <FontFamily>times New Roman</FontFamily>
-                                    <FontSize>12pt</FontSize>
+                                    <FontSize>14pt</FontSize>
                                   </Style>
                                 </TextRun>
                                 <TextRun>
                                   <Value>=Year(Globals!ExecutionTime)</Value>
                                   <Style>
                                     <FontFamily>times New Roman</FontFamily>
-                                    <FontSize>12pt</FontSize>
+                                    <FontSize>14pt</FontSize>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -359,10 +355,9 @@
                             </Paragraph>
                           </Paragraphs>
                           <rd:DefaultName>Textbox9</rd:DefaultName>
-                          <Top>1.3in</Top>
-                          <Left>0.1in</Left>
+                          <Top>1.4in</Top>
                           <Height>0.2in</Height>
-                          <Width>3.5in</Width>
+                          <Width>4.9in</Width>
                           <ZIndex>7</ZIndex>
                           <Style>
                             <Border>
@@ -380,7 +375,7 @@
                                   <Value>Số tiền:</Value>
                                   <Style>
                                     <FontFamily>times New Roman</FontFamily>
-                                    <FontSize>12pt</FontSize>
+                                    <FontSize>14pt</FontSize>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -389,7 +384,6 @@
                           </Paragraphs>
                           <rd:DefaultName>Textbox7</rd:DefaultName>
                           <Top>2.9in</Top>
-                          <Left>0.1in</Left>
                           <Height>0.2in</Height>
                           <Width>0.8in</Width>
                           <ZIndex>8</ZIndex>
@@ -410,7 +404,7 @@
                                   <Value>Kèm theo:</Value>
                                   <Style>
                                     <FontFamily>times New Roman</FontFamily>
-                                    <FontSize>12pt</FontSize>
+                                    <FontSize>14pt</FontSize>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -419,7 +413,6 @@
                           </Paragraphs>
                           <rd:DefaultName>Textbox7</rd:DefaultName>
                           <Top>2.6in</Top>
-                          <Left>0.1in</Left>
                           <Height>0.2in</Height>
                           <Width>0.8in</Width>
                           <ZIndex>9</ZIndex>
@@ -440,7 +433,7 @@
                                   <Value>=Fields!note.Value</Value>
                                   <Style>
                                     <FontFamily>times New Roman</FontFamily>
-                                    <FontSize>12pt</FontSize>
+                                    <FontSize>14pt</FontSize>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -451,9 +444,9 @@
                           </Paragraphs>
                           <rd:DefaultName>amount</rd:DefaultName>
                           <Top>2.6in</Top>
-                          <Left>0.9in</Left>
+                          <Left>0.8in</Left>
                           <Height>0.2in</Height>
-                          <Width>5.3in</Width>
+                          <Width>6.2in</Width>
                           <ZIndex>10</ZIndex>
                           <Style>
                             <Border>
@@ -478,7 +471,7 @@
                                   <Style>
                                     <FontStyle>Normal</FontStyle>
                                     <FontFamily>Times New Roman</FontFamily>
-                                    <FontSize>12pt</FontSize>
+                                    <FontSize>14pt</FontSize>
                                     <FontWeight>Normal</FontWeight>
                                     <TextDecoration>None</TextDecoration>
                                     <Color>#000000</Color>
@@ -489,7 +482,7 @@
                                   <Style>
                                     <FontStyle>Normal</FontStyle>
                                     <FontFamily>Times New Roman</FontFamily>
-                                    <FontSize>12pt</FontSize>
+                                    <FontSize>14pt</FontSize>
                                     <FontWeight>Normal</FontWeight>
                                     <TextDecoration>None</TextDecoration>
                                     <Color>#000000</Color>
@@ -500,7 +493,7 @@
                                   <Style>
                                     <FontStyle>Normal</FontStyle>
                                     <FontFamily>Times New Roman</FontFamily>
-                                    <FontSize>12pt</FontSize>
+                                    <FontSize>14pt</FontSize>
                                     <FontWeight>Normal</FontWeight>
                                     <TextDecoration>None</TextDecoration>
                                     <Color>#000000</Color>
@@ -513,8 +506,8 @@
                             </Paragraph>
                           </Paragraphs>
                           <rd:DefaultName>Textbox13</rd:DefaultName>
-                          <Top>1.1in</Top>
-                          <Left>4.1in</Left>
+                          <Top>1.2in</Top>
+                          <Left>4.9in</Left>
                           <Height>0.2in</Height>
                           <Width>0.7in</Width>
                           <ZIndex>11</ZIndex>
@@ -590,10 +583,9 @@
                             </Paragraph>
                           </Paragraphs>
                           <rd:DefaultName>Textbox14</rd:DefaultName>
-                          <Top>3.7in</Top>
-                          <Left>0.1in</Left>
+                          <Top>3.6in</Top>
                           <Height>0.6in</Height>
-                          <Width>1.5in</Width>
+                          <Width>1.7in</Width>
                           <ZIndex>12</ZIndex>
                           <Style>
                             <Border>
@@ -648,10 +640,10 @@
                             </Paragraph>
                           </Paragraphs>
                           <rd:DefaultName>Textbox14</rd:DefaultName>
-                          <Top>3.7in</Top>
-                          <Left>1.6in</Left>
+                          <Top>3.6in</Top>
+                          <Left>1.7in</Left>
                           <Height>0.6in</Height>
-                          <Width>1.5in</Width>
+                          <Width>1.7in</Width>
                           <ZIndex>13</ZIndex>
                           <Style>
                             <Border>
@@ -728,10 +720,10 @@
                             </Paragraph>
                           </Paragraphs>
                           <rd:DefaultName>Textbox14</rd:DefaultName>
-                          <Top>3.7in</Top>
-                          <Left>3.1in</Left>
+                          <Top>3.6in</Top>
+                          <Left>3.5in</Left>
                           <Height>0.6in</Height>
-                          <Width>1.5in</Width>
+                          <Width>1.7in</Width>
                           <ZIndex>14</ZIndex>
                           <Style>
                             <Border>
@@ -786,10 +778,10 @@
                             </Paragraph>
                           </Paragraphs>
                           <rd:DefaultName>Textbox14</rd:DefaultName>
-                          <Top>3.7in</Top>
-                          <Left>4.7in</Left>
+                          <Top>3.6in</Top>
+                          <Left>5.2in</Left>
                           <Height>0.6in</Height>
-                          <Width>1.5in</Width>
+                          <Width>1.7in</Width>
                           <ZIndex>15</ZIndex>
                           <Style>
                             <Border>
@@ -811,7 +803,7 @@
                                   <Value>=RTrim(Fields!num.Value)</Value>
                                   <Style>
                                     <FontFamily>times New Roman</FontFamily>
-                                    <FontSize>12pt</FontSize>
+                                    <FontSize>14pt</FontSize>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -821,8 +813,8 @@
                             </Paragraph>
                           </Paragraphs>
                           <rd:DefaultName>num</rd:DefaultName>
-                          <Top>1.1in</Top>
-                          <Left>4.8in</Left>
+                          <Top>1.2in</Top>
+                          <Left>5.6in</Left>
                           <Height>0.2in</Height>
                           <Width>1.4in</Width>
                           <ZIndex>16</ZIndex>
@@ -843,9 +835,9 @@
                           </Style>
                         </Textbox>
                         <Line Name="Line1">
-                          <Top>5in</Top>
+                          <Top>4.9in</Top>
                           <Height>0in</Height>
-                          <Width>6.3in</Width>
+                          <Width>7in</Width>
                           <ZIndex>17</ZIndex>
                           <Style>
                             <Border>
@@ -875,7 +867,7 @@
                                   <Value>Địa chỉ:</Value>
                                   <Style>
                                     <FontFamily>times New Roman</FontFamily>
-                                    <FontSize>12pt</FontSize>
+                                    <FontSize>14pt</FontSize>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -884,7 +876,6 @@
                           </Paragraphs>
                           <rd:DefaultName>Textbox4</rd:DefaultName>
                           <Top>2in</Top>
-                          <Left>0.1in</Left>
                           <Height>0.2in</Height>
                           <Width>0.8in</Width>
                           <ZIndex>18</ZIndex>
@@ -905,7 +896,7 @@
                                   <Value>=Fields!addr.Value</Value>
                                   <Style>
                                     <FontFamily>times New Roman</FontFamily>
-                                    <FontSize>12pt</FontSize>
+                                    <FontSize>14pt</FontSize>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -916,9 +907,9 @@
                           </Paragraphs>
                           <rd:DefaultName>name</rd:DefaultName>
                           <Top>2in</Top>
-                          <Left>0.9in</Left>
+                          <Left>0.8in</Left>
                           <Height>0.2in</Height>
-                          <Width>5.3in</Width>
+                          <Width>6.2in</Width>
                           <ZIndex>19</ZIndex>
                           <Style>
                             <Border>
@@ -942,7 +933,7 @@
                                   <Value>(Viết bằng chữ):</Value>
                                   <Style>
                                     <FontFamily>times New Roman</FontFamily>
-                                    <FontSize>12pt</FontSize>
+                                    <FontSize>14pt</FontSize>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -951,9 +942,8 @@
                           </Paragraphs>
                           <rd:DefaultName>Textbox7</rd:DefaultName>
                           <Top>3.2in</Top>
-                          <Left>0.1in</Left>
                           <Height>0.2in</Height>
-                          <Width>1.1in</Width>
+                          <Width>1.4in</Width>
                           <ZIndex>20</ZIndex>
                           <Style>
                             <Border>
@@ -972,7 +962,7 @@
                                   <Value>=IIF(Fields!amountTxt.Value is "", "", Fields!amountTxt.Value &amp; " đồng")</Value>
                                   <Style>
                                     <FontFamily>times New Roman</FontFamily>
-                                    <FontSize>12pt</FontSize>
+                                    <FontSize>14pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                     <Format>#,0 'VND';(#,0 'VND');'-'</Format>
                                   </Style>
@@ -985,9 +975,9 @@
                           </Paragraphs>
                           <rd:DefaultName>amount</rd:DefaultName>
                           <Top>3.2in</Top>
-                          <Left>1.2in</Left>
+                          <Left>1.4in</Left>
                           <Height>0.2in</Height>
-                          <Width>5in</Width>
+                          <Width>5.6in</Width>
                           <ZIndex>21</ZIndex>
                           <Style>
                             <Border>
@@ -1009,7 +999,7 @@
                                   <Value>=Right(RTrim(Fields!num.Value), 3)</Value>
                                   <Style>
                                     <FontFamily>times New Roman</FontFamily>
-                                    <FontSize>12pt</FontSize>
+                                    <FontSize>14pt</FontSize>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -1019,8 +1009,8 @@
                             </Paragraph>
                           </Paragraphs>
                           <rd:DefaultName>num</rd:DefaultName>
-                          <Top>0.9in</Top>
-                          <Left>4.8in</Left>
+                          <Top>1in</Top>
+                          <Left>5.6in</Left>
                           <Height>0.2in</Height>
                           <Width>1.4in</Width>
                           <ZIndex>22</ZIndex>
@@ -1051,7 +1041,7 @@
                                   <Style>
                                     <FontStyle>Normal</FontStyle>
                                     <FontFamily>Times New Roman</FontFamily>
-                                    <FontSize>12pt</FontSize>
+                                    <FontSize>14pt</FontSize>
                                     <FontWeight>Normal</FontWeight>
                                     <TextDecoration>None</TextDecoration>
                                     <Color>#000000</Color>
@@ -1064,8 +1054,8 @@
                             </Paragraph>
                           </Paragraphs>
                           <rd:DefaultName>Textbox13</rd:DefaultName>
-                          <Top>0.9in</Top>
-                          <Left>4.1in</Left>
+                          <Top>1in</Top>
+                          <Left>4.9in</Left>
                           <Height>0.2in</Height>
                           <Width>0.7in</Width>
                           <ZIndex>23</ZIndex>
@@ -1107,9 +1097,8 @@
           </TablixMembers>
         </TablixRowHierarchy>
         <DataSetName>DataSet1</DataSetName>
-        <Left>0.1in</Left>
-        <Height>5in</Height>
-        <Width>6.3in</Width>
+        <Height>4.9in</Height>
+        <Width>7in</Width>
         <Style>
           <Border>
             <Style>None</Style>
@@ -1117,13 +1106,13 @@
         </Style>
       </Tablix>
     </ReportItems>
-    <Height>5in</Height>
+    <Height>4.9in</Height>
     <Style />
   </Body>
-  <Width>6.5in</Width>
+  <Width>7in</Width>
   <Page>
-    <LeftMargin>1in</LeftMargin>
-    <RightMargin>1in</RightMargin>
+    <LeftMargin>0.8in</LeftMargin>
+    <RightMargin>0.7in</RightMargin>
     <Style />
   </Page>
   <AutoRefresh>0</AutoRefresh>

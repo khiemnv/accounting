@@ -218,7 +218,7 @@ namespace test_binding
             reportViewer1.SetDisplayMode(DisplayMode.PrintLayout);
             reportViewer1.ResetPageSettings();
             var pg = reportViewer1.GetPageSettings();
-            pg.Landscape = true;
+            //pg.Landscape = true;
             reportViewer1.SetPageSettings(pg);
             this.reportViewer1.RefreshReport();
         }

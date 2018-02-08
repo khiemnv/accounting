@@ -22,7 +22,6 @@
           </Paragraph>
         </Paragraphs>
         <rd:DefaultName>Textbox1</rd:DefaultName>
-        <Left>0in</Left>
         <Height>0.3in</Height>
         <Width>6in</Width>
         <Style>
@@ -938,7 +937,6 @@
         </Paragraphs>
         <rd:DefaultName>Textbox36</rd:DefaultName>
         <Top>0.8in</Top>
-        <Left>0in</Left>
         <Height>0.2in</Height>
         <Width>0.7in</Width>
         <ZIndex>3</ZIndex>
@@ -1040,7 +1038,6 @@
         </Paragraphs>
         <rd:DefaultName>Textbox36</rd:DefaultName>
         <Top>0.6in</Top>
-        <Left>0in</Left>
         <Height>0.2in</Height>
         <Width>3in</Width>
         <ZIndex>6</ZIndex>
@@ -1100,8 +1097,8 @@
   <Page>
     <LeftMargin>0.5in</LeftMargin>
     <RightMargin>0.5in</RightMargin>
-    <TopMargin>1in</TopMargin>
-    <BottomMargin>1in</BottomMargin>
+    <TopMargin>0.5in</TopMargin>
+    <BottomMargin>0.5in</BottomMargin>
     <Style />
   </Page>
   <AutoRefresh>0</AutoRefresh>
