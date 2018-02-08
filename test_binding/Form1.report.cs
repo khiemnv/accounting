@@ -966,15 +966,19 @@ namespace test_binding
             };
             m_rdlcPath = @"..\..\rpt_daysum.rdlc";
         }
+
+
         protected override void onLoadDataComplete(DataTable dt)
         {
-            Int64 inc = 0;
+            Int64 prevRm = getPrevRm(m_startDate);
+            Int64 curRm = prevRm;
             foreach (DataRow row in dt.Rows)
             {
-                inc += (Int64)row["sum"];
-                row["sum"] = inc;
+                curRm += (Int64)row["remain"];
+                row["remain"] = curRm;
             }
-            m_rptParams.Add(new ReportParameter("remain", inc.ToString()));
+            m_rptParams.Add(new ReportParameter("prevRm", prevRm.ToString()));
+            m_rptParams.Add(new ReportParameter("curRm", curRm.ToString()));
         }
         public override List<ReportParameter> getReportParam()
         {
