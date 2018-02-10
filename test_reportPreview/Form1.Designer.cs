@@ -30,7 +30,8 @@ namespace test_reportPreview
         /// </summary>
         private void InitializeComponent()
         {
-            this.reportViewer1 = new ReportViewer();
+            this.reportViewer1 = new Microsoft.Reporting.WinForms.ReportViewer();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.SuspendLayout();
             // 
             // reportViewer1
@@ -40,25 +41,36 @@ namespace test_reportPreview
             | System.Windows.Forms.AnchorStyles.Right)));
             this.reportViewer1.Location = new System.Drawing.Point(0, 0);
             this.reportViewer1.Name = "reportViewer1";
-            this.reportViewer1.Size = new System.Drawing.Size(435, 272);
+            this.reportViewer1.Size = new System.Drawing.Size(615, 348);
             this.reportViewer1.TabIndex = 0;
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Location = new System.Drawing.Point(0, 351);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(615, 22);
+            this.statusStrip1.TabIndex = 1;
+            this.statusStrip1.Text = "statusStrip1";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(435, 272);
+            this.ClientSize = new System.Drawing.Size(615, 373);
+            this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.reportViewer1);
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
 
         private ReportViewer reportViewer1;
+        private System.Windows.Forms.StatusStrip statusStrip1;
     }
 }
 
