@@ -33,13 +33,13 @@ namespace test_binding
     {
         //public TableLayoutPanel m_tbl = new TableLayoutPanel();
         public FlowLayoutPanel m_reloadPanel;
-        public FlowLayoutPanel m_sumPanel;
-
         public Button m_reloadBtn;
         public Button m_submitBtn;
         public Label m_status;
-        public Label m_sumLabel;
-        public TextBox m_sumTxt;
+
+        public FlowLayoutPanel m_sumPanel;
+        protected Label m_sumLabel;
+        protected TextBox m_sumTxt;
 
         public DataGridView m_dataGridView;
 
@@ -91,7 +91,6 @@ namespace test_binding
             m_reloadBtn.Click += new System.EventHandler(reloadButton_Click);
             m_submitBtn.Click += new System.EventHandler(submitButton_Click);
 
-            m_sumLabel.Text = "Sum";
 
 #if use_custom_dgv
             m_dataGridView = m_tblInfo.m_tblName == "internal_payment" ? new lInterPaymentDGV(m_tblInfo) :
@@ -115,28 +114,11 @@ namespace test_binding
 #if DEBUG_DRAWING
                 m_reloadPanel.BorderStyle = BorderStyle.FixedSingle;
 #endif
-
-            m_sumPanel.AutoSize = true;
-            m_sumPanel.AutoSizeMode = AutoSizeMode.GrowOnly;
-            m_sumPanel.Dock = DockStyle.Right;
-#if DEBUG_DRAWING
-                m_sumPanel.BorderStyle = BorderStyle.FixedSingle;
-#endif
-
             m_reloadPanel.Controls.AddRange(new Control[] { m_reloadBtn, m_submitBtn, m_status });
 
-            //sum panel with label and text ctrls
-            m_sumPanel.Controls.AddRange(new Control[] { m_sumLabel, m_sumTxt });
+            //sum panel
+            initSumCtrl();
 
-            m_sumLabel.Anchor = AnchorStyles.Right;
-            m_sumLabel.TextAlign = ContentAlignment.MiddleRight;
-            m_sumLabel.AutoSize = true;
-
-#if fit_txt_size
-            m_sumTxt.Width = lConfigMng.getWidth("000,000,000,000");
-#else
-            m_sumTxt.Width = 100;
-#endif
             m_dataGridView.Anchor = AnchorStyles.Top & AnchorStyles.Left;
             m_dataGridView.Dock = DockStyle.Fill;
 
@@ -150,6 +132,44 @@ namespace test_binding
 
             //update status
             m_stsMng = new statusMng(UpdateStsTxt);
+        }
+
+        protected virtual void updateSumCtrl()
+        {
+            Int64 sum = getSum();
+            string txt = sum.ToString(lConfigMng.getCurrencyFormat());
+#if fit_txt_size
+            int w = lConfigMng.getWidth(txt) + 10;
+            m_sumTxt.Width = w;
+#endif
+            m_sumTxt.Text = txt;
+            m_sumLabel.Text = "Sum = " + txt;
+        }
+
+        protected virtual void initSumCtrl()
+        {
+            m_sumLabel.Text = "Sum";
+            m_sumPanel.AutoSize = true;
+            m_sumPanel.AutoSizeMode = AutoSizeMode.GrowOnly;
+            m_sumPanel.Anchor = AnchorStyles.Right;
+#if DEBUG_DRAWING
+                m_sumPanel.BorderStyle = BorderStyle.FixedSingle;
+#endif
+            //sum panel with label and text ctrls
+            m_sumPanel.Controls.AddRange(new Control[] {
+                m_sumLabel,
+                //m_sumTxt
+            });
+
+            m_sumLabel.Anchor = AnchorStyles.Right;
+            m_sumLabel.TextAlign = ContentAlignment.MiddleRight;
+            m_sumLabel.AutoSize = true;
+
+#if fit_txt_size
+            m_sumTxt.Width = lConfigMng.getWidth("000,000,000,000");
+#else
+            m_sumTxt.Width = 100;
+#endif
         }
 
         private void crtColumns()
@@ -435,13 +455,7 @@ namespace test_binding
             }
 
             //update sum
-            Int64 sum = getSum();
-            string txt = sum.ToString(lConfigMng.getCurrencyFormat());
-#if fit_txt_size
-            int w = lConfigMng.getWidth(txt) + 10;
-            m_sumTxt.Width = w;
-#endif
-            m_sumTxt.Text = txt;
+            updateSumCtrl();
         }
 
         public virtual void LoadData()
@@ -579,6 +593,29 @@ namespace test_binding
         {
             m_tblName = "internal_payment";
             m_countOn = "advance_payment";
+        }
+        protected override void updateSumCtrl()
+        {
+            BindingSource bs = m_dataContent.m_bindingSource;
+            DataTable tbl = (DataTable)bs.DataSource;
+
+            Int64 adv = 0, act = 0;
+            int iAdv = m_tblInfo.getColIndex("advance_payment");
+            int iAct = m_tblInfo.getColIndex("actually_spent");
+            foreach (DataRow row in tbl.Rows)
+            {
+                var col1 = row[iAdv];
+                var col2 = row[iAct];
+                if (col1 != DBNull.Value) { adv += (Int64)col1; }
+                if (col2 != DBNull.Value) { act += (Int64)col2; }
+            }
+            string txt = string.Format("{0} + {1} = {2} + {3} = {4}",
+                m_tblInfo.m_cols[iAdv].m_alias,
+                m_tblInfo.m_cols[iAct].m_alias,
+                adv.ToString(lConfigMng.getCurrencyFormat()),
+                act.ToString(lConfigMng.getCurrencyFormat()),
+                (adv + act).ToString(lConfigMng.getCurrencyFormat()));
+            m_sumLabel.Text = txt;
         }
     }
 

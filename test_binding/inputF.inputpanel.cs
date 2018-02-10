@@ -655,7 +655,20 @@ namespace test_binding
                 eType = FgTask.fgTaskType.DP_FG_UPDATESUM,
             }, true);
 #endif
+            //clear control text
+            ClearInputCtrls();
         }
+
+        protected virtual void ClearInputCtrls()
+        {
+            int i = 2;
+            for (; i < m_inputsCtrls.Count; i++)
+            {
+                var ctrl = m_inputsCtrls[i];
+                ctrl.Text = "";
+            }
+        }
+
         protected virtual lInputCtrl m_keyCtrl { get; }
 
         protected virtual keyMng m_keyMng { get; }
@@ -1124,7 +1137,7 @@ namespace test_binding
             m_rptAsst = new rptAssist(2, dict);
             m_rptAsst.ConvertRowCompleted = (inR, outR) =>
             {
-                Debug.Assert((Int64)inR["advance_payment"] > 0, "advance should not zero");
+                //Debug.Assert((Int64)inR["advance_payment"] > 0, "advance should not zero");
                 var obj = inR["actually_spent"];
                 if (obj != DBNull.Value)
                 {

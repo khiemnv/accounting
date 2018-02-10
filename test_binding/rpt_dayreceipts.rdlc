@@ -9,16 +9,16 @@
               <Width>1in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>1in</Width>
+              <Width>1.5in</Width>
+            </TablixColumn>
+            <TablixColumn>
+              <Width>1.5in</Width>
             </TablixColumn>
             <TablixColumn>
               <Width>1in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>1in</Width>
-            </TablixColumn>
-            <TablixColumn>
-              <Width>1in</Width>
+              <Width>1.5in</Width>
             </TablixColumn>
           </TablixColumns>
           <TablixRows>
@@ -524,6 +524,7 @@
                           <Color>LightGrey</Color>
                           <Style>Solid</Style>
                         </Border>
+                        <BackgroundColor>LightSteelBlue</BackgroundColor>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -554,6 +555,7 @@
                           <Color>LightGrey</Color>
                           <Style>Solid</Style>
                         </Border>
+                        <BackgroundColor>LightSteelBlue</BackgroundColor>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -584,6 +586,7 @@
                           <Color>LightGrey</Color>
                           <Style>Solid</Style>
                         </Border>
+                        <BackgroundColor>LightSteelBlue</BackgroundColor>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -617,6 +620,7 @@
                           <Color>LightGrey</Color>
                           <Style>Solid</Style>
                         </Border>
+                        <BackgroundColor>LightSteelBlue</BackgroundColor>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -647,6 +651,7 @@
                           <Color>LightGrey</Color>
                           <Style>Solid</Style>
                         </Border>
+                        <BackgroundColor>LightSteelBlue</BackgroundColor>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -788,6 +793,7 @@
                         <Color>LightGrey</Color>
                         <Style>Solid</Style>
                       </Border>
+                      <BackgroundColor>LightSteelBlue</BackgroundColor>
                       <PaddingLeft>2pt</PaddingLeft>
                       <PaddingRight>2pt</PaddingRight>
                       <PaddingTop>2pt</PaddingTop>
@@ -803,7 +809,7 @@
         <DataSetName>DataSet1</DataSetName>
         <Top>1.2in</Top>
         <Height>1in</Height>
-        <Width>6in</Width>
+        <Width>7.5in</Width>
         <Style>
           <Border>
             <Style>None</Style>
@@ -872,7 +878,7 @@
           <Paragraph>
             <TextRuns>
               <TextRun>
-                <Value>Báo cáo thu theo ban (đơn vị: VND)</Value>
+                <Value>Báo cáo thu theo nội dung (đơn vị: VND)</Value>
                 <Style>
                   <FontWeight>Bold</FontWeight>
                   <Color>Blue</Color>
@@ -914,7 +920,7 @@
         </Paragraphs>
         <rd:DefaultName>Textbox26</rd:DefaultName>
         <Height>0.4in</Height>
-        <Width>6in</Width>
+        <Width>7.5in</Width>
         <ZIndex>3</ZIndex>
         <Style>
           <Border>
@@ -951,7 +957,7 @@
         </Paragraphs>
         <rd:DefaultName>Textbox39</rd:DefaultName>
         <Top>2.5in</Top>
-        <Left>4in</Left>
+        <Left>5.5in</Left>
         <Height>0.2in</Height>
         <Width>2in</Width>
         <ZIndex>4</ZIndex>
@@ -969,12 +975,12 @@
     <Height>2.7in</Height>
     <Style />
   </Body>
-  <Width>6in</Width>
+  <Width>7.5in</Width>
   <Page>
-    <LeftMargin>1in</LeftMargin>
-    <RightMargin>1in</RightMargin>
-    <TopMargin>1in</TopMargin>
-    <BottomMargin>1in</BottomMargin>
+    <LeftMargin>0.5in</LeftMargin>
+    <RightMargin>0.5in</RightMargin>
+    <TopMargin>0.5in</TopMargin>
+    <BottomMargin>0.5in</BottomMargin>
     <Style />
   </Page>
   <AutoRefresh>0</AutoRefresh>
