@@ -387,6 +387,8 @@ namespace test_binding
             m_panel = new TableLayoutPanel();
             m_panel.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             m_panel.Dock = DockStyle.Fill;
+            m_panel.ColumnCount = 2;
+            m_panel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
 #if DEBUG_DRAWING
                 m_panel.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
 #endif
@@ -404,8 +406,16 @@ namespace test_binding
 
             //add data panel ctrls to table layout
             m_dataPanel.initCtrls();
-            m_panel.Controls.Add(m_dataPanel.m_reloadPanel, 0, 1);
-            m_panel.Controls.Add(m_dataPanel.m_sumPanel, 1, 1);
+            //reload tbl panel
+            TableLayoutPanel reloadTbl = new TableLayoutPanel();
+            reloadTbl.AutoSize = true;
+            reloadTbl.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            reloadTbl.Controls.Add(m_dataPanel.m_reloadPanel, 0, 0);
+            m_dataPanel.m_sumPanel.Anchor = AnchorStyles.Right;
+            reloadTbl.Controls.Add(m_dataPanel.m_sumPanel, 1, 0);
+            m_panel.Controls.Add(reloadTbl, 0, 1);
+            m_panel.SetColumnSpan(reloadTbl, 2);
+            //data gird view
             m_panel.Controls.Add(m_dataPanel.m_dataGridView, 0, 2);
             m_panel.SetColumnSpan(m_dataPanel.m_dataGridView, 2);
         }

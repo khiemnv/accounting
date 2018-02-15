@@ -109,7 +109,7 @@ namespace test_binding
 
             //reload panel with reload and save buttons
             m_reloadPanel.AutoSize = true;
-            m_reloadPanel.AutoSizeMode = AutoSizeMode.GrowOnly;
+            //m_reloadPanel.AutoSizeMode = AutoSizeMode.GrowOnly;
             m_reloadPanel.Dock = DockStyle.Left;
 #if DEBUG_DRAWING
                 m_reloadPanel.BorderStyle = BorderStyle.FixedSingle;
@@ -150,7 +150,7 @@ namespace test_binding
         {
             m_sumLabel.Text = "Sum";
             m_sumPanel.AutoSize = true;
-            m_sumPanel.AutoSizeMode = AutoSizeMode.GrowOnly;
+            //m_sumPanel.AutoSizeMode = AutoSizeMode.GrowOnly;
             m_sumPanel.Anchor = AnchorStyles.Right;
 #if DEBUG_DRAWING
                 m_sumPanel.BorderStyle = BorderStyle.FixedSingle;
