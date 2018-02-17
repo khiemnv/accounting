@@ -338,7 +338,7 @@ namespace test_binding
             // 10^9  10^6    10^3
             string arrB = "";
             const long oneB = (1000 * 1000 * 1000);
-            for (int i = 0; i < 3 && amount > oneB; i++)
+            for (int i = 0; i < 3 && amount > (oneB - 1); i++)
             {
                 arrB += bConvert(amount / oneB) + " tỷ ";
                 amount = amount % oneB;
