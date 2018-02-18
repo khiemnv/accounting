@@ -8,6 +8,7 @@ using System;
 using System.Drawing;
 using System.Diagnostics;
 using System.Data;
+using System.Globalization;
 
 namespace test_binding
 {
@@ -130,9 +131,17 @@ namespace test_binding
         public override void setValue(string text)
         {
             DateTime dt;
-            if (DateTime.TryParse(text, out dt))
+            if (text.Length == 0)
+            {
+                //do no thing
+            }
+            else if (DateTime.TryParse(text, out dt))
             {
                 m_dtp.Value = dt;
+            }
+            else
+            {
+                Debug.Assert(false, "invalid date string");
             }
         }
     }
@@ -244,6 +253,7 @@ namespace test_binding
 
         protected override void OnCellValidating(DataGridViewCellValidatingEventArgs e)
         {
+            Debug.WriteLine("OnCellValidating");
             base.OnCellValidating(e);
             //check unique value
             var colInfo = m_tblInfo.m_cols[e.ColumnIndex];
@@ -300,6 +310,11 @@ namespace test_binding
                 if (val != null)
                     CurrentCell.Value = val;
             }
+        }
+        protected override void OnCellLeave(DataGridViewCellEventArgs e)
+        {
+            Debug.WriteLine("OnCellLeave");
+            base.OnCellLeave(e);
         }
         protected override void OnCellDoubleClick(DataGridViewCellEventArgs e)
         {
@@ -400,6 +415,7 @@ namespace test_binding
 
                 if (m_customCtrl.isChanged())
                 {
+                    var val = m_customCtrl.getValue();
                     this.CurrentCell.Value = m_customCtrl.getValue();
                 }
 
@@ -408,7 +424,85 @@ namespace test_binding
                 m_customCtrl = null;
             }
         }
+        public virtual bool hideCustomCtrl(out string val)
+        {
+            bool bRet = false;
+            val = "";
+            if (m_customCtrl != null)
+            {
+                Debug.WriteLine("hideDtp");
+                m_customCtrl.hide();
+
+                if (m_customCtrl.isChanged())
+                {
+                    bRet = true;
+                    val = m_customCtrl.getValue();
+                }
+
+                this.Controls.Remove(m_customCtrl.getControl());
+                m_customCtrl.Dispose();
+                m_customCtrl = null;
+            }
+            return bRet;
+        }
 #endif  //use_custom_cols
+
+        protected override void OnCellFormatting(DataGridViewCellFormattingEventArgs e)
+        {
+            //Debug.WriteLine("OnCellFormatting");
+            base.OnCellFormatting(e);
+            var col = m_tblInfo.m_cols[e.ColumnIndex];
+            switch (col.m_type)
+            {
+                case lTableInfo.lColInfo.lColType.dateTime:
+
+                    break;
+            }
+        }
+
+        class myDtFp : IFormatProvider
+        {
+            public object GetFormat(Type formatType)
+            {
+                return lConfigMng.getDisplayDateFormat();
+            }
+        }
+
+        protected override void OnCellParsing(DataGridViewCellParsingEventArgs e)
+        {
+            base.OnCellParsing(e);
+            var col = m_tblInfo.m_cols[e.ColumnIndex];
+            switch (col.m_type)
+            {
+                case lTableInfo.lColInfo.lColType.dateTime:
+                    Debug.WriteLine("OnCellParsing parsing date");
+                    string val = "";
+                    bool bChg = false;
+
+                    if (lConfigMng.getDisplayDateFormat() == "dd/MM/yyyy")
+                    {
+                        val = e.Value.ToString();
+                        if (m_customCtrl != null)
+                        {
+                            bChg = hideCustomCtrl(out val);
+                            //val = m_customCtrl.getValue();
+                        }
+                        var arr = val.Split('/');
+                        if (arr.Length == 3)
+                        {
+                            DateTime dt;
+                            val = string.Format("{0}-{1}-{2}", arr[2], arr[1], arr[0]);
+                            if (DateTime.TryParse(val, out dt))
+                            {
+                                e.ParsingApplied = true;
+                                e.Value = dt;
+                            }
+                        }
+                    }
+                    
+                    break;
+            }
+        }
 
         protected override void Dispose(bool disposing)
         {

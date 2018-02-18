@@ -552,10 +552,39 @@ namespace test_binding
             m_dataGridView.EnableHeadersVisualStyles = false;
             m_dataGridView.Dock = DockStyle.Fill;
             m_dataGridView.CellClick += M_dataGridView_CellClick;
+            //fix date dd/MM/yyyy
+            m_dataGridView.CellParsing += M_dataGridView_CellParsing;
 
             m_tbl.Controls.Add(m_dataGridView, 0, ++lastRow);
             m_tbl.Dock = DockStyle.Fill;
             m_tbl.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
+        }
+
+        private void M_dataGridView_CellParsing(object sender, DataGridViewCellParsingEventArgs e)
+        {
+            var col = m_tblInfo.m_cols[e.ColumnIndex];
+            switch (col.m_type)
+            {
+                case lTableInfo.lColInfo.lColType.dateTime:
+                    Debug.WriteLine("OnCellParsing parsing date");
+                    string val = "";
+                    if (lConfigMng.getDisplayDateFormat() == "dd/MM/yyyy")
+                    {
+                        val = e.Value.ToString();
+                        var arr = val.Split('/');
+                        if (arr.Length == 3)
+                        {
+                            DateTime dt;
+                            val = string.Format("{0}-{1}-{2}", arr[2], arr[1], arr[0]);
+                            if (DateTime.TryParse(val, out dt))
+                            {
+                                e.ParsingApplied = true;
+                                e.Value = dt;
+                            }
+                        }
+                    }
+                    break;
+            }
         }
 
         private void M_dataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
