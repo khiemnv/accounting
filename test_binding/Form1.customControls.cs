@@ -476,27 +476,20 @@ namespace test_binding
             {
                 case lTableInfo.lColInfo.lColType.dateTime:
                     Debug.WriteLine("OnCellParsing parsing date");
-                    string val = "";
-                    bool bChg = false;
 
                     if (lConfigMng.getDisplayDateFormat() == "dd/MM/yyyy")
                     {
-                        val = e.Value.ToString();
+                        bool bChg = false;
+                        string val = e.Value.ToString();
                         if (m_customCtrl != null)
                         {
                             bChg = hideCustomCtrl(out val);
-                            //val = m_customCtrl.getValue();
                         }
-                        var arr = val.Split('/');
-                        if (arr.Length == 3)
+                        DateTime dt;
+                        if (lConfigMng.parseDisplayDate(val, out dt))
                         {
-                            DateTime dt;
-                            val = string.Format("{0}-{1}-{2}", arr[2], arr[1], arr[0]);
-                            if (DateTime.TryParse(val, out dt))
-                            {
-                                e.ParsingApplied = true;
-                                e.Value = dt;
-                            }
+                            e.ParsingApplied = true;
+                            e.Value = dt;
                         }
                     }
                     

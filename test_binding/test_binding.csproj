@@ -216,6 +216,7 @@
     <EmbeddedResource Include="receiptForm.resx">
       <DependentUpon>receiptForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="rpt_daypays.rdlc" />
     <EmbeddedResource Include="rpt_dayreceipts.rdlc" />
     <EmbeddedResource Include="rptPreview.resx">
       <DependentUpon>rptPreview.cs</DependentUpon>

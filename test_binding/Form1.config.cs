@@ -11,6 +11,7 @@ using System.Runtime.Serialization.Json;
 using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace test_binding
 {
@@ -183,6 +184,31 @@ namespace test_binding
 #if true
         public static string getDateFormat() { return "yyyy-MM-dd"; }
         public static string getDisplayDateFormat() { return "dd/MM/yyyy"; }
+        public static bool parseDisplayDate(string txt, out DateTime dt) {
+            //txt = "dd/MM/yyyy"
+            bool ret = false;
+            dt = DateTime.Now;
+            do
+            {
+                var arr = txt.Split('/');
+                if (arr.Length != 3) break;
+                //year 1-9999, month 1-12, day
+                int y, m, d;
+                if (!int.TryParse(arr[2], out y)) break;
+                if (!int.TryParse(arr[1], out m)) break;
+                if (!int.TryParse(arr[0], out d)) break;
+                try
+                {
+                    dt = new DateTime(y, m, d);
+                    ret = true;
+                }
+                catch
+                {
+                    Debug.Assert(false, "invalid date string");
+                }
+            } while (false);
+            return ret;
+        }
 #else
         public static string getDateFormat() { return "dd/MM/yyyy"; }
 #endif

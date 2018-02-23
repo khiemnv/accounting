@@ -482,7 +482,7 @@ namespace test_binding
         protected DateTime m_startDate;
         protected DateTime m_endDate;
 
-        List<ReportParameter> m_rptParams;
+        protected List<ReportParameter> m_rptParams;
 
         protected virtual string getDateQry(string zStartDate, string zEndDate)
         {
@@ -694,14 +694,14 @@ namespace test_binding
         protected virtual void onLoadDataComplete(DataTable dt)
         {
             //modify qry data
-            Int64 preRm = getPrevRm(m_startDate);
-            Int64 curRm = preRm;
             if (dt.TableName == "DataSet1")
             {
                 //do no thing
             }
             if (dt.TableName == "DataSet2")
             {
+                Int64 preRm = getPrevRm(m_startDate);
+                Int64 curRm = preRm;
                 foreach (DataRow row in dt.Rows)
                 {
                     curRm = curRm + (Int64)row["receipt"]
@@ -857,7 +857,7 @@ namespace test_binding
     public class lBuildingReport : lDaysReport
     {
         public string m_buildingName;
-        List<ReportParameter> m_rptParams;
+        //List<ReportParameter> m_rptParams;
         public lBuildingReport(string building, DateTime startDate, DateTime endDate) : base(startDate, endDate)
         {
             string zStartDate = startDate.ToString(lConfigMng.getDisplayDateFormat());
@@ -897,7 +897,7 @@ namespace test_binding
     public class lConstrorgReport : lDaysReport
     {
         public string m_constrorg;
-        List<ReportParameter> m_rptParams;
+        //List<ReportParameter> m_rptParams;
         public lConstrorgReport(string constrorg, DateTime startDate, DateTime endDate) : base(startDate, endDate)
         {
             string zStartDate = startDate.ToString(lConfigMng.getDisplayDateFormat());
@@ -936,7 +936,7 @@ namespace test_binding
 
     public class lDaysumReport : lDaysReport
     {
-        List<ReportParameter> m_rptParams;
+        //List<ReportParameter> m_rptParams;
         public lDaysumReport(DateTime startDate, DateTime endDate) : base(startDate, endDate)
         {
             string zStartDate = startDate.ToString(lConfigMng.getDisplayDateFormat());
@@ -1026,7 +1026,7 @@ namespace test_binding
 
     public class lReceiptsDays : lDaysReport
     {
-        List<ReportParameter> m_rptParams;
+        //List<ReportParameter> m_rptParams;
         public lReceiptsDays(DateTime startDate, DateTime endDate) : base(startDate, endDate)
         {
             string zStartDate = startDate.ToString(lConfigMng.getDisplayDateFormat());
@@ -1049,6 +1049,71 @@ namespace test_binding
                 { "DataSet1", qry }
             };
             m_rdlcPath = @"..\..\rpt_dayreceipts.rdlc";
+        }
+        public override List<ReportParameter> getReportParam()
+        {
+            return m_rptParams;
+        }
+    }
+
+    public class lPaymentDays : lDaysReport
+    {
+        //List<ReportParameter> m_rptParams;
+        public lPaymentDays(DateTime startDate, DateTime endDate) : base(startDate, endDate)
+        {
+            string zStartDate = startDate.ToString(lConfigMng.getDisplayDateFormat());
+            string zEndDate = endDate.ToString(lConfigMng.getDisplayDateFormat());
+            m_rptParams = new List<ReportParameter>()
+            {
+                new ReportParameter("startDate",zStartDate),
+                new ReportParameter("endDate",zEndDate),
+                new ReportParameter("type","Ngày"),
+            };
+
+            zStartDate = startDate.ToString(lConfigMng.getDateFormat());
+            zEndDate = endDate.ToString(lConfigMng.getDateFormat());
+            m_sqls = new Dictionary<string, string>
+            {
+                { "DataSet2", getMonthQry(zStartDate, zEndDate)},
+                { "DataSet3", string.Format("select * from {2} where  date between '{0} 00:00:00' and '{1} 00:00:00'", zStartDate, zEndDate, "internal_payment")},
+                { "DataSet4", string.Format("select * from {2} where  date between '{0} 00:00:00' and '{1} 00:00:00'", zStartDate, zEndDate, "external_payment")},
+                { "DataSet5", string.Format("select * from {2} where  date between '{0} 00:00:00' and '{1} 00:00:00'", zStartDate, zEndDate, "salary")},
+            };
+            m_rdlcPath = @"..\..\rpt_daypays.rdlc";
+        }
+        protected override void onLoadDataComplete(DataTable dt)
+        {
+            base.onLoadDataComplete(dt);
+            if (dt.TableName == "DataSet3")
+            {
+                Int64 interpay_sum = 0;
+                foreach (DataRow row in dt.Rows)
+                {
+                    if (row["advance_payment"] != DBNull.Value)
+                        interpay_sum += (Int64)row["advance_payment"];
+                    if (row["actually_spent"] != DBNull.Value)
+                        interpay_sum += (Int64)row["actually_spent"];
+                }
+                m_rptParams.Add(new ReportParameter("interpay_sum", interpay_sum.ToString()));
+            }
+            if (dt.TableName == "DataSet4")
+            {
+                Int64 exterpay_sum = 0;
+                foreach (DataRow row in dt.Rows)
+                {
+                    exterpay_sum += (Int64)row["spent"];
+                }                
+                m_rptParams.Add(new ReportParameter("exterpay_sum", exterpay_sum.ToString()));
+            }
+            if (dt.TableName == "DataSet5")
+            {
+                Int64 salary_sum = 0;
+                foreach (DataRow row in dt.Rows)
+                {
+                    salary_sum += (Int64)row["salary"];
+                }
+                m_rptParams.Add(new ReportParameter("salary_sum", salary_sum.ToString()));                
+            }
         }
         public override List<ReportParameter> getReportParam()
         {

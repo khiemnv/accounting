@@ -296,7 +296,8 @@ namespace test_binding
                 {
                     case (int)receiptsRptType.byDays:
 #if true
-                        rpt = new lDaysReport(startDate.Value, endDate.Value);
+                        //rpt = new lDaysReport(startDate.Value, endDate.Value);
+                        rpt = new lPaymentDays(startDate.Value, endDate.Value);
 #else
                         rpt = new lSqlDaysReport(startDate.Value, endDate.Value);
 #endif
