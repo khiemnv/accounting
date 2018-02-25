@@ -604,7 +604,6 @@ namespace test_binding
         lSqlContentProvider() : base()
         {
             string cnnStr = appConfig.s_config.m_dbSchema.m_cnnStr;
-            //string cnnStr = s_config.m_dbSchema.m_cnnStr;
             m_cnn = new SqlConnection(cnnStr);
             m_cnn.Open();
         }
@@ -758,6 +757,26 @@ namespace test_binding
         public lDbSchema()
         {
         }
+        protected void init()
+        {
+            m_tables = new List<lTableInfo>() {
+                    new lReceiptsTblInfo(),
+                    new lInternalPaymentTblInfo(),
+                    new lExternalPaymentTblInfo(),
+                    new lSalaryTblInfo(),
+                    new lReceiptsContentTblInfo(),
+                    new lGroupNameTblInfo(),
+                    new lBuildingTblInfo(),
+                    new lConstrorgTblInfo()
+                };
+            m_views = new List<lTableInfo>() {
+                    new lReceiptsViewInfo(),
+                    new lInterPaymentViewInfo(),
+                    new lExterPaymentViewInfo(),
+                    new lSalaryViewInfo(),
+                    new lDaysumViewInfo()
+                };
+        }
     }
 #if use_sqlite
     [DataContract(Name = "SQLiteDbSchema")]
@@ -837,23 +856,7 @@ namespace test_binding
                     + " where strftime('%Y', 'now') - strftime('%Y', date) between 0 and 4;",
                 };
 #endif  //crt_qry
-            m_tables = new List<lTableInfo>() {
-                    new lReceiptsTblInfo(),
-                    new lInternalPaymentTblInfo(),
-                    new lExternalPaymentTblInfo(),
-                    new lSalaryTblInfo(),
-                    new lReceiptsContentTblInfo(),
-                    new lGroupNameTblInfo(),
-                    new lBuildingTblInfo(),
-                    new lConstrorgTblInfo()
-                };
-            m_views = new List<lTableInfo>() {
-                    new lReceiptsViewInfo(),
-                    new lInterPaymentViewInfo(),
-                    new lExterPaymentViewInfo(),
-                    new lSalaryViewInfo(),
-                    new lDaysumViewInfo()
-                };
+            init();
         }
     }
 #endif //use_sqlite
@@ -935,21 +938,7 @@ namespace test_binding
                     + " where strftime('%Y', 'now') - strftime('%Y', date) between 0 and 4;",
                 };
 #endif  //crt_qry
-            m_tables = new List<lTableInfo>() {
-                    new lReceiptsTblInfo(),
-                    new lInternalPaymentTblInfo(),
-                    new lExternalPaymentTblInfo(),
-                    new lSalaryTblInfo(),
-                    new lReceiptsContentTblInfo(),
-                    new lGroupNameTblInfo(),
-                    new lBuildingTblInfo()
-                };
-            m_views = new List<lTableInfo>() {
-                    new lReceiptsViewInfo(),
-                    new lInterPaymentViewInfo(),
-                    new lExterPaymentViewInfo(),
-                    new lSalaryViewInfo()
-                };
+            init();
         }
     }
     /// <summary>

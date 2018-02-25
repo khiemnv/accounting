@@ -579,6 +579,7 @@ namespace test_binding
         {
             return "Ngày";
         }
+        protected lDaysReport() { }
         public lDaysReport(DateTime startDate, DateTime endDate)
         {
             m_startDate = startDate;
@@ -858,8 +859,11 @@ namespace test_binding
     {
         public string m_buildingName;
         //List<ReportParameter> m_rptParams;
-        public lBuildingReport(string building, DateTime startDate, DateTime endDate) : base(startDate, endDate)
+        public lBuildingReport(string building, DateTime startDate, DateTime endDate)
         {
+            m_startDate = startDate;
+            m_endDate = endDate;
+
             string zStartDate = startDate.ToString(lConfigMng.getDisplayDateFormat());
             string zEndDate = endDate.ToString(lConfigMng.getDisplayDateFormat());
             m_buildingName = building;
@@ -892,14 +896,39 @@ namespace test_binding
         {
             return m_rptParams;
         }
+        protected override void onLoadDataComplete(DataTable dt)
+        {
+            Debug.Assert(dt.TableName == "DataSet1");
+            Int64 prevRm = getRm(m_startDate);
+            Int64 curRm = prevRm;
+            foreach (DataRow row in dt.Rows)
+            {
+                curRm += row["spent"] != DBNull.Value ? (Int64)row["spent"] : 0;
+            }
+            m_rptParams.Add(new ReportParameter("prevRm", prevRm.ToString()));
+            m_rptParams.Add(new ReportParameter("curRm", curRm.ToString()));
+        }
+        private Int64 getRm(DateTime date)
+        {
+            var zDate = date.ToString("yyyy-MM-dd");
+            string sql = string.Format("select sum(spent) from external_payment where date < '{0} 00:00:00'",
+                zDate);
+            DataTable dt = loadData(sql);
+            var row = dt.Rows[0];
+            Int64 sum = row[0] != DBNull.Value ? (Int64)row[0] : 0;
+            return sum;
+        }
     }
 
     public class lConstrorgReport : lDaysReport
     {
         public string m_constrorg;
         //List<ReportParameter> m_rptParams;
-        public lConstrorgReport(string constrorg, DateTime startDate, DateTime endDate) : base(startDate, endDate)
+        public lConstrorgReport(string constrorg, DateTime startDate, DateTime endDate)
         {
+            m_startDate = startDate;
+            m_endDate = endDate;
+
             string zStartDate = startDate.ToString(lConfigMng.getDisplayDateFormat());
             string zEndDate = endDate.ToString(lConfigMng.getDisplayDateFormat());
             m_constrorg = constrorg;
@@ -932,13 +961,39 @@ namespace test_binding
         {
             return m_rptParams;
         }
+        protected override void onLoadDataComplete(DataTable dt)
+        {
+            Debug.Assert(dt.TableName == "DataSet1");
+            Int64 prevRm = getRm(m_startDate);
+            Int64 curRm = prevRm;
+            foreach (DataRow row in dt.Rows)
+            {
+                curRm += row["spent"] != DBNull.Value ? (Int64)row["spent"] : 0;
+            }
+            m_rptParams.Add(new ReportParameter("prevRm", prevRm.ToString()));
+            m_rptParams.Add(new ReportParameter("curRm", curRm.ToString()));
+        }
+        private Int64 getRm(DateTime date)
+        {
+            var zDate = date.ToString("yyyy-MM-dd");
+            string sql = string.Format("select sum(spent) from external_payment "
+                + " where constr_org like '%{0}%' and date < '{1} 00:00:00'",
+                m_constrorg, zDate);
+            DataTable dt = loadData(sql);
+            var row = dt.Rows[0];
+            Int64 sum = row[0] != DBNull.Value ? (Int64)row[0] : 0;
+            return sum;
+        }
     }
 
     public class lDaysumReport : lDaysReport
     {
         //List<ReportParameter> m_rptParams;
-        public lDaysumReport(DateTime startDate, DateTime endDate) : base(startDate, endDate)
+        public lDaysumReport(DateTime startDate, DateTime endDate)
         {
+            m_startDate = startDate;
+            m_endDate = endDate;
+
             string zStartDate = startDate.ToString(lConfigMng.getDisplayDateFormat());
             string zEndDate = endDate.ToString(lConfigMng.getDisplayDateFormat());
             m_rptParams = new List<ReportParameter>()
@@ -1005,9 +1060,9 @@ namespace test_binding
             m_rdlcPath = @"..\..\rpt_daysum.rdlc";
         }
 
-
         protected override void onLoadDataComplete(DataTable dt)
         {
+            Debug.Assert( dt.TableName == "DataSet1" );
             Int64 prevRm = getPrevRm(m_startDate);
             Int64 curRm = prevRm;
             foreach (DataRow row in dt.Rows)
@@ -1027,8 +1082,11 @@ namespace test_binding
     public class lReceiptsDays : lDaysReport
     {
         //List<ReportParameter> m_rptParams;
-        public lReceiptsDays(DateTime startDate, DateTime endDate) : base(startDate, endDate)
+        public lReceiptsDays(DateTime startDate, DateTime endDate)
         {
+            m_startDate = startDate;
+            m_endDate = endDate;
+
             string zStartDate = startDate.ToString(lConfigMng.getDisplayDateFormat());
             string zEndDate = endDate.ToString(lConfigMng.getDisplayDateFormat());
             m_rptParams = new List<ReportParameter>()
@@ -1059,8 +1117,11 @@ namespace test_binding
     public class lPaymentDays : lDaysReport
     {
         //List<ReportParameter> m_rptParams;
-        public lPaymentDays(DateTime startDate, DateTime endDate) : base(startDate, endDate)
+        public lPaymentDays(DateTime startDate, DateTime endDate)
         {
+            m_startDate = startDate;
+            m_endDate = endDate;
+
             string zStartDate = startDate.ToString(lConfigMng.getDisplayDateFormat());
             string zEndDate = endDate.ToString(lConfigMng.getDisplayDateFormat());
             m_rptParams = new List<ReportParameter>()
