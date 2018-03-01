@@ -2,86 +2,6 @@
 <Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2008/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
   <Body>
     <ReportItems>
-      <Textbox Name="Textbox36">
-        <CanGrow>true</CanGrow>
-        <KeepTogether>true</KeepTogether>
-        <Paragraphs>
-          <Paragraph>
-            <TextRuns>
-              <TextRun>
-                <Value>Chi nội chúng + Chi ngoại chúng + Chi lương=</Value>
-                <Style>
-                  <FontWeight>Bold</FontWeight>
-                  <Color>Blue</Color>
-                </Style>
-              </TextRun>
-              <TextRun>
-                <Value>=Parameters!interpay_sum.Value</Value>
-                <Style>
-                  <Format>#,0;(#,0);'-'</Format>
-                </Style>
-              </TextRun>
-              <TextRun>
-                <Value>+</Value>
-                <Style>
-                  <FontWeight>Bold</FontWeight>
-                  <Color>Blue</Color>
-                </Style>
-              </TextRun>
-              <TextRun>
-                <Value>=Parameters!exterpay_sum.Value</Value>
-                <Style>
-                  <Format>#,0;(#,0);'-'</Format>
-                </Style>
-              </TextRun>
-              <TextRun>
-                <Value>+</Value>
-                <Style>
-                  <FontWeight>Bold</FontWeight>
-                  <Color>Blue</Color>
-                </Style>
-              </TextRun>
-              <TextRun>
-                <Value>=Parameters!salary_sum.Value</Value>
-                <Style>
-                  <Format>#,0;(#,0);'-'</Format>
-                </Style>
-              </TextRun>
-              <TextRun>
-                <Value EvaluationMode="Constant">=</Value>
-                <Style>
-                  <FontWeight>Bold</FontWeight>
-                  <Color>Blue</Color>
-                </Style>
-              </TextRun>
-              <TextRun>
-                <Value>=Parameters!interpay_sum.Value+Parameters!exterpay_sum.Value+Parameters!salary_sum.Value</Value>
-                <Style>
-                  <Format>#,0;(#,0);'-'</Format>
-                </Style>
-              </TextRun>
-              <TextRun>
-                <Value>.</Value>
-                <Style>
-                  <FontWeight>Bold</FontWeight>
-                  <Color>Blue</Color>
-                </Style>
-              </TextRun>
-            </TextRuns>
-            <Style />
-          </Paragraph>
-        </Paragraphs>
-        <rd:DefaultName>Textbox36</rd:DefaultName>
-        <Top>5.8in</Top>
-        <Left>0in</Left>
-        <Height>0.2in</Height>
-        <Width>7in</Width>
-        <Style>
-          <Border>
-            <Style>None</Style>
-          </Border>
-        </Style>
-      </Textbox>
       <Textbox Name="Textbox26">
         <CanGrow>true</CanGrow>
         <KeepTogether>true</KeepTogether>
@@ -109,10 +29,8 @@
           </Paragraph>
         </Paragraphs>
         <rd:DefaultName>Textbox26</rd:DefaultName>
-        <Left>0in</Left>
         <Height>0.3in</Height>
         <Width>7in</Width>
-        <ZIndex>1</ZIndex>
         <Style>
           <Border>
             <Style>None</Style>
@@ -164,10 +82,9 @@
         </Paragraphs>
         <rd:DefaultName>Textbox36</rd:DefaultName>
         <Top>0.7in</Top>
-        <Left>0in</Left>
         <Height>0.2in</Height>
         <Width>3in</Width>
-        <ZIndex>2</ZIndex>
+        <ZIndex>1</ZIndex>
         <Style>
           <Border>
             <Style>None</Style>
@@ -193,10 +110,9 @@
         </Paragraphs>
         <rd:DefaultName>Textbox36</rd:DefaultName>
         <Top>0.5in</Top>
-        <Left>0in</Left>
         <Height>0.2in</Height>
         <Width>3in</Width>
-        <ZIndex>3</ZIndex>
+        <ZIndex>2</ZIndex>
         <Style>
           <Border>
             <Style>None</Style>
@@ -230,7 +146,7 @@
         <Left>5in</Left>
         <Height>0.2in</Height>
         <Width>2in</Width>
-        <ZIndex>4</ZIndex>
+        <ZIndex>3</ZIndex>
         <Style>
           <Border>
             <Style>None</Style>
@@ -799,6 +715,7 @@
                           <Color>LightGrey</Color>
                           <Style>Solid</Style>
                         </Border>
+                        <BackgroundColor>LightSteelBlue</BackgroundColor>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -829,6 +746,7 @@
                           <Color>LightGrey</Color>
                           <Style>Solid</Style>
                         </Border>
+                        <BackgroundColor>LightSteelBlue</BackgroundColor>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -859,6 +777,7 @@
                           <Color>LightGrey</Color>
                           <Style>Solid</Style>
                         </Border>
+                        <BackgroundColor>LightSteelBlue</BackgroundColor>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -878,7 +797,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!advance_payment.Value)</Value>
                               <Style>
-                                <FontWeight>Bold</FontWeight>
+                                <FontWeight>Normal</FontWeight>
                                 <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
@@ -892,6 +811,7 @@
                           <Color>LightGrey</Color>
                           <Style>Solid</Style>
                         </Border>
+                        <BackgroundColor>LightSteelBlue</BackgroundColor>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -911,7 +831,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!actually_spent.Value)</Value>
                               <Style>
-                                <FontWeight>Bold</FontWeight>
+                                <FontWeight>Normal</FontWeight>
                                 <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
@@ -925,6 +845,7 @@
                           <Color>LightGrey</Color>
                           <Style>Solid</Style>
                         </Border>
+                        <BackgroundColor>LightSteelBlue</BackgroundColor>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -944,7 +865,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!advance_payment.Value)+Sum(Fields!actually_spent.Value)</Value>
                               <Style>
-                                <FontWeight>Bold</FontWeight>
+                                <FontWeight>Normal</FontWeight>
                                 <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
@@ -958,6 +879,7 @@
                           <Color>LightGrey</Color>
                           <Style>Solid</Style>
                         </Border>
+                        <BackgroundColor>LightSteelBlue</BackgroundColor>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -981,7 +903,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value />
-                              <Style />
+                              <Style>
+                                <FontWeight>Bold</FontWeight>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style />
@@ -993,7 +917,6 @@
                           <Color>LightGrey</Color>
                           <Style>Solid</Style>
                         </Border>
-                        <BackgroundColor>LightSteelBlue</BackgroundColor>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -1012,7 +935,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value />
-                              <Style />
+                              <Style>
+                                <FontWeight>Bold</FontWeight>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style />
@@ -1024,7 +949,6 @@
                           <Color>LightGrey</Color>
                           <Style>Solid</Style>
                         </Border>
-                        <BackgroundColor>LightSteelBlue</BackgroundColor>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -1043,7 +967,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value />
-                              <Style />
+                              <Style>
+                                <FontWeight>Bold</FontWeight>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style />
@@ -1055,7 +981,6 @@
                           <Color>LightGrey</Color>
                           <Style>Solid</Style>
                         </Border>
-                        <BackgroundColor>LightSteelBlue</BackgroundColor>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -1075,6 +1000,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!advance_payment.Value)</Value>
                               <Style>
+                                <FontWeight>Bold</FontWeight>
                                 <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
@@ -1088,7 +1014,6 @@
                           <Color>LightGrey</Color>
                           <Style>Solid</Style>
                         </Border>
-                        <BackgroundColor>LightSteelBlue</BackgroundColor>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -1108,6 +1033,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!actually_spent.Value)</Value>
                               <Style>
+                                <FontWeight>Bold</FontWeight>
                                 <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
@@ -1121,7 +1047,6 @@
                           <Color>LightGrey</Color>
                           <Style>Solid</Style>
                         </Border>
-                        <BackgroundColor>LightSteelBlue</BackgroundColor>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -1141,6 +1066,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!advance_payment.Value)+Sum(Fields!actually_spent.Value)</Value>
                               <Style>
+                                <FontWeight>Bold</FontWeight>
                                 <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
@@ -1154,7 +1080,6 @@
                           <Color>LightGrey</Color>
                           <Style>Solid</Style>
                         </Border>
-                        <BackgroundColor>LightSteelBlue</BackgroundColor>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -1324,7 +1249,9 @@
                         <TextRuns>
                           <TextRun>
                             <Value>Tổng</Value>
-                            <Style />
+                            <Style>
+                              <FontWeight>Bold</FontWeight>
+                            </Style>
                           </TextRun>
                         </TextRuns>
                         <Style />
@@ -1336,7 +1263,6 @@
                         <Color>LightGrey</Color>
                         <Style>Solid</Style>
                       </Border>
-                      <BackgroundColor>LightSteelBlue</BackgroundColor>
                       <PaddingLeft>2pt</PaddingLeft>
                       <PaddingRight>2pt</PaddingRight>
                       <PaddingTop>2pt</PaddingTop>
@@ -1351,10 +1277,9 @@
         </TablixRowHierarchy>
         <DataSetName>DataSet3</DataSetName>
         <Top>1.3in</Top>
-        <Left>0in</Left>
         <Height>1.25in</Height>
         <Width>7in</Width>
-        <ZIndex>5</ZIndex>
+        <ZIndex>4</ZIndex>
         <Style>
           <Border>
             <Style>None</Style>
@@ -1380,10 +1305,9 @@
         </Paragraphs>
         <rd:DefaultName>Textbox66</rd:DefaultName>
         <Top>1.05in</Top>
-        <Left>0in</Left>
         <Height>0.2in</Height>
         <Width>3in</Width>
-        <ZIndex>6</ZIndex>
+        <ZIndex>5</ZIndex>
         <Style>
           <Border>
             <Style>None</Style>
@@ -1804,6 +1728,7 @@
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
+                            <BackgroundColor>LightSteelBlue</BackgroundColor>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -1834,6 +1759,7 @@
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
+                            <BackgroundColor>LightSteelBlue</BackgroundColor>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -1864,6 +1790,7 @@
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
+                            <BackgroundColor>LightSteelBlue</BackgroundColor>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -1883,7 +1810,7 @@
                                 <TextRun>
                                   <Value>=Sum(Fields!spent.Value)</Value>
                                   <Style>
-                                    <FontWeight>Bold</FontWeight>
+                                    <FontWeight>Normal</FontWeight>
                                     <Format>#,0;(#,0);'-'</Format>
                                   </Style>
                                 </TextRun>
@@ -1897,6 +1824,7 @@
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
+                            <BackgroundColor>LightSteelBlue</BackgroundColor>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -1920,7 +1848,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value />
-                                  <Style />
+                                  <Style>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -1932,7 +1862,6 @@
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
-                            <BackgroundColor>LightSteelBlue</BackgroundColor>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -1951,7 +1880,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value />
-                                  <Style />
+                                  <Style>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -1963,7 +1894,6 @@
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
-                            <BackgroundColor>LightSteelBlue</BackgroundColor>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -1982,7 +1912,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value />
-                                  <Style />
+                                  <Style>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -1994,7 +1926,6 @@
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
-                            <BackgroundColor>LightSteelBlue</BackgroundColor>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -2014,6 +1945,7 @@
                                 <TextRun>
                                   <Value>=Sum(Fields!spent.Value)</Value>
                                   <Style>
+                                    <FontWeight>Bold</FontWeight>
                                     <Format>#,0;(#,0);'-'</Format>
                                   </Style>
                                 </TextRun>
@@ -2027,7 +1959,6 @@
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
-                            <BackgroundColor>LightSteelBlue</BackgroundColor>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -2190,7 +2121,9 @@
                             <TextRuns>
                               <TextRun>
                                 <Value>Tổng</Value>
-                                <Style />
+                                <Style>
+                                  <FontWeight>Bold</FontWeight>
+                                </Style>
                               </TextRun>
                             </TextRuns>
                             <Style />
@@ -2202,7 +2135,6 @@
                             <Color>LightGrey</Color>
                             <Style>Solid</Style>
                           </Border>
-                          <BackgroundColor>LightSteelBlue</BackgroundColor>
                           <PaddingLeft>2pt</PaddingLeft>
                           <PaddingRight>2pt</PaddingRight>
                           <PaddingTop>2pt</PaddingTop>
@@ -2229,10 +2161,9 @@
         </ReportItems>
         <KeepTogether>true</KeepTogether>
         <Top>2.65in</Top>
-        <Left>0in</Left>
         <Height>1.5in</Height>
         <Width>7in</Width>
-        <ZIndex>7</ZIndex>
+        <ZIndex>6</ZIndex>
         <Style>
           <Border>
             <Style>None</Style>
@@ -3443,7 +3374,7 @@
         <Top>6.1in</Top>
         <Height>1.5in</Height>
         <Width>7in</Width>
-        <ZIndex>8</ZIndex>
+        <ZIndex>7</ZIndex>
         <Style>
           <Border>
             <Style>None</Style>
@@ -3860,6 +3791,7 @@
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
+                            <BackgroundColor>LightSteelBlue</BackgroundColor>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -3890,6 +3822,7 @@
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
+                            <BackgroundColor>LightSteelBlue</BackgroundColor>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -3920,6 +3853,7 @@
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
+                            <BackgroundColor>LightSteelBlue</BackgroundColor>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -3939,7 +3873,7 @@
                                 <TextRun>
                                   <Value>=Sum(Fields!salary.Value)</Value>
                                   <Style>
-                                    <FontWeight>Bold</FontWeight>
+                                    <FontWeight>Normal</FontWeight>
                                     <Format>#,0;(#,0);'-'</Format>
                                   </Style>
                                 </TextRun>
@@ -3953,6 +3887,7 @@
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
+                            <BackgroundColor>LightSteelBlue</BackgroundColor>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -3976,7 +3911,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value />
-                                  <Style />
+                                  <Style>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -3988,7 +3925,6 @@
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
-                            <BackgroundColor>LightSteelBlue</BackgroundColor>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -4007,7 +3943,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value />
-                                  <Style />
+                                  <Style>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -4019,7 +3957,6 @@
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
-                            <BackgroundColor>LightSteelBlue</BackgroundColor>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -4038,7 +3975,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value />
-                                  <Style />
+                                  <Style>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -4050,7 +3989,6 @@
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
-                            <BackgroundColor>LightSteelBlue</BackgroundColor>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -4070,6 +4008,7 @@
                                 <TextRun>
                                   <Value>=Sum(Fields!salary.Value)</Value>
                                   <Style>
+                                    <FontWeight>Bold</FontWeight>
                                     <Format>#,0;(#,0);'-'</Format>
                                   </Style>
                                 </TextRun>
@@ -4083,7 +4022,6 @@
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
-                            <BackgroundColor>LightSteelBlue</BackgroundColor>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -4246,7 +4184,9 @@
                             <TextRuns>
                               <TextRun>
                                 <Value>Tổng</Value>
-                                <Style />
+                                <Style>
+                                  <FontWeight>Bold</FontWeight>
+                                </Style>
                               </TextRun>
                             </TextRuns>
                             <Style />
@@ -4258,7 +4198,6 @@
                             <Color>LightGrey</Color>
                             <Style>Solid</Style>
                           </Border>
-                          <BackgroundColor>LightSteelBlue</BackgroundColor>
                           <PaddingLeft>2pt</PaddingLeft>
                           <PaddingRight>2pt</PaddingRight>
                           <PaddingTop>2pt</PaddingTop>
@@ -4272,7 +4211,7 @@
               </TablixMembers>
             </TablixRowHierarchy>
             <DataSetName>DataSet5</DataSetName>
-            <Top>0.25in</Top>
+            <Top>0.25556in</Top>
             <Height>1.25in</Height>
             <Width>7in</Width>
             <ZIndex>1</ZIndex>
@@ -4284,10 +4223,10 @@
           </Tablix>
         </ReportItems>
         <KeepTogether>true</KeepTogether>
-        <Top>4.25in</Top>
-        <Height>1.5in</Height>
+        <Top>4.24444in</Top>
+        <Height>1.50556in</Height>
         <Width>7in</Width>
-        <ZIndex>9</ZIndex>
+        <ZIndex>8</ZIndex>
         <Style>
           <Border>
             <Style>None</Style>
@@ -4342,8 +4281,8 @@
         </Border>
       </Style>
     </PageFooter>
-    <LeftMargin>0.5in</LeftMargin>
-    <RightMargin>0.5in</RightMargin>
+    <LeftMargin>0.8in</LeftMargin>
+    <RightMargin>0.7in</RightMargin>
     <TopMargin>0.5in</TopMargin>
     <BottomMargin>0.5in</BottomMargin>
     <Style />

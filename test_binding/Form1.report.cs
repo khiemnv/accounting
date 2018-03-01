@@ -491,16 +491,19 @@ namespace test_binding
 #if use_sqlite
             string qryDaysData = string.Format("select group_name, date, "
                 + " sum(inter_pay1) as inter_pay1, sum(inter_pay2) as inter_pay2, sum(exter_pay) as exter_pay, sum(salary) as salary"
-                + " from"
-                + " (select group_name, date, advance_payment as inter_pay1, actually_spent as inter_pay2, 0 as exter_pay, 0 as salary"
+                + " from("
+                + " select group_name, date, advance_payment as inter_pay1, 0 as inter_pay2, 0 as exter_pay, 0 as salary"
+                + " from advance where date between '{0} 00:00:00' and '{1} 00:00:00'"
+                + " union all"
+                + " select group_name, date, 0 as inter_pay1, actually_spent as inter_pay2, 0 as exter_pay, 0 as salary"
                 + " from internal_payment where date between '{0} 00:00:00' and '{1} 00:00:00'"
                 + " union all"
-                + " select group_name, date, 0 as inter_pay1, 0 as inter_pay2,spent as exter_pay, 0 as salary"
+                + " select group_name, date, 0 as inter_pay1, 0 as inter_pay2, spent as exter_pay, 0 as salary"
                 + " from external_payment where date between '{0} 00:00:00' and '{1} 00:00:00'"
                 + " union all"
-                + " select group_name, date, 0 as inter_pay1,0 as inter_pay2, 0 as exter_pay, salary"
-                + " from salary where date between '{0} 00:00:00' and '{1} 00:00:00')"
-                + " group by group_name, date",
+                + " select group_name, date, 0 as inter_pay1, 0 as inter_pay2, 0 as exter_pay, salary"
+                + " from salary where date between '{0} 00:00:00' and '{1} 00:00:00'"
+                + " )group by group_name, date",
                 zStartDate, zEndDate);
 #else
             string qryDaysData = string.Format("select t1.group_name, t1.date, t1.name,"
@@ -524,16 +527,18 @@ namespace test_binding
         {
             var zDate = date.ToString("yyyy-MM-dd");
             string sql = string.Format("select * from( "
-                 + " select(select sum(amount) from receipts where date < '{0} 00:00:00') a1, "
-                 + " (select sum(spent)from external_payment where date < '{0} 00:00:00') b1,"
-                 + " (select sum(advance_payment) + sum(actually_spent) from internal_payment where date < '{0} 00:00:00') b2,"
-                 + " (select sum(salary) as d1 from salary where date < '{0} 00:00:00') b3)", zDate);
+                 + " select(select sum(amount) from receipts where date < '{0} 00:00:00') r1, "
+                 + " (select sum(spent)from external_payment where date < '{0} 00:00:00') e1,"
+                 + " (select sum(advance_payment) from advance where date < '{0} 00:00:00') i1,"
+                 + " (select sum(actually_spent) from internal_payment where date < '{0} 00:00:00') i2,"
+                 + " (select sum(salary) as d1 from salary where date < '{0} 00:00:00') s1)", zDate);
             DataTable dt = loadData(sql);
             var row = dt.Rows[0];
             Int64 sum = row[0] != DBNull.Value ? (Int64)row[0] : 0;
             sum -= row[1] != DBNull.Value ? (Int64)row[1] : 0;
             sum -= row[2] != DBNull.Value ? (Int64)row[2] : 0;
             sum -= row[3] != DBNull.Value ? (Int64)row[3] : 0;
+            sum -= row[4] != DBNull.Value ? (Int64)row[4] : 0;
             return sum;
         }
         protected string getMonthQry(string zStartDate, string zEndDate)
@@ -543,7 +548,10 @@ namespace test_binding
 #if use_sqlite
             string qryMonthData = string.Format("select month, sum(receipt) as receipt, sum(inter_pay1) as inter_pay1, sum(inter_pay2) as inter_pay2,sum(exter_pay) as exter_pay, sum(salary) as salary, 0 as remain "
                 + " from("
-                + "   select strftime('%Y-%m', date) as month, 0 as receipt, sum(advance_payment) as inter_pay1, sum(actually_spent) as inter_pay2, 0 as exter_pay, 0 as salary"
+                + "   select strftime('%Y-%m', date) as month, 0 as receipt, sum(advance_payment) as inter_pay1, 0 as inter_pay2, 0 as exter_pay, 0 as salary"
+                + "   from advance where date between '{0} 00:00:00' and '{1} 00:00:00' group by month"
+                + "   union all"
+                + "   select strftime('%Y-%m', date) as month, 0 as receipt, 0, sum(actually_spent) as inter_pay2, 0 as exter_pay, 0 as salary"
                 + "   from internal_payment where date between '{0} 00:00:00' and '{1} 00:00:00' group by month"
                 + "   union all"
                 + "   select strftime('%Y-%m', date) as month, 0 as receipt, 0 as inter_pay1, 0 as inter_pay2,sum(spent) as exter_pay, 0 as salary"
@@ -706,10 +714,13 @@ namespace test_binding
                 foreach (DataRow row in dt.Rows)
                 {
                     curRm = curRm + (Int64)row["receipt"]
-                        - (Int64)row["inter_pay1"]
                         - (Int64)row["inter_pay2"]
                         - (Int64)row["exter_pay"]
                         - (Int64)row["salary"];
+
+                    if (row["inter_pay1"] != DBNull.Value)
+                        curRm = curRm - (Int64)row["inter_pay1"];
+
                     row["remain"] = curRm;
                 }
                 m_rptParams.AddRange(new ReportParameter[] {
@@ -750,16 +761,19 @@ namespace test_binding
 #if use_sqlite
             string qryWeeksData = string.Format("select group_name, week as date, "
                + " sum(inter_pay1) as inter_pay1, sum(inter_pay2) as inter_pay2, sum(exter_pay) as exter_pay, sum(salary) as salary"
-               + " from"
-               + " (select group_name, strftime('%W-%Y', date) as week, advance_payment as inter_pay1, actually_spent as inter_pay2, 0 as exter_pay, 0 as salary"
+               + " from("
+               + " select group_name, strftime('%W-%Y', date) as week, advance_payment as inter_pay1, 0 as inter_pay2, 0 as exter_pay, 0 as salary"
+               + " from advance where date between '{0} 00:00:00' and '{1} 00:00:00'"
+               + " union all"
+               + " select group_name, strftime('%W-%Y', date) as week, 0 as inter_pay1, actually_spent as inter_pay2, 0 as exter_pay, 0 as salary"
                + " from internal_payment where date between '{0} 00:00:00' and '{1} 00:00:00'"
                + " union all"
                + " select group_name, strftime('%W-%Y', date) as week, 0 as inter_pay1, 0 as inter_pay2,  spent as exter_pay, 0 as salary"
                + " from external_payment where date between '{0} 00:00:00' and '{1} 00:00:00'"
                + " union all"
                + " select group_name, strftime('%W-%Y', date) as week, 0 as inter_pay1, 0 as inter_pay2, 0 as exter_pay, salary"
-               + " from salary where date between '{0} 00:00:00' and '{1} 00:00:00')"
-               + " group by group_name, week",
+               + " from salary where date between '{0} 00:00:00' and '{1} 00:00:00'"
+               + " )group by group_name, week",
                zStartDate, zEndDate);
 #else
             string qryWeeksData = string.Format(" select group_name, week as date, '' as name,"
@@ -807,16 +821,19 @@ namespace test_binding
 #if use_sqlite
             string qryMonthsData = string.Format("select group_name, month as date,"
                + " sum(inter_pay1) as inter_pay1, sum(inter_pay2) as inter_pay2, sum(exter_pay) as exter_pay, sum(salary) as salary"
-               + " from"
-               + " (select group_name, strftime('%m-%Y', date) as month, advance_payment as inter_pay1, actually_spent as inter_pay2, 0 as exter_pay, 0 as salary"
+               + " from("
+               + " select group_name, strftime('%m-%Y', date) as month, advance_payment as inter_pay1, 0 as inter_pay2, 0 as exter_pay, 0 as salary"
+               + " from advance where date between '{0} 00:00:00' and '{1} 00:00:00'"
+               + " union all"
+               + " select group_name, strftime('%m-%Y', date) as month, 0 as inter_pay1, actually_spent as inter_pay2, 0 as exter_pay, 0 as salary"
                + " from internal_payment where date between '{0} 00:00:00' and '{1} 00:00:00'"
                + " union all"
                + " select group_name, strftime('%m-%Y', date) as month, 0 as inter_pay1, 0 as inter_pay2, spent as exter_pay, 0 as salary"
                + " from external_payment where date between '{0} 00:00:00' and '{1} 00:00:00'"
                + " union all"
                + " select group_name, strftime('%m-%Y', date) as month, 0 as inter_pay1, 0 as inter_pay2, 0 as exter_pay, salary"
-               + " from salary where date between '{0} 00:00:00' and '{1} 00:00:00')"
-               + " group by group_name, month",
+               + " from salary where date between '{0} 00:00:00' and '{1} 00:00:00'"
+               + " )group by group_name, month",
                zStartDate, zEndDate);
 #else
             string qryMonthsData = string.Format(" select group_name, month as date, '' as name,"
@@ -1024,6 +1041,14 @@ namespace test_binding
                 + "           SELECT date,"
                 + "                  0 AS receipt,"
                 + "                  advance_payment AS interpay1,"
+                + "                  0 as interpay2,"
+                + "                  0 AS exterpay,"
+                + "                  0 AS salary"
+                + "             FROM advance where date between '{0} 00:00:00' and '{1} 00:00:00'"
+                + "           UNION ALL"
+                + "           SELECT date,"
+                + "                  0 AS receipt,"
+                + "                  0 AS interpay1,"
                 + "                  actually_spent as interpay2,"
                 + "                  0 AS exterpay,"
                 + "                  0 AS salary"
@@ -1067,7 +1092,9 @@ namespace test_binding
             Int64 curRm = prevRm;
             foreach (DataRow row in dt.Rows)
             {
-                curRm += (Int64)row["remain"];
+                if (row["remain"] != DBNull.Value)
+                    curRm += (Int64)row["remain"];
+
                 row["remain"] = curRm;
             }
             m_rptParams.Add(new ReportParameter("prevRm", prevRm.ToString()));
@@ -1133,10 +1160,15 @@ namespace test_binding
 
             zStartDate = startDate.ToString(lConfigMng.getDateFormat());
             zEndDate = endDate.ToString(lConfigMng.getDateFormat());
+            string qry = string.Format(
+                " select * from advance where  date between '{0} 00:00:00' and '{1} 00:00:00' "
+                + " union all "
+                + " select * from internal_payment where  date between '{0} 00:00:00' and '{1} 00:00:00' ",
+                zStartDate, zEndDate);
             m_sqls = new Dictionary<string, string>
             {
                 { "DataSet2", getMonthQry(zStartDate, zEndDate)},
-                { "DataSet3", string.Format("select * from {2} where  date between '{0} 00:00:00' and '{1} 00:00:00'", zStartDate, zEndDate, "internal_payment")},
+                { "DataSet3", qry },
                 { "DataSet4", string.Format("select * from {2} where  date between '{0} 00:00:00' and '{1} 00:00:00'", zStartDate, zEndDate, "external_payment")},
                 { "DataSet5", string.Format("select * from {2} where  date between '{0} 00:00:00' and '{1} 00:00:00'", zStartDate, zEndDate, "salary")},
             };
@@ -1230,6 +1262,15 @@ namespace test_binding
         {
             m_rdlcPath = @"..\..\c_salary.rdlc";
             m_viewName = "salary";
+        }
+    }
+
+    public class lCurAdvanceReport : lCurReceiptsReport
+    {
+        public lCurAdvanceReport()
+        {
+            m_rdlcPath = @"..\..\c_advance.rdlc";
+            m_viewName = "advance";
         }
     }
 

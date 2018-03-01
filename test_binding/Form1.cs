@@ -59,6 +59,7 @@ namespace test_binding
                     new lInterPaymentPanel(),
                     new lExternalPaymentPanel(),
                     new lSalaryPanel(),
+                    new lAdvancePanel(),
                 };
 #if save_config
                 appConfig.s_config.UpdateConfig();
@@ -268,7 +269,8 @@ namespace test_binding
             receiptIF,
             exterPayIF,
             interPayIF,
-            salaryIF
+            salaryIF,
+            advanceIF
         }
         private void openInputForm(inputFormType type)
         {
@@ -286,6 +288,9 @@ namespace test_binding
                     break;
                 case inputFormType.salaryIF:
                     inputDlg = new lSalaryInputF();
+                    break;
+                case inputFormType.advanceIF:
+                    inputDlg = new lAdvanceInputF();
                     break;
             }
 
@@ -501,6 +506,18 @@ namespace test_binding
             m_dataPanel = new lSalaryDataPanel();
             m_searchPanel = new lSalarySearchPanel(m_dataPanel);
             m_report = new lCurSalaryReport();
+            base.init();
+        }
+    }
+
+    [DataContract(Name = "AdvancePanel")]
+    public class lAdvancePanel: lBasePanel
+    {
+        public lAdvancePanel()
+        {
+            m_dataPanel = new lAdvanceDataPanel();
+            m_searchPanel = new lAdvanceSearchPanel(m_dataPanel);
+            m_report = new lCurAdvanceReport();
             base.init();
         }
     }

@@ -162,4 +162,22 @@ namespace test_binding
             return new lSalaryInputPanel();
         }
     }
+    public class lAdvanceInputF : inputF
+    {
+        protected override void initCtrls()
+        {
+            this.Text = "Phiếu Chi Tạm Ứng";
+            base.initCtrls();
+        }
+#if use_general_bill
+        protected override string GetBill()
+        {
+            return @"..\..\bill_salary.rdlc";
+        }
+#endif
+        protected override lInputPanel CrtInputPanel()
+        {
+            return new lAdvanceInputPanel();
+        }
+    }
 }

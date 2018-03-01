@@ -1113,8 +1113,8 @@ namespace test_binding
             m_tblName = "internal_payment";
 #if has_advance
             lInputCtrl advance_payment = crtInputCtrl(m_tblInfo, "advance_payment", new Point(0, 6), new Size(1, 1));
-            lInputCtrl reimbursement = crtInputCtrl(m_tblInfo, "reimbursement", new Point(0, 7), new Size(1, 1));
-            lInputCtrl actually_spent = crtInputCtrl(m_tblInfo, "actually_spent", new Point(0, 8), new Size(1, 1));
+            lInputCtrl reimbursement = crtInputCtrl(m_tblInfo, "reimbursement",     new Point(0, 7), new Size(1, 1));
+            lInputCtrl actually_spent = crtInputCtrl(m_tblInfo, "actually_spent",   new Point(0, 8), new Size(1, 1));
 #endif
             m_inputsCtrls = new List<lInputCtrl>
             {
@@ -1130,9 +1130,8 @@ namespace test_binding
                 actually_spent,
                 crtInputCtrl(m_tblInfo, "note"              , new Point(0, 9), new Size(1, 1)),
 #else
-                crtInputCtrl(m_tblInfo, "advance_payment"   , new Point(0, 6), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "actually_spent"    , new Point(0, 7), new Size(1, 1)),
-                crtInputCtrl(m_tblInfo, "note"              , new Point(0, 8), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "actually_spent"    , new Point(0, 6), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "note"              , new Point(0, 7), new Size(1, 1)),
 #endif
             };
             m_inputsCtrls[0].ReadOnly = true;
@@ -1157,9 +1156,10 @@ namespace test_binding
                 { "num","payment_number" },
                 { "content","content" },
                 { "note","note" },
-                { "amount","advance_payment" },
+                { "amount","actually_spent" },
             };
             m_rptAsst = new rptAssist(2, dict);
+#if false
             m_rptAsst.ConvertRowCompleted = (inR, outR) =>
             {
                 //Debug.Assert((Int64)inR["advance_payment"] > 0, "advance should not zero");
@@ -1173,6 +1173,7 @@ namespace test_binding
                     }
                 }
             };
+#endif
         }
         public override void initCtrls()
         {
@@ -1274,6 +1275,87 @@ namespace test_binding
             if (Int64.TryParse(bsalary.Text.Replace(",",""), out val)) { sum += val; }
             if (Int64.TryParse(esalary.Text.Replace(",", ""), out val)) { sum += val; }
             salary.Text = string.Format("{0:#,0}", sum);
+        }
+    }
+    [DataContract(Name = "AdvanceInputPanel")]
+    public class lAdvanceInputPanel : lInputPanel
+    {
+        protected override lInputCtrl m_keyCtrl { get { return m_inputsCtrls[0]; } }
+        private keyMng m_key;
+        protected override keyMng m_keyMng { get { return m_key; } }
+        public lAdvanceInputPanel()
+        {
+            m_tblName = "advance";
+#if false
+            lInputCtrl advance_payment = crtInputCtrl(m_tblInfo, "advance_payment", new Point(0, 6), new Size(1, 1));
+            lInputCtrl reimbursement = crtInputCtrl(m_tblInfo, "reimbursement", new Point(0, 7), new Size(1, 1));
+            lInputCtrl actually_spent = crtInputCtrl(m_tblInfo, "actually_spent", new Point(0, 8), new Size(1, 1));
+#endif
+            m_inputsCtrls = new List<lInputCtrl>
+            {
+                crtInputCtrl(m_tblInfo, "payment_number"    , new Point(0, 0), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "date"              , new Point(0, 1), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "name"              , new Point(0, 2), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "addr"              , new Point(0, 3), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "group_name"        , new Point(0, 4), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "content"           , new Point(0, 5), new Size(1, 1)),
+#if false
+                advance_payment,
+                reimbursement,
+                actually_spent,
+                crtInputCtrl(m_tblInfo, "note"              , new Point(0, 9), new Size(1, 1)),
+#else
+                crtInputCtrl(m_tblInfo, "advance_payment"   , new Point(0, 6), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "reimbursement"     , new Point(0, 7), new Size(1, 1)),
+                crtInputCtrl(m_tblInfo, "note"              , new Point(0, 8), new Size(1, 1)),
+#endif
+            };
+            m_inputsCtrls[0].ReadOnly = true;
+#if false
+            reimbursement.EditingCompleted += (s, e) =>
+            {
+                long advance, reimbur;
+                bool bRet = long.TryParse(advance_payment.Text.Replace(",", ""), out advance);
+                bRet &= long.TryParse(reimbursement.Text.Replace(",", ""), out reimbur);
+                if (bRet)
+                {
+                    Debug.Assert(advance >= reimbur);
+                    actually_spent.Text = (advance - reimbur).ToString();
+                }
+            };
+#endif
+            m_key = new keyMng("PTU", m_tblName, "payment_number");
+            Dictionary<string, string> dict = new Dictionary<string, string> {
+                { "name","name" },
+                { "addr","addr" },
+                { "date","date" },
+                { "num","payment_number" },
+                { "content","content" },
+                { "note","note" },
+                { "amount","advance_payment" },
+            };
+            m_rptAsst = new rptAssist(2, dict);
+            m_rptAsst.ConvertRowCompleted = (inR, outR) =>
+            {
+                Debug.Assert((Int64)inR["advance_payment"] > 0, "advance should not zero");
+                //var obj = inR["actually_spent"];
+                //if (obj != DBNull.Value)
+                //{
+                //    Int64 act = (Int64)obj;
+                //    if (act > 0)
+                //    {
+                //        outR["amount"] = act;
+                //    }
+                //}
+            };
+        }
+        public override void initCtrls()
+        {
+            base.initCtrls();
+
+            m_dataGridView.CellEndEdit += (s, e) =>
+            {
+            };
         }
     }
 }

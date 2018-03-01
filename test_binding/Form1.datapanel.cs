@@ -592,30 +592,7 @@ namespace test_binding
         public lInterPaymentDataPanel()
         {
             m_tblName = "internal_payment";
-            m_countOn = "advance_payment";
-        }
-        protected override void updateSumCtrl()
-        {
-            BindingSource bs = m_dataContent.m_bindingSource;
-            DataTable tbl = (DataTable)bs.DataSource;
-
-            Int64 adv = 0, act = 0;
-            int iAdv = m_tblInfo.getColIndex("advance_payment");
-            int iAct = m_tblInfo.getColIndex("actually_spent");
-            foreach (DataRow row in tbl.Rows)
-            {
-                var col1 = row[iAdv];
-                var col2 = row[iAct];
-                if (col1 != DBNull.Value) { adv += (Int64)col1; }
-                if (col2 != DBNull.Value) { act += (Int64)col2; }
-            }
-            string txt = string.Format("{0} + {1} = {2} + {3} = {4}",
-                m_tblInfo.m_cols[iAdv].m_alias,
-                m_tblInfo.m_cols[iAct].m_alias,
-                adv.ToString(lConfigMng.getCurrencyFormat()),
-                act.ToString(lConfigMng.getCurrencyFormat()),
-                (adv + act).ToString(lConfigMng.getCurrencyFormat()));
-            m_sumLabel.Text = txt;
+            m_countOn = "actually_spent";
         }
     }
 
@@ -648,6 +625,41 @@ namespace test_binding
             m_countOn = "salary";
         }
     }
+
+    [DataContract(Name = "AdvanceDataPanel")]
+    public class lAdvanceDataPanel : lDataPanel
+    {
+        public lAdvanceDataPanel()
+        {
+            m_tblName = "advance";
+            m_countOn = "actually_spent";
+        }
+
+        protected override void updateSumCtrl()
+        {
+            BindingSource bs = m_dataContent.m_bindingSource;
+            DataTable tbl = (DataTable)bs.DataSource;
+
+            Int64 adv = 0, act = 0;
+            int iAdv = m_tblInfo.getColIndex("advance_payment");
+            int iAct = m_tblInfo.getColIndex("actually_spent");
+            foreach (DataRow row in tbl.Rows)
+            {
+                var col1 = row[iAdv];
+                var col2 = row[iAct];
+                if (col1 != DBNull.Value) { adv += (Int64)col1; }
+                if (col2 != DBNull.Value) { act += (Int64)col2; }
+            }
+            string txt = string.Format("Sum = {4}",
+                m_tblInfo.m_cols[iAdv].m_alias,
+                m_tblInfo.m_cols[iAct].m_alias,
+                adv.ToString(lConfigMng.getCurrencyFormat()),
+                act.ToString(lConfigMng.getCurrencyFormat()),
+                (adv + act).ToString(lConfigMng.getCurrencyFormat()));
+            m_sumLabel.Text = txt;
+        }
+    }
+
 
     public class lGroupNameDataPanel : lDataPanel
     {

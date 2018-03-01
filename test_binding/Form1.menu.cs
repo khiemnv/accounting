@@ -103,6 +103,9 @@ namespace test_binding
             var miSalary = crtMenuItem("Phiếu Chi Lương");
             miSalary.Click += miSalary_Click;
             addChild(miInput, miSalary);
+            var miAdvance = crtMenuItem("Phiếu Chi Tạm Ứng");
+            miAdvance.Click += MiAdvance_Click;
+            addChild(miInput, miAdvance);
 
 #if use_menuitem
             mainMenu.MenuItems.AddRange(new MenuItem[] { miFile, miEdit, miReport, miConfig, miHelp });
@@ -133,6 +136,11 @@ namespace test_binding
         {
             //load input
             openInputForm(inputFormType.receiptIF);
+        }
+
+        private void MiAdvance_Click(object sender, EventArgs e)
+        {
+            openInputForm(inputFormType.advanceIF);
         }
 
         private void MiFont_Click(object sender, EventArgs e)

@@ -206,9 +206,9 @@ namespace test_binding
                    new lColInfo( "addr"             ,"Địa chỉ"      , lColInfo.lColType.text),
                    new lColInfo( "group_name"       ,"Thuộc ban"    , lColInfo.lColType.text, "group_name"),
                    new lColInfo( "content"          ,"Nội dung"     , lColInfo.lColType.text),
-                   new lColInfo( "advance_payment"  ,"Tạm ứng"      , lColInfo.lColType.currency),
+                   new lColInfo( "advance_payment"  ,"Tạm ứng"      , lColInfo.lColType.currency, null, false),
                    new lColInfo( "reimbursement"    ,"Hoàn ứng"     , lColInfo.lColType.currency, null, false),
-                   new lColInfo( "actually_spent"   ,"Thực chi"     , lColInfo.lColType.currency),
+                   new lColInfo( "actually_spent"   ,"Số tiền"     , lColInfo.lColType.currency),
                    new lColInfo( "note"             ,"Ghi Chú"      , lColInfo.lColType.text),
                 };
         }
@@ -346,6 +346,41 @@ namespace test_binding
             m_cols = new lColInfo[] {
                    new lColInfo( "ID","ID", lColInfo.lColType.num, null, false),
                    new lColInfo( "content","Nguồn thu", lColInfo.lColType.text)
+                };
+        }
+    };
+    [DataContract(Name = "AdvanceTblInfo")]
+    public class lAdvanceTblInfo : lTableInfo
+    {
+        public lAdvanceTblInfo()
+        {
+            m_tblName = "advance";
+            m_tblAlias = "Tạm Ứng";
+            m_crtQry = "CREATE TABLE if not exists advance("
+            + "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + "date datetime,"
+            + "payment_number char(31),"
+            + "name char(31),"
+            + "addr char(63),"
+            + "group_name char(31),"
+            + "advance_payment INTEGER,"
+            + "reimbursement INTEGER,"
+            + "actually_spent INTEGER,"
+            + "content text,"
+            + "note text"
+            + ")";
+            m_cols = new lColInfo[] {
+                   new lColInfo( "ID"               ,"ID"           , lColInfo.lColType.num, null, false),
+                   new lColInfo( "payment_number"   ,"Mã Phiếu Chi" , lColInfo.lColType.uniqueText),
+                   new lColInfo( "date"             ,"Ngày Tháng"   , lColInfo.lColType.dateTime),
+                   new lColInfo( "name"             ,"Họ Tên"       , lColInfo.lColType.text),
+                   new lColInfo( "addr"             ,"Địa chỉ"      , lColInfo.lColType.text),
+                   new lColInfo( "group_name"       ,"Thuộc ban"    , lColInfo.lColType.text, "group_name"),
+                   new lColInfo( "content"          ,"Nội dung"     , lColInfo.lColType.text),
+                   new lColInfo( "advance_payment"  ,"Tạm ứng"      , lColInfo.lColType.currency),
+                   new lColInfo( "reimbursement"    ,"Hoàn ứng"     , lColInfo.lColType.currency),
+                   new lColInfo( "actually_spent"   ,"Tồn"          , lColInfo.lColType.currency, null, false),
+                   new lColInfo( "note"             ,"Ghi Chú"      , lColInfo.lColType.text),
                 };
         }
     };
@@ -764,6 +799,7 @@ namespace test_binding
                     new lInternalPaymentTblInfo(),
                     new lExternalPaymentTblInfo(),
                     new lSalaryTblInfo(),
+                    new lAdvanceTblInfo(),
                     new lReceiptsContentTblInfo(),
                     new lGroupNameTblInfo(),
                     new lBuildingTblInfo(),

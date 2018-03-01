@@ -771,4 +771,21 @@ namespace test_binding
                 };
         }
     }
+
+    [DataContract(Name = "AdvanceSearchPanel")]
+    public class lAdvanceSearchPanel : lSearchPanel
+    {
+        public lAdvanceSearchPanel(lDataPanel dataPanel)
+        {
+            m_dataPanel = dataPanel;
+            m_searchCtrls = new List<lSearchCtrl> {
+                    //crtSearchCtrl(m_tblInfo, "month", new Point(0, 0), new Size(1, 1)),
+                    crtSearchCtrl(m_tblInfo, "date"             , new Point(0, 0), new Size(1, 1)),
+                    crtSearchCtrl(m_tblInfo, "payment_number"   , new Point(0, 1), new Size(1, 1), lSearchCtrl.SearchMode.match),
+                    crtSearchCtrl(m_tblInfo, "name"             , new Point(1, 0), new Size(1, 1), lSearchCtrl.SearchMode.like),
+                    crtSearchCtrl(m_tblInfo, "group_name"       , new Point(1, 1), new Size(1, 1), lSearchCtrl.SearchMode.match),
+                    crtSearchCtrl(m_tblInfo, "content"          , new Point(1, 2), new Size(1, 1), lSearchCtrl.SearchMode.like),
+                };
+        }
+    }
 }

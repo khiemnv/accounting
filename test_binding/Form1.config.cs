@@ -70,6 +70,7 @@ namespace test_binding
                     typeof(lInterPaymentDataPanel),
                     typeof(lExternalPaymentDataPanel),
                     typeof(lSalaryDataPanel),
+                    typeof(lAdvanceDataPanel),
 
                     typeof(lReceiptsReport),
                     typeof(lCurReceiptsReport),
