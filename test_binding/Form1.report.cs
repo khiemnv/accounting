@@ -1160,15 +1160,18 @@ namespace test_binding
 
             zStartDate = startDate.ToString(lConfigMng.getDateFormat());
             zEndDate = endDate.ToString(lConfigMng.getDateFormat());
-            string qry = string.Format(
-                " select * from advance where  date between '{0} 00:00:00' and '{1} 00:00:00' "
-                + " union all "
-                + " select * from internal_payment where  date between '{0} 00:00:00' and '{1} 00:00:00' ",
+            string qry1 = string.Format(
+                " select * from advance where  date between '{0} 00:00:00' and '{1} 00:00:00' ",
+                zStartDate, zEndDate
+                );
+            string qry3 = string.Format(
+                " select * from internal_payment where  date between '{0} 00:00:00' and '{1} 00:00:00' ",
                 zStartDate, zEndDate);
             m_sqls = new Dictionary<string, string>
             {
+                { "DataSet1", qry1 },
                 { "DataSet2", getMonthQry(zStartDate, zEndDate)},
-                { "DataSet3", qry },
+                { "DataSet3", qry3 },
                 { "DataSet4", string.Format("select * from {2} where  date between '{0} 00:00:00' and '{1} 00:00:00'", zStartDate, zEndDate, "external_payment")},
                 { "DataSet5", string.Format("select * from {2} where  date between '{0} 00:00:00' and '{1} 00:00:00'", zStartDate, zEndDate, "salary")},
             };
@@ -1269,8 +1272,8 @@ namespace test_binding
     {
         public lCurAdvanceReport()
         {
-            m_rdlcPath = @"..\..\c_advance.rdlc";
-            m_viewName = "advance";
+            m_rdlcPath = @"..\..\rpt_interpayment.rdlc";
+            m_viewName = "v_advance";
         }
     }
 

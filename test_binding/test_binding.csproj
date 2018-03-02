@@ -150,6 +150,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>accountingDataSet5.xsd</DependentUpon>
     </Compile>
+    <Compile Include="accountingDataSet6.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>accountingDataSet6.xsd</DependentUpon>
+    </Compile>
     <Compile Include="Form1.bgTask.cs" />
     <Compile Include="Form1.config.cs" />
     <Compile Include="Form1.customColumn.cs" />
@@ -297,6 +302,17 @@
     </None>
     <None Include="accountingDataSet5.xss">
       <DependentUpon>accountingDataSet5.xsd</DependentUpon>
+    </None>
+    <None Include="accountingDataSet6.xsc">
+      <DependentUpon>accountingDataSet6.xsd</DependentUpon>
+    </None>
+    <None Include="accountingDataSet6.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>accountingDataSet6.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="accountingDataSet6.xss">
+      <DependentUpon>accountingDataSet6.xsd</DependentUpon>
     </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

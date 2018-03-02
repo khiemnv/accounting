@@ -634,7 +634,7 @@ namespace test_binding
             m_tblName = "advance";
             m_countOn = "actually_spent";
         }
-
+#if false
         protected override void updateSumCtrl()
         {
             BindingSource bs = m_dataContent.m_bindingSource;
@@ -658,6 +658,7 @@ namespace test_binding
                 (adv + act).ToString(lConfigMng.getCurrencyFormat()));
             m_sumLabel.Text = txt;
         }
+#endif
     }
 
 

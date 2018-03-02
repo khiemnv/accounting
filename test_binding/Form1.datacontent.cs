@@ -379,7 +379,7 @@ namespace test_binding
                    new lColInfo( "content"          ,"Nội dung"     , lColInfo.lColType.text),
                    new lColInfo( "advance_payment"  ,"Tạm ứng"      , lColInfo.lColType.currency),
                    new lColInfo( "reimbursement"    ,"Hoàn ứng"     , lColInfo.lColType.currency),
-                   new lColInfo( "actually_spent"   ,"Tồn"          , lColInfo.lColType.currency, null, false),
+                   new lColInfo( "actually_spent"   ,"Tồn"          , lColInfo.lColType.currency),
                    new lColInfo( "note"             ,"Ghi Chú"      , lColInfo.lColType.text),
                 };
         }
@@ -463,6 +463,26 @@ namespace test_binding
                 new lColInfo("year", "Năm", lColInfo.lColType.num),
                 new lColInfo("qtr", "Quý", lColInfo.lColType.num),
             };
+        }
+    };
+    [DataContract(Name = "lAdvanceViewInfo")]
+    public class lAdvanceViewInfo : lTableInfo
+    {
+        public lAdvanceViewInfo()
+        {
+            m_tblName = "v_advance";
+            m_crtQry = "CREATE VIEW if not exists v_advance as "
+                + "select group_name, actually_spent/1000 as actually_spent, "
+                + "cast(strftime('%Y', date) as integer) as year, "
+                + "(strftime('%m', date) + 2) / 3 as qtr "
+                + "from advance "
+                + "where strftime('%Y', 'now') - strftime('%Y', date) between 0 and 4;";
+            m_cols = new lColInfo[] {
+                   new lColInfo( "group_name","Ban", lColInfo.lColType.text),
+                   new lColInfo( "actually_spent","Thực chi", lColInfo.lColType.currency),
+                   new lColInfo( "year","Năm", lColInfo.lColType.num),
+                   new lColInfo( "qtr","Quý", lColInfo.lColType.num),
+                };
         }
     };
     [DataContract(Name = "lDaysumViewInfo")]

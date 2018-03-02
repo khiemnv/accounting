@@ -1286,7 +1286,7 @@ namespace test_binding
         public lAdvanceInputPanel()
         {
             m_tblName = "advance";
-#if false
+#if true
             lInputCtrl advance_payment = crtInputCtrl(m_tblInfo, "advance_payment", new Point(0, 6), new Size(1, 1));
             lInputCtrl reimbursement = crtInputCtrl(m_tblInfo, "reimbursement", new Point(0, 7), new Size(1, 1));
             lInputCtrl actually_spent = crtInputCtrl(m_tblInfo, "actually_spent", new Point(0, 8), new Size(1, 1));
@@ -1299,7 +1299,7 @@ namespace test_binding
                 crtInputCtrl(m_tblInfo, "addr"              , new Point(0, 3), new Size(1, 1)),
                 crtInputCtrl(m_tblInfo, "group_name"        , new Point(0, 4), new Size(1, 1)),
                 crtInputCtrl(m_tblInfo, "content"           , new Point(0, 5), new Size(1, 1)),
-#if false
+#if true
                 advance_payment,
                 reimbursement,
                 actually_spent,
@@ -1311,7 +1311,7 @@ namespace test_binding
 #endif
             };
             m_inputsCtrls[0].ReadOnly = true;
-#if false
+#if true
             reimbursement.EditingCompleted += (s, e) =>
             {
                 long advance, reimbur;
@@ -1338,15 +1338,15 @@ namespace test_binding
             m_rptAsst.ConvertRowCompleted = (inR, outR) =>
             {
                 Debug.Assert((Int64)inR["advance_payment"] > 0, "advance should not zero");
-                //var obj = inR["actually_spent"];
-                //if (obj != DBNull.Value)
-                //{
-                //    Int64 act = (Int64)obj;
-                //    if (act > 0)
-                //    {
-                //        outR["amount"] = act;
-                //    }
-                //}
+                var obj = inR["actually_spent"];
+                if (obj != DBNull.Value)
+                {
+                    Int64 act = (Int64)obj;
+                    if (act > 0)
+                    {
+                        outR["amount"] = act;
+                    }
+                }
             };
         }
         public override void initCtrls()
