@@ -38,9 +38,6 @@
         <TablixBody>
           <TablixColumns>
             <TablixColumn>
-              <Width>0.9in</Width>
-            </TablixColumn>
-            <TablixColumn>
               <Width>1in</Width>
             </TablixColumn>
             <TablixColumn>
@@ -48,15 +45,18 @@
             </TablixColumn>
             <TablixColumn>
               <Width>1in</Width>
-            </TablixColumn>
-            <TablixColumn>
-              <Width>1.1in</Width>
             </TablixColumn>
             <TablixColumn>
               <Width>1in</Width>
             </TablixColumn>
             <TablixColumn>
               <Width>1.5in</Width>
+            </TablixColumn>
+            <TablixColumn>
+              <Width>1in</Width>
+            </TablixColumn>
+            <TablixColumn>
+              <Width>1in</Width>
             </TablixColumn>
           </TablixColumns>
           <TablixRows>
@@ -73,7 +73,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value>Ngày</Value>
-                              <Style />
+                              <Style>
+                                <FontSize>12pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style>
@@ -106,7 +108,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value>Thu</Value>
-                              <Style />
+                              <Style>
+                                <FontSize>12pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style>
@@ -139,7 +143,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value>Chi nội chúng</Value>
-                              <Style />
+                              <Style>
+                                <FontSize>12pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style>
@@ -174,7 +180,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value>Chi ngoại chúng</Value>
-                              <Style />
+                              <Style>
+                                <FontSize>12pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style>
@@ -207,7 +215,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value>Lương</Value>
-                              <Style />
+                              <Style>
+                                <FontSize>12pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style>
@@ -240,7 +250,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value>Số dư cuối</Value>
-                              <Style />
+                              <Style>
+                                <FontSize>12pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style>
@@ -278,7 +290,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value />
-                              <Style />
+                              <Style>
+                                <FontSize>12pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style>
@@ -311,7 +325,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value />
-                              <Style />
+                              <Style>
+                                <FontSize>12pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style>
@@ -344,7 +360,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value>Tạm ứng</Value>
-                              <Style />
+                              <Style>
+                                <FontSize>12pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style>
@@ -377,7 +395,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value>Thực chi</Value>
-                              <Style />
+                              <Style>
+                                <FontSize>12pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style>
@@ -410,7 +430,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value />
-                              <Style />
+                              <Style>
+                                <FontSize>12pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style>
@@ -443,7 +465,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value />
-                              <Style />
+                              <Style>
+                                <FontSize>12pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style>
@@ -476,7 +500,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value />
-                              <Style />
+                              <Style>
+                                <FontSize>12pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style>
@@ -514,7 +540,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value>Tồn đầu kỳ</Value>
-                              <Style />
+                              <Style>
+                                <FontSize>12pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style />
@@ -545,7 +573,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value />
-                              <Style />
+                              <Style>
+                                <FontSize>12pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style />
@@ -576,7 +606,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value />
-                              <Style />
+                              <Style>
+                                <FontSize>12pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style />
@@ -607,7 +639,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value />
-                              <Style />
+                              <Style>
+                                <FontSize>12pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style />
@@ -638,7 +672,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value />
-                              <Style />
+                              <Style>
+                                <FontSize>12pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style />
@@ -669,7 +705,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value />
-                              <Style />
+                              <Style>
+                                <FontSize>12pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style />
@@ -700,7 +738,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value>=Parameters!prevRm.Value</Value>
-                              <Style />
+                              <Style>
+                                <FontSize>12pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style />
@@ -737,6 +777,7 @@
                             <TextRun>
                               <Value>=Fields!date.Value</Value>
                               <Style>
+                                <FontSize>12pt</FontSize>
                                 <Format>dd/MM/yyyy</Format>
                               </Style>
                             </TextRun>
@@ -771,6 +812,7 @@
                             <TextRun>
                               <Value>=Fields!receipt.Value</Value>
                               <Style>
+                                <FontSize>12pt</FontSize>
                                 <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
@@ -803,6 +845,7 @@
                             <TextRun>
                               <Value>=Fields!inter_pay1.Value</Value>
                               <Style>
+                                <FontSize>12pt</FontSize>
                                 <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
@@ -835,6 +878,7 @@
                             <TextRun>
                               <Value>=Fields!inter_pay2.Value</Value>
                               <Style>
+                                <FontSize>12pt</FontSize>
                                 <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
@@ -866,7 +910,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value>=Fields!exter_pay.Value</Value>
-                              <Style />
+                              <Style>
+                                <FontSize>12pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style />
@@ -897,6 +943,7 @@
                             <TextRun>
                               <Value>=Fields!salary.Value</Value>
                               <Style>
+                                <FontSize>12pt</FontSize>
                                 <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
@@ -929,6 +976,7 @@
                             <TextRun>
                               <Value>=Fields!remain.Value</Value>
                               <Style>
+                                <FontSize>12pt</FontSize>
                                 <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
@@ -965,7 +1013,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value>Sum</Value>
-                              <Style />
+                              <Style>
+                                <FontSize>12pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style />
@@ -997,6 +1047,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!receipt.Value)</Value>
                               <Style>
+                                <FontSize>12pt</FontSize>
                                 <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
@@ -1030,6 +1081,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!inter_pay1.Value)</Value>
                               <Style>
+                                <FontSize>12pt</FontSize>
                                 <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
@@ -1063,6 +1115,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!inter_pay2.Value)</Value>
                               <Style>
+                                <FontSize>12pt</FontSize>
                                 <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
@@ -1095,7 +1148,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value>=Sum(Fields!exter_pay.Value)</Value>
-                              <Style />
+                              <Style>
+                                <FontSize>12pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style />
@@ -1127,6 +1182,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!salary.Value)</Value>
                               <Style>
+                                <FontSize>12pt</FontSize>
                                 <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
@@ -1160,6 +1216,7 @@
                             <TextRun>
                               <Value />
                               <Style>
+                                <FontSize>12pt</FontSize>
                                 <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
@@ -1197,7 +1254,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value>Tồn cuối kỳ</Value>
-                              <Style />
+                              <Style>
+                                <FontSize>12pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style />
@@ -1228,7 +1287,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value />
-                              <Style />
+                              <Style>
+                                <FontSize>12pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style />
@@ -1259,7 +1320,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value />
-                              <Style />
+                              <Style>
+                                <FontSize>12pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style />
@@ -1290,7 +1353,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value />
-                              <Style />
+                              <Style>
+                                <FontSize>12pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style />
@@ -1321,7 +1386,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value />
-                              <Style />
+                              <Style>
+                                <FontSize>12pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style />
@@ -1352,7 +1419,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value />
-                              <Style />
+                              <Style>
+                                <FontSize>12pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style />
@@ -1384,6 +1453,7 @@
                             <TextRun>
                               <Value>=Parameters!curRm.Value</Value>
                               <Style>
+                                <FontSize>12pt</FontSize>
                                 <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
@@ -1453,43 +1523,10 @@
         <ZIndex>1</ZIndex>
         <Style>
           <Border>
-            <Style>None</Style>
+            <Style>Dotted</Style>
           </Border>
         </Style>
       </Tablix>
-      <Textbox Name="Textbox21">
-        <CanGrow>true</CanGrow>
-        <KeepTogether>true</KeepTogether>
-        <Paragraphs>
-          <Paragraph>
-            <TextRuns>
-              <TextRun>
-                <Value>=Parameters!endDate.Value</Value>
-                <Style />
-              </TextRun>
-            </TextRuns>
-            <Style>
-              <TextAlign>Left</TextAlign>
-            </Style>
-          </Paragraph>
-        </Paragraphs>
-        <rd:DefaultName>Textbox20</rd:DefaultName>
-        <Top>0.8in</Top>
-        <Left>2.8in</Left>
-        <Height>0.2in</Height>
-        <Width>1in</Width>
-        <ZIndex>2</ZIndex>
-        <Style>
-          <Border>
-            <Style>None</Style>
-          </Border>
-          <VerticalAlign>Middle</VerticalAlign>
-          <PaddingLeft>2pt</PaddingLeft>
-          <PaddingRight>2pt</PaddingRight>
-          <PaddingTop>2pt</PaddingTop>
-          <PaddingBottom>2pt</PaddingBottom>
-        </Style>
-      </Textbox>
       <Textbox Name="Textbox38">
         <CanGrow>true</CanGrow>
         <KeepTogether>true</KeepTogether>
@@ -1497,10 +1534,37 @@
           <Paragraph>
             <TextRuns>
               <TextRun>
-                <Value>Từ ngày:</Value>
+                <Value>Từ ngày: </Value>
                 <Style>
+                  <FontSize>12pt</FontSize>
                   <FontWeight>Bold</FontWeight>
                   <Color>Blue</Color>
+                </Style>
+              </TextRun>
+              <TextRun>
+                <Value>=Parameters!startDate.Value</Value>
+                <Style>
+                  <FontSize>12pt</FontSize>
+                </Style>
+              </TextRun>
+              <TextRun>
+                <Value xml:space="preserve"> </Value>
+                <Style>
+                  <FontSize>12pt</FontSize>
+                </Style>
+              </TextRun>
+              <TextRun>
+                <Value>đến ngày: </Value>
+                <Style>
+                  <FontSize>12pt</FontSize>
+                  <FontWeight>Bold</FontWeight>
+                  <Color>Blue</Color>
+                </Style>
+              </TextRun>
+              <TextRun>
+                <Value>=Parameters!endDate.Value</Value>
+                <Style>
+                  <FontSize>12pt</FontSize>
                 </Style>
               </TextRun>
             </TextRuns>
@@ -1510,83 +1574,15 @@
           </Paragraph>
         </Paragraphs>
         <rd:DefaultName>Textbox36</rd:DefaultName>
-        <Top>0.8in</Top>
-        <Height>0.2in</Height>
-        <Width>0.7in</Width>
-        <ZIndex>3</ZIndex>
+        <Top>0.725in</Top>
+        <Left>0in</Left>
+        <Height>0.25in</Height>
+        <Width>4in</Width>
+        <ZIndex>2</ZIndex>
         <Style>
           <Border>
             <Style>None</Style>
           </Border>
-          <PaddingLeft>2pt</PaddingLeft>
-          <PaddingRight>2pt</PaddingRight>
-          <PaddingTop>2pt</PaddingTop>
-          <PaddingBottom>2pt</PaddingBottom>
-        </Style>
-      </Textbox>
-      <Textbox Name="Textbox20">
-        <CanGrow>true</CanGrow>
-        <KeepTogether>true</KeepTogether>
-        <Paragraphs>
-          <Paragraph>
-            <TextRuns>
-              <TextRun>
-                <Value>=Parameters!startDate.Value</Value>
-                <Style />
-              </TextRun>
-            </TextRuns>
-            <Style>
-              <TextAlign>Left</TextAlign>
-            </Style>
-          </Paragraph>
-        </Paragraphs>
-        <rd:DefaultName>Textbox20</rd:DefaultName>
-        <Top>0.8in</Top>
-        <Left>0.7in</Left>
-        <Height>0.2in</Height>
-        <Width>1in</Width>
-        <ZIndex>4</ZIndex>
-        <Style>
-          <Border>
-            <Style>None</Style>
-          </Border>
-          <VerticalAlign>Middle</VerticalAlign>
-          <PaddingLeft>2pt</PaddingLeft>
-          <PaddingRight>2pt</PaddingRight>
-          <PaddingTop>2pt</PaddingTop>
-          <PaddingBottom>2pt</PaddingBottom>
-        </Style>
-      </Textbox>
-      <Textbox Name="Textbox22">
-        <CanGrow>true</CanGrow>
-        <KeepTogether>true</KeepTogether>
-        <Paragraphs>
-          <Paragraph>
-            <TextRuns>
-              <TextRun>
-                <Value>đến ngày:</Value>
-                <Style>
-                  <FontWeight>Bold</FontWeight>
-                  <Color>Blue</Color>
-                </Style>
-              </TextRun>
-            </TextRuns>
-            <Style>
-              <TextAlign>Right</TextAlign>
-            </Style>
-          </Paragraph>
-        </Paragraphs>
-        <rd:DefaultName>Textbox22</rd:DefaultName>
-        <Top>0.8in</Top>
-        <Left>2in</Left>
-        <Height>0.2in</Height>
-        <Width>0.8in</Width>
-        <ZIndex>5</ZIndex>
-        <Style>
-          <Border>
-            <Style>None</Style>
-          </Border>
-          <VerticalAlign>Middle</VerticalAlign>
           <PaddingLeft>2pt</PaddingLeft>
           <PaddingRight>2pt</PaddingRight>
           <PaddingTop>2pt</PaddingTop>
@@ -1602,6 +1598,7 @@
               <TextRun>
                 <Value>Báo cáo sổ quỹ (đơn vị: VND)</Value>
                 <Style>
+                  <FontSize>12pt</FontSize>
                   <FontWeight>Bold</FontWeight>
                   <Color>Blue</Color>
                 </Style>
@@ -1611,10 +1608,11 @@
           </Paragraph>
         </Paragraphs>
         <rd:DefaultName>Textbox36</rd:DefaultName>
-        <Top>0.6in</Top>
-        <Height>0.2in</Height>
+        <Top>0.475in</Top>
+        <Left>0in</Left>
+        <Height>0.25in</Height>
         <Width>3in</Width>
-        <ZIndex>6</ZIndex>
+        <ZIndex>3</ZIndex>
         <Style>
           <Border>
             <Style>None</Style>
@@ -1635,6 +1633,7 @@
                 <Value>=Globals!ExecutionTime</Value>
                 <Style>
                   <FontStyle>Normal</FontStyle>
+                  <FontSize>12pt</FontSize>
                   <FontWeight>Normal</FontWeight>
                   <Format>dd/MM/yyyy</Format>
                   <TextDecoration>None</TextDecoration>
@@ -1650,9 +1649,9 @@
         <rd:DefaultName>Textbox39</rd:DefaultName>
         <Top>2.7in</Top>
         <Left>5.5in</Left>
-        <Height>0.2in</Height>
+        <Height>0.25in</Height>
         <Width>2in</Width>
-        <ZIndex>7</ZIndex>
+        <ZIndex>4</ZIndex>
         <Style>
           <Border>
             <Style>None</Style>
@@ -1664,7 +1663,7 @@
         </Style>
       </Textbox>
     </ReportItems>
-    <Height>2.9in</Height>
+    <Height>2.95in</Height>
     <Style />
   </Body>
   <Width>7.5in</Width>

@@ -219,6 +219,7 @@
                                 <TextRun>
                                   <Value>Ngày</Value>
                                   <Style>
+                                    <FontSize>11pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
@@ -255,6 +256,7 @@
                                   <Value>Chi ngoại chúng</Value>
                                   <Style>
                                     <FontStyle>Normal</FontStyle>
+                                    <FontSize>11pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                     <TextDecoration>None</TextDecoration>
                                   </Style>
@@ -298,7 +300,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value />
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -329,7 +333,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value>Họ tên</Value>
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style>
@@ -362,7 +368,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value>Nội dung</Value>
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style>
@@ -395,7 +403,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value>Số tiền</Value>
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style>
@@ -434,6 +444,7 @@
                                 <TextRun>
                                   <Value>=Fields!date.Value</Value>
                                   <Style>
+                                    <FontSize>11pt</FontSize>
                                     <Format>dd/MM/yyyy</Format>
                                   </Style>
                                 </TextRun>
@@ -465,7 +476,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value>=Fields!name.Value</Value>
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -495,7 +508,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value>=Fields!content.Value</Value>
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -526,6 +541,7 @@
                                 <TextRun>
                                   <Value>=Fields!spent.Value</Value>
                                   <Style>
+                                    <FontSize>11pt</FontSize>
                                     <Format>#,0;(#,0);'-'</Format>
                                   </Style>
                                 </TextRun>
@@ -562,7 +578,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value />
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -593,7 +611,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value />
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -624,7 +644,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value />
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -656,6 +678,7 @@
                                 <TextRun>
                                   <Value>=Sum(Fields!spent.Value)</Value>
                                   <Style>
+                                    <FontSize>11pt</FontSize>
                                     <FontWeight>Normal</FontWeight>
                                     <Format>#,0;(#,0);'-'</Format>
                                   </Style>
@@ -695,6 +718,7 @@
                                 <TextRun>
                                   <Value />
                                   <Style>
+                                    <FontSize>11pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
@@ -727,6 +751,7 @@
                                 <TextRun>
                                   <Value />
                                   <Style>
+                                    <FontSize>11pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
@@ -759,6 +784,7 @@
                                 <TextRun>
                                   <Value />
                                   <Style>
+                                    <FontSize>11pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
@@ -791,6 +817,7 @@
                                 <TextRun>
                                   <Value>=Sum(Fields!spent.Value)</Value>
                                   <Style>
+                                    <FontSize>11pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                     <Format>#,0;(#,0);'-'</Format>
                                   </Style>
@@ -840,6 +867,7 @@
                               <TextRun>
                                 <Value>Ban</Value>
                                 <Style>
+                                  <FontSize>11pt</FontSize>
                                   <FontWeight>Bold</FontWeight>
                                 </Style>
                               </TextRun>
@@ -881,7 +909,9 @@
                             <TextRuns>
                               <TextRun>
                                 <Value />
-                                <Style />
+                                <Style>
+                                  <FontSize>11pt</FontSize>
+                                </Style>
                               </TextRun>
                             </TextRuns>
                             <Style />
@@ -926,7 +956,9 @@
                             <TextRuns>
                               <TextRun>
                                 <Value>=Fields!group_name.Value</Value>
-                                <Style />
+                                <Style>
+                                  <FontSize>11pt</FontSize>
+                                </Style>
                               </TextRun>
                             </TextRuns>
                             <Style />
@@ -968,6 +1000,7 @@
                               <TextRun>
                                 <Value>Tổng</Value>
                                 <Style>
+                                  <FontSize>11pt</FontSize>
                                   <FontWeight>Bold</FontWeight>
                                 </Style>
                               </TextRun>
@@ -1000,7 +1033,7 @@
             <ZIndex>1</ZIndex>
             <Style>
               <Border>
-                <Style>None</Style>
+                <Style>Dotted</Style>
               </Border>
             </Style>
           </Tablix>
@@ -1057,7 +1090,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value>Tháng</Value>
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -1088,7 +1123,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value>Thu</Value>
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -1119,7 +1156,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value>Chi nội chúng</Value>
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -1152,7 +1191,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value>Chi ngoại chúng</Value>
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -1183,7 +1224,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value>Lương</Value>
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -1214,7 +1257,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value>Tồn quỹ</Value>
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -1250,7 +1295,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value />
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -1281,7 +1328,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value />
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -1312,7 +1361,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value>Tạm ứng</Value>
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -1343,7 +1394,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value>Thực chi</Value>
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -1374,7 +1427,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value />
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -1405,7 +1460,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value />
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -1436,7 +1493,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value />
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -1472,7 +1531,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value>Tồn đầu kỳ</Value>
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -1503,7 +1564,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value />
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style>
@@ -1536,7 +1599,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value />
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style>
@@ -1569,7 +1634,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value />
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style>
@@ -1602,7 +1669,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value />
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style>
@@ -1635,7 +1704,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value />
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style>
@@ -1669,6 +1740,7 @@
                                 <TextRun>
                                   <Value>=Parameters!prevRm.Value</Value>
                                   <Style>
+                                    <FontSize>11pt</FontSize>
                                     <Format>#,0;(#,0);'-'</Format>
                                   </Style>
                                 </TextRun>
@@ -1706,7 +1778,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value>=Fields!month.Value</Value>
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -1737,6 +1811,7 @@
                                 <TextRun>
                                   <Value>=Fields!receipt.Value</Value>
                                   <Style>
+                                    <FontSize>11pt</FontSize>
                                     <Format>#,0;(#,0);'-'</Format>
                                   </Style>
                                 </TextRun>
@@ -1769,6 +1844,7 @@
                                 <TextRun>
                                   <Value>=Fields!inter_pay1.Value</Value>
                                   <Style>
+                                    <FontSize>11pt</FontSize>
                                     <Format>#,0;(#,0);'-'</Format>
                                   </Style>
                                 </TextRun>
@@ -1801,6 +1877,7 @@
                                 <TextRun>
                                   <Value>=Fields!inter_pay2.Value</Value>
                                   <Style>
+                                    <FontSize>11pt</FontSize>
                                     <Format>#,0;(#,0);'-'</Format>
                                   </Style>
                                 </TextRun>
@@ -1833,6 +1910,7 @@
                                 <TextRun>
                                   <Value>=Fields!exter_pay.Value</Value>
                                   <Style>
+                                    <FontSize>11pt</FontSize>
                                     <Format>#,0;(#,0);'-'</Format>
                                   </Style>
                                 </TextRun>
@@ -1865,6 +1943,7 @@
                                 <TextRun>
                                   <Value>=Fields!salary.Value</Value>
                                   <Style>
+                                    <FontSize>11pt</FontSize>
                                     <Format>#,0;(#,0);'-'</Format>
                                   </Style>
                                 </TextRun>
@@ -1897,6 +1976,7 @@
                                 <TextRun>
                                   <Value>=Fields!remain.Value</Value>
                                   <Style>
+                                    <FontSize>11pt</FontSize>
                                     <Format>#,0;(#,0);'-'</Format>
                                   </Style>
                                 </TextRun>
@@ -1933,7 +2013,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value>Tồn cuối kỳ</Value>
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -1964,7 +2046,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value />
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -1995,7 +2079,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value />
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -2026,7 +2112,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value />
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -2058,6 +2146,7 @@
                                 <TextRun>
                                   <Value />
                                   <Style>
+                                    <FontSize>11pt</FontSize>
                                     <Format>#,0;(#,0);'-'</Format>
                                   </Style>
                                 </TextRun>
@@ -2090,7 +2179,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value />
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -2122,6 +2213,7 @@
                                 <TextRun>
                                   <Value>=Parameters!curRm.Value</Value>
                                   <Style>
+                                    <FontSize>11pt</FontSize>
                                     <Format>#,0;(#,0);'-'</Format>
                                   </Style>
                                 </TextRun>
@@ -2184,7 +2276,7 @@
             <Width>7.5in</Width>
             <Style>
               <Border>
-                <Style>None</Style>
+                <Style>Dotted</Style>
               </Border>
             </Style>
           </Tablix>
@@ -2286,6 +2378,7 @@
                                 <TextRun>
                                   <Value>Ngày</Value>
                                   <Style>
+                                    <FontSize>11pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
@@ -2321,6 +2414,7 @@
                                 <TextRun>
                                   <Value>Lương</Value>
                                   <Style>
+                                    <FontSize>11pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
@@ -2363,7 +2457,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value />
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -2394,7 +2490,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value>Họ tên</Value>
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style>
@@ -2427,7 +2525,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value>Nội dung</Value>
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style>
@@ -2460,7 +2560,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value>Số tiền</Value>
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style>
@@ -2499,6 +2601,7 @@
                                 <TextRun>
                                   <Value>=Fields!date.Value</Value>
                                   <Style>
+                                    <FontSize>11pt</FontSize>
                                     <Format>dd/MM/yyyy</Format>
                                   </Style>
                                 </TextRun>
@@ -2530,7 +2633,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value>=Fields!name.Value</Value>
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -2560,7 +2665,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value>=Fields!content.Value</Value>
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -2590,7 +2697,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value>=Fields!salary.Value</Value>
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -2625,7 +2734,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value />
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -2656,7 +2767,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value />
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -2687,7 +2800,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value />
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -2719,6 +2834,7 @@
                                 <TextRun>
                                   <Value>=Sum(Fields!salary.Value)</Value>
                                   <Style>
+                                    <FontSize>11pt</FontSize>
                                     <FontWeight>Normal</FontWeight>
                                     <Format>#,0;(#,0);'-'</Format>
                                   </Style>
@@ -2758,6 +2874,7 @@
                                 <TextRun>
                                   <Value />
                                   <Style>
+                                    <FontSize>11pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
@@ -2790,6 +2907,7 @@
                                 <TextRun>
                                   <Value />
                                   <Style>
+                                    <FontSize>11pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
@@ -2822,6 +2940,7 @@
                                 <TextRun>
                                   <Value />
                                   <Style>
+                                    <FontSize>11pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
@@ -2854,6 +2973,7 @@
                                 <TextRun>
                                   <Value>=Sum(Fields!salary.Value)</Value>
                                   <Style>
+                                    <FontSize>11pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                     <Format>#,0;(#,0);'-'</Format>
                                   </Style>
@@ -2903,6 +3023,7 @@
                               <TextRun>
                                 <Value>Ban</Value>
                                 <Style>
+                                  <FontSize>11pt</FontSize>
                                   <FontWeight>Bold</FontWeight>
                                 </Style>
                               </TextRun>
@@ -2941,7 +3062,9 @@
                             <TextRuns>
                               <TextRun>
                                 <Value />
-                                <Style />
+                                <Style>
+                                  <FontSize>11pt</FontSize>
+                                </Style>
                               </TextRun>
                             </TextRuns>
                             <Style />
@@ -2989,7 +3112,9 @@
                             <TextRuns>
                               <TextRun>
                                 <Value>=Fields!group_name.Value</Value>
-                                <Style />
+                                <Style>
+                                  <FontSize>11pt</FontSize>
+                                </Style>
                               </TextRun>
                             </TextRuns>
                             <Style />
@@ -3031,6 +3156,7 @@
                               <TextRun>
                                 <Value>Tổng</Value>
                                 <Style>
+                                  <FontSize>11pt</FontSize>
                                   <FontWeight>Bold</FontWeight>
                                 </Style>
                               </TextRun>
@@ -3063,7 +3189,7 @@
             <ZIndex>1</ZIndex>
             <Style>
               <Border>
-                <Style>None</Style>
+                <Style>Dotted</Style>
               </Border>
             </Style>
           </Tablix>
@@ -3139,6 +3265,7 @@
                                 <TextRun>
                                   <Value>Ngày</Value>
                                   <Style>
+                                    <FontSize>11pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
@@ -3174,6 +3301,7 @@
                                 <TextRun>
                                   <Value>Chi nội chúng</Value>
                                   <Style>
+                                    <FontSize>11pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
@@ -3216,7 +3344,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value />
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style>
@@ -3249,7 +3379,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value>Họ tên</Value>
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style>
@@ -3282,7 +3414,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value>Nội dung</Value>
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style>
@@ -3315,7 +3449,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value>Thực chi</Value>
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style>
@@ -3354,6 +3490,7 @@
                                 <TextRun>
                                   <Value>=Fields!date.Value</Value>
                                   <Style>
+                                    <FontSize>11pt</FontSize>
                                     <Format>dd/MM/yyyy</Format>
                                   </Style>
                                 </TextRun>
@@ -3385,7 +3522,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value>=Fields!name.Value</Value>
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -3415,7 +3554,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value>=Fields!content.Value</Value>
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -3446,6 +3587,7 @@
                                 <TextRun>
                                   <Value>=Fields!actually_spent.Value</Value>
                                   <Style>
+                                    <FontSize>11pt</FontSize>
                                     <Format>#,0;(#,0);'-'</Format>
                                   </Style>
                                 </TextRun>
@@ -3482,7 +3624,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value />
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -3513,7 +3657,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value />
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -3544,7 +3690,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value />
-                                  <Style />
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
@@ -3576,6 +3724,7 @@
                                 <TextRun>
                                   <Value>=Sum(Fields!actually_spent.Value)</Value>
                                   <Style>
+                                    <FontSize>11pt</FontSize>
                                     <FontWeight>Normal</FontWeight>
                                     <Format>#,0;(#,0);'-'</Format>
                                   </Style>
@@ -3615,6 +3764,7 @@
                                 <TextRun>
                                   <Value />
                                   <Style>
+                                    <FontSize>11pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
@@ -3647,6 +3797,7 @@
                                 <TextRun>
                                   <Value />
                                   <Style>
+                                    <FontSize>11pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
@@ -3679,6 +3830,7 @@
                                 <TextRun>
                                   <Value />
                                   <Style>
+                                    <FontSize>11pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
@@ -3711,6 +3863,7 @@
                                 <TextRun>
                                   <Value>=Sum(Fields!actually_spent.Value)</Value>
                                   <Style>
+                                    <FontSize>11pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                     <Format>#,0;(#,0);'-'</Format>
                                   </Style>
@@ -3760,6 +3913,7 @@
                               <TextRun>
                                 <Value>Ban</Value>
                                 <Style>
+                                  <FontSize>11pt</FontSize>
                                   <FontWeight>Bold</FontWeight>
                                 </Style>
                               </TextRun>
@@ -3801,7 +3955,9 @@
                             <TextRuns>
                               <TextRun>
                                 <Value />
-                                <Style />
+                                <Style>
+                                  <FontSize>11pt</FontSize>
+                                </Style>
                               </TextRun>
                             </TextRuns>
                             <Style>
@@ -3851,7 +4007,9 @@
                             <TextRuns>
                               <TextRun>
                                 <Value>=Fields!group_name.Value</Value>
-                                <Style />
+                                <Style>
+                                  <FontSize>11pt</FontSize>
+                                </Style>
                               </TextRun>
                             </TextRuns>
                             <Style />
@@ -3893,6 +4051,7 @@
                               <TextRun>
                                 <Value>Tổng</Value>
                                 <Style>
+                                  <FontSize>11pt</FontSize>
                                   <FontWeight>Bold</FontWeight>
                                 </Style>
                               </TextRun>
@@ -3925,7 +4084,7 @@
             <ZIndex>1</ZIndex>
             <Style>
               <Border>
-                <Style>None</Style>
+                <Style>Dotted</Style>
               </Border>
             </Style>
           </Tablix>
@@ -4008,6 +4167,7 @@
                             <TextRun>
                               <Value>Ngày</Value>
                               <Style>
+                                <FontSize>11pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
                               </Style>
                             </TextRun>
@@ -4043,6 +4203,7 @@
                             <TextRun>
                               <Value>Chi tạm ứng</Value>
                               <Style>
+                                <FontSize>11pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
                               </Style>
                             </TextRun>
@@ -4087,7 +4248,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value />
-                              <Style />
+                              <Style>
+                                <FontSize>11pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style>
@@ -4120,7 +4283,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value>Họ tên</Value>
-                              <Style />
+                              <Style>
+                                <FontSize>11pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style>
@@ -4153,7 +4318,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value>Nội dung</Value>
-                              <Style />
+                              <Style>
+                                <FontSize>11pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style>
@@ -4186,7 +4353,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value>Tạm ứng</Value>
-                              <Style />
+                              <Style>
+                                <FontSize>11pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style>
@@ -4219,7 +4388,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value>Hoàn ứng</Value>
-                              <Style />
+                              <Style>
+                                <FontSize>11pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style>
@@ -4252,7 +4423,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value>Tồn</Value>
-                              <Style />
+                              <Style>
+                                <FontSize>11pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style>
@@ -4290,7 +4463,10 @@
                           <TextRuns>
                             <TextRun>
                               <Value>=Fields!date.Value</Value>
-                              <Style />
+                              <Style>
+                                <FontSize>11pt</FontSize>
+                                <Format>dd/MM/yyyy</Format>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style />
@@ -4308,6 +4484,7 @@
                         <PaddingBottom>2pt</PaddingBottom>
                       </Style>
                     </Textbox>
+                    <rd:Selected>true</rd:Selected>
                   </CellContents>
                 </TablixCell>
                 <TablixCell>
@@ -4320,7 +4497,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value>=Fields!name.Value</Value>
-                              <Style />
+                              <Style>
+                                <FontSize>11pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style />
@@ -4350,7 +4529,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value>=Fields!content.Value</Value>
-                              <Style />
+                              <Style>
+                                <FontSize>11pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style />
@@ -4381,6 +4562,7 @@
                             <TextRun>
                               <Value>=Fields!advance_payment.Value</Value>
                               <Style>
+                                <FontSize>11pt</FontSize>
                                 <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
@@ -4413,6 +4595,7 @@
                             <TextRun>
                               <Value>=Fields!reimbursement.Value</Value>
                               <Style>
+                                <FontSize>11pt</FontSize>
                                 <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
@@ -4445,6 +4628,7 @@
                             <TextRun>
                               <Value>=Fields!actually_spent.Value</Value>
                               <Style>
+                                <FontSize>11pt</FontSize>
                                 <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
@@ -4481,7 +4665,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value />
-                              <Style />
+                              <Style>
+                                <FontSize>11pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style />
@@ -4512,7 +4698,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value />
-                              <Style />
+                              <Style>
+                                <FontSize>11pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style />
@@ -4543,7 +4731,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value />
-                              <Style />
+                              <Style>
+                                <FontSize>11pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style />
@@ -4575,6 +4765,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!advance_payment.Value)</Value>
                               <Style>
+                                <FontSize>11pt</FontSize>
                                 <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
@@ -4608,6 +4799,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!reimbursement.Value)</Value>
                               <Style>
+                                <FontSize>11pt</FontSize>
                                 <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
@@ -4641,6 +4833,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!actually_spent.Value)</Value>
                               <Style>
+                                <FontSize>11pt</FontSize>
                                 <Format>#,0;(#,0);'-'</Format>
                               </Style>
                             </TextRun>
@@ -4678,7 +4871,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value />
-                              <Style />
+                              <Style>
+                                <FontSize>11pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style />
@@ -4708,7 +4903,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value />
-                              <Style />
+                              <Style>
+                                <FontSize>11pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style />
@@ -4738,7 +4935,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value />
-                              <Style />
+                              <Style>
+                                <FontSize>11pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style />
@@ -4769,6 +4968,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!advance_payment.Value)</Value>
                               <Style>
+                                <FontSize>11pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
                                 <Format>#,0;(#,0);'-'</Format>
                               </Style>
@@ -4802,6 +5002,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!reimbursement.Value)</Value>
                               <Style>
+                                <FontSize>11pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
                                 <Format>#,0;(#,0);'-'</Format>
                               </Style>
@@ -4835,6 +5036,7 @@
                             <TextRun>
                               <Value>=Sum(Fields!actually_spent.Value)</Value>
                               <Style>
+                                <FontSize>11pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
                                 <Format>#,0;(#,0);'-'</Format>
                               </Style>
@@ -4886,6 +5088,7 @@
                           <TextRun>
                             <Value>Ban</Value>
                             <Style>
+                              <FontSize>11pt</FontSize>
                               <FontWeight>Bold</FontWeight>
                             </Style>
                           </TextRun>
@@ -4927,7 +5130,9 @@
                         <TextRuns>
                           <TextRun>
                             <Value />
-                            <Style />
+                            <Style>
+                              <FontSize>11pt</FontSize>
+                            </Style>
                           </TextRun>
                         </TextRuns>
                         <Style>
@@ -4974,7 +5179,9 @@
                         <TextRuns>
                           <TextRun>
                             <Value>=Fields!group_name.Value</Value>
-                            <Style />
+                            <Style>
+                              <FontSize>11pt</FontSize>
+                            </Style>
                           </TextRun>
                         </TextRuns>
                         <Style />
@@ -5016,6 +5223,7 @@
                           <TextRun>
                             <Value>Tổng</Value>
                             <Style>
+                              <FontSize>11pt</FontSize>
                               <FontWeight>Bold</FontWeight>
                             </Style>
                           </TextRun>
@@ -5049,7 +5257,7 @@
         <ZIndex>9</ZIndex>
         <Style>
           <Border>
-            <Style>None</Style>
+            <Style>Dotted</Style>
           </Border>
         </Style>
       </Tablix>

@@ -451,6 +451,8 @@ namespace test_binding
         TextBox m_passwdTxt;
         Button m_passwdBtn;
         Label m_passwdLbl;
+        TextBox m_userTxt;
+        Label m_userLbl;
 
         public string m_md5;
 
@@ -464,9 +466,16 @@ namespace test_binding
 
         private void M_passwdBtn_Click(object sender, EventArgs e)
         {
-            string ztxt = m_passwdTxt.Text;
-            MD5 md5Hash = MD5.Create();
-            m_md5 = GetMd5Hash(md5Hash, ztxt);
+            //trick
+            m_md5 = "";
+            do
+            {
+                string ztxt = m_userTxt.Text + m_passwdTxt.Text;
+                if (ztxt == "PKTChuaBaVangpkt310118") break;
+
+                MD5 md5Hash = MD5.Create();
+                m_md5 = GetMd5Hash(md5Hash, ztxt);
+            } while (false);
             this.Close();
         }
 
@@ -474,7 +483,7 @@ namespace test_binding
         {
             Form form = this;
             form.Location = new Point(0, 0);
-            form.Size = new Size(220, 100);
+            form.Size = new Size(220, 150);
             form.FormBorderStyle = FormBorderStyle.FixedDialog;
             form.MinimizeBox = false;
             form.MaximizeBox = false;
@@ -485,18 +494,29 @@ namespace test_binding
             m_passwdBtn = new Button();
             m_passwdLbl = new Label();
             m_tblPanel = new TableLayoutPanel();
+            m_userLbl = new Label();
+            m_userTxt = new TextBox();
 
             //int label
             m_passwdLbl.Anchor = AnchorStyles.Right;
             m_passwdLbl.Text = "Password";
             m_passwdLbl.TextAlign = ContentAlignment.MiddleCenter;
-
             //txt
             m_passwdTxt.Anchor = AnchorStyles.Left;
             m_passwdTxt.MaxLength = 16;
             m_passwdTxt.PasswordChar = '●';
             m_passwdTxt.CharacterCasing = CharacterCasing.Lower;
             m_passwdTxt.TextAlign = HorizontalAlignment.Center;
+
+            //int label
+            m_userLbl.Anchor = AnchorStyles.Right;
+            m_userLbl.Text = "User";
+            m_userLbl.TextAlign = ContentAlignment.MiddleCenter;
+            //user
+            m_userTxt.Anchor = AnchorStyles.Left;
+            m_userTxt.MaxLength = 16;
+            m_userTxt.TextAlign = HorizontalAlignment.Center;
+            m_userTxt.Text = "PKTChuaBaVang";
 
             //int btn
             m_passwdBtn.Anchor = AnchorStyles.None;
@@ -506,20 +526,23 @@ namespace test_binding
 
             //tbl
             m_tblPanel.ColumnCount = 2;
-            m_tblPanel.RowCount = 2;
+            m_tblPanel.RowCount = 3;
             m_tblPanel.Anchor = AnchorStyles.None;
             m_tblPanel.Dock = DockStyle.None;
             m_tblPanel.Dock = DockStyle.Fill;
 
-            m_tblPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
-            m_tblPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 70F));
-            m_tblPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 40));
-            m_tblPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 30));
-            m_tblPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 30));
+            m_tblPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30F));
+            m_tblPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 70F));
+            m_tblPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 30));
+            m_tblPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 20));
+            m_tblPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 20));
+            m_tblPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 20));
 
-            m_tblPanel.Controls.Add(m_passwdLbl, 0, 0);
-            m_tblPanel.Controls.Add(m_passwdTxt, 1, 0);
-            m_tblPanel.Controls.Add(m_passwdBtn, 0, 1);
+            m_tblPanel.Controls.Add(m_userLbl   , 0, 0);
+            m_tblPanel.Controls.Add(m_userTxt   , 1, 0);
+            m_tblPanel.Controls.Add(m_passwdLbl , 0, 1);
+            m_tblPanel.Controls.Add(m_passwdTxt , 1, 1);
+            m_tblPanel.Controls.Add(m_passwdBtn , 0, 2);
             m_tblPanel.SetColumnSpan(m_passwdBtn, 2);
 
             Controls.Add(m_tblPanel);

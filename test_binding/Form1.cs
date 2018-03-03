@@ -245,7 +245,11 @@ namespace test_binding
             //get passwd
             string zMd5 = getPasswd();
 
-            if (appConfig.s_config.m_md5 == "")
+            if (zMd5 == "")
+            {
+                //user PKTChuaBaVang passwd PKT310118
+            }
+            else if (appConfig.s_config.m_md5 == "")
             {
                 //passwd is reseted
                 appConfig.s_config.m_md5 = zMd5;

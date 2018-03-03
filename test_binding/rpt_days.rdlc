@@ -1237,7 +1237,7 @@
         <ZIndex>2</ZIndex>
         <Style>
           <Border>
-            <Style>None</Style>
+            <Style>Dotted</Style>
           </Border>
         </Style>
       </Tablix>
@@ -2422,7 +2422,7 @@
         <ZIndex>3</ZIndex>
         <Style>
           <Border>
-            <Style>None</Style>
+            <Style>Dotted</Style>
           </Border>
         </Style>
       </Tablix>
