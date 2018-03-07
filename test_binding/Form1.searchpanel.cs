@@ -21,7 +21,8 @@ namespace test_binding
             text,
             dateTime,
             num,
-            currency
+            currency,
+            map
         };
         public lTableInfo.lColInfo m_colInfo;
         [DataMember(Name = "field", EmitDefaultValue = false)]

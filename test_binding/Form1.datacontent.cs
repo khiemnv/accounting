@@ -53,6 +53,8 @@ namespace test_binding
                 currency,
                 [EnumMember]
                 uniqueText,
+                [EnumMember]
+                map,
             };
             [DataMember(Name = "field", EmitDefaultValue = false)]
             public string m_field;
@@ -193,8 +195,9 @@ namespace test_binding
             + "addr char(63),"
             + "group_name char(31),"
             + "advance_payment INTEGER,"
-            + "reimbursement INTEGER,"
+            //+ "reimbursement INTEGER,"
             + "actually_spent INTEGER,"
+            + "status INTEGER,"
             + "content text,"
             + "note text"
             + ")";
@@ -206,9 +209,10 @@ namespace test_binding
                    new lColInfo( "addr"             ,"Địa chỉ"      , lColInfo.lColType.text),
                    new lColInfo( "group_name"       ,"Thuộc ban"    , lColInfo.lColType.text, "group_name"),
                    new lColInfo( "content"          ,"Nội dung"     , lColInfo.lColType.text),
-                   new lColInfo( "advance_payment"  ,"Tạm ứng"      , lColInfo.lColType.currency, null, false),
-                   new lColInfo( "reimbursement"    ,"Hoàn ứng"     , lColInfo.lColType.currency, null, false),
-                   new lColInfo( "actually_spent"   ,"Số tiền"     , lColInfo.lColType.currency),
+                   new lColInfo( "advance_payment"  ,"Tạm ứng"      , lColInfo.lColType.currency),
+                   //new lColInfo( "reimbursement"    ,"Hoàn ứng"     , lColInfo.lColType.currency, null, false),
+                   new lColInfo( "actually_spent"   ,"Thực chi"     , lColInfo.lColType.currency),
+                   new lColInfo( "status"           ,"Trạng thái"   , lColInfo.lColType.map),
                    new lColInfo( "note"             ,"Ghi Chú"      , lColInfo.lColType.text),
                 };
         }

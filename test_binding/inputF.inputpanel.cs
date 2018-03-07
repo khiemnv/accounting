@@ -397,6 +397,168 @@ namespace test_binding
             exprs.Add(m_fieldName);
         }
     }
+    [DataContract(Name = "InputCtrlEnum")]
+    public class lInputCtrlEnum : lInputCtrl
+    {
+        ComboBox m_combo;
+        public lInputCtrlEnum(string fieldName, string alias, ctrlType type, Point pos, Size size)
+            : base(fieldName, alias, type, pos, size)
+        {
+            m_combo = lConfigMng.crtComboBox();
+            m_combo.Width = 100;
+            m_panel.Controls.AddRange(new Control[] { m_label, m_combo });
+        }
+        public class comboItem
+        {
+            public string name;
+            public int val;
+        }
+        public void init(List<comboItem> arr)
+        {
+            var dt = new DataTable();
+            dt.Columns.Add("name");
+            dt.Columns.Add("val");
+            foreach (var item in arr)
+            {
+                var newRow = dt.NewRow();
+                newRow[0] = item.name;
+                newRow[1] = item.val;
+                dt.Rows.Add(newRow);
+            }
+            m_combo.DataSource = dt;
+            m_combo.DisplayMember = "name";
+            m_combo.ValueMember = "val";
+        }
+        public override void updateInsertParams(List<string> exprs, List<lSearchParam> srchParams)
+        {
+            string zVal = m_combo.SelectedValue.ToString();
+            exprs.Add(m_fieldName);
+            srchParams.Add(
+                new lSearchParam()
+                {
+                    key = string.Format("@{0}", m_fieldName),
+                    val = zVal,
+                    type = DbType.Int16
+                }
+            );
+        }
+        public override string Text
+        {
+            get
+            {
+                return m_combo.SelectedItem.ToString();
+            }
+
+            set
+            {
+                m_combo.Text = value;
+            }
+        }
+    }
+
+    public delegate void ConvertRowCompletedCb(DataRow inRow, DataRow outRow);
+    public class rptAssist
+    {
+        DataTable m_data;
+        Dictionary<string, string> m_convMap;
+        public ConvertRowCompletedCb ConvertRowCompleted;
+        public rptAssist(int billType, Dictionary<string, string> convMap)
+        {
+            m_convMap = convMap;
+
+            m_data = new DataTable();
+            m_data.Columns.Add(new DataColumn("name"));
+            m_data.Columns.Add(new DataColumn("addr"));
+            m_data.Columns.Add(new DataColumn("date", typeof(DateTime)));
+            m_data.Columns.Add(new DataColumn("num"));
+            m_data.Columns.Add(new DataColumn("content"));
+            m_data.Columns.Add(new DataColumn("note"));
+            m_data.Columns.Add(new DataColumn("amount", typeof(Int64)));
+            m_data.Columns.Add(new DataColumn("amountTxt"));
+
+            m_type = billType;
+        }
+        //receipt = 1
+        //payment = 2
+        int m_type;
+        public DataTable getData() { return m_data; }
+        public void clearData() { m_data.Clear(); }
+        public void setData(DataRow dr)
+        {
+            m_data.Clear();
+            var newRow = m_data.NewRow();
+            newRow["name"] = dr[m_convMap["name"]];
+            newRow["addr"] = dr[m_convMap["addr"]];
+            newRow["date"] = dr[m_convMap["date"]];
+            newRow["num"] = dr[m_convMap["num"]];
+            newRow["content"] = dr[m_convMap["content"]];
+            newRow["note"] = dr[m_convMap["note"]];
+            newRow["amount"] = dr[m_convMap["amount"]];
+
+            if (ConvertRowCompleted != null) ConvertRowCompleted(dr, newRow);
+
+            long amount = (long)newRow["amount"];
+            var amountTxt = "";
+            if (amount > 0)
+            {
+                amountTxt = common.CurrencyToTxt(amount);
+            }
+            newRow["amountTxt"] = amountTxt;
+
+            m_data.Rows.Add(newRow);
+            m_data.ImportRow(newRow);
+        }
+        public List<ReportParameter> crtParams()
+        {
+            return new List<ReportParameter>()
+                {
+                    new ReportParameter("type", m_type.ToString())
+                };
+        }
+
+        internal static rptAssist Create(string m_tblName)
+        {
+            rptAssist rptAsst = null;
+            switch (m_tblName)
+            {
+        case "internal_payment":
+            Dictionary<string, string> dict = new Dictionary<string, string> {
+                { "name","name" },
+                { "addr","addr" },
+                { "date","date" },
+                { "num","payment_number" },
+                { "content","content" },
+                { "note","note" },
+                { "amount","actually_spent" },
+            };
+            rptAsst = new rptAssist(2, dict);
+
+            rptAsst.ConvertRowCompleted = (inR, outR) =>
+            {
+                //Debug.Assert((Int64)inR["advance_payment"] > 0, "advance should not zero");
+                var sts = inR["status"];
+                Debug.Assert(sts != DBNull.Value);
+                switch (int.Parse(sts.ToString()))
+                {
+                    case 0:     //advance
+                        outR["amount"] = inR["advance_payment"];
+                        outR["note"] = "Tạm ứng";
+                        break;
+                    case 1:
+                        //outR["amount"] = inR["actually_spent"];
+                        outR["note"] = "Hoàn ứng";
+                        break;
+                    case 2:
+                        outR["note"] = "Thanh toán";
+                        //outR["amount"] = inR["actually_spent"];
+                        break;
+                }
+            };
+            break;
+            }
+            return rptAsst;
+        }
+    }
 
     [DataContract(Name = "InputPanel")]
     public class lInputPanel
@@ -407,66 +569,6 @@ namespace test_binding
         myWorker m_wkr;
 #endif
         //convert currency to text
-        protected delegate void ConvertRowCompletedCb(DataRow inRow, DataRow outRow);
-        protected class rptAssist
-        {
-            DataTable m_data;
-            Dictionary<string,string> m_convMap;
-            public ConvertRowCompletedCb ConvertRowCompleted;
-            public rptAssist(int billType, Dictionary<string, string> convMap)
-            {
-                m_convMap = convMap;
-
-                m_data = new DataTable();
-                m_data.Columns.Add(new DataColumn("name"));
-                m_data.Columns.Add(new DataColumn("addr"));
-                m_data.Columns.Add(new DataColumn("date", typeof(DateTime)));
-                m_data.Columns.Add(new DataColumn("num"));
-                m_data.Columns.Add(new DataColumn("content"));
-                m_data.Columns.Add(new DataColumn("note"));
-                m_data.Columns.Add(new DataColumn("amount", typeof(Int64)));
-                m_data.Columns.Add(new DataColumn("amountTxt"));
-
-                m_type = billType;
-            }
-            //receipt = 1
-            //payment = 2
-            int m_type;
-            public DataTable getData() { return m_data; }
-            public void clearData() { m_data.Clear(); }
-            public void setData(DataRow dr)
-            {
-                m_data.Clear();
-                var newRow = m_data.NewRow();
-                newRow["name"] = dr[m_convMap["name"]];
-                newRow["addr"] = dr[m_convMap["addr"]];
-                newRow["date"] = dr[m_convMap["date"]];
-                newRow["num"] = dr[m_convMap["num"]];
-                newRow["content"] = dr[m_convMap["content"]];
-                newRow["note"] = dr[m_convMap["note"]];
-                newRow["amount"] = dr[m_convMap["amount"]];
-
-                if (ConvertRowCompleted != null) ConvertRowCompleted(dr, newRow);
-
-                long amount = (long)newRow["amount"];
-                var amountTxt = "";
-                if (amount > 0)
-                {
-                    amountTxt = common.CurrencyToTxt(amount);
-                }
-                newRow["amountTxt"] = amountTxt;
-
-                m_data.Rows.Add(newRow);
-                m_data.ImportRow(newRow);
-            }
-            public List<ReportParameter> crtParams()
-            {
-                return new List<ReportParameter>()
-                {
-                    new ReportParameter("type", m_type.ToString())
-                };
-            }
-        }
         protected rptAssist m_rptAsst;
         public virtual DataTable billRptData { get { return m_rptAsst.getData(); } }
         public virtual List<ReportParameter> billRptParams { get { return m_rptAsst.crtParams(); } }
@@ -940,6 +1042,9 @@ namespace test_binding
                 case lTableInfo.lColInfo.lColType.currency:
                     lInputCtrlCurrency currencyCtrl = new lInputCtrlCurrency(col.m_field, col.m_alias, lSearchCtrl.ctrlType.currency, pos, size);
                     return currencyCtrl;
+                case lTableInfo.lColInfo.lColType.map:
+                    lInputCtrlEnum enumCtrl = new lInputCtrlEnum(col.m_field, col.m_alias, lSearchCtrl.ctrlType.map, pos, size);
+                    return enumCtrl;
             }
             return null;
         }
@@ -1108,14 +1213,24 @@ namespace test_binding
         protected override lInputCtrl m_keyCtrl { get { return m_inputsCtrls[0]; } }
         private keyMng m_key;
         protected override keyMng m_keyMng { get { return m_key; } }
+        lInputCtrl advance_payment;
+        lInputCtrlEnum status;
+        lInputCtrl actually_spent;
+        lInputCtrl note;
         public lInterPayInputPanel()
         {
             m_tblName = "internal_payment";
-#if has_advance
-            lInputCtrl advance_payment = crtInputCtrl(m_tblInfo, "advance_payment", new Point(0, 6), new Size(1, 1));
-            lInputCtrl reimbursement = crtInputCtrl(m_tblInfo, "reimbursement",     new Point(0, 7), new Size(1, 1));
-            lInputCtrl actually_spent = crtInputCtrl(m_tblInfo, "actually_spent",   new Point(0, 8), new Size(1, 1));
-#endif
+
+            advance_payment = crtInputCtrl(m_tblInfo, "advance_payment", new Point(0, 6), new Size(1, 1));
+            actually_spent = crtInputCtrl(m_tblInfo, "actually_spent",   new Point(0, 7), new Size(1, 1));
+            status = (lInputCtrlEnum)crtInputCtrl(m_tblInfo, "status", new Point(0, 8), new Size(1, 1));
+            note = crtInputCtrl(m_tblInfo, "note", new Point(0, 9), new Size(1, 1));
+            status.init(new List<lInputCtrlEnum.comboItem> {
+                new lInputCtrlEnum.comboItem { name = "Tạm ứng", val = 0 },
+                new lInputCtrlEnum.comboItem { name = "Hoàn ứng", val = 1 },
+                new lInputCtrlEnum.comboItem { name = "Thực chi", val = 2 },
+            });
+
             m_inputsCtrls = new List<lInputCtrl>
             {
                 crtInputCtrl(m_tblInfo, "payment_number"    , new Point(0, 0), new Size(1, 1)),
@@ -1124,57 +1239,49 @@ namespace test_binding
                 crtInputCtrl(m_tblInfo, "addr"              , new Point(0, 3), new Size(1, 1)),
                 crtInputCtrl(m_tblInfo, "group_name"        , new Point(0, 4), new Size(1, 1)),
                 crtInputCtrl(m_tblInfo, "content"           , new Point(0, 5), new Size(1, 1)),
-#if has_advance
+#if true
                 advance_payment,
-                reimbursement,
                 actually_spent,
-                crtInputCtrl(m_tblInfo, "note"              , new Point(0, 9), new Size(1, 1)),
+                status,
+                note,
 #else
                 crtInputCtrl(m_tblInfo, "actually_spent"    , new Point(0, 6), new Size(1, 1)),
                 crtInputCtrl(m_tblInfo, "note"              , new Point(0, 7), new Size(1, 1)),
 #endif
             };
             m_inputsCtrls[0].ReadOnly = true;
-#if has_advance
-            reimbursement.EditingCompleted += (s, e) =>
-            {
-                long advance, reimbur;
-                bool bRet = long.TryParse(advance_payment.Text.Replace(",", ""), out advance);
-                bRet &= long.TryParse(reimbursement.Text.Replace(",", ""), out reimbur);
-                if (bRet)
-                {
-                    Debug.Assert(advance >= reimbur);
-                    actually_spent.Text = (advance - reimbur).ToString();
-                }
-            };
+#if true
+            advance_payment.EditingCompleted += advanceComp;
+            actually_spent.EditingCompleted += spentComp;
+            
 #endif
             m_key = new keyMng("PCN", m_tblName, "payment_number");
-            Dictionary<string, string> dict = new Dictionary<string, string> {
-                { "name","name" },
-                { "addr","addr" },
-                { "date","date" },
-                { "num","payment_number" },
-                { "content","content" },
-                { "note","note" },
-                { "amount","actually_spent" },
-            };
-            m_rptAsst = new rptAssist(2, dict);
-#if false
-            m_rptAsst.ConvertRowCompleted = (inR, outR) =>
-            {
-                //Debug.Assert((Int64)inR["advance_payment"] > 0, "advance should not zero");
-                var obj = inR["actually_spent"];
-                if (obj != DBNull.Value)
-                {
-                    Int64 act = (Int64)obj;
-                    if (act > 0)
-                    {
-                        outR["amount"] = act;
-                    }
-                }
-            };
-#endif
+            m_rptAsst = rptAssist.Create(m_tblName);
         }
+
+        private void advanceComp(object sender, string val)
+        {
+            long advance;
+            string txt = advance_payment.Text;
+            bool bRet = long.TryParse(txt.Replace(",", ""), out advance);
+            if (bRet && advance != 0)
+            {
+                status.Text = "Tạm ứng";
+                actually_spent.Text = txt;
+                note.Text = "Tạm ứng";
+            }
+        }
+        private void spentComp(object sender, string val)
+        {
+            long actual;
+            bool bRet = long.TryParse(actually_spent.Text.Replace(",", ""), out actual);
+            if (bRet & actual != 0 && advance_payment.Text == "")
+            {
+                status.Text = "Thực chi";
+                note.Text = "Thực chi";
+            }
+        }
+
         public override void initCtrls()
         {
             base.initCtrls();

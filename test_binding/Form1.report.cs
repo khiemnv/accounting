@@ -1357,4 +1357,27 @@ namespace test_binding
             }
         }
     }
+
+    public class lBillReport : lBaseReport
+    {
+        public rptAssist rptAsst;
+        public override void Fill(LocalReport report)
+        {
+            //long time work
+            DataTable dt = rptAsst.getData();
+
+            //after load data complete
+            //dt.TableName = m_viewName;
+
+            //LocalReport report = new LocalReport();
+            report.ReportPath = @"..\..\bill_general.rdlc";
+            report.DataSources.Add(new ReportDataSource("DataSet1", dt));
+
+            //add report params
+            List<ReportParameter> rpParams = rptAsst.crtParams();
+            report.SetParameters(rpParams);
+
+            report.Refresh();
+        }
+    }
 }

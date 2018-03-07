@@ -17,6 +17,7 @@ using System.Drawing;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using System.Data;
 
 namespace test_binding
 {
@@ -59,7 +60,7 @@ namespace test_binding
                     new lInterPaymentPanel(),
                     new lExternalPaymentPanel(),
                     new lSalaryPanel(),
-                    new lAdvancePanel(),
+                    //new lAdvancePanel(),
                 };
 #if save_config
                 appConfig.s_config.UpdateConfig();
@@ -293,9 +294,9 @@ namespace test_binding
                 case inputFormType.salaryIF:
                     inputDlg = new lSalaryInputF();
                     break;
-                case inputFormType.advanceIF:
-                    inputDlg = new lAdvanceInputF();
-                    break;
+                //case inputFormType.advanceIF:
+                //    inputDlg = new lAdvanceInputF();
+                //    break;
             }
 
 #if fullscreen_onload
@@ -368,7 +369,7 @@ namespace test_binding
         {
         }
 
-        private void printBtn_Click(object sender, EventArgs e)
+        protected virtual void OnPrint()
         {
             if (m_report != null)
             {
@@ -379,6 +380,11 @@ namespace test_binding
                 m_report.Clean();
                 m_report.Dispose();
             }
+        }
+
+        private void printBtn_Click(object sender, EventArgs e)
+        {
+            OnPrint();
         }
 
         public virtual void initCtrls()
@@ -470,12 +476,37 @@ namespace test_binding
     [DataContract(Name = "InternalPaymentPanel")]
     public class lInterPaymentPanel : lBasePanel
     {
+        rptAssist m_rptAsst;
         public lInterPaymentPanel()
         {
             m_dataPanel = new lInterPaymentDataPanel();
             m_searchPanel = new lInterPaymentSearchPanel(m_dataPanel);
             m_report = new lCurInterPaymentReport();
             base.init();
+
+            m_rptAsst = rptAssist.Create(m_dataPanel.m_tblName);
+        }
+
+        protected override void OnPrint()
+        {
+            //get selected record
+            var rows = m_dataPanel.m_dataGridView.SelectedRows;
+            if (rows.Count > 0)
+            {
+                var row = rows[0];
+                DataRow dr = ((DataRowView)row.DataBoundItem).Row;
+                m_rptAsst.setData(dr);
+                var dt = m_rptAsst.getData();
+
+                var rpt = new lBillReport();
+                rpt.rptAsst = m_rptAsst;
+
+                var previewDlg = new rptPreview();
+                previewDlg.mRpt = rpt;
+                previewDlg.ShowDialog();
+                rpt.Clean();
+                rpt.Dispose();
+            }
         }
     }
 
