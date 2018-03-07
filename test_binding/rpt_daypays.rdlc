@@ -29,7 +29,6 @@
           </Paragraph>
         </Paragraphs>
         <rd:DefaultName>Textbox26</rd:DefaultName>
-        <Left>0in</Left>
         <Height>0.3in</Height>
         <Width>7in</Width>
         <Style>
@@ -52,28 +51,36 @@
               <TextRun>
                 <Value>từ ngày: </Value>
                 <Style>
+                  <FontSize>11pt</FontSize>
                   <FontWeight>Bold</FontWeight>
                   <Color>Blue</Color>
                 </Style>
               </TextRun>
               <TextRun>
                 <Value>=Parameters!startDate.Value</Value>
-                <Style />
+                <Style>
+                  <FontSize>11pt</FontSize>
+                </Style>
               </TextRun>
               <TextRun>
                 <Value xml:space="preserve"> </Value>
-                <Style />
+                <Style>
+                  <FontSize>11pt</FontSize>
+                </Style>
               </TextRun>
               <TextRun>
                 <Value>đến ngày: </Value>
                 <Style>
+                  <FontSize>11pt</FontSize>
                   <FontWeight>Bold</FontWeight>
                   <Color>Blue</Color>
                 </Style>
               </TextRun>
               <TextRun>
                 <Value>=Parameters!endDate.Value</Value>
-                <Style />
+                <Style>
+                  <FontSize>11pt</FontSize>
+                </Style>
               </TextRun>
             </TextRuns>
             <Style>
@@ -83,9 +90,8 @@
         </Paragraphs>
         <rd:DefaultName>Textbox36</rd:DefaultName>
         <Top>0.7in</Top>
-        <Left>0in</Left>
         <Height>0.2in</Height>
-        <Width>3in</Width>
+        <Width>4in</Width>
         <ZIndex>1</ZIndex>
         <Style>
           <Border>
@@ -102,6 +108,7 @@
               <TextRun>
                 <Value>Báo cáo chi theo  ban (đơn vị: VND)</Value>
                 <Style>
+                  <FontSize>11pt</FontSize>
                   <FontWeight>Bold</FontWeight>
                   <Color>Blue</Color>
                 </Style>
@@ -112,7 +119,6 @@
         </Paragraphs>
         <rd:DefaultName>Textbox36</rd:DefaultName>
         <Top>0.5in</Top>
-        <Left>0in</Left>
         <Height>0.2in</Height>
         <Width>3in</Width>
         <ZIndex>2</ZIndex>
@@ -132,6 +138,7 @@
                 <Value>=Globals!ExecutionTime</Value>
                 <Style>
                   <FontStyle>Normal</FontStyle>
+                  <FontSize>11pt</FontSize>
                   <FontWeight>Normal</FontWeight>
                   <Format>dd/MM/yyyy</Format>
                   <TextDecoration>None</TextDecoration>
@@ -171,6 +178,7 @@
                   <TextRun>
                     <Value>III. Chi ngoai chúng:</Value>
                     <Style>
+                      <FontSize>11pt</FontSize>
                       <FontWeight>Bold</FontWeight>
                       <Color>Blue</Color>
                     </Style>
@@ -2289,6 +2297,7 @@
                   <TextRun>
                     <Value>Báo cáo kiểm kê (đơn vị: VND)</Value>
                     <Style>
+                      <FontSize>11pt</FontSize>
                       <FontWeight>Bold</FontWeight>
                       <Color>Blue</Color>
                     </Style>
@@ -2330,6 +2339,7 @@
                   <TextRun>
                     <Value>IV. Chi lương:</Value>
                     <Style>
+                      <FontSize>11pt</FontSize>
                       <FontWeight>Bold</FontWeight>
                       <Color>Blue</Color>
                     </Style>
@@ -3216,6 +3226,7 @@
                   <TextRun>
                     <Value>II. Chi nội chúng:</Value>
                     <Style>
+                      <FontSize>11pt</FontSize>
                       <FontWeight>Bold</FontWeight>
                       <Color>Blue</Color>
                     </Style>
@@ -3225,7 +3236,6 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox66</rd:DefaultName>
-            <Left>0in</Left>
             <Height>0.2in</Height>
             <Width>3in</Width>
             <Style>
@@ -4091,7 +4101,6 @@
         </ReportItems>
         <KeepTogether>true</KeepTogether>
         <Top>2.65in</Top>
-        <Left>0in</Left>
         <Height>1.5in</Height>
         <Width>7.5in</Width>
         <ZIndex>7</ZIndex>
@@ -4110,6 +4119,7 @@
               <TextRun>
                 <Value>I. Chi tạm ứng:</Value>
                 <Style>
+                  <FontSize>11pt</FontSize>
                   <FontWeight>Bold</FontWeight>
                   <Color>Blue</Color>
                 </Style>
@@ -4120,7 +4130,6 @@
         </Paragraphs>
         <rd:DefaultName>Textbox66</rd:DefaultName>
         <Top>1.05in</Top>
-        <Left>0in</Left>
         <Height>0.2in</Height>
         <Width>3in</Width>
         <ZIndex>8</ZIndex>
@@ -4484,7 +4493,6 @@
                         <PaddingBottom>2pt</PaddingBottom>
                       </Style>
                     </Textbox>
-                    <rd:Selected>true</rd:Selected>
                   </CellContents>
                 </TablixCell>
                 <TablixCell>
@@ -5251,7 +5259,6 @@
         </TablixRowHierarchy>
         <DataSetName>DataSet1</DataSetName>
         <Top>1.3in</Top>
-        <Left>0in</Left>
         <Height>1.25in</Height>
         <Width>7.5in</Width>
         <ZIndex>9</ZIndex>
@@ -5280,7 +5287,9 @@
               <TextRuns>
                 <TextRun>
                   <Value>=Globals!PageNumber</Value>
-                  <Style />
+                  <Style>
+                    <FontSize>11pt</FontSize>
+                  </Style>
                 </TextRun>
               </TextRuns>
               <Style>
