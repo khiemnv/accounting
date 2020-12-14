@@ -163,8 +163,8 @@ namespace test_binding
                    new lColInfo( "receipt_number","Mã PT", lColInfo.lColType.uniqueText),
                    new lColInfo( "date","Ngày Tháng", lColInfo.lColType.dateTime),
                    new lColInfo( "name","Họ tên", lColInfo.lColType.text),
-                   new lColInfo( "addr","Địa chỉ", lColInfo.lColType.text),
-                   new lColInfo( "content","Nội dung", lColInfo.lColType.text, "receipts_content"),
+                   new lColInfo( "addr","Mã TV", lColInfo.lColType.text),
+                   new lColInfo( "content","Tên Quỹ", lColInfo.lColType.text, "receipts_content"),
                    new lColInfo( "note","Ghi chú", lColInfo.lColType.text),
                    new lColInfo( "amount","Số tiền", lColInfo.lColType.currency),
                 };
@@ -349,7 +349,7 @@ namespace test_binding
                 + " content nchar(31))";
             m_cols = new lColInfo[] {
                    new lColInfo( "ID","ID", lColInfo.lColType.num, null, false),
-                   new lColInfo( "content","Nguồn thu", lColInfo.lColType.text)
+                   new lColInfo( "content","Tên Quỹ", lColInfo.lColType.text)
                 };
         }
     };

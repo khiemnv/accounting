@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using test_binding;
 
-namespace test_binding
+namespace WindowsFormsApp1
 {
     static class Program
     {

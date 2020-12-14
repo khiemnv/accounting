@@ -67,7 +67,7 @@ namespace test_binding
             miEditGroupName.Click += MiEditGroupName_Click;
             addChild(miEdit, miEditGroupName);
 
-            var miEditReceiptsContent = crtMenuItem("Nguồn Thu");
+            var miEditReceiptsContent = crtMenuItem("Các Quỹ");
             miEditReceiptsContent.Click += MiEditReceiptsContent_Click;
             addChild(miEdit, miEditReceiptsContent);
 

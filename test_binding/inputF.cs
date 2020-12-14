@@ -87,6 +87,9 @@ namespace test_binding
             m_inputPanel.initCtrls();
             tableLayoutPanel1.Controls.Add(m_inputPanel.m_tbl);
             tableLayoutPanel1.Dock = DockStyle.Fill;
+
+            //splitContainer1.Panel2Collapsed = true;
+            //splitContainer1.Panel2.Hide();
         }
     }
 
